@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Carpenter - Customer Requests</title>
+</head>
+<body>
+
+<h1>Customer Work Requests</h1>
+<p>Status: Full Access</p>
+
+<ul id="requestList"></ul>
+
+<button onclick="logout()">Logout</button>
+
+<script>
+
+const phone = localStorage.getItem("phone");
+const role = localStorage.getItem("role");
+
+if (!phone || role !== "carpenter") {
+    alert("Not authorized");
+    window.location.href = "login.html";
+}
+
+// Fetch customer bookings related to carpentry
+async function fetchRequests() {
+    try {
+        const res = await fetch("/bookings");
+        const bookings = await res.json();
+
+        const list = document.getElementById("requestList");
+        list.innerHTML = "";
+
+        // Filter only carpenter service
+        const carpenterJobs = bookings.filter(b => 
+            b.service.toLowerCase() === "carpenter"
+        );
+
+        if (carpenterJobs.length === 0) {
+            list.innerHTML = "<li>No customer requests available.</li>";
+            return;
+        }
+
+        carpenterJobs.forEach(job => {
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                <b>${job.name}</b> 
+                <br>Phone: ${job.phone}
+                <br>Address: ${job.address}
+                <br>Date: ${job.date}
+                <br>
+                <button onclick="acceptJob('${job._id}')">Accept</button>
+                <button onclick="rejectJob('${job._id}')">Reject</button>
+                <hr>
+            `;
+
+            list.appendChild(li);
+        });
+
+    } catch (err) {
+        console.error(err);
+        alert("Error loading requests");
+    }
+}
+
+async function acceptJob(id) {
+    alert("Job Accepted!");
+    // Later we can move this booking to assigned worker collection
+}
+
+async function rejectJob(id) {
+    alert("Job Rejected!");
+    // Later we can update booking status
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+fetchRequests();
+
+</script>
+
+</body>
+</html>

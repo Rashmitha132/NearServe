@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Electrician Dashboard</title>
+</head>
+<body>
+
+<h1>Electrician Dashboard</h1>
+<p>Status: <span id="status"></span></p>
+
+<h2>Probation Jobs</h2>
+<ul id="jobList"></ul>
+
+<button id="logoutBtn">Logout</button>
+
+<script>
+
+const phone = localStorage.getItem("phone");
+const role = localStorage.getItem("role");
+
+if (!phone || role !== "electrician") {
+    alert("Not logged in as Electrician");
+    window.location.href = "login.html";
+}
+
+async function fetchData() {
+    try {
+        const userRes = await fetch(`/user/${phone}`);
+        const user = await userRes.json();
+
+        document.getElementById("status").innerText = user.status;
+
+        if (user.status === "pending_verification") {
+            window.location.href = "upload_proof.html";
+            return;
+        }
+
+        if (user.status === "full_access") {
+            window.location.href = "electrician_requests.html";
+            return;
+        }
+
+        const jobsRes = await fetch(`/my-jobs/${phone}`);
+        const jobs = await jobsRes.json();
+
+        const jobList = document.getElementById("jobList");
+        jobList.innerHTML = "";
+
+        jobs.forEach(job => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <b>${job.description || job.jobType}</b>
+                - Status: ${job.status}
+                ${job.status === "pending" ? `
+                    <button onclick="completeJob('${job._id}')">Complete</button>
+                    <button onclick="rejectJob('${job._id}')">Reject</button>
+                ` : ""}
+            `;
+            jobList.appendChild(li);
+        });
+
+    } catch (err) {
+        alert("Error loading dashboard");
+    }
+}
+
+async function completeJob(jobId) {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "video/*";
+
+    fileInput.onchange = async () => {
+        const file = fileInput.files[0];
+        if (!file) {
+            alert("Video proof required.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("status", "completed");
+        formData.append("videoProof", file);
+
+        const res = await fetch(`/update-job/${jobId}`, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            alert(data.error);
+            return;
+        }
+
+        alert("Job completed!");
+        fetchData();
+    };
+
+    fileInput.click();
+}
+
+async function rejectJob(jobId) {
+    const res = await fetch(`/update-job/${jobId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "rejected" })
+    });
+
+    await res.json();
+    alert("Job rejected.");
+    fetchData();
+}
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "login.html";
+});
+
+fetchData();
+
+</script>
+
+</body>
+</html>

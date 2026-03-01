@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - QuickServe</title>
+</head>
+<body>
+<h1>Login</h1>
+<form id="loginForm">
+    <input type="text" id="emailOrPhone" name="emailOrPhone" placeholder="Email or Phone" required><br>
+    <input type="password" id="password" name="password" placeholder="Password" required><br>
+    
+    <!-- 🔹 Role selection -->
+    <label for="role">I am a:</label>
+    <select name="role" id="role" required>
+        <option value="">Select role</option>
+        <option value="customer">customer</option>
+        <option value="electrician">electrician</option>
+        <option value="plumber">plumber</option>
+        <option value="carpenter">carpenter</option>
+    </select><br>
+
+    <button type="submit">Login</button>
+</form>
+<p>New user? <a href="signup.html">Sign Up</a></p>
+
+<script src="js/login.js"></script>
+</body>
+</html>

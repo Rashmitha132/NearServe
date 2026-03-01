@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickServe Booking</title>
+</head>
+<body>
+    <h1>Book a Service</h1>
+    <h2 id="welcomeUser"></h2> <!-- Welcome message -->
+
+    <!-- Logout button -->
+    <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
+
+    <form id="bookingForm">
+        <input type="text" name="name" placeholder="Your Name" required><br>
+        <!-- Phone removed: auto-filled from login -->
+        <input type="text" name="service" placeholder="Service (Plumber/Electrician/etc.)" required><br>
+        <input type="text" name="address" placeholder="Address" required><br>
+        <input type="date" name="date" required><br>
+        <button type="submit">Book Service</button>
+    </form>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Logout functionality
+        const logoutBtn = document.getElementById("logoutBtn");
+        logoutBtn.addEventListener("click", () => {
+            // Redirect to login page without clearing anything
+            window.location.href = "login.html";
+        });
+
+        // Optional: show welcome message
+        const userName = localStorage.getItem("userName");
+        if(userName){
+            document.getElementById("welcomeUser").innerText = `Welcome, ${userName}!`;
+        }
+    </script>
+</body>
+</html>

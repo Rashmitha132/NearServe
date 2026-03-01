@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Proof - QuickServe</title>
+</head>
+<body>
+<h1>Upload Your Proof to Start Probation</h1>
+<p id="statusMsg"></p>
+
+<form id="proofForm" enctype="multipart/form-data">
+    <label for="proof">Upload certificate or proof:</label><br>
+    <input type="file" id="proof" name="proof" accept="image/*,application/pdf" required><br><br>
+    <button type="submit">Submit Proof</button>
+</form>
+
+<script>
+const phone = localStorage.getItem("phone");
+const role = localStorage.getItem("role");
+
+document.getElementById("proofForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const fileInput = document.getElementById("proof");
+    const formData = new FormData();
+    formData.append("proof", fileInput.files[0]);
+
+    try {
+        const res = await fetch(`/upload-proof/${phone}`, {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            document.getElementById("statusMsg").innerText = data.error || "Upload failed";
+            return;
+        }
+
+        document.getElementById("statusMsg").innerText = data.message;
+        // Redirect to probation dashboard
+        switch(role) {
+            case "electrician": window.location.href = "electrician_dashboard.html"; break;
+            case "plumber": window.location.href = "plumber_dashboard.html"; break;
+            case "carpenter": window.location.href = "carpenter_dashboard.html"; break;
+        }
+    } catch (err) {
+        console.error(err);
+        document.getElementById("statusMsg").innerText = "Server error. Try again later.";
+    }
+});
+</script>
+</body>
+</html>

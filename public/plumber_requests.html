@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Plumber - Customer Requests</title>
+</head>
+<body>
+
+<h1>Plumber - Customer Work Requests</h1>
+<p>Status: Full Access</p>
+
+<ul id="requestList"></ul>
+
+<button onclick="logout()">Logout</button>
+
+<script>
+
+const phone = localStorage.getItem("phone");
+const role = localStorage.getItem("role");
+
+if (!phone || role !== "plumber") {
+    alert("Not authorized");
+    window.location.href = "login.html";
+}
+
+async function fetchRequests() {
+    try {
+        const res = await fetch("/bookings");
+        const bookings = await res.json();
+
+        const list = document.getElementById("requestList");
+        list.innerHTML = "";
+
+        const plumberJobs = bookings.filter(b =>
+            b.service.toLowerCase() === "plumber"
+        );
+
+        if (plumberJobs.length === 0) {
+            list.innerHTML = "<li>No customer requests available.</li>";
+            return;
+        }
+
+        plumberJobs.forEach(job => {
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                <b>${job.name}</b>
+                <br>Phone: ${job.phone}
+                <br>Address: ${job.address}
+                <br>Date: ${job.date}
+                <br>
+                <button onclick="acceptJob('${job._id}')">Accept</button>
+                <button onclick="rejectJob('${job._id}')">Reject</button>
+                <hr>
+            `;
+
+            list.appendChild(li);
+        });
+
+    } catch (err) {
+        console.error(err);
+        alert("Error loading requests");
+    }
+}
+
+function acceptJob(id) {
+    alert("Job Accepted!");
+}
+
+function rejectJob(id) {
+    alert("Job Rejected!");
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+fetchRequests();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - QuickServe</title>
+</head>
+<body>
+<h1>Create Account</h1>
+<form id="signupForm">
+    <input type="text" name="name" placeholder="Your Name" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="text" name="phone" placeholder="Phone" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+
+    <!-- 🔹 Role selection -->
+    <label for="role">I am a:</label>
+    <select name="role" id="role" required>
+        <option value="">Select role</option>
+        <option value="customer">customer</option>
+        <option value="electrician">electrician</option>
+        <option value="plumber">plumber</option>
+        <option value="carpenter">carpenter</option>
+    </select><br>
+
+    <button type="submit">Sign Up</button>
+</form>
+<p>Already have an account? <a href="login.html">Login</a></p>
+
+<script src="js/signup.js"></script>
+</body>
+</html>
