@@ -1,86 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Carpenter - Customer Requests</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carpenter Requests</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-<h1>Customer Work Requests</h1>
-<p>Status: Full Access</p>
+<div class="page-wrap">
+  <div class="card">
 
-<ul id="requestList"></ul>
+    <div class="card-header">
+      <div class="brand">
+        <img src="/uploads/tools.png" alt="Requests Logo">
+        <div>
+          <h1>Customer Requests</h1>
+          <small>Status: Full Access</small>
+        </div>
+      </div>
 
-<button onclick="logout()">Logout</button>
+      <div class="header-actions">
+        <button class="btn btn-logout" onclick="logout()"><i class="fa fa-right-from-bracket"></i> Logout</button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="section-title">Available Carpentry Jobs</div>
+      <ul id="requestList" class="list"></ul>
+      <p class="note">Only carpentry service requests are shown here.</p>
+    </div>
+
+  </div>
+</div>
 
 <script>
-
 const phone = localStorage.getItem("phone");
 const role = localStorage.getItem("role");
 
 if (!phone || role !== "carpenter") {
-    alert("Not authorized");
-    window.location.href = "login.html";
+  alert("Not authorized");
+  window.location.href = "login.html";
 }
 
-// Fetch customer bookings related to carpentry
 async function fetchRequests() {
-    try {
-        const res = await fetch("/bookings");
-        const bookings = await res.json();
+  try {
+    const res = await fetch("/bookings");
+    const bookings = await res.json();
 
-        const list = document.getElementById("requestList");
-        list.innerHTML = "";
+    const list = document.getElementById("requestList");
+    list.innerHTML = "";
 
-        // Filter only carpenter service
-        const carpenterJobs = bookings.filter(b => 
-            b.service.toLowerCase() === "carpenter"
-        );
+    const carpenterJobs = bookings.filter(b => (b.service || "").toLowerCase() === "carpenter");
 
-        if (carpenterJobs.length === 0) {
-            list.innerHTML = "<li>No customer requests available.</li>";
-            return;
-        }
-
-        carpenterJobs.forEach(job => {
-            const li = document.createElement("li");
-
-            li.innerHTML = `
-                <b>${job.name}</b> 
-                <br>Phone: ${job.phone}
-                <br>Address: ${job.address}
-                <br>Date: ${job.date}
-                <br>
-                <button onclick="acceptJob('${job._id}')">Accept</button>
-                <button onclick="rejectJob('${job._id}')">Reject</button>
-                <hr>
-            `;
-
-            list.appendChild(li);
-        });
-
-    } catch (err) {
-        console.error(err);
-        alert("Error loading requests");
+    if (carpenterJobs.length === 0) {
+      list.innerHTML = `<li class="item"><div><strong>No customer requests available.</strong><br><small>Please check again later.</small></div></li>`;
+      return;
     }
+
+    carpenterJobs.forEach(job => {
+      const li = document.createElement("li");
+      li.className = "item";
+
+      li.innerHTML = `
+        <div>
+          <strong>${job.name}</strong><br>
+          <small>Phone: ${job.phone}</small><br>
+          <small>Address: ${job.address}</small><br>
+          <small>Date: ${job.date}</small>
+        </div>
+
+        <div class="item-actions">
+          <button class="btn btn-primary" onclick="acceptJob('${job._id}')"><i class="fa fa-check"></i> Accept</button>
+          <button class="btn btn-danger" onclick="rejectJob('${job._id}')"><i class="fa fa-xmark"></i> Reject</button>
+        </div>
+      `;
+
+      list.appendChild(li);
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Error loading requests");
+  }
 }
 
 async function acceptJob(id) {
-    alert("Job Accepted!");
-    // Later we can move this booking to assigned worker collection
+  alert("Job Accepted! (Next step: assign worker in backend)");
 }
 
 async function rejectJob(id) {
-    alert("Job Rejected!");
-    // Later we can update booking status
+  alert("Job Rejected! (Next step: update status in backend)");
 }
 
 function logout() {
-    localStorage.clear();
-    window.location.href = "login.html";
+  localStorage.clear();
+  window.location.href = "login.html";
 }
 
 fetchRequests();
-
 </script>
 
 </body>

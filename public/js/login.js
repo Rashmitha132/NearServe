@@ -29,6 +29,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
         localStorage.setItem("phone", data.user.phone);
         localStorage.setItem("role", data.user.role);
         localStorage.setItem("name", data.user.name);
+        
 
         // ================================
         // WORKER FLOW

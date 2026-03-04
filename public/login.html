@@ -2,29 +2,64 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - QuickServe</title>
-</head>
-<body>
-<h1>Login</h1>
-<form id="loginForm">
-    <input type="text" id="emailOrPhone" name="emailOrPhone" placeholder="Email or Phone" required><br>
-    <input type="password" id="password" name="password" placeholder="Password" required><br>
-    
-    <!-- 🔹 Role selection -->
-    <label for="role">I am a:</label>
-    <select name="role" id="role" required>
-        <option value="">Select role</option>
-        <option value="customer">customer</option>
-        <option value="electrician">electrician</option>
-        <option value="plumber">plumber</option>
-        <option value="carpenter">carpenter</option>
-    </select><br>
 
-    <button type="submit">Login</button>
-</form>
-<p>New user? <a href="signup.html">Sign Up</a></p>
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <!-- Logo -->
+    <div class="logo">
+        <img src="uploads/logo.png" alt="QuickServe Logo">
+        <h2>QuickServe</h2>
+    </div>
+
+    <form id="loginForm">
+
+        <h3>Welcome Back</h3>
+
+        <div class="input-box">
+            <i class="fa fa-envelope"></i>
+            <input type="text" id="emailOrPhone" placeholder="Email or Phone">
+        </div>
+
+        <div class="input-box">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="password" placeholder="Password">
+        </div>
+
+        <div class="input-box">
+            <i class="fa fa-user"></i>
+            <select id="role">
+                <option value="">Select Role</option>
+                <option value="customer">Customer</option>
+                <option value="plumber">Plumber</option>
+                <option value="electrician">Electrician</option>
+                <option value="carpenter">Carpenter</option>
+            </select>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <p class="signup-link">
+            New user? <a href="signup.html">Sign Up</a>
+        </p>
+
+    </form>
+
+</div>
 
 <script src="js/login.js"></script>
+
 </body>
 </html>

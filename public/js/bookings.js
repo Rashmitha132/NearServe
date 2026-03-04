@@ -1,10 +1,4 @@
 const tableBody = document.querySelector("#bookingsTable tbody");
-const phone = localStorage.getItem("phone");
-
-if (!phone) {
-    alert("Please login first!");
-    window.location.href = "login.html";
-}
 
 async function fetchBookings() {
     try {

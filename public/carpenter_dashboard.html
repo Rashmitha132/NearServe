@@ -4,153 +4,238 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carpenter Dashboard</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-<h1>Carpenter Dashboard</h1>
+<div class="page-wrap">
+  <div class="card">
 
-<p>Status: <span id="status"></span></p>
+    <div class="card-header">
+      <div class="brand">
+        <img src="/uploads/hammer.png" alt="Carpenter Logo">
+        <div>
+          <h1>Carpenter Dashboard</h1>
+          <small>Probation & status tracking</small>
+        </div>
+      </div>
 
-<h2>Probation Jobs</h2>
-<ul id="jobList"></ul>
+      <div class="header-actions">
+        <button class="btn btn-logout" id="logoutBtn">
+          <i class="fa fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
 
-<button id="logoutBtn">Logout</button>
+    <div class="card-body">
+      <p>
+        Status:
+        <span id="statusBadge" class="badge probation">...</span>
+      </p>
+
+      <hr class="soft">
+
+      <div>
+        <div class="section-title">Probation Jobs</div>
+        <ul id="jobList" class="list"></ul>
+
+        <p class="note">
+          Tip: You must upload a <b>video proof</b> to submit job completion.
+          After verification, it will become <b>completed</b> and you’ll get full access.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
-
 const phone = localStorage.getItem("phone");
 const role = localStorage.getItem("role");
 
+// Max video size: 20MB (you can change)
+const MAX_VIDEO = 20 * 1024 * 1024;
+
 if (!phone || role !== "carpenter") {
-    alert("Not logged in as Carpenter");
-    window.location.href = "login.html";
+  alert("Not logged in as Carpenter");
+  window.location.href = "login.html";
+}
+
+function setStatusBadge(status){
+  const badge = document.getElementById("statusBadge");
+  badge.textContent = status;
+  badge.className = "badge " + status; // CSS classes exist in style.css
+}
+
+function prettyStatus(s){
+  if (s === "submitted") return "waiting verification";
+  return s;
 }
 
 // =============================
 // Fetch User + Jobs
 // =============================
 async function fetchData() {
-    try {
-        const userRes = await fetch(`/user/${phone}`);
-        const user = await userRes.json();
+  try {
+    const userRes = await fetch(`/user/${phone}`);
+    const user = await userRes.json();
 
-        document.getElementById("status").innerText = user.status;
+    setStatusBadge(user.status);
 
-        // If still pending verification → go to upload page
-        if (user.status === "pending_verification") {
-            window.location.href = "upload_proof.html";
-            return;
-        }
+    if (user.status === "pending_verification") {
+      window.location.href = "upload_proof.html";
+      return;
+    }
 
-        // If full access → show message (you can later replace with real jobs)
-        if (user.status === "full_access") {
-    window.location.href = "carpenter_requests.html";
-    return;
+    if (user.status === "full_access") {
+      window.location.href = "carpenter_requests.html";
+      return;
+    }
+
+    const jobsRes = await fetch(`/my-jobs/${phone}`);
+    const jobs = await jobsRes.json();
+
+    const jobList = document.getElementById("jobList");
+    jobList.innerHTML = "";
+
+    if (!jobs.length){
+      jobList.innerHTML = `
+        <li class="item">
+          <div>
+            <strong>No jobs yet</strong><br>
+            <small>Please refresh in a moment.</small>
+          </div>
+        </li>`;
+      return;
+    }
+
+    jobs.forEach(job => {
+      const li = document.createElement("li");
+      li.className = "item";
+
+      const statusText = prettyStatus(job.status);
+
+      // Buttons only when pending
+      const showActions = job.status === "pending";
+
+      li.innerHTML = `
+        <div>
+          <strong>
+${job.description ? job.description : "Upload a video showing a carpentry task (example: fixing a door hinge, repairing furniture, installing a lock or wooden shelf)."}
+</strong><br>
+          <small>Status: ${statusText}</small>
+        </div>
+
+        <div class="item-actions">
+          ${showActions ? `
+            <button class="btn btn-primary" onclick="submitJobWithVideo('${job._id}')">
+              <i class="fa fa-video"></i> Upload Video & Submit
+            </button>
+            <button class="btn btn-danger" onclick="rejectJob('${job._id}')">
+              <i class="fa fa-xmark"></i> Reject
+            </button>
+          ` : `
+            <button class="btn btn-logout" disabled>Done</button>
+          `}
+        </div>
+      `;
+
+      jobList.appendChild(li);
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Error loading dashboard");
+  }
 }
 
-        // If probation → fetch probation jobs
-        const jobsRes = await fetch(`/my-jobs/${phone}`);
-        const jobs = await jobsRes.json();
+// =============================
+// SUBMIT JOB WITH VIDEO PROOF (Required)
+// status becomes "submitted" (not completed)
+// =============================
+async function submitJobWithVideo(jobId) {
+  // open file picker
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "video/*"; // only videos
 
-        const jobList = document.getElementById("jobList");
-        jobList.innerHTML = "";
+  fileInput.onchange = async () => {
+    const file = fileInput.files[0];
 
-        jobs.forEach(job => {
+    if (!file) {
+      alert("Video proof is required to submit job.");
+      return;
+    }
 
-            const li = document.createElement("li");
+    if (!file.type.startsWith("video/")) {
+      alert("Only video files are allowed.");
+      return;
+    }
 
-            li.innerHTML = `
-                <b>${job.description || job.jobType}</b> 
-                - Status: ${job.status}
-                ${job.status === "pending" ? `
-                    <button onclick="completeJob('${job._id}')">Complete</button>
-                    <button onclick="rejectJob('${job._id}')">Reject</button>
-                ` : ""}
-            `;
+    if (file.size > MAX_VIDEO) {
+      alert("Video too large. Max allowed is 20MB.");
+      return;
+    }
 
-            jobList.appendChild(li);
-        });
+    const formData = new FormData();
+    formData.append("status", "submitted");   // IMPORTANT: submitted for verification
+    formData.append("videoProof", file);
+
+    try {
+      const res = await fetch(`/update-job/${jobId}`, {
+        method: "POST",
+        body: formData
+      });
+
+      const text = await res.text();
+      let data = {};
+      try { data = JSON.parse(text); } catch {}
+
+      if (!res.ok) {
+        alert(data.error || text || "Failed to upload video proof.");
+        return;
+      }
+
+      alert("✅ Video uploaded. Job submitted for verification!");
+      fetchData();
 
     } catch (err) {
-        console.error(err);
-        alert("Error loading dashboard");
+      console.error(err);
+      alert("Server error while uploading video.");
     }
-}
+  };
 
-// =============================
-// COMPLETE JOB (WITH VIDEO PROOF)
-// =============================
-async function completeJob(jobId) {
-
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "video/*";
-
-    fileInput.onchange = async () => {
-
-        const file = fileInput.files[0];
-
-        if (!file) {
-            alert("Video proof is required to complete job.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("status", "completed");
-        formData.append("videoProof", file);
-
-        const res = await fetch(`/update-job/${jobId}`, {
-            method: "POST",
-            body: formData
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            alert(data.error);
-            return;
-        }
-
-        alert("Job completed successfully with video proof!");
-        fetchData();
-    };
-
-    fileInput.click();
+  fileInput.click();
 }
 
 // =============================
 // REJECT JOB
 // =============================
 async function rejectJob(jobId) {
+  const res = await fetch(`/update-job/${jobId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "rejected" })
+  });
 
-    const res = await fetch(`/update-job/${jobId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "rejected" })
-    });
+  const data = await res.json();
+  if (!res.ok) { alert(data.error || "Error"); return; }
 
-    const data = await res.json();
-
-    if (!res.ok) {
-        alert(data.error);
-        return;
-    }
-
-    alert("Job rejected.");
-    fetchData();
+  alert("Job rejected.");
+  fetchData();
 }
 
 // =============================
 // LOGOUT
 // =============================
 document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.clear();
-    window.location.href = "login.html";
+  localStorage.clear();
+  window.location.href = "login.html";
 });
 
-// Load dashboard
 fetchData();
-
 </script>
 
 </body>

@@ -1,55 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Upload Proof - QuickServe</title>
+  <meta charset="UTF-8" />
+  <title>Upload Proof - QuickServe</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
-<h1>Upload Your Proof to Start Probation</h1>
-<p id="statusMsg"></p>
 
-<form id="proofForm" enctype="multipart/form-data">
-    <label for="proof">Upload certificate or proof:</label><br>
-    <input type="file" id="proof" name="proof" accept="image/*,application/pdf" required><br><br>
-    <button type="submit">Submit Proof</button>
-</form>
+  <div class="login-container">
 
-<script>
-const phone = localStorage.getItem("phone");
-const role = localStorage.getItem("role");
+    <div class="logo">
+      <img src="/uploads/verify.png" alt="Verification Logo">
+      <h2>Worker Verification</h2>
+    </div>
 
-document.getElementById("proofForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    <!-- IMPORTANT: enctype + action -->
+    <form id="proofForm" enctype="multipart/form-data">
+      <h3>Upload Your Proof to Start Probation</h3>
 
-    const fileInput = document.getElementById("proof");
-    const formData = new FormData();
-    formData.append("proof", fileInput.files[0]);
+      <div class="upload-box">
+        <div class="upload-title">
+          <i class="fa fa-file-pdf"></i>
+          <span>Upload PDF only</span>
+        </div>
 
-    try {
-        const res = await fetch(`/upload-proof/${phone}`, {
-            method: "POST",
-            body: formData
-        });
-        const data = await res.json();
+        <!-- PDF only -->
+        <input type="file" id="proofFile" name="proof" accept="application/pdf" />
+        <p class="hint">Max size: <b>2 MB</b></p>
 
-        if (!res.ok) {
-            document.getElementById("statusMsg").innerText = data.error || "Upload failed";
-            return;
-        }
+        <!-- Preview area -->
+        <div id="preview" class="preview hidden">
+          <div class="preview-row">
+            <i class="fa fa-file-pdf"></i>
+            <div>
+              <div id="fileName" class="file-name"></div>
+              <div id="fileSize" class="file-size"></div>
+            </div>
+          </div>
+        </div>
 
-        document.getElementById("statusMsg").innerText = data.message;
-        // Redirect to probation dashboard
-        switch(role) {
-            case "electrician": window.location.href = "electrician_dashboard.html"; break;
-            case "plumber": window.location.href = "plumber_dashboard.html"; break;
-            case "carpenter": window.location.href = "carpenter_dashboard.html"; break;
-        }
-    } catch (err) {
-        console.error(err);
-        document.getElementById("statusMsg").innerText = "Server error. Try again later.";
-    }
-});
-</script>
+        <p id="errorMsg" class="error hidden"></p>
+      </div>
+
+      <button id="submitBtn" type="submit" disabled>Submit Proof</button>
+    </form>
+
+  </div>
+
+  <script src="js/upload_proof.js"></script>
 </body>
 </html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - QuickServe</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="card">
+    <div class="card-header">
+      <div class="brand">
+        <img src="/uploads/shield.png" alt="Shield">
+        <div>
+          <h1>Admin Dashboard</h1>
+          <small>Verify proof + verify probation videos</small>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-logout" id="refreshBtn"><i class="fa fa-rotate"></i> Refresh</button>
+        <button class="btn btn-logout" id="adminLogout"><i class="fa fa-right-from-bracket"></i> Logout</button>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="section-title">A) Worker Proof Verification (PDF)</div>
+      <ul id="workerList" class="list"></ul>
+
+      <hr class="soft">
+
+      <div class="section-title">B) Job Video Verification (Submitted)</div>
+      <ul id="jobList" class="list"></ul>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/admin_dashboard.js"></script>
+</body>
+</html>
