@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings - QuickServe</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bookings - QuickServe</title>
 </head>
 <body>
-    <h1>My Booking History</h1>
-    <h2 id="welcomeUser"></h2> <!-- Optional: shows logged-in user's name -->
+  <h1>My Booking History</h1>
+  <h2 id="welcomeUser"></h2>
 
-    <!-- Logout Button -->
-    <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
+  <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
 
-    <table border="1" id="bookingTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Service</th>
-                <th>Address</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Arrival Time</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <table border="1" id="bookingTable" cellpadding="8">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Worker</th>
+        <th>Address</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Arrival Time</th>
+        <th>Worker Message</th>
+        <th>Reject Reason</th>
+        <th>Rate</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <button onclick="window.location.href='booking.html'">Book Another Service</button>
+  <br />
+  <button onclick="window.location.href='booking.html'">Book Another Service</button>
 
-    <script src="js/mybooking.js"></script>
+  <script src="js/mybooking.js"></script>
 </body>
 </html>

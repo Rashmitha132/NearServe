@@ -1,93 +1,93 @@
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
 }
 
 body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:linear-gradient(135deg,#667eea,#764ba2);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#667eea,#764ba2);
 }
 
 /* Login Box */
 
 .login-container{
-background:white;
-padding:40px;
-border-radius:12px;
-width:350px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-text-align:center;
+  background:white;
+  padding:40px;
+  border-radius:12px;
+  width:350px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  text-align:center;
 }
 
 /* Logo */
 
 .logo img{
-width:60px;
-margin-bottom:10px;
+  width:60px;
+  margin-bottom:10px;
 }
 
 .logo h2{
-color:#333;
-margin-bottom:20px;
+  color:#333;
+  margin-bottom:20px;
 }
 
 /* Inputs */
 
 .input-box{
-position:relative;
-margin-bottom:20px;
+  position:relative;
+  margin-bottom:20px;
 }
 
 .input-box i{
-position:absolute;
-left:12px;
-top:12px;
-color:#888;
+  position:absolute;
+  left:12px;
+  top:12px;
+  color:#888;
 }
 
 .input-box input,
 .input-box select{
-width:100%;
-padding:10px 10px 10px 35px;
-border:1px solid #ddd;
-border-radius:6px;
-outline:none;
+  width:100%;
+  padding:10px 10px 10px 35px;
+  border:1px solid #ddd;
+  border-radius:6px;
+  outline:none;
 }
 
 /* Button */
 
 button{
-width:100%;
-padding:12px;
-background:#667eea;
-border:none;
-color:white;
-font-size:16px;
-border-radius:6px;
-cursor:pointer;
-transition:0.3s;
+  width:100%;
+  padding:12px;
+  background:#667eea;
+  border:none;
+  color:white;
+  font-size:16px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:0.3s;
 }
 
 button:hover{
-background:#5a67d8;
+  background:#5a67d8;
 }
 
 /* Signup link */
 
 .signup-link{
-margin-top:15px;
-font-size:14px;
+  margin-top:15px;
+  font-size:14px;
 }
 
 .signup-link a{
-color:#667eea;
-text-decoration:none;
-font-weight:600;
+  color:#667eea;
+  text-decoration:none;
+  font-weight:600;
 }
 
 /* Signup heading */
@@ -100,101 +100,81 @@ h3{
 /* Upload box */
 
 .upload-box{
-margin-bottom:20px;
-padding:15px;
-border:2px dashed #667eea;
-border-radius:8px;
-text-align:center;
+  margin-bottom:20px;
+  padding:15px;
+  border:2px dashed #667eea;
+  border-radius:8px;
+  text-align:center;
 }
 
 .upload-box i{
-font-size:20px;
-color:#667eea;
-margin-right:8px;
+  font-size:20px;
+  color:#667eea;
+  margin-right:8px;
 }
 
 .upload-box input{
-margin-top:10px;
-}
-
-/* Upload box */
-
-.upload-box{
-margin-bottom:20px;
-padding:15px;
-border:2px dashed #667eea;
-border-radius:8px;
-text-align:center;
-}
-
-.upload-box i{
-font-size:20px;
-color:#667eea;
-margin-right:8px;
-}
-
-.upload-box input{
-margin-top:10px;
+  margin-top:10px;
 }
 
 /* NEW CSS (add below existing code) */
 
 .upload-title{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:8px;
-font-weight:600;
-color:#333;
-margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-weight:600;
+  color:#333;
+  margin-bottom:10px;
 }
 
 .hint{
-font-size:13px;
-color:#555;
-margin-top:8px;
+  font-size:13px;
+  color:#555;
+  margin-top:8px;
 }
 
 .preview{
-margin-top:14px;
-background:#f6f7ff;
-border:1px solid #e2e6ff;
-border-radius:8px;
-padding:12px;
+  margin-top:14px;
+  background:#f6f7ff;
+  border:1px solid #e2e6ff;
+  border-radius:8px;
+  padding:12px;
 }
 
 .preview-row{
-display:flex;
-gap:10px;
-align-items:center;
+  display:flex;
+  gap:10px;
+  align-items:center;
 }
 
 .preview-row i{
-font-size:22px;
-color:#667eea;
+  font-size:22px;
+  color:#667eea;
 }
 
 .file-name{
-font-weight:600;
-color:#222;
-font-size:14px;
+  font-weight:600;
+  color:#222;
+  font-size:14px;
 }
 
 .file-size{
-color:#555;
-font-size:13px;
-margin-top:2px;
+  color:#555;
+  font-size:13px;
+  margin-top:2px;
 }
 
 .error{
-margin-top:12px;
-color:#c0392b;
-font-size:13px;
-font-weight:600;
+  margin-top:12px;
+  color:#c0392b;
+  font-size:13px;
+  font-weight:600;
 }
 
 .hidden{
-display:none;
+  display:none;
 }
 
 /* =========================
@@ -364,4 +344,518 @@ hr.soft{
   .item{ flex-direction:column; }
   .item-actions{ width:100%; }
   .btn{ width:100%; }
+}
+
+/* ==========================================================
+   ✅ MODERN (NON-CHILDISH) GLASS STYLE ONLY FOR REQUEST PAGES
+   Applies ONLY when your page has .page-wrap
+   ========================================================== */
+
+/* Replace the old blue gradient on request pages with a premium dark glass */
+.page-wrap{
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(99,102,241,.22), transparent 60%),
+    radial-gradient(900px 500px at 80% 20%, rgba(16,185,129,.16), transparent 60%),
+    radial-gradient(900px 500px at 50% 90%, rgba(236,72,153,.10), transparent 60%),
+    #070A12;
+}
+
+/* Glass container instead of plain white */
+.page-wrap .card{
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+}
+
+/* Header becomes subtle glass, not loud gradient */
+.page-wrap .card-header{
+  background: rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+/* Brand logo and text */
+.page-wrap .brand img{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 6px;
+}
+
+.page-wrap .brand h1{
+  color: rgba(255,255,255,0.92);
+}
+
+.page-wrap .card-header small{
+  color: rgba(255,255,255,0.70);
+}
+
+/* Content text colors in glass mode */
+.page-wrap .card-body{
+  color: rgba(255,255,255,0.92);
+}
+
+.page-wrap .section-title{
+  color: rgba(255,255,255,0.92);
+}
+
+/* Modern list items */
+.page-wrap .item{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.page-wrap .item:hover{
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.07);
+}
+
+.page-wrap .item strong{
+  color: rgba(255,255,255,0.92);
+}
+
+.page-wrap .item small{
+  color: rgba(255,255,255,0.70);
+}
+
+/* Buttons in glass mode */
+.page-wrap .btn{
+  border-radius: 12px;
+}
+
+.page-wrap .btn-logout{
+  background: rgba(239,68,68,0.16);
+  border: 1px solid rgba(239,68,68,0.35);
+  color: #ffd7d7;
+}
+
+.page-wrap .btn-primary{
+  background: rgba(99,102,241,0.25);
+  border: 1px solid rgba(99,102,241,0.40);
+  color: #e9ecff;
+}
+
+.page-wrap .btn-danger{
+  background: rgba(239,68,68,0.20);
+  border: 1px solid rgba(239,68,68,0.40);
+  color: #ffd7d7;
+}
+
+/* Notes */
+.page-wrap .note{
+  color: rgba(255,255,255,0.65);
+}
+
+/* ==========================================================
+   ✅ HISTORY / "WHY CUSTOMER CHOSE YOU" BOX STYLES
+   Works with the HTML I gave you in carpenter_requests.html
+   ========================================================== */
+
+.historyBox{
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.20);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.historyHead{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:700;
+  margin-bottom:10px;
+  color: rgba(255,255,255,0.90);
+}
+
+.miniLogo{
+  width:26px;
+  height:26px;
+  object-fit:contain;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  padding:4px;
+}
+
+.historyGrid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap:10px;
+}
+
+.hItem{
+  padding:10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.hLabel{
+  font-size:12px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom:4px;
+}
+
+.hValue{
+  font-size:13px;
+  font-weight:700;
+  color: rgba(255,255,255,0.92);
+}
+
+.tags{
+  margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.tag{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.70);
+}
+
+/* Responsive adjustments for history area */
+@media (max-width:600px){
+  .historyGrid{ grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   PREMIUM IMAGE BACKGROUND + WHITE TRANSPARENT BOARD
+   Only affects pages that use: <body class="carpenter-requests">
+   ========================================================= */
+
+body.carpenter-requests{
+  height:auto;
+  min-height:100vh;
+  display:block;
+  background:none; /* override your default body background */
+}
+
+/* Put your background image in: public/images/carpentry-bg.jpg */
+.heroBg{
+  position:relative;
+  min-height:100vh;
+  padding:34px 16px;
+
+  background-image: url("/images/carpentry-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat:no-repeat;
+}
+
+/* Dark overlay for readability */
+.heroOverlay{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.55),
+    rgba(0,0,0,0.65)
+  );
+}
+
+/* White transparent board */
+.board{
+  position:relative;
+  max-width:1100px;
+  margin: 0 auto;
+  border-radius:20px;
+
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow: 0 28px 80px rgba(0,0,0,0.50);
+  overflow:hidden;
+}
+
+/* Header on the board */
+.boardHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:18px 20px;
+
+  background: rgba(255,255,255,0.65);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.brandLeft{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brandLogo{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+  border-radius:12px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(0,0,0,0.08);
+  padding:6px;
+}
+
+.brandText .brandTitle{
+  font-size:18px;
+  font-weight:800;
+  color:#111827;
+}
+
+.brandText .brandSub{
+  font-size:12px;
+  color:#4b5563;
+  margin-top:2px;
+}
+
+.headerBtns{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Body content */
+.boardBody{
+  padding:18px 20px 22px;
+}
+
+/* Section header */
+.sectionHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+
+.secTitle{
+  font-weight:800;
+  color:#111827;
+  font-size:15px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.secHint{
+  color:#4b5563;
+  font-size:12px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+/* List */
+.rqList{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.rqItem{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px;
+  border-radius:16px;
+
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+}
+
+.rqLeft{ flex:1; }
+
+.rqTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.rqName{
+  font-size:16px;
+  font-weight:900;
+  color:#111827;
+}
+
+.rqChip{
+  font-size:12px;
+  color:#374151;
+  background: rgba(17,24,39,0.06);
+  padding:6px 10px;
+  border-radius:999px;
+  border: 1px solid rgba(0,0,0,0.08);
+  white-space:nowrap;
+}
+
+.rqMeta{
+  margin-top:6px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  font-size:13px;
+  color:#374151;
+}
+
+.rqDot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background: rgba(0,0,0,0.25);
+  margin-top:7px;
+}
+
+/* Why box */
+.whyBox{
+  margin-top:12px;
+  padding:12px;
+  border-radius:16px;
+  background: rgba(255,255,255,0.70);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.whyHead{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+  color:#111827;
+  margin-bottom:10px;
+}
+
+.miniLogo{
+  width:26px;
+  height:26px;
+  border-radius:10px;
+  object-fit:contain;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.08);
+  padding:4px;
+}
+
+.whyGrid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap:10px;
+}
+
+.whyCard{
+  padding:10px;
+  border-radius:14px;
+  background: rgba(17,24,39,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.whyLabel{
+  font-size:12px;
+  color:#6b7280;
+  margin-bottom:4px;
+  font-weight:700;
+}
+
+.whyVal{
+  font-size:13px;
+  color:#111827;
+  font-weight:900;
+}
+
+.whyTags{
+  margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.whyTag{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  background: rgba(99,102,241,0.10);
+  border: 1px solid rgba(99,102,241,0.22);
+  color:#1f2937;
+  font-weight:700;
+}
+
+/* Buttons */
+.qbtn{
+  border:none;
+  cursor:pointer;
+  padding:10px 14px;
+  border-radius:12px;
+  font-weight:900;
+  transition: transform .12s ease, opacity .12s ease;
+}
+
+.qbtn:hover{ transform: translateY(-1px); }
+
+.qbtn.ghost{
+  background: rgba(17,24,39,0.06);
+  border: 1px solid rgba(0,0,0,0.10);
+  color:#111827;
+}
+
+.qbtn.logout{
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.25);
+  color:#991b1b;
+}
+
+.rqActions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-width:170px;
+  align-self:center;
+}
+
+.qbtn.accept{
+  background: rgba(16,185,129,0.16);
+  border: 1px solid rgba(16,185,129,0.30);
+  color:#065f46;
+}
+
+.qbtn.reject{
+  background: rgba(239,68,68,0.14);
+  border: 1px solid rgba(239,68,68,0.30);
+  color:#991b1b;
+}
+
+/* Foot note */
+.footNote{
+  margin-top:12px;
+  color:#4b5563;
+  font-size:12px;
+}
+
+.footNote code{
+  background: rgba(17,24,39,0.06);
+  padding:2px 6px;
+  border-radius:8px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Empty state */
+.emptyState{
+  background: rgba(255,255,255,0.75);
+}
+
+/* Responsive */
+@media (max-width:720px){
+  .rqItem{ flex-direction:column; }
+  .rqActions{ flex-direction:row; min-width:auto; }
+  .whyGrid{ grid-template-columns: 1fr; }
 }

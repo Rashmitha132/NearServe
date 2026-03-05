@@ -11,6 +11,15 @@ const fs = require("fs");
 const app = express();
 
 // ========================
+// Import Models
+// ========================
+const Booking = require("./models/Booking");
+const User = require("./models/User");
+const Job = require("./models/Job");
+const VerificationLog = require("./models/VerificationLog");
+const Review = require("./models/Review"); // ✅ ratings
+
+// ========================
 // Middleware
 // ========================
 app.use(cors());
@@ -32,21 +41,12 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-// ========================
-// Import Models
-// ========================
-const Booking = require("./models/Booking");
-const User = require("./models/User");
-const Job = require("./models/Job");
-const VerificationLog = require("./models/VerificationLog"); // ✅ ADDED (history)
-
 // ====================================================
-// ADMIN (Simple auth token)
+// ADMIN (Simple auth token) (kept as-is)
 // ====================================================
 const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD = "admin123";
 
-// simple in-memory token
 const ADMIN_TOKEN = "QS_ADMIN_" + Math.random().toString(36).slice(2);
 
 function requireAdmin(req, res, next) {
@@ -59,15 +59,13 @@ function requireAdmin(req, res, next) {
 }
 
 // ====================================================
-// Multer: Proof Upload (PDF ONLY + 2MB)
+// Multer: Proof Upload (PDF only)
 // ====================================================
-const MAX_PROOF_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_PROOF_SIZE = 2 * 1024 * 1024;
 
 const proofStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     cb(null, req.params.phone + "_" + Date.now() + ext);
   },
@@ -80,21 +78,19 @@ const uploadProof = multer({
     const isPdf =
       file.mimetype === "application/pdf" ||
       file.originalname.toLowerCase().endsWith(".pdf");
-    if (!isPdf) return cb(new Error("Only PDF files are allowed"));
+    if (!isPdf) return cb(new Error("Only PDF files allowed"));
     cb(null, true);
   },
 });
 
 // ====================================================
-// Multer: Video Upload (VIDEO ONLY + 20MB)
+// Multer: Video Upload (Video only)
 // ====================================================
-const MAX_VIDEO_SIZE = 20 * 1024 * 1024; // 20MB
+const MAX_VIDEO_SIZE = 20 * 1024 * 1024;
 
 const videoStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/videos");
-  },
-  filename: function (req, file, cb) {
+  destination: (req, file, cb) => cb(null, "uploads/videos"),
+  filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     cb(null, "job_" + req.params.jobId + "_" + Date.now() + ext);
   },
@@ -104,279 +100,250 @@ const uploadVideo = multer({
   storage: videoStorage,
   limits: { fileSize: MAX_VIDEO_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith("video/")) {
-      return cb(new Error("Only video files are allowed"));
-    }
+    if (!file.mimetype.startsWith("video/"))
+      return cb(new Error("Only video files allowed"));
     cb(null, true);
   },
 });
 
-// ====================================================
-// Helpers: Probation Job Descriptions
-// ====================================================
-function getProbationTasks(role) {
-  switch (role) {
-    case "carpenter":
-      return [
-        "Task 1: Upload a video showing you fixing a door hinge OR installing a lock properly.",
-        "Task 2: Upload a video showing you repairing a wooden chair/table OR drilling & fitting a wall shelf."
-      ];
-    case "electrician":
-      return [
-        "Task 1: Upload a video showing safe wiring of a plug/top (with power OFF) or replacing a switch/socket.",
-        "Task 2: Upload a video showing installation/testing of a bulb holder/MCB demo (safety first)."
-      ];
-    case "plumber":
-      return [
-        "Task 1: Upload a video showing you fixing a leaking tap/pipe joint using correct tools.",
-        "Task 2: Upload a video showing you installing/repairing a water connection or flushing mechanism."
-      ];
-    default:
-      return [
-        "Task 1: Upload a video proof of your work related to your field.",
-        "Task 2: Upload another video proof of your work related to your field."
-      ];
-  }
-}
-
 // ========================
-// Redirect root to login page
+// Root
 // ========================
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/login.html"));
 });
 
 // ====================================================
-// ADMIN ROUTES
+// ✅ IMPORTANT: Dashboard needs this
+// GET /user/:phone
 // ====================================================
-app.post("/admin/login", (req, res) => {
-  const { username, password } = req.body || {};
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    return res.json({ message: "Admin login ok", token: ADMIN_TOKEN });
+app.get("/user/:phone", async (req, res) => {
+  try {
+    const phone = (req.params.phone || "").trim();
+    const user = await User.findOne({ phone }).select(
+      "role status name email phone proofFile proofReview"
+    );
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json({
+      role: user.role,
+      status: user.status,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      proofFile: user.proofFile || "",
+      proofReview: user.proofReview || {}
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error fetching user" });
   }
-  return res.status(401).json({ error: "Invalid admin credentials" });
 });
 
-// A) workers waiting for proof verification
-app.get("/admin/workers", requireAdmin, async (req, res) => {
+// ====================================================
+// ✅ IMPORTANT: Probation dashboard needs this
+// GET /my-jobs/:phone
+// ====================================================
+app.get("/my-jobs/:phone", async (req, res) => {
   try {
-    const workers = await User.find({
-      role: { $ne: "customer" },
-      status: "proof_submitted"
-    }).select("name phone role status proofFile proofReview");
+    const phone = (req.params.phone || "").trim();
+    const jobs = await Job.find({ assignedTo: phone }).sort({ createdAt: -1 });
+    res.json(jobs);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error fetching jobs" });
+  }
+});
 
-    res.json({ workers });
+// ====================================================
+// ✅ IMPORTANT: Workers upload proof (PDF)
+// POST /upload-proof/:phone
+// ====================================================
+app.post("/upload-proof/:phone", uploadProof.single("proof"), async (req, res) => {
+  try {
+    const phone = (req.params.phone || "").trim();
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (user.role === "customer") {
+      return res.status(400).json({ error: "Customers do not upload proof" });
+    }
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+    user.proofFile = req.file.path;
+    user.status = "proof_submitted"; // same logic your old project used
+    // optional: reset review status
+    user.proofReview = { status: "none", reason: "", reviewedAt: null, reviewedBy: "" };
+
+    await user.save();
+    res.json({
+      message: "Proof uploaded. Waiting for admin verification.",
+      fileSavedAs: req.file.filename
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error uploading proof" });
+  }
+});
+
+// ====================================================
+// ✅ IMPORTANT: Workers upload probation job video
+// POST /update-job/:jobId   (FormData with videoProof + status=submitted)
+// ====================================================
+app.post("/update-job/:jobId", uploadVideo.single("videoProof"), async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    const status = (req.body.status || "").trim().toLowerCase();
+
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    if (status === "submitted") {
+      if (!req.file) return res.status(400).json({ error: "Video proof is required" });
+
+      job.status = "submitted";
+      job.videoProofPath = req.file.path;
+      job.videoReview = { status: "none", reason: "", reviewedAt: null, reviewedBy: "" };
+
+      await job.save();
+      return res.json({ message: "Job submitted for verification", job });
+    }
+
+    if (status === "rejected") {
+      job.status = "rejected";
+      await job.save();
+      return res.json({ message: "Job marked rejected", job });
+    }
+
+    return res.status(400).json({ error: "Invalid status change" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error updating job" });
+  }
+});
+
+// ====================================================
+// ✅ WORKER LIST (REAL rating)
+// GET /workers?role=carpenter
+// ====================================================
+app.get("/workers", async (req, res) => {
+  try {
+    const role = (req.query.role || "").trim().toLowerCase();
+    if (!role) return res.status(400).json({ error: "Role is required" });
+
+    const workers = await User.find({
+      role: role,
+      status: "full_access"
+    }).select("name phone email role");
+
+    const phones = workers.map(w => String(w.phone));
+
+    const stats = await Review.aggregate([
+      { $match: { workerPhone: { $in: phones } } },
+      {
+        $group: {
+          _id: "$workerPhone",
+          avgRating: { $avg: "$rating" },
+          reviewsCount: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const map = new Map(stats.map(s => [String(s._id), s]));
+
+    const result = workers.map(w => {
+      const s = map.get(String(w.phone));
+      return {
+        name: w.name,
+        phone: w.phone,
+        email: w.email,
+        role: w.role,
+        avgRating: s ? Number(s.avgRating.toFixed(2)) : 0,
+        reviewsCount: s ? s.reviewsCount : 0
+      };
+    });
+
+    res.json(result);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Error fetching workers" });
   }
 });
 
-// ✅ Approve/Reject worker proof WITH REASON + HISTORY + worker message storage
-app.post("/admin/verify-proof/:phone", requireAdmin, async (req, res) => {
+// ====================================================
+// ✅ WORKER PROFILE (REAL rating + latest feedback)
+// GET /workers/:phone
+// ====================================================
+app.get("/workers/:phone", async (req, res) => {
   try {
-    const { decision, reason = "" } = req.body || {};
-    const phone = req.params.phone;
+    const phone = String((req.params.phone || "").trim());
 
-    const user = await User.findOne({ phone });
-    if (!user) return res.status(404).json({ error: "User not found" });
+    const worker = await User.findOne({ phone }).select("name phone email role status");
+    if (!worker) return res.status(404).json({ error: "Worker not found" });
 
-    if (decision === "approve") {
-      user.status = "probation";
-      user.proofReview = {
-        status: "approved",
-        reason: "",
-        reviewedAt: new Date(),
-        reviewedBy: ADMIN_USERNAME
-      };
-      await user.save();
-
-      // create probation jobs only if none exist
-      const existing = await Job.find({ assignedTo: phone });
-      if (existing.length === 0) {
-        const tasks = getProbationTasks(user.role);
-        await Job.insertMany([
-          { jobType: user.role, assignedTo: phone, status: "pending", description: tasks[0] },
-          { jobType: user.role, assignedTo: phone, status: "pending", description: tasks[1] }
-        ]);
+    const stat = await Review.aggregate([
+      { $match: { workerPhone: phone } },
+      {
+        $group: {
+          _id: "$workerPhone",
+          avgRating: { $avg: "$rating" },
+          reviewsCount: { $sum: 1 }
+        }
       }
+    ]);
 
-      await VerificationLog.create({
-        type: "proof",
-        workerPhone: phone,
-        workerRole: user.role,
-        targetId: String(user._id),
-        decision: "approved",
-        reason: "",
-        adminUser: ADMIN_USERNAME
-      });
+    const avgRating = stat.length ? Number(stat[0].avgRating.toFixed(2)) : 0;
+    const reviewsCount = stat.length ? stat[0].reviewsCount : 0;
 
-      return res.json({ message: "Proof approved. Worker moved to probation." });
-    }
+    const latestReviews = await Review.find({ workerPhone: phone })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("rating comment createdAt customerPhone");
 
-    if (decision === "reject") {
-      if (!reason.trim()) {
-        return res.status(400).json({ error: "Rejection reason is required." });
-      }
-
-      user.status = "pending_verification";
-      user.proofReview = {
-        status: "rejected",
-        reason: reason.trim(),
-        reviewedAt: new Date(),
-        reviewedBy: ADMIN_USERNAME
-      };
-      // optional: keep proofFile so admin can still open it later
-      // if you want to clear it uncomment next line:
-      // user.proofFile = "";
-
-      await user.save();
-
-      await VerificationLog.create({
-        type: "proof",
-        workerPhone: phone,
-        workerRole: user.role,
-        targetId: String(user._id),
-        decision: "rejected",
-        reason: reason.trim(),
-        adminUser: ADMIN_USERNAME
-      });
-
-      return res.json({ message: "Proof rejected. Reason saved and visible to worker." });
-    }
-
-    return res.status(400).json({ error: "Invalid decision" });
+    res.json({
+      name: worker.name,
+      phone: worker.phone,
+      email: worker.email,
+      role: worker.role,
+      avgRating,
+      reviewsCount,
+      latestReviews
+    });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Error verifying proof" });
+    res.status(500).json({ error: "Error fetching worker profile" });
   }
 });
 
-// B) List submitted jobs (videos)
-app.get("/admin/submitted-jobs", requireAdmin, async (req, res) => {
-  try {
-    const jobs = await Job.find({ status: "submitted" });
-    res.json({ jobs });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Error fetching submitted jobs" });
-  }
-});
-
-// ✅ Approve/Reject job video WITH REASON + HISTORY + worker message storage
-app.post("/admin/verify-job/:jobId", requireAdmin, async (req, res) => {
-  try {
-    const { decision, reason = "" } = req.body || {};
-    const job = await Job.findById(req.params.jobId);
-    if (!job) return res.status(404).json({ error: "Job not found" });
-
-    if (decision === "approve") {
-      job.status = "completed";
-      job.videoReview = {
-        status: "approved",
-        reason: "",
-        reviewedAt: new Date(),
-        reviewedBy: ADMIN_USERNAME
-      };
-      await job.save();
-
-      await VerificationLog.create({
-        type: "job_video",
-        workerPhone: job.assignedTo,
-        workerRole: job.jobType,
-        targetId: String(job._id),
-        decision: "approved",
-        reason: "",
-        adminUser: ADMIN_USERNAME
-      });
-    } else if (decision === "reject") {
-      if (!reason.trim()) {
-        return res.status(400).json({ error: "Rejection reason is required." });
-      }
-
-      job.status = "rejected";
-      job.videoReview = {
-        status: "rejected",
-        reason: reason.trim(),
-        reviewedAt: new Date(),
-        reviewedBy: ADMIN_USERNAME
-      };
-      await job.save();
-
-      await VerificationLog.create({
-        type: "job_video",
-        workerPhone: job.assignedTo,
-        workerRole: job.jobType,
-        targetId: String(job._id),
-        decision: "rejected",
-        reason: reason.trim(),
-        adminUser: ADMIN_USERNAME
-      });
-    } else {
-      return res.status(400).json({ error: "Invalid decision" });
-    }
-
-    // Upgrade worker only if all probation jobs completed
-    const allJobs = await Job.find({ assignedTo: job.assignedTo });
-    const failed = allJobs.some((j) => j.status === "rejected");
-
-    if (!failed && allJobs.length > 0 && allJobs.every((j) => j.status === "completed")) {
-      const worker = await User.findOne({ phone: job.assignedTo });
-      if (worker && worker.status === "probation") {
-        worker.status = "full_access";
-        await worker.save();
-      }
-    }
-
-    res.json({ message: "Job verification saved", job });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Error verifying job" });
-  }
-});
-
-// ✅ Admin history route (approved/rejected + date + reason)
-app.get("/admin/history", requireAdmin, async (req, res) => {
-  try {
-    const type = req.query.type; // optional: proof | job_video
-    const filter = {};
-    if (type === "proof" || type === "job_video") filter.type = type;
-
-    const logs = await VerificationLog.find(filter).sort({ createdAt: -1 }).limit(200);
-    res.json({ logs });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Error loading history" });
-  }
-});
-
-// ✅ Worker can read their proof review reason/status
-app.get("/worker/review/:phone", async (req, res) => {
-  try {
-    const user = await User.findOne({ phone: req.params.phone })
-      .select("status proofReview role name proofFile");
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: "Error fetching review" });
-  }
-});
-
-// ========================
+// ====================================================
 // Booking Routes
-// ========================
+// ====================================================
+
 app.post("/book", async (req, res) => {
   try {
     const bookingData = {
       name: req.body.name,
-      phone: req.body.phone.trim(),
-      service: req.body.service,
+      phone: (req.body.phone || "").trim(),
+      service: (req.body.service || "").trim().toLowerCase(),
       address: req.body.address,
       date: req.body.date,
+
+      chosenWorkerPhone: (req.body.chosenWorkerPhone || "").trim(),
+      chosenWorkerRole: (req.body.chosenWorkerRole || "").trim().toLowerCase(),
+
+      status: "pending",
+
+      visitTime: "",
+      workerMessage: "",
+      rejectReason: "",
+      completedAt: null,
+      reviewed: false
     };
+
     const booking = new Booking(bookingData);
     await booking.save();
-    res.status(201).json({ message: "Booking Successful" });
+
+    res.status(201).json({ message: "Booking Successful", booking });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
@@ -385,49 +352,195 @@ app.post("/book", async (req, res) => {
 
 app.get("/bookings", async (req, res) => {
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find().sort({ createdAt: -1 });
     res.json(bookings);
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Error fetching bookings" });
   }
 });
 
 app.get("/mybookings/:phone", async (req, res) => {
-  const phone = req.params.phone.trim();
+  const phone = (req.params.phone || "").trim();
   try {
-    const bookings = await Booking.find({ phone });
+    const bookings = await Booking.find({ phone }).sort({ createdAt: -1 });
     res.json(bookings);
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Error fetching bookings" });
   }
 });
 
-// ========================
-// User Authentication Routes
-// ========================
+// worker sees only chosen bookings
+app.get("/bookings/chosen/:role/:workerPhone", async (req, res) => {
+  try {
+    const role = (req.params.role || "").trim().toLowerCase();
+    const workerPhone = (req.params.workerPhone || "").trim();
+
+    const bookings = await Booking.find({
+      chosenWorkerRole: role,
+      chosenWorkerPhone: workerPhone
+    }).sort({ createdAt: -1 });
+
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching chosen bookings" });
+  }
+});
+
+// worker accept/reject + save visitTime/message/rejectReason
+app.put("/bookings/:id/status", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const status = (req.body.status || "").trim().toLowerCase();
+
+    if (!["accepted", "rejected", "pending"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+
+    const update = { status };
+
+    if (status === "accepted") {
+      update.visitTime = (req.body.visitTime || "").trim();
+      update.workerMessage = (req.body.workerMessage || "").trim();
+      update.rejectReason = "";
+      if (!update.visitTime) {
+        return res.status(400).json({ error: "visitTime is required to accept" });
+      }
+    }
+
+    if (status === "rejected") {
+      update.rejectReason = (req.body.rejectReason || "").trim();
+      update.visitTime = "";
+      update.workerMessage = "";
+      if (!update.rejectReason) {
+        return res.status(400).json({ error: "rejectReason is required to reject" });
+      }
+    }
+
+    const booking = await Booking.findByIdAndUpdate(id, update, { new: true });
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    res.json({ message: "Status updated", booking });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error updating booking status" });
+  }
+});
+
+// worker marks completed
+app.put("/bookings/:id/complete", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const workerPhone = (req.body.workerPhone || "").trim();
+    const workerRole = (req.body.workerRole || "").trim().toLowerCase();
+
+    if (!workerPhone || !workerRole) {
+      return res.status(400).json({ error: "workerPhone and workerRole are required" });
+    }
+
+    const booking = await Booking.findById(id);
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    if (
+      String(booking.chosenWorkerPhone || "") !== String(workerPhone) ||
+      String(booking.chosenWorkerRole || "").toLowerCase() !== String(workerRole)
+    ) {
+      return res.status(403).json({ error: "Not allowed to complete this booking" });
+    }
+
+    if ((booking.status || "").toLowerCase() !== "accepted") {
+      return res.status(400).json({ error: "Only accepted bookings can be completed" });
+    }
+
+    booking.status = "completed";
+    booking.completedAt = new Date();
+    await booking.save();
+
+    res.json({ message: "Marked completed", booking });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error marking completed" });
+  }
+});
+
+// customer submits review ONLY AFTER completed
+app.post("/reviews", async (req, res) => {
+  try {
+    const bookingId = req.body.bookingId;
+    const customerPhone = (req.body.customerPhone || "").trim();
+    const rating = Number(req.body.rating);
+    const comment = (req.body.comment || "").trim();
+
+    if (!bookingId || !customerPhone || !rating) {
+      return res.status(400).json({ error: "bookingId, customerPhone, rating are required" });
+    }
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ error: "Rating must be between 1 and 5" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    if (String((booking.phone || "").trim()) !== String(customerPhone)) {
+      return res.status(403).json({ error: "Not allowed to review this booking" });
+    }
+
+    if (String(booking.status || "").toLowerCase() !== "completed") {
+      return res.status(400).json({ error: "You can rate only after job is completed" });
+    }
+
+    if (booking.reviewed) {
+      return res.status(400).json({ error: "You already reviewed this booking" });
+    }
+
+    if (!booking.chosenWorkerPhone || !booking.chosenWorkerRole) {
+      return res.status(400).json({ error: "No chosen worker on this booking" });
+    }
+
+    const review = await Review.create({
+      bookingId: booking._id,
+      workerPhone: booking.chosenWorkerPhone,
+      workerRole: booking.chosenWorkerRole,
+      customerPhone,
+      rating,
+      comment
+    });
+
+    booking.reviewed = true;
+    await booking.save();
+
+    res.status(201).json({ message: "Review saved", review });
+  } catch (err) {
+    if (err && err.code === 11000) {
+      return res.status(400).json({ error: "You already reviewed this booking" });
+    }
+    console.log(err);
+    res.status(500).json({ error: "Error saving review" });
+  }
+});
+
+// ====================================================
+// User Authentication
+// ====================================================
+
 app.post("/signup", async (req, res) => {
   try {
     const { name, email, phone, password, role } = req.body;
 
-    if (!role || !["customer", "electrician", "plumber", "carpenter"].includes(role)) {
-      return res.status(400).json({ error: "Invalid role selected" });
-    }
-
-    const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
-    if (existingUser) return res.status(400).json({ error: "Email or phone already registered" });
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     let status = role === "customer" ? "full_access" : "pending_verification";
 
-    const user = new User({ name, email, phone, password: hashedPassword, role, status });
-    await user.save();
+    const user = new User({
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      role,
+      status
+    });
 
+    await user.save();
     res.status(201).json({ message: "Signup successful" });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Error creating user" });
   }
 });
@@ -436,43 +549,19 @@ app.post("/login", async (req, res) => {
   try {
     const { emailOrPhone, password, role } = req.body;
 
-    if (!role || !["customer", "electrician", "plumber", "carpenter"].includes(role)) {
-      return res.status(400).json({ error: "Invalid role selected" });
-    }
+    const user = await User.findOne({
+      $or: [{ email: emailOrPhone }, { phone: emailOrPhone }]
+    });
 
-    const user = await User.findOne({ $or: [{ email: emailOrPhone }, { phone: emailOrPhone }] });
     if (!user) return res.status(400).json({ error: "User not found" });
-    if (user.role !== role) return res.status(403).json({ error: `This account is not registered as ${role}` });
+
+    // role check (prevents wrong role login)
+    if (role && user.role !== role) {
+      return res.status(403).json({ error: `This account is not registered as ${role}` });
+    }
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).json({ error: "Incorrect password" });
-
-    if (role !== "customer") {
-      if (user.status === "pending_verification") {
-        return res.json({
-          message: "Please upload your proof documents.",
-          user: { name: user.name, phone: user.phone, role: user.role, status: user.status },
-        });
-      }
-
-      if (user.status === "proof_submitted") {
-        return res.json({
-          message: "Proof submitted. Waiting for admin verification.",
-          user: { name: user.name, phone: user.phone, role: user.role, status: user.status },
-        });
-      }
-
-      if (user.status === "probation") {
-        return res.json({
-          message: "Account under probation. Submit job videos for verification.",
-          user: { name: user.name, phone: user.phone, role: user.role, status: user.status },
-        });
-      }
-
-      if (user.status === "blocked") {
-        return res.status(403).json({ error: "Account blocked. Contact admin." });
-      }
-    }
 
     res.json({
       message: "Login successful",
@@ -485,113 +574,19 @@ app.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Login error" });
   }
 });
 
-app.get("/user/:phone", async (req, res) => {
-  try {
-    const user = await User.findOne({ phone: req.params.phone });
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json({ role: user.role, status: user.status, name: user.name, proofFile: user.proofFile, proofReview: user.proofReview });
-  } catch (err) {
-    res.status(500).json({ error: "Error fetching user" });
-  }
-});
-
-// ========================
-// Proof Upload Route (Workers) - PDF ONLY
-// status becomes proof_submitted
-// ========================
-app.post("/upload-proof/:phone", uploadProof.single("proof"), async (req, res) => {
-  try {
-    const phone = req.params.phone;
-    const user = await User.findOne({ phone });
-
-    if (!user) return res.status(404).json({ error: "User not found" });
-    if (user.role === "customer") return res.status(400).json({ error: "Customers do not upload proof" });
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
-    user.proofFile = req.file.path;
-    user.status = "proof_submitted";
-
-    // reset proof review when new proof submitted
-    user.proofReview = { status: "none", reason: "", reviewedAt: null, reviewedBy: "" };
-
-    await user.save();
-
-    res.json({
-      message: "Proof uploaded successfully! Waiting for admin verification.",
-      fileSavedAs: req.file.filename,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Error uploading proof" });
-  }
-});
-
-// ========================
-// Probation Job Routes
-// ========================
-app.get("/my-jobs/:phone", async (req, res) => {
-  try {
-    const jobs = await Job.find({ assignedTo: req.params.phone });
-    res.json(jobs);
-  } catch (err) {
-    res.status(500).json({ error: "Error fetching jobs" });
-  }
-});
-
-// ========================
-// Update Job Route (Workers)
-// - submit video => status=submitted (FormData)
-// - reject => status=rejected (FormData/JSON both ok if status present)
-// ========================
-app.post("/update-job/:jobId", uploadVideo.single("videoProof"), async (req, res) => {
-  try {
-    const job = await Job.findById(req.params.jobId);
-    if (!job) return res.status(404).json({ error: "Job not found" });
-
-    const status = req.body.status;
-
-    if (status === "submitted") {
-      if (!req.file) return res.status(400).json({ error: "Video proof is required" });
-
-      job.status = "submitted";
-      job.videoProofPath = req.file.path;
-
-      // reset old review when new video submitted
-      job.videoReview = { status: "none", reason: "", reviewedAt: null, reviewedBy: "" };
-
-      await job.save();
-      return res.json({ message: "Job submitted for admin verification", job });
-    }
-
-    if (status === "rejected") {
-      job.status = "rejected";
-      await job.save();
-      return res.json({ message: "Job rejected", job });
-    }
-
-    return res.status(400).json({ error: "Invalid status change" });
-  } catch (err) {
-    console.log("UPDATE JOB ERROR:", err);
-    res.status(500).json({ error: "Error updating job" });
-  }
-});
-
-// ========================
-// Multer / Upload Error Handler
-// ========================
+// ====================================================
+// ✅ Multer / Upload Error Handler (VERY IMPORTANT)
+// ====================================================
 app.use((err, req, res, next) => {
-  if (err) {
-    if (err.code === "LIMIT_FILE_SIZE") {
-      return res.status(400).json({ error: "File too large." });
-    }
-    return res.status(400).json({ error: err.message });
+  if (!err) return next();
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({ error: "File too large" });
   }
-  next();
+  return res.status(400).json({ error: err.message || "Upload error" });
 });
 
 // ========================

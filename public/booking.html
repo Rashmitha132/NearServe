@@ -1,40 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickServe Booking</title>
+<meta charset="UTF-8">
+<title>Book a Service</title>
 </head>
+
 <body>
-    <h1>Book a Service</h1>
-    <h2 id="welcomeUser"></h2> <!-- Welcome message -->
 
-    <!-- Logout button -->
-    <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
+<h1>Book a Service</h1>
+<h2 id="welcomeUser"></h2>
 
-    <form id="bookingForm">
-        <input type="text" name="name" placeholder="Your Name" required><br>
-        <!-- Phone removed: auto-filled from login -->
-        <input type="text" name="service" placeholder="Service (Plumber/Electrician/etc.)" required><br>
-        <input type="text" name="address" placeholder="Address" required><br>
-        <input type="date" name="date" required><br>
-        <button type="submit">Book Service</button>
-    </form>
+<button id="logoutBtn">Logout</button>
+<button id="historyBtn">View My Booking History</button>
 
-    <script src="js/script.js"></script>
-    <script>
-        // Logout functionality
-        const logoutBtn = document.getElementById("logoutBtn");
-        logoutBtn.addEventListener("click", () => {
-            // Redirect to login page without clearing anything
-            window.location.href = "login.html";
-        });
+<br><br>
 
-        // Optional: show welcome message
-        const userName = localStorage.getItem("userName");
-        if(userName){
-            document.getElementById("welcomeUser").innerText = `Welcome, ${userName}!`;
-        }
-    </script>
+<label>Select Service:</label>
+
+<select id="serviceSelect">
+<option value="carpenter">Carpenter</option>
+<option value="plumber">Plumber</option>
+<option value="electrician">Electrician</option>
+</select>
+
+<button id="chooseWorkerBtn">Choose Worker</button>
+
+<br><br>
+
+<b>Selected Worker:</b>
+<span id="selectedWorkerText">None</span>
+<button id="clearWorkerBtn">Clear</button>
+
+<br><br>
+
+<form id="bookingForm">
+
+<input id="custName" type="text" placeholder="Your Name" required>
+<br><br>
+
+<input id="address" type="text" placeholder="Address" required>
+<br><br>
+
+<input id="date" type="date" required>
+<br><br>
+
+<button type="submit">Book Service</button>
+
+</form>
+
+<script src="js/bookings.js"></script>
+
 </body>
 </html>
