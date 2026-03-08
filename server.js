@@ -24,6 +24,7 @@ const Review = require("./models/Review"); // ✅ ratings
 // ========================
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
@@ -57,6 +58,227 @@ function requireAdmin(req, res, next) {
   }
   next();
 }
+
+// ====================================================
+// ✅ ADDED: ADMIN LOGIN + DASHBOARD ROUTES
+// ====================================================
+
+// Admin Login
+app.post("/admin/login", (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      return res.json({
+        success: true,
+        token: ADMIN_TOKEN,
+        message: "Admin login successful"
+      });
+    }
+
+    return res.status(401).json({
+      success: false,
+      error: "Invalid admin username or password"
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Admin login error" });
+  }
+});
+
+// Get workers whose proof is pending verification
+app.get("/admin/workers", requireAdmin, async (req, res) => {
+  try {
+    const workers = await User.find({
+      role: { $ne: "customer" },
+      status: "proof_submitted"
+    }).sort({ createdAt: -1 });
+
+    res.json({ workers });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error fetching workers for admin" });
+  }
+});
+
+// Approve / Reject worker proof
+app.post("/admin/verify-proof/:phone", requireAdmin, async (req, res) => {
+  try {
+    const phone = (req.params.phone || "").trim();
+    const decision = (req.body.decision || "").trim().toLowerCase();
+    const reason = (req.body.reason || "").trim();
+
+    if (!["approve", "reject"].includes(decision)) {
+      return res.status(400).json({ error: "Decision must be approve or reject" });
+    }
+
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ error: "Worker not found" });
+
+    if (user.role === "customer") {
+      return res.status(400).json({ error: "Customers do not require proof verification" });
+    }
+
+    if (decision === "approve") {
+      user.status = "full_access";
+      user.proofReview = {
+        status: "approved",
+        reason: "",
+        reviewedAt: new Date(),
+        reviewedBy: ADMIN_USERNAME
+      };
+
+      await user.save();
+
+      await VerificationLog.create({
+        type: "proof",
+        workerPhone: user.phone,
+        workerRole: user.role,
+        decision: "approved",
+        reason: "",
+        createdAt: new Date()
+      });
+
+      return res.json({
+        message: "Worker proof approved successfully",
+        user
+      });
+    }
+
+    // reject
+    if (!reason) {
+      return res.status(400).json({ error: "Reason is required for rejection" });
+    }
+
+    user.status = "pending_verification";
+    user.proofReview = {
+      status: "rejected",
+      reason,
+      reviewedAt: new Date(),
+      reviewedBy: ADMIN_USERNAME
+    };
+
+    await user.save();
+
+    await VerificationLog.create({
+      type: "proof",
+      workerPhone: user.phone,
+      workerRole: user.role,
+      decision: "rejected",
+      reason,
+      createdAt: new Date()
+    });
+
+    return res.json({
+      message: "Worker proof rejected",
+      user
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error verifying worker proof" });
+  }
+});
+
+// Get submitted jobs whose videos are pending verification
+app.get("/admin/submitted-jobs", requireAdmin, async (req, res) => {
+  try {
+    const jobs = await Job.find({
+      status: "submitted"
+    }).sort({ createdAt: -1 });
+
+    res.json({ jobs });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error fetching submitted jobs" });
+  }
+});
+
+// Approve / Reject submitted job video
+app.post("/admin/verify-job/:jobId", requireAdmin, async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    const decision = (req.body.decision || "").trim().toLowerCase();
+    const reason = (req.body.reason || "").trim();
+
+    if (!["approve", "reject"].includes(decision)) {
+      return res.status(400).json({ error: "Decision must be approve or reject" });
+    }
+
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    const worker = await User.findOne({ phone: job.assignedTo });
+
+    if (decision === "approve") {
+      job.status = "completed";
+      job.videoReview = {
+        status: "approved",
+        reason: "",
+        reviewedAt: new Date(),
+        reviewedBy: ADMIN_USERNAME
+      };
+
+      await job.save();
+
+      await VerificationLog.create({
+        type: "job",
+        workerPhone: job.assignedTo || "",
+        workerRole: worker ? worker.role : "",
+        decision: "approved",
+        reason: "",
+        createdAt: new Date()
+      });
+
+      return res.json({
+        message: "Job video approved successfully. Job marked completed.",
+        job
+      });
+    }
+
+    // reject
+    if (!reason) {
+      return res.status(400).json({ error: "Reason is required for rejection" });
+    }
+
+    job.status = "rejected";
+    job.videoReview = {
+      status: "rejected",
+      reason,
+      reviewedAt: new Date(),
+      reviewedBy: ADMIN_USERNAME
+    };
+
+    await job.save();
+
+    await VerificationLog.create({
+      type: "job",
+      workerPhone: job.assignedTo || "",
+      workerRole: worker ? worker.role : "",
+      decision: "rejected",
+      reason,
+      createdAt: new Date()
+    });
+
+    return res.json({
+      message: "Job video rejected",
+      job
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error verifying submitted job video" });
+  }
+});
+
+// Admin verification history
+app.get("/admin/history", requireAdmin, async (req, res) => {
+  try {
+    const logs = await VerificationLog.find().sort({ createdAt: -1 });
+    res.json({ logs });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error fetching verification history" });
+  }
+});
 
 // ====================================================
 // Multer: Proof Upload (PDF only)
@@ -171,8 +393,7 @@ app.post("/upload-proof/:phone", uploadProof.single("proof"), async (req, res) =
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
     user.proofFile = req.file.path;
-    user.status = "proof_submitted"; // same logic your old project used
-    // optional: reset review status
+    user.status = "proof_submitted";
     user.proofReview = { status: "none", reason: "", reviewedAt: null, reviewedBy: "" };
 
     await user.save();
@@ -555,7 +776,6 @@ app.post("/login", async (req, res) => {
 
     if (!user) return res.status(400).json({ error: "User not found" });
 
-    // role check (prevents wrong role login)
     if (role && user.role !== role) {
       return res.status(403).json({ error: `This account is not registered as ${role}` });
     }

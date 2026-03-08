@@ -32,25 +32,14 @@ async function api(url, options = {}) {
   return data;
 }
 
-/**
- * ✅ FIXED:
- * storedPath examples:
- *  - "uploads/123.pdf"             => "/uploads/123.pdf"
- *  - "uploads/videos/job_x.mp4"    => "/uploads/videos/job_x.mp4"
- *  - windows: "uploads\\videos\\x" => "/uploads/videos/x"
- */
 function toUploadsUrl(storedPath) {
   if (!storedPath) return null;
 
-  const normalized = storedPath.replace(/\\/g, "/"); // windows -> unix
+  const normalized = storedPath.replace(/\\/g, "/");
 
-  // If already starts with "/uploads", return as-is
   if (normalized.startsWith("/uploads/")) return normalized;
-
-  // If starts with "uploads/", just prefix "/"
   if (normalized.startsWith("uploads/")) return "/" + normalized;
 
-  // If only filename is stored, fallback
   const fileName = normalized.split("/").pop();
   return `/uploads/${fileName}`;
 }
@@ -70,7 +59,7 @@ function guessVideoType(url) {
 }
 
 // =======================
-// A) Load Workers (Proof PDFs)
+// A) Load Workers
 // =======================
 async function loadWorkers() {
   workerList.innerHTML = "";
@@ -128,14 +117,17 @@ async function loadWorkers() {
           alert("✅ Proof approved!");
         } else {
           const reason = askRejectReason("PDF proof");
-          if (!reason) { alert("Reason is required."); return; }
+          if (!reason) {
+            alert("Reason is required.");
+            return;
+          }
 
           await api(`/admin/verify-proof/${phone}`, {
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({ decision: "reject", reason })
           });
-          alert("❌ Proof rejected (reason saved).");
+          alert("❌ Proof rejected.");
         }
 
         loadAll();
@@ -147,7 +139,7 @@ async function loadWorkers() {
 }
 
 // =======================
-// B) Load Jobs (Submitted videos)
+// B) Load Jobs
 // =======================
 async function loadJobs() {
   jobList.innerHTML = "";
@@ -217,14 +209,17 @@ async function loadJobs() {
           alert("✅ Video approved. Job marked completed!");
         } else {
           const reason = askRejectReason("job video");
-          if (!reason) { alert("Reason is required."); return; }
+          if (!reason) {
+            alert("Reason is required.");
+            return;
+          }
 
           await api(`/admin/verify-job/${jobId}`, {
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({ decision: "reject", reason })
           });
-          alert("❌ Video rejected (reason saved).");
+          alert("❌ Video rejected.");
         }
 
         loadAll();
@@ -236,89 +231,18 @@ async function loadJobs() {
 }
 
 // =======================
-// C) History (Approved/Rejected with date + reason)
-// =======================
-async function loadHistory() {
-  let historyWrap = document.getElementById("historyWrap");
-  if (!historyWrap) {
-    const cardBody = document.querySelector(".card-body");
-
-    const hr = document.createElement("hr");
-    hr.className = "soft";
-
-    const title = document.createElement("div");
-    title.className = "section-title";
-    title.textContent = "C) Verification History (Latest actions)";
-
-    historyWrap = document.createElement("div");
-    historyWrap.id = "historyWrap";
-
-    cardBody.appendChild(hr);
-    cardBody.appendChild(title);
-    cardBody.appendChild(historyWrap);
-  }
-
-  historyWrap.innerHTML = `<p class="note">Loading history...</p>`;
-
-  try {
-    const data = await api("/admin/history");
-    const logs = data.logs || [];
-
-    if (!logs.length) {
-      historyWrap.innerHTML = `<p class="note">No history yet.</p>`;
-      return;
-    }
-
-    const rows = logs.map(l => {
-      const typeText = l.type === "proof" ? "PDF Proof" : "Job Video";
-      const decisionText = l.decision === "approved" ? "✅ Approved" : "❌ Rejected";
-      const reasonText = l.reason ? l.reason : "-";
-
-      return `
-        <tr>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${fmtDate(l.createdAt)}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${typeText}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${l.workerPhone || "-"}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${l.workerRole || "-"}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${decisionText}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${reasonText}</td>
-        </tr>
-      `;
-    }).join("");
-
-    historyWrap.innerHTML = `
-      <div style="overflow:auto; width:100%;">
-        <table style="width:100%; border-collapse:collapse;">
-          <thead>
-            <tr style="text-align:left;">
-              <th style="padding:8px;border-bottom:1px solid #ddd;">Date</th>
-              <th style="padding:8px;border-bottom:1px solid #ddd;">Type</th>
-              <th style="padding:8px;border-bottom:1px solid #ddd;">Worker Phone</th>
-              <th style="padding:8px;border-bottom:1px solid #ddd;">Role</th>
-              <th style="padding:8px;border-bottom:1px solid #ddd;">Decision</th>
-              <th style="padding:8px;border-bottom:1px solid #ddd;">Reason</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    `;
-  } catch (e) {
-    historyWrap.innerHTML = `<p class="note" style="color:crimson;">${e.message}</p>`;
-  }
-}
-
-// =======================
 // Load All
 // =======================
 async function loadAll() {
   try {
     await loadWorkers();
     await loadJobs();
-    await loadHistory();
   } catch (e) {
     alert(e.message);
-    if (String(e.message).toLowerCase().includes("unauthorized")) {
+    if (
+      String(e.message).toLowerCase().includes("unauthorized") ||
+      String(e.message).toLowerCase().includes("invalid token")
+    ) {
       localStorage.removeItem("adminToken");
       window.location.href = "/admin_login.html";
     }

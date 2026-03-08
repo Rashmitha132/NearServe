@@ -8,10 +8,12 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
+<body class="admin-bg">
+
+<div class="bg-overlay"></div>
 
 <div class="page-wrap">
-  <div class="card">
+  <div class="card admin-card">
     <div class="card-header">
       <div class="brand">
         <img src="/uploads/shield.png" alt="Shield">
@@ -22,8 +24,15 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn btn-logout" id="refreshBtn"><i class="fa fa-rotate"></i> Refresh</button>
-        <button class="btn btn-logout" id="adminLogout"><i class="fa fa-right-from-bracket"></i> Logout</button>
+        <a href="/admin_history.html" class="btn btn-secondary">
+          <i class="fa fa-clock-rotate-left"></i> View History
+        </a>
+        <button class="btn btn-logout" id="refreshBtn">
+          <i class="fa fa-rotate"></i> Refresh
+        </button>
+        <button class="btn btn-logout" id="adminLogout">
+          <i class="fa fa-right-from-bracket"></i> Logout
+        </button>
       </div>
     </div>
 
