@@ -8,6 +8,7 @@ const reviewSchema = new mongoose.Schema(
     workerRole: { type: String, required: true },
 
     customerPhone: { type: String, required: true, index: true },
+    customerName: { type: String, default: "" },
 
     rating: { type: Number, required: true, min: 1, max: 5 },
     comment: { type: String, default: "" }

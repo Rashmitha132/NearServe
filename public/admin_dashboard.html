@@ -12,44 +12,77 @@
 
 <div class="bg-overlay"></div>
 
-<div class="page-wrap">
-  <div class="card admin-card">
-    <div class="card-header">
-      <div class="brand">
-        <img src="/uploads/shield.png" alt="Shield">
-        <div>
-          <h1>Admin Dashboard</h1>
-          <small>Verify proof + verify probation videos</small>
+  <div class="page-wrap">
+    <div class="admin-glass-card">
+
+      <!-- Header -->
+      <div class="admin-topbar">
+        <div class="admin-title-wrap">
+          <div class="admin-logo-circle">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div>
+            <h1 class="admin-main-title">Admin Dashboard</h1>
+            <p class="admin-subtitle">Manage worker proof PDFs and submitted job verification videos</p>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <button class="top-btn refresh-btn" id="refreshBtn">
+            <i class="fa-solid fa-rotate-right"></i> Refresh
+          </button>
+
+          <a href="/admin_history.html" class="top-btn history-btn">
+            <i class="fa-solid fa-clock-rotate-left"></i> View History
+          </a>
+
+          <button class="top-btn logout-btn" id="adminLogout">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
         </div>
       </div>
 
-      <div class="header-actions">
-        <a href="/admin_history.html" class="btn btn-secondary">
-          <i class="fa fa-clock-rotate-left"></i> View History
-        </a>
-        <button class="btn btn-logout" id="refreshBtn">
-          <i class="fa fa-rotate"></i> Refresh
-        </button>
-        <button class="btn btn-logout" id="adminLogout">
-          <i class="fa fa-right-from-bracket"></i> Logout
-        </button>
+      <!-- Main 2-column layout -->
+      <div class="admin-sections-grid">
+
+        <!-- Worker PDF verification -->
+        <div class="verify-panel">
+          <div class="panel-header">
+            <div class="panel-icon worker-icon">
+              <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <div>
+              <h2>Worker Proof Verification</h2>
+              <p>Submitted PDFs by workers</p>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <ul id="workerList" class="verify-list"></ul>
+          </div>
+        </div>
+
+        <!-- Job video verification -->
+        <div class="verify-panel">
+          <div class="panel-header">
+            <div class="panel-icon video-icon">
+              <i class="fa-solid fa-video"></i>
+            </div>
+            <div>
+              <h2>Job Verification Video</h2>
+              <p>Submitted worker videos</p>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <ul id="jobList" class="verify-list"></ul>
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <div class="card-body">
-
-      <div class="section-title">A) Worker Proof Verification (PDF)</div>
-      <ul id="workerList" class="list"></ul>
-
-      <hr class="soft">
-
-      <div class="section-title">B) Job Video Verification (Submitted)</div>
-      <ul id="jobList" class="list"></ul>
-
-    </div>
   </div>
-</div>
 
-<script src="js/admin_dashboard.js"></script>
+  <script src="js/admin_dashboard.js"></script>
 </body>
 </html>

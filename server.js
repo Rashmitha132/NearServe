@@ -497,42 +497,68 @@ app.get("/workers", async (req, res) => {
 // ====================================================
 app.get("/workers/:phone", async (req, res) => {
   try {
-    const phone = String((req.params.phone || "").trim());
+    const phone = req.params.phone.trim();
 
-    const worker = await User.findOne({ phone }).select("name phone email role status");
-    if (!worker) return res.status(404).json({ error: "Worker not found" });
+    const worker = await User.findOne({ phone });
+    if (!worker) {
+      return res.status(404).json({ error: "Worker not found" });
+    }
 
-    const stat = await Review.aggregate([
-      { $match: { workerPhone: phone } },
-      {
-        $group: {
-          _id: "$workerPhone",
-          avgRating: { $avg: "$rating" },
-          reviewsCount: { $sum: 1 }
-        }
+    const reviews = await Review.find({ workerPhone: phone }).sort({ createdAt: -1 });
+
+    let avgRating = 0;
+    let reviewsCount = reviews.length;
+    let feedbackSummary = "No feedback yet";
+
+    if (reviews.length > 0) {
+      const total = reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
+      avgRating = (total / reviews.length).toFixed(1);
+
+      const latestReviewWithComment = reviews.find(
+        r => r.comment && String(r.comment).trim() !== ""
+      );
+
+      if (latestReviewWithComment) {
+        feedbackSummary = latestReviewWithComment.comment.trim();
       }
-    ]);
+    }
 
-    const avgRating = stat.length ? Number(stat[0].avgRating.toFixed(2)) : 0;
-    const reviewsCount = stat.length ? stat[0].reviewsCount : 0;
+   const reviewsList = await Promise.all(
+  reviews
+    .filter(r => r.comment && String(r.comment).trim() !== "")
+    .map(async (r) => {
 
-    const latestReviews = await Review.find({ workerPhone: phone })
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .select("rating comment createdAt customerPhone");
+      let customerName = r.customerName || "";
+
+      // If old review does not have name, fetch it from User collection
+      if (!customerName && r.customerPhone) {
+        const customer = await User.findOne({ phone: r.customerPhone });
+        customerName = customer?.name || "Customer";
+      }
+
+      return {
+        rating: r.rating || 0,
+        comment: r.comment || "",
+        customerName,
+        customerPhone: r.customerPhone || "",
+        createdAt: r.createdAt || null
+      };
+    })
+);
 
     res.json({
       name: worker.name,
-      phone: worker.phone,
-      email: worker.email,
       role: worker.role,
+      phone: worker.phone,
+      email: worker.email || "-",
       avgRating,
       reviewsCount,
-      latestReviews
+      feedbackSummary,
+      reviewsList
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Error fetching worker profile" });
+    console.error("Error loading worker profile:", err);
+    res.status(500).json({ error: "Server error loading worker profile" });
   }
 });
 
@@ -717,11 +743,14 @@ app.post("/reviews", async (req, res) => {
       return res.status(400).json({ error: "No chosen worker on this booking" });
     }
 
+    const customer = await User.findOne({ phone: customerPhone });
+
     const review = await Review.create({
       bookingId: booking._id,
       workerPhone: booking.chosenWorkerPhone,
       workerRole: booking.chosenWorkerRole,
       customerPhone,
+      customerName: customer?.name || "",
       rating,
       comment
     });

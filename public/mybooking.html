@@ -4,32 +4,245 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Bookings - QuickServe</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: url("/uploads/booking.jpg") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 38px 20px;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1250px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .title-wrap h1 {
+      margin: 0;
+      font-size: 34px;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-wrap h1 i {
+      color: #2563eb;
+    }
+
+    .title-wrap h2 {
+      margin: 14px 0 0;
+      color: #374151;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .logout-btn,
+    .book-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #ef4444, #f87171);
+    }
+
+    .book-btn {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      margin-top: 20px;
+    }
+
+    .logout-btn:hover,
+    .book-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: rgba(255, 255, 255, 0.45);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+
+    thead tr {
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    th {
+      text-align: left;
+      padding: 14px 12px;
+      color: #111827;
+      font-size: 15px;
+    }
+
+    td {
+      padding: 14px 12px;
+      color: #374151;
+      border-top: 1px solid rgba(203, 213, 225, 0.75);
+      vertical-align: top;
+      font-size: 15px;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .service-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: #111827;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(203, 213, 225, 0.9);
+    }
+
+    .service-badge i {
+      font-size: 14px;
+    }
+
+    .service-carpenter i {
+      color: #f59e0b;
+    }
+
+    .service-plumber i {
+      color: #06b6d4;
+    }
+
+    .service-electrician i {
+      color: #eab308;
+    }
+
+    .status-done {
+      color: #16a34a;
+      font-weight: 700;
+    }
+
+    .status-pending {
+      color: #d97706;
+      font-weight: 700;
+    }
+
+    .worker-cell {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .rate-pill,
+    .rated-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .rate-pill {
+      background: #10b981;
+      color: white;
+    }
+
+    .rated-pill {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    @media (max-width: 700px) {
+      .title-wrap h1 {
+        font-size: 28px;
+      }
+
+      .title-wrap h2 {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>My Booking History</h1>
-  <h2 id="welcomeUser"></h2>
 
-  <button id="logoutBtn" style="margin-bottom:20px;">Logout</button>
+  <div class="container">
+    <div class="topbar">
+      <div class="title-wrap">
+        <h1><i class="fa-solid fa-clock-rotate-left"></i> My Booking History</h1>
+        <h2 id="welcomeUser"></h2>
+      </div>
 
-  <table border="1" id="bookingTable" cellpadding="8">
-    <thead>
-      <tr>
-        <th>Service</th>
-        <th>Worker</th>
-        <th>Address</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Arrival Time</th>
-        <th>Worker Message</th>
-        <th>Reject Reason</th>
-        <th>Rate</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+      <button id="logoutBtn" class="logout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
 
-  <br />
-  <button onclick="window.location.href='booking.html'">Book Another Service</button>
+    <div class="table-wrap">
+      <table id="bookingTable">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Worker</th>
+            <th>Address</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Arrival Time</th>
+            <th>Worker Message</th>
+            <th>Reject Reason</th>
+            <th>Rate</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <button class="book-btn" onclick="window.location.href='booking.html'">
+      <i class="fa-solid fa-plus"></i> Book Another Service
+    </button>
+  </div>
 
   <script src="js/mybooking.js"></script>
 </body>

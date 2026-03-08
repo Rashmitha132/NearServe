@@ -8,15 +8,15 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (!form) {
-    alert("Form not found");
+    console.log("Form not found");
     return;
   }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    alert("Submit event working");
+    console.log("Submit event working");
 
-    showMsg("");
+    //showMsg("");
 
     const username = document.getElementById("adminUser").value.trim();
     const password = document.getElementById("adminPass").value.trim();

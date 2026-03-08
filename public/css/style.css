@@ -5,22 +5,29 @@
   font-family:'Poppins',sans-serif;
 }
 
-body{
+body.auth-bg{
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#667eea,#764ba2);
+
+  /* Beautiful background image */
+  background:url("/uploads/login.jpg") no-repeat center center/cover;
 }
 
 /* Login Box */
 
 .login-container{
-  background:white;
+  background:rgba(255,255,255,0.85); /* transparent white */
+
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+
   padding:40px;
-  border-radius:12px;
+  border-radius:16px;
   width:350px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
   text-align:center;
 }
 
@@ -97,85 +104,146 @@ h3{
   font-weight:600;
 }
 
-/* Upload box */
+/* ================= BODY BACKGROUND ================= */
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:url("/uploads/back.jpg") no-repeat center center/cover;
+font-family:'Poppins',sans-serif;
+}
+
+/* ================= CARD CONTAINER ================= */
+
+.login-container{
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+
+padding:40px;
+border-radius:14px;
+width:360px;
+box-shadow:0 10px 30px rgba(0,0,0,0.25);
+text-align:center;
+}
+
+/* ================= LOGO ================= */
+
+.logo img{
+width:70px;
+margin-bottom:10px;
+}
+
+.logo h2{
+color:#333;
+margin-bottom:18px;
+}
+
+/* ================= UPLOAD BOX ================= */
 
 .upload-box{
-  margin-bottom:20px;
-  padding:15px;
-  border:2px dashed #667eea;
-  border-radius:8px;
-  text-align:center;
+margin-bottom:20px;
+padding:18px;
+border:2px dashed #667eea;
+border-radius:10px;
+text-align:center;
+background:rgba(255,255,255,0.65);
 }
 
 .upload-box i{
-  font-size:20px;
-  color:#667eea;
-  margin-right:8px;
+font-size:20px;
+color:#667eea;
+margin-right:8px;
 }
 
 .upload-box input{
-  margin-top:10px;
+margin-top:12px;
 }
 
-/* NEW CSS (add below existing code) */
+/* ================= UPLOAD TITLE ================= */
 
 .upload-title{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  font-weight:600;
-  color:#333;
-  margin-bottom:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+font-weight:600;
+color:#333;
+margin-bottom:10px;
 }
+
+/* ================= HINT ================= */
 
 .hint{
-  font-size:13px;
-  color:#555;
-  margin-top:8px;
+font-size:13px;
+color:#555;
+margin-top:8px;
 }
 
+/* ================= FILE PREVIEW ================= */
+
 .preview{
-  margin-top:14px;
-  background:#f6f7ff;
-  border:1px solid #e2e6ff;
-  border-radius:8px;
-  padding:12px;
+margin-top:14px;
+background:#f6f7ff;
+border:1px solid #e2e6ff;
+border-radius:8px;
+padding:12px;
 }
 
 .preview-row{
-  display:flex;
-  gap:10px;
-  align-items:center;
+display:flex;
+gap:10px;
+align-items:center;
 }
 
 .preview-row i{
-  font-size:22px;
-  color:#667eea;
+font-size:22px;
+color:#667eea;
 }
 
 .file-name{
-  font-weight:600;
-  color:#222;
-  font-size:14px;
+font-weight:600;
+color:#222;
+font-size:14px;
 }
 
 .file-size{
-  color:#555;
-  font-size:13px;
-  margin-top:2px;
+color:#555;
+font-size:13px;
+margin-top:2px;
 }
 
+/* ================= ERROR MESSAGE ================= */
+
 .error{
-  margin-top:12px;
-  color:#c0392b;
-  font-size:13px;
-  font-weight:600;
+margin-top:12px;
+color:#c0392b;
+font-size:13px;
+font-weight:600;
 }
 
 .hidden{
-  display:none;
+display:none;
 }
+
+/* ================= BUTTON ================= */
+
+button{
+width:100%;
+padding:12px;
+background:#667eea;
+border:none;
+color:white;
+font-size:16px;
+border-radius:8px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover
+
 
 /* =========================
    DASHBOARD / REQUEST PAGES
@@ -1094,4 +1162,548 @@ video {
 .page-wrap {
   position: relative;
   z-index: 1;
+}
+
+/* =========================
+   ADMIN DASHBOARD REDESIGN
+   ========================= */
+body.admin-bg {
+  margin: 0;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  min-height: 100vh;
+  background: url("/uploads/admin-bg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  color: #1f2937;
+}
+
+.bg-overlay {
+  display: none !important;
+}
+
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.admin-glass-card {
+  width: 100%;
+  max-width: 1180px;
+  background: #ffffff;   /* solid white */
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Header */
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: nowrap;
+}
+
+.admin-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-logo-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #1e3a8a;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.admin-main-title {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 700;
+  color:#111827; 
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.admin-subtitle {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color:#4b5563;
+}
+
+.admin-actions {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: nowrap !important;
+}
+
+.admin-actions .top-btn{
+  min-width:140px;
+}
+
+.top-btn {
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  min-width: 160px;
+  white-space: nowrap;
+}
+
+.refresh-btn {
+  background: rgba(59, 130, 246, 0.85);
+}
+
+.history-btn {
+  background: rgba(16, 185, 129, 0.85);
+}
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.85);
+}
+
+.top-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Main layout */
+.admin-sections-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 26px;
+}
+
+.verify-panel{
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  min-height: 420px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.panel-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+.worker-icon {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.video-icon {
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color:#111827;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.panel-header p {
+  margin: 5px 0 0;
+  color:#6b7280;
+  font-size: 14px;
+}
+
+/* Lists */
+.verify-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.verify-list li {
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  color: #374151;
+}
+
+/* Optional styling for content inside list items */
+.verify-list li .title,
+.verify-list li strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.verify-list li .meta {
+  font-size: 14px;
+  color: #4b5563;
+  margin-top: 6px;
+}
+
+.verify-list li .actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.verify-list li .actions button,
+.verify-list li .actions a {
+  padding: 9px 14px;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.verify-list li .approve-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.verify-list li .reject-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.verify-list li .view-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Empty state */
+.verify-list:empty::before {
+  content: "No submissions yet.";
+  display: block;
+  background: rgba(255,255,255,0.7);
+  padding: 18px;
+  border-radius: 14px;
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .admin-sections-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-main-title {
+    font-size: 30px;
+  }
+
+  .admin-topbar {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-glass-card {
+    padding: 18px;
+  }
+
+  .admin-logo-circle {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+  }
+
+  .admin-main-title {
+    font-size: 24px;
+  }
+
+  .panel-header h2 {
+    font-size: 20px;
+  }
+
+  .top-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-actions {
+    width: 100%;
+  }
+}
+
+/* ===== ADMIN DASHBOARD TEXT FIX ===== */
+
+.admin-main-title {
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+.admin-subtitle {
+  color: #4b5563 !important;
+}
+
+.panel-header h2 {
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+.panel-header p {
+  color: #6b7280 !important;
+}
+
+.verify-list li,
+.verify-list li strong,
+.verify-list li .title,
+.verify-list li .meta {
+  color: #374151 !important;
+}
+
+.verify-list:empty::before {
+  color: #374151 !important;
+}
+
+.admin-glass-card {
+  color: #111827 !important;
+}
+
+.verify-panel {
+  color: #111827 !important;
+}
+
+/* ===== HISTORY PAGE FIX (PURE WHITE CARD) ===== */
+
+.card,
+.admin-card,
+.admin-glass-card {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+/* Make all text dark so it is visible */
+.card h1,
+.card h2,
+.card h3,
+.card h4,
+.card p,
+.card small,
+.admin-card h1,
+.admin-card h2,
+.admin-card p,
+.admin-card small {
+  color: #111827 !important;
+}
+
+/* History table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+th {
+  background: #f3f4f6;
+  color: #111827 !important;
+  padding: 12px;
+  text-align: left;
+}
+
+td {
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  color: #374151 !important;
+}
+
+/* Make decision icons bigger */
+td span,
+td i {
+  font-size: 18px;
+}
+
+/* Optional: color for decision icons */
+.approved {
+  color: #16a34a !important;
+  font-weight: bold;
+}
+
+.rejected {
+  color: #dc2626 !important;
+  font-weight: bold;
+}
+
+/* ===== ADMIN HISTORY FINAL FIX ===== */
+
+.admin-card,
+.admin-glass-card,
+.card.history-card,
+.history-card,
+.page-wrap .card {
+  max-width: 1250px !important;
+  width: 96% !important;
+  background: #ffffff !important;
+  border-radius: 22px !important;
+  padding: 32px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Header row */
+.card-header,
+.admin-topbar,
+.history-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 24px !important;
+  flex-wrap: nowrap !important;
+}
+
+/* Buttons in one row */
+.header-actions,
+.admin-actions,
+.history-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 14px !important;
+  flex-wrap: nowrap !important;
+  width: auto !important;
+}
+
+/* Common button look */
+.header-actions a,
+.header-actions button,
+.admin-actions a,
+.admin-actions button,
+.history-actions a,
+.history-actions button {
+  min-width: 190px !important;
+  width: auto !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 12px 18px !important;
+  border-radius: 14px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+/* Back button */
+.header-actions a,
+.admin-actions a,
+.history-actions a {
+  background: #1da1f2 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Logout button */
+.header-actions button,
+.admin-actions button,
+.history-actions button,
+#adminLogout {
+  background: #ef4444 !important;
+  color: #111827 !important;
+  border: none !important;
+  opacity: 1 !important;
+}
+
+/* Main title and subtitle */
+.card-header h1,
+.admin-main-title,
+.history-title,
+.brand h1 {
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+.card-header p,
+.card-header small,
+.admin-subtitle,
+.history-subtitle,
+.brand small {
+  color: #374151 !important;
+  text-shadow: none !important;
+}
+
+/* Fix "History Records" heading */
+.section-title,
+.history-records-title,
+.card-body h2,
+.card-body h3,
+.card-body .title,
+.card-body .section-heading {
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+/* Table readability */
+table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: #ffffff !important;
+}
+
+th {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+  padding: 12px !important;
+  text-align: left !important;
+}
+
+td {
+  padding: 12px !important;
+  border-top: 1px solid #e5e7eb !important;
+  color: #374151 !important;
+}
+
+/* Keep decision text readable */
+td,
+td span,
+td i {
+  color: #374151 !important;
+}
+
+/* Slightly more space inside body */
+.card-body,
+.history-body {
+  padding-top: 18px !important;
 }

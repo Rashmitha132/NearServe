@@ -3,9 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <title>Book a Service</title>
+
+<style>
+
+/* Background image */
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url("/uploads/booking.jpg"); /* use your existing image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* White booking card */
+.container{
+    background: rgba(255,255,255,0.75);   /* transparent white */
+    backdrop-filter: blur(8px);           /* glass blur effect */
+    -webkit-backdrop-filter: blur(8px);
+    
+    padding:40px;
+    width:450px;
+    border-radius:15px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+    border:1px solid rgba(255,255,255,0.4);
+}
+
+/* Title */
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+#welcomeUser{
+    text-align:center;
+    color:#555;
+}
+
+/* Inputs */
+input, select{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+
+/* Buttons */
+button{
+    padding:10px 16px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* Button colors */
+#logoutBtn{
+    background:#ef4444;
+    color:white;
+}
+
+#historyBtn{
+    background:#2563eb;
+    color:white;
+}
+
+#chooseWorkerBtn{
+    background:#22c55e;
+    color:white;
+}
+
+#clearWorkerBtn{
+    background:#f59e0b;
+    color:white;
+}
+
+button[type="submit"]{
+    background:#4f46e5;
+    color:white;
+    width:100%;
+}
+
+/* spacing */
+.row{
+    margin-top:12px;
+}
+
+</style>
+
 </head>
 
 <body>
+
+<div class="container">
 
 <h1>Book a Service</h1>
 <h2 id="welcomeUser"></h2>
@@ -47,6 +144,8 @@
 <button type="submit">Book Service</button>
 
 </form>
+
+</div>
 
 <script src="js/bookings.js"></script>
 
