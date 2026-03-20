@@ -1,83 +1,186 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Plumber - Customer Requests</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plumber Requests - QuickServe</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
+<body class="carpenter-requests">
+  <div class="heroBg">
+    <div class="heroOverlay"></div>
+    <div class="board">
+      <div class="boardHeader">
+        <div class="brandLeft">
+          <div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#38bdf8,#0284c7);display:flex;align-items:center;justify-content:center;font-size:22px;">🔧</div>
+          <div class="brandText">
+            <div class="brandTitle">Plumber Requests</div>
+            <div class="brandSub">Only customers who chose you will be shown</div>
+          </div>
+        </div>
+        <div class="headerBtns">
+          <button class="qbtn ghost" onclick="fetchRequests()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          <button class="qbtn logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+      </div>
 
-<h1>Plumber - Customer Work Requests</h1>
-<p>Status: Full Access</p>
-
-<ul id="requestList"></ul>
-
-<button onclick="logout()">Logout</button>
+      <div class="boardBody">
+        <div class="sectionHead">
+          <div class="secTitle"><i class="fa-solid fa-wrench"></i> Available Plumbing Jobs</div>
+          <div class="secHint"><i class="fa-solid fa-circle-info"></i> Showing only "chosen" bookings</div>
+        </div>
+        <ul id="requestList" class="rqList"></ul>
+        <div class="footNote">
+          This page shows only bookings where <code>chosenWorkerRole="plumber"</code> and <code>chosenWorkerPhone</code> matches your phone.
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
+  const phone = (localStorage.getItem("phone") || "").trim();
+  const role  = (localStorage.getItem("role") || "").trim().toLowerCase();
 
-const phone = localStorage.getItem("phone");
-const role = localStorage.getItem("role");
+  if (!phone) { alert("Not authorized: please login first"); window.location.href = "login.html"; }
+  if (role !== "plumber") { alert("Not authorized: plumber account required"); window.location.href = role ? `${role}_dashboard.html` : "login.html"; }
 
-if (!phone || role !== "plumber") {
-    alert("Not authorized");
-    window.location.href = "login.html";
-}
+  function safe(v){ return (v === undefined || v === null || v === "") ? "-" : String(v); }
 
-async function fetchRequests() {
-    try {
-        const res = await fetch("/bookings");
-        const bookings = await res.json();
+  function chosenByMe(job){
+    return (
+      (job.chosenWorkerRole || "").toLowerCase() === "plumber" &&
+      String(job.chosenWorkerPhone || "") === String(phone)
+    );
+  }
 
-        const list = document.getElementById("requestList");
-        list.innerHTML = "";
+  function statusBadge(status){
+    const s = (status || "pending").toLowerCase();
+    if (s === "accepted")  return `<span class="badge full_access">Accepted</span>`;
+    if (s === "rejected")  return `<span class="badge blocked">Rejected</span>`;
+    if (s === "completed") return `<span class="badge probation">Completed</span>`;
+    return `<span class="badge pending_verification">Pending</span>`;
+  }
 
-        const plumberJobs = bookings.filter(b =>
-            b.service.toLowerCase() === "plumber"
-        );
+  function renderJob(job){
+    const st = (job.status || "pending").toLowerCase();
 
-        if (plumberJobs.length === 0) {
-            list.innerHTML = "<li>No customer requests available.</li>";
-            return;
-        }
+    const workerInfo = `
+      <div style="margin-top:10px;">
+        <small><b>Status:</b> ${statusBadge(st)}</small><br>
+        <small><b>Visit Time:</b> ${safe(job.visitTime)}</small><br>
+        <small><b>Worker Message:</b> ${safe(job.workerMessage)}</small><br>
+        ${st === "rejected"  ? `<small><b>Reject Reason:</b> ${safe(job.rejectReason)}</small><br>` : ""}
+        ${st === "completed" ? `<small><b>Completed At:</b> ${job.completedAt ? new Date(job.completedAt).toLocaleString() : "-"}</small><br>` : ""}
+      </div>`;
 
-        plumberJobs.forEach(job => {
-            const li = document.createElement("li");
-
-            li.innerHTML = `
-                <b>${job.name}</b>
-                <br>Phone: ${job.phone}
-                <br>Address: ${job.address}
-                <br>Date: ${job.date}
-                <br>
-                <button onclick="acceptJob('${job._id}')">Accept</button>
-                <button onclick="rejectJob('${job._id}')">Reject</button>
-                <hr>
-            `;
-
-            list.appendChild(li);
-        });
-
-    } catch (err) {
-        console.error(err);
-        alert("Error loading requests");
+    let actionButtons = "";
+    if (st === "pending") {
+      actionButtons = `
+        <button class="qbtn accept" onclick="acceptJob('${job._id}')"><i class="fa-solid fa-check"></i> Accept</button>
+        <button class="qbtn reject" onclick="rejectJob('${job._id}')"><i class="fa-solid fa-xmark"></i> Reject</button>`;
+    } else if (st === "accepted") {
+      actionButtons = `
+        <button class="qbtn done" onclick="completeJob('${job._id}')"><i class="fa-solid fa-clipboard-check"></i> Completed</button>`;
+    } else {
+      actionButtons = `
+        <button class="qbtn ghost" onclick="fetchRequests()"><i class="fa-solid fa-rotate"></i> Refresh</button>`;
     }
-}
 
-function acceptJob(id) {
-    alert("Job Accepted!");
-}
+    return `
+      <li class="rqItem">
+        <div class="rqLeft">
+          <div class="rqTop">
+            <div class="rqName">${safe(job.name)}</div>
+            <div class="rqChip"><i class="fa-regular fa-clock"></i> ${safe(job.date)}</div>
+          </div>
+          <div class="rqMeta">
+            <span><i class="fa-solid fa-phone"></i> ${safe(job.phone)}</span>
+            <span class="rqDot"></span>
+            <span><i class="fa-solid fa-location-dot"></i> ${safe(job.address)}</span>
+          </div>
+          ${workerInfo}
+        </div>
+        <div class="rqActions">${actionButtons}</div>
+      </li>`;
+  }
 
-function rejectJob(id) {
-    alert("Job Rejected!");
-}
+  async function fetchRequests(){
+    const list = document.getElementById("requestList");
+    list.innerHTML = `<li class="rqItem"><div class="rqLeft"><div class="rqName">Loading...</div><div class="rqMeta">Fetching chosen requests...</div></div></li>`;
 
-function logout() {
-    localStorage.clear();
-    window.location.href = "login.html";
-}
+    try {
+      let res = await fetch(`/bookings/chosen/plumber/${encodeURIComponent(phone)}`);
+      if (!res.ok) res = await fetch("/bookings");
+      const bookings = await res.json();
+      const chosenForMe = (bookings || []).filter(chosenByMe);
 
-fetchRequests();
+      if (chosenForMe.length === 0) {
+        list.innerHTML = `<li class="rqItem emptyState"><div class="rqLeft"><div class="rqName">No chosen requests for you.</div><div class="rqMeta">Make sure each booking has: <code>chosenWorkerRole:"plumber"</code> and <code>chosenWorkerPhone:"${phone}"</code></div></div></li>`;
+        return;
+      }
+      list.innerHTML = chosenForMe.map(renderJob).join("");
+    } catch(err) {
+      console.error(err);
+      alert("Error loading requests");
+    }
+  }
 
+  async function acceptJob(id){
+    const visitTime = prompt("Enter visit time (example: Today 6:30 PM):");
+    if (!visitTime) return alert("Visit time is required to accept.");
+    const msg = prompt("Optional message to customer (example: I will call before coming):") || "";
+
+    try {
+      const res = await fetch(`/bookings/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status:"accepted", visitTime:visitTime.trim(), workerMessage:msg.trim(), rejectReason:"" })
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(data.error || "Accept failed");
+      alert("Accepted ✅ Customer will see your visit time.");
+      fetchRequests();
+    } catch(err) { console.log(err); alert("Server error while accepting"); }
+  }
+
+  async function rejectJob(id){
+    const reason = prompt("Reason for rejecting (required):");
+    if (!reason || !reason.trim()) return alert("Reject reason is required.");
+
+    try {
+      const res = await fetch(`/bookings/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status:"rejected", rejectReason:reason.trim(), visitTime:"", workerMessage:"" })
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(data.error || "Reject failed");
+      alert("Rejected ✅ Customer will see the reason.");
+      fetchRequests();
+    } catch(err) { console.log(err); alert("Server error while rejecting"); }
+  }
+
+  async function completeJob(id){
+    const ok = confirm("Mark this job as COMPLETED? Customer can rate after this.");
+    if (!ok) return;
+
+    try {
+      const res = await fetch(`/bookings/${id}/complete`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workerPhone:phone, workerRole:role })
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(data.error || "Complete failed");
+      alert("Marked completed ✅ Customer can now rate you.");
+      fetchRequests();
+    } catch(err) { console.log(err); alert("Server error while completing"); }
+  }
+
+  function logout(){ localStorage.clear(); window.location.href = "login.html"; }
+
+  fetchRequests();
 </script>
-
 </body>
 </html>

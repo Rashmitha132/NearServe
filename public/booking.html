@@ -2,152 +2,605 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Book a Service</title>
+<title>Book a Service - NearServe</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Background image */
-body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-image: url("/uploads/booking.jpg"); /* use your existing image */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height:100vh;
+  :root {
+    --blue:   #2563eb;
+    --teal:   #0d9488;
+    --teal2:  #14b8a6;
+    --dark:   #0f172a;
+    --mid:    #475569;
+    --soft:   #94a3b8;
+    --bg:     #f0f7ff;
+    --border: #e2eaf4;
+  }
 
+  html, body { height: 100%; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    align-items: stretch;
+    overflow-x: hidden;
+    background: var(--bg);
+  }
+
+  /* ══ LEFT PANEL ══ */
+  .left-panel {
+    width: 42%; min-height: 100vh;
+    background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
+    position: relative; display: flex; flex-direction: column;
+    justify-content: space-between; padding: 48px 44px;
+    overflow: hidden; flex-shrink: 0;
+  }
+  .left-panel::before { content:''; position:absolute; width:450px; height:450px; border-radius:50%; background:rgba(255,255,255,0.05); top:-130px; right:-110px; }
+  .left-panel::after  { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-90px; left:-90px; }
+  .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.09); }
+  .r1 { width:200px; height:200px; top:32%; right:-50px; }
+  .r2 { width:110px; height:110px; top:55%; right:44px; border-color:rgba(255,255,255,0.06); }
+  .r3 { width:75px; height:75px; top:18%; left:28px; border-color:rgba(255,255,255,0.07); }
+  .fi { position:absolute; width:54px; height:54px; border-radius:16px; background:rgba(255,255,255,0.13); border:1.5px solid rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 8px 24px rgba(0,0,0,0.18); animation:bob ease-in-out infinite alternate; }
+  .fi1{top:16%;left:10%;animation-duration:3.2s;} .fi2{top:36%;right:12%;animation-duration:2.8s;animation-delay:0.5s;} .fi3{top:56%;left:16%;animation-duration:3.6s;animation-delay:1s;} .fi4{top:72%;right:18%;animation-duration:2.5s;animation-delay:0.3s;} .fi5{top:25%;right:26%;animation-duration:3.9s;animation-delay:0.7s;}
+  @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-13px) rotate(3deg);} }
+  .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:12px; }
+  .l-logo-icon { width:46px; height:46px; border-radius:14px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
+  .l-logo span { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:#fff; }
+  .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:36px 0; }
+  .l-main h2 { font-family:'Nunito',sans-serif; font-size:2.35rem; font-weight:900; color:#fff; line-height:1.22; margin-bottom:16px; text-shadow:0 2px 20px rgba(0,0,0,0.2); }
+  .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .l-main p { color:rgba(255,255,255,0.68); font-size:0.93rem; line-height:1.75; max-width:290px; margin-bottom:32px; }
+  .pills { display:flex; flex-wrap:wrap; gap:9px; }
+  .pill { display:flex; align-items:center; gap:7px; padding:8px 15px; border-radius:50px; background:rgba(255,255,255,0.11); border:1.5px solid rgba(255,255,255,0.2); color:#fff; font-size:0.8rem; font-weight:600; backdrop-filter:blur(5px); }
+  .l-stats { position:relative; z-index:2; display:flex; gap:22px; align-items:center; }
+  .stat-num { font-family:'Nunito',sans-serif; font-size:1.55rem; font-weight:900; color:#fff; }
+  .stat-lbl { font-size:0.73rem; color:rgba(255,255,255,0.58); }
+  .sdiv { width:1px; background:rgba(255,255,255,0.2); height:36px; }
+
+  /* ══ RIGHT PANEL ══ */
+  .right-panel { flex:1; min-height:100vh; background:#fff; display:flex; flex-direction:column; justify-content:flex-start; padding:48px 52px; overflow-y:auto; }
+
+  /* ── TOP BAR ── */
+  .ubar { display:flex; align-items:center; justify-content:space-between; margin-bottom:34px; padding-bottom:20px; border-bottom:1.5px solid var(--border); position:relative; }
+  
+  .uinfo-section {
     display:flex;
-    justify-content:center;
     align-items:center;
-}
+    gap:16px;
+  }
 
-/* White booking card */
-.container{
-    background: rgba(255,255,255,0.75);   /* transparent white */
-    backdrop-filter: blur(8px);           /* glass blur effect */
-    -webkit-backdrop-filter: blur(8px);
-    
-    padding:40px;
-    width:450px;
-    border-radius:15px;
+  .avatar-container {
+    position: relative;
+    width: 44px;
+    height: 44px;
+  }
 
-    box-shadow:0 10px 25px rgba(0,0,0,0.25);
-    border:1px solid rgba(255,255,255,0.4);
-}
-
-/* Title */
-h1{
-    text-align:center;
-    margin-bottom:10px;
-}
-
-#welcomeUser{
-    text-align:center;
-    color:#555;
-}
-
-/* Inputs */
-input, select{
-    width:100%;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:14px;
-}
-
-/* Buttons */
-button{
-    padding:10px 16px;
-    border:none;
-    border-radius:8px;
+  .uavatar { 
+    width:100%; 
+    height:100%; 
+    border-radius:50%; 
+    background:linear-gradient(135deg,#2563eb,#0d9488); 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    font-family:'Nunito',sans-serif; 
+    font-size:1.1rem; 
+    font-weight:800; 
+    color:#fff; 
+    box-shadow:0 4px 12px rgba(37,99,235,0.3); 
+    transition:transform 0.2s; 
     cursor:pointer;
-    font-weight:bold;
-}
+    object-fit: cover;
+  }
 
-/* Button colors */
-#logoutBtn{
-    background:#ef4444;
-    color:white;
-}
+  .uavatar:hover { transform:scale(1.08); }
 
-#historyBtn{
-    background:#2563eb;
-    color:white;
-}
+  .uavatar.has-image {
+    background: none;
+    font-size: 0;
+  }
 
-#chooseWorkerBtn{
-    background:#22c55e;
-    color:white;
-}
+  .uname { font-size:0.92rem; font-weight:700; color:var(--dark); }
+  .urole { font-size:0.73rem; color:var(--soft); }
+  
+  .btn-out { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; border:1.5px solid #fee2e2; background:#fff5f5; color:#ef4444; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer; transition:background 0.2s, transform 0.2s; }
+  .btn-out:hover { background:#fee2e2; transform:translateY(-1px); }
+  
+  .ubar-right { display:flex; align-items:center; gap:10px; }
 
-#clearWorkerBtn{
-    background:#f59e0b;
-    color:white;
-}
+  /* ── PAYMENT MODAL ── */
+  .pay-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(6px); z-index:300; display:none; align-items:center; justify-content:center; }
+  .pay-overlay.open { display:flex; }
+  .pay-box { background:#fff; border-radius:24px; width:400px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.25); overflow:hidden; animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+  @keyframes dropIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+  .pay-header { background:linear-gradient(135deg,#1d4ed8,#0d9488); padding:22px 26px; }
+  .pay-header h3 { font-family:'Nunito',sans-serif; font-size:1.15rem; font-weight:900; color:#fff; margin-bottom:3px; }
+  .pay-header p { color:rgba(255,255,255,0.75); font-size:0.8rem; }
+  .pay-body { padding:22px 26px; }
+  .pay-summary { background:#f8faff; border:1.5px solid var(--border); border-radius:13px; padding:14px 16px; margin-bottom:16px; }
+  .pay-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:0.83rem; color:var(--mid); border-bottom:1px solid var(--border); }
+  .pay-row:last-child { border-bottom:none; }
+  .pay-row .lbl { color:var(--soft); }
+  .pay-row .val { font-weight:600; color:var(--dark); }
+  .pay-total .lbl { font-weight:700; color:var(--dark); }
+  .pay-total .val { font-weight:900; color:var(--blue); font-size:1.05rem; }
+  .pay-secure-note { display:flex; align-items:center; gap:8px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:9px 13px; font-size:0.77rem; color:#16a34a; margin-bottom:14px; }
+  .pay-methods { display:flex; gap:7px; margin-bottom:16px; }
+  .pay-method { flex:1; padding:9px 6px; border-radius:10px; border:1.5px solid var(--border); background:#fafcff; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; transition:all 0.2s; font-size:0.7rem; color:var(--mid); font-weight:600; }
+  .pay-method:hover, .pay-method.active { border-color:#93c5fd; background:#eff6ff; color:var(--blue); }
+  .pay-method-icon { font-size:1.1rem; }
+  .btn-pay { width:100%; padding:13px; border:none; border-radius:12px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 24px rgba(29,78,216,0.35); transition:transform 0.2s, box-shadow 0.2s; }
+  .btn-pay:hover { transform:translateY(-2px); }
+  .pay-cancel { width:100%; padding:9px; margin-top:7px; background:none; border:none; cursor:pointer; color:var(--soft); font-size:0.82rem; font-family:'Plus Jakarta Sans',sans-serif; transition:color 0.2s; }
+  .pay-cancel:hover { color:#ef4444; }
+  .pay-razorpay-note { text-align:center; margin-top:10px; font-size:0.7rem; color:var(--soft); }
+  .price-tag { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.18); padding:2px 10px; border-radius:20px; font-size:0.85rem; font-weight:800; }
 
-button[type="submit"]{
-    background:#4f46e5;
-    color:white;
-    width:100%;
-}
+  /* ── FORM ── */
+  .fhead { margin-bottom:24px; }
+  .fhead h1 { font-family:'Nunito',sans-serif; font-size:1.7rem; font-weight:900; color:var(--dark); margin-bottom:4px; }
+  .fhead p { color:var(--soft); font-size:0.85rem; }
+  .btn-hist { display:inline-flex; align-items:center; gap:7px; padding:8px 16px; border-radius:9px; background:#eff6ff; border:1.5px solid #bfdbfe; color:var(--blue); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; transition:background 0.2s; margin-bottom:22px; }
+  .btn-hist:hover { background:#dbeafe; }
+  .slbl { font-size:0.71rem; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:1.1px; margin-bottom:8px; margin-top:18px; }
+  .ig { position:relative; margin-bottom:13px; }
+  .ig .ico { position:absolute; left:13px; top:50%; transform:translateY(-50%); width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; z-index:2; transition:transform 0.2s; }
+  .ig:focus-within .ico { transform:translateY(-50%) scale(1.1); }
+  .ic-b{background:linear-gradient(135deg,#dbeafe,#bfdbfe);} .ic-t{background:linear-gradient(135deg,#ccfbf1,#99f6e4);} .ic-a{background:linear-gradient(135deg,#fef3c7,#fde68a);} .ic-p{background:linear-gradient(135deg,#ede9fe,#ddd6fe);}
+  .ig input, .ig select { width:100%; padding:13px 16px 13px 57px; border:1.5px solid var(--border); border-radius:12px; background:#fafcff; color:var(--dark); font-size:0.88rem; font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:all 0.25s; }
+  .ig input::placeholder { color:#b0bec5; }
+  .ig select { color:var(--mid); appearance:none; cursor:pointer; }
+  .ig input[type="date"]::-webkit-calendar-picker-indicator { cursor:pointer; opacity:0.45; }
+  .ig input:focus, .ig select:focus { border-color:#93c5fd; background:#fff; box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
+  .wrow { display:flex; gap:10px; margin-bottom:13px; }
+  .btn-pick { display:flex; align-items:center; gap:7px; padding:13px 18px; border:none; border-radius:12px; background:linear-gradient(135deg,#0d9488,#14b8a6); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.83rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(13,148,136,0.3); white-space:nowrap; flex-shrink:0; transition:transform 0.2s, box-shadow 0.2s; }
+  .btn-pick:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(13,148,136,0.4); }
+  .wdisp { flex:1; padding:13px 16px; border:1.5px solid var(--border); border-radius:12px; background:#fafcff; display:flex; align-items:center; justify-content:space-between; }
+  .wname { font-size:0.85rem; font-weight:600; color:#b0bec5; }
+  .wname.on { color:#0d9488; }
+  .btn-clr { padding:4px 10px; border-radius:7px; border:1.5px solid #fde68a; background:#fffbeb; color:#d97706; font-size:0.73rem; font-weight:700; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; transition:background 0.2s; }
+  .btn-clr:hover { background:#fef3c7; }
+  .fdiv { height:1px; background:var(--border); margin:20px 0 16px; }
+  .btn-sub { width:100%; padding:15px; border:none; border-radius:13px; background:linear-gradient(135deg,#1d4ed8 0%,#0d9488 100%); color:#fff; font-size:1rem; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 24px rgba(29,78,216,0.32); transition:transform 0.2s, box-shadow 0.2s; margin-top:8px; position:relative; overflow:hidden; }
+  .btn-sub::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.16),transparent); opacity:0; transition:opacity 0.3s; }
+  .btn-sub:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(29,78,216,0.38); }
+  .btn-sub:hover::after { opacity:1; }
+  .btn-sub:active { transform:translateY(0); }
 
-/* spacing */
-.row{
-    margin-top:12px;
-}
+  /* ── TOAST ── */
+  .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:#0f172a; color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast.success { background:linear-gradient(135deg,#16a34a,#0d9488); }
+  .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
 
+  /* ── SHAKE ── */
+  @keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-6px);} 80%{transform:translateX(6px);} }
+
+  /* ── SESSION TIMEOUT ── */
+  #sessionWarningOverlay { display:none; position:fixed; inset:0; z-index:9997; background:rgba(10,18,36,0.75); backdrop-filter:blur(8px); align-items:center; justify-content:center; }
+  .sess-card { background:#fff; border-radius:24px; padding:40px 36px 32px; width:380px; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.25); position:relative; animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1); }
+  @keyframes slideUp { from{transform:translateY(30px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+  .sess-card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; border-radius:24px 24px 0 0; background:linear-gradient(90deg,#f59e0b,#ef4444); }
+  .sess-icon { width:68px; height:68px; border-radius:20px; background:linear-gradient(135deg,#fef3c7,#fde68a); display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 16px; }
+  .sess-title { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:#0f172a; margin-bottom:8px; }
+  .sess-sub { font-size:0.88rem; color:#64748b; line-height:1.6; margin-bottom:20px; }
+  .sess-countdown { display:inline-flex; align-items:center; gap:8px; background:#fff7ed; border:2px solid #fed7aa; border-radius:12px; padding:10px 20px; font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; color:#ea580c; margin-bottom:24px; }
+  .sess-btns { display:flex; gap:10px; }
+  .sess-stay { flex:1; padding:12px; border:none; border-radius:12px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:transform 0.2s; }
+  .sess-stay:hover { transform:translateY(-2px); }
+  .sess-logout { flex:1; padding:12px; border-radius:12px; border:1.5px solid #fee2e2; background:#fff5f5; color:#ef4444; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; }
+  .sess-logout:hover { background:#fee2e2; }
+
+  /* ── BOOKING SUCCESS ── */
+  #bookingSuccessOverlay { display:none; position:fixed; inset:0; z-index:9998; background:rgba(10,18,36,0.6); backdrop-filter:blur(10px); align-items:center; justify-content:center; }
+  .bconf-card { background:#fff; border-radius:28px; padding:44px 38px 36px; width:420px; text-align:center; box-shadow:0 28px 70px rgba(0,0,0,0.22); position:relative; animation:slideUp 0.45s cubic-bezier(0.16,1,0.3,1); overflow:hidden; }
+  .bconf-card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; border-radius:28px 28px 0 0; background:linear-gradient(90deg,#1d4ed8,#0d9488); }
+  .bconf-check-wrap { width:82px; height:82px; border-radius:50%; background:linear-gradient(135deg,#d1fae5,#a7f3d0); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 6px 24px rgba(16,185,129,0.28); animation:popIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+  @keyframes popIn { from{transform:scale(0.3);opacity:0;} to{transform:scale(1);opacity:1;} }
+  .bconf-title { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; color:#0f172a; margin-bottom:6px; }
+  .bconf-sub { font-size:0.88rem; color:#64748b; line-height:1.6; margin-bottom:22px; }
+  .bconf-summary { background:#f8faff; border:1.5px solid #e2eaf4; border-radius:16px; padding:16px 20px; margin-bottom:24px; text-align:left; }
+  .bconf-row { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid #f1f5f9; font-size:0.85rem; }
+  .bconf-row:last-child { border-bottom:none; padding-bottom:0; }
+  .bconf-row:first-child { padding-top:0; }
+  .bconf-icon { width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .bconf-lbl { color:#94a3b8; font-size:0.75rem; font-weight:600; min-width:56px; }
+  .bconf-val { color:#0f172a; font-weight:700; flex:1; }
+  .bconf-btns { display:flex; gap:10px; }
+  .bconf-view { flex:1; padding:13px; border:none; border-radius:12px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:transform 0.2s; }
+  .bconf-view:hover { transform:translateY(-2px); }
+  .bconf-close { flex:1; padding:13px; border-radius:12px; border:1.5px solid #e2eaf4; background:#fff; color:#64748b; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; }
+  .bconf-close:hover { background:#f8faff; }
+
+  @media (max-width: 780px) {
+    body{flex-direction:column;} .left-panel{width:100%;min-height:auto;padding:28px 24px;} .l-main h2{font-size:1.6rem;} .l-stats{display:none;} .fi3,.fi4,.fi5{display:none;} .right-panel{padding:28px 22px;}
+  }
 </style>
-
 </head>
-
 <body>
 
-<div class="container">
-
-<h1>Book a Service</h1>
-<h2 id="welcomeUser"></h2>
-
-<button id="logoutBtn">Logout</button>
-<button id="historyBtn">View My Booking History</button>
-
-<br><br>
-
-<label>Select Service:</label>
-
-<select id="serviceSelect">
-<option value="carpenter">Carpenter</option>
-<option value="plumber">Plumber</option>
-<option value="electrician">Electrician</option>
-</select>
-
-<button id="chooseWorkerBtn">Choose Worker</button>
-
-<br><br>
-
-<b>Selected Worker:</b>
-<span id="selectedWorkerText">None</span>
-<button id="clearWorkerBtn">Clear</button>
-
-<br><br>
-
-<form id="bookingForm">
-
-<input id="custName" type="text" placeholder="Your Name" required>
-<br><br>
-
-<input id="address" type="text" placeholder="Address" required>
-<br><br>
-
-<input id="date" type="date" required>
-<br><br>
-
-<button type="submit">Book Service</button>
-
-</form>
-
+<!-- ══ LEFT PANEL ══ -->
+<div class="left-panel">
+  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
+  <div class="fi fi1">🔧</div><div class="fi fi2">⚡</div><div class="fi fi3">🪚</div><div class="fi fi4">⭐</div><div class="fi fi5">🛠️</div>
+  <div class="l-logo">
+    <div class="l-logo-icon">
+      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
+        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
+        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
+        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
+        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
+      </svg>
+    </div>
+    <span>NearServe</span>
+  </div>
+  <div class="l-main">
+    <h2>Book a <em>Trusted</em><br>Professional</h2>
+    <p>Get expert home services at your doorstep. Verified workers, transparent pricing, and completely hassle-free bookings.</p>
+    <div class="pills">
+      <div class="pill">🔧 Plumbing</div><div class="pill">⚡ Electrical</div><div class="pill">🪚 Carpentry</div>
+    </div>
+  </div>
+  <div class="l-stats">
+    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified Workers</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">🔒</div><div class="stat-lbl">Secure Booking</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">⚡</div><div class="stat-lbl">Quick & Easy</div></div>
+  </div>
 </div>
 
-<script src="js/bookings.js"></script>
+<!-- ══ RIGHT PANEL ══ -->
+<div class="right-panel">
 
+  <div class="ubar">
+    <!-- Profile section with picture support -->
+    <a href="/profile.html" class="uinfo-section" style="text-decoration:none;cursor:pointer;">
+      <div class="avatar-container">
+        <div class="uavatar" id="userAvatar">?</div>
+      </div>
+      <div>
+        <div class="uname" id="welcomeUser">Loading...</div>
+        <div class="urole">Customer</div>
+      </div>
+    </a>
+
+    <div class="ubar-right">
+      <!-- Dashboard button -->
+      <a href="/dashboard.html" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1.5px solid #bfdbfe;background:#eff6ff;color:#2563eb;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s, transform 0.2s;text-decoration:none;" onmouseover="this.style.background='#dbeafe';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#eff6ff';this.style.transform='translateY(0)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        Dashboard
+      </a>
+      <!-- My Profile button -->
+      <a href="/profile.html" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1.5px solid #bfdbfe;background:#eff6ff;color:#2563eb;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s, transform 0.2s;text-decoration:none;" onmouseover="this.style.background='#dbeafe';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#eff6ff';this.style.transform='translateY(0)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        My Profile
+      </a>
+      <!-- Logout button -->
+      <button class="btn-out" id="logoutBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="fhead">
+    <h1>📋 Book a Service</h1>
+    <p>Fill in the details below and we'll connect you with the right professional.</p>
+  </div>
+
+  <button class="btn-hist" id="historyBtn">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    View My Booking History
+  </button>
+
+  <div class="slbl">Select Service</div>
+  <div class="ig">
+    <div class="ico ic-b">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </div>
+    <select id="serviceSelect">
+      <option value="carpenter">🪚  Carpenter</option>
+      <option value="plumber">🔧  Plumber</option>
+      <option value="electrician">⚡  Electrician</option>
+    </select>
+  </div>
+
+  <div class="slbl">Preferred Worker</div>
+  <div class="wrow" id="workerRow">
+    <button class="btn-pick" id="chooseWorkerBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      Choose Worker
+    </button>
+    <div class="wdisp">
+      <span class="wname" id="selectedWorkerText">No worker selected</span>
+      <button class="btn-clr" id="clearWorkerBtn">✕ Clear</button>
+    </div>
+  </div>
+
+  <div class="fdiv"></div>
+
+  <div class="slbl">Your Details</div>
+  <form id="bookingForm">
+    <div class="ig">
+      <div class="ico ic-p"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <input id="custName" type="text" placeholder="Your Full Name" required>
+    </div>
+
+    <div class="ig">
+      <div class="ico ic-t"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <input id="address" type="text" placeholder="Your Full Address" required>
+    </div>
+
+    <div class="ig">
+      <div class="ico ic-a"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <input id="date" type="date" required>
+    </div>
+
+    <button type="submit" class="btn-sub">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Pay &amp; Confirm Booking
+      <span class="price-tag">₹29</span>
+    </button>
+  </form>
+</div>
+
+<!-- ══ PAYMENT MODAL ══ -->
+<div class="pay-overlay" id="payOverlay">
+  <div class="pay-box">
+    <div class="pay-header"><h3>💳 Complete Your Booking</h3><p>Secure payment powered by Razorpay</p></div>
+    <div class="pay-body">
+      <div class="pay-summary">
+        <div class="pay-row"><span class="lbl">Service</span><span class="val" id="paySummaryService">—</span></div>
+        <div class="pay-row"><span class="lbl">Worker</span><span class="val" id="paySummaryWorker">—</span></div>
+        <div class="pay-row"><span class="lbl">Date</span><span class="val" id="paySummaryDate">—</span></div>
+        <div class="pay-row"><span class="lbl">Booking Fee</span><span class="val">₹29</span></div>
+        <div class="pay-row pay-total"><span class="lbl">Total Payable</span><span class="val">₹29</span></div>
+      </div>
+      <div class="pay-secure-note">🔒 Your payment is 100% secure. Bank-grade SSL encryption.</div>
+      <div class="pay-methods">
+        <div class="pay-method active" onclick="selectPayMethod(this)"><span class="pay-method-icon">💳</span>Card</div>
+        <div class="pay-method" onclick="selectPayMethod(this)"><span class="pay-method-icon">📱</span>UPI</div>
+        <div class="pay-method" onclick="selectPayMethod(this)"><span class="pay-method-icon">🏦</span>Net Banking</div>
+        <div class="pay-method" onclick="selectPayMethod(this)"><span class="pay-method-icon">💰</span>Wallet</div>
+      </div>
+      <button class="btn-pay" id="proceedPayBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Pay ₹29 &amp; Confirm Booking
+      </button>
+      <button class="pay-cancel" id="payCancelBtn">Cancel</button>
+      <div class="pay-razorpay-note">🔐 Secured by <strong>Razorpay</strong> · RBI Regulated</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BOOKING SUCCESS POPUP ══ -->
+<div id="bookingSuccessOverlay">
+  <div class="bconf-card">
+    <div class="bconf-check-wrap">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="bconf-title">Booking Confirmed! 🎉</div>
+    <p class="bconf-sub">Your request has been sent to the worker. You'll be notified once they accept.</p>
+    <div class="bconf-summary">
+      <div class="bconf-row"><div class="bconf-icon" style="background:#eff6ff;">🔧</div><span class="bconf-lbl">Service</span><span class="bconf-val" id="bconf-service">—</span></div>
+      <div class="bconf-row"><div class="bconf-icon" style="background:#f0fdf4;">👷</div><span class="bconf-lbl">Worker</span><span class="bconf-val" id="bconf-worker">—</span></div>
+      <div class="bconf-row"><div class="bconf-icon" style="background:#fefce8;">📍</div><span class="bconf-lbl">Address</span><span class="bconf-val" id="bconf-address">—</span></div>
+      <div class="bconf-row"><div class="bconf-icon" style="background:#fff7ed;">📅</div><span class="bconf-lbl">Date</span><span class="bconf-val" id="bconf-date">—</span></div>
+    </div>
+    <div class="bconf-btns">
+      <button class="bconf-view" id="bconfViewBtn">📋 View My Bookings</button>
+      <button class="bconf-close" id="bconfCloseBtn">Book Another</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SESSION TIMEOUT ══ -->
+<div id="sessionWarningOverlay">
+  <div class="sess-card">
+    <div class="sess-icon">⏳</div>
+    <div class="sess-title">Still there?</div>
+    <p class="sess-sub">You've been inactive for a while. For your security, you'll be logged out in:</p>
+    <div class="sess-countdown"><span id="sessionCountdown">60</span>&nbsp;<span style="font-size:0.8rem;font-weight:600;color:#9a3412;">seconds</span></div>
+    <div class="sess-btns">
+      <button class="sess-stay" id="sessionStayBtn">✅ Keep me logged in</button>
+      <button class="sess-logout" id="sessionLogoutBtn">🚪 Logout now</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + (type || "success") + " show";
+  setTimeout(() => { t.className = "toast"; }, 3500);
+}
+
+function selectPayMethod(el) {
+  document.querySelectorAll(".pay-method").forEach(m => m.classList.remove("active"));
+  el.classList.add("active");
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  const pPhone = (localStorage.getItem("phone") || "").trim();
+  const pName = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+  const avatarBase64 = localStorage.getItem("avatarBase64") || "";
+
+  // Set avatar - priority to image, then letter
+  const userAvatar = document.getElementById("userAvatar");
+  const avatarContainer = document.querySelector(".avatar-container");
+
+  if (avatarBase64) {
+    const img = document.createElement("img");
+    img.src = avatarBase64;
+    img.style.width = "44px";
+    img.style.height = "44px";
+    img.style.borderRadius = "50%";
+    img.style.objectFit = "cover";
+    img.style.boxShadow = "0 4px 12px rgba(37,99,235,0.3)";
+    userAvatar.style.display = "none";
+    avatarContainer.innerHTML = "";
+    avatarContainer.appendChild(img);
+  } else if (pName) {
+    const letter = pName.charAt(0).toUpperCase();
+    userAvatar.textContent = letter;
+    userAvatar.style.display = "flex";
+  }
+
+  document.getElementById("welcomeUser").textContent = "Welcome, " + (pName || "Guest") + "!";
+
+  // Auto-fill customer name
+  const custNameInput = document.getElementById("custName");
+  if (pName) {
+    custNameInput.value = pName;
+  }
+
+  // Auto-fill address — fetch from backend so it works right after login
+  const savedAddress = localStorage.getItem("address");
+  if (savedAddress) {
+    document.getElementById("address").value = savedAddress;
+  } else if (pPhone) {
+    fetch(`/profile/${pPhone}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.address) {
+          const parts = [data.address, data.city, data.state, data.pincode]
+            .filter(p => p && p.trim() !== "");
+          const fullAddress = parts.join(", ");
+          if (fullAddress) {
+            document.getElementById("address").value = fullAddress;
+            // Cache it so next time it's instant
+            localStorage.setItem("address", fullAddress);
+          }
+        }
+      })
+      .catch(() => {});
+  }
+
+  document.getElementById("date").min = new Date().toISOString().split("T")[0];
+
+  document.getElementById("historyBtn").addEventListener("click", () => window.location.href = "mybooking.html");
+
+  document.getElementById("payCancelBtn").addEventListener("click", () => document.getElementById("payOverlay").classList.remove("open"));
+  document.getElementById("payOverlay").addEventListener("click", function(e) { if (e.target === this) this.classList.remove("open"); });
+
+  document.querySelector(".btn-sub").addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const service = document.getElementById("serviceSelect").value;
+    const custName = document.getElementById("custName").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const date = document.getElementById("date").value;
+    const workerPhone = (localStorage.getItem("chosenWorkerPhone") || "").trim();
+    const workerRole = (localStorage.getItem("chosenWorkerRole") || "").trim().toLowerCase();
+    const workerName = localStorage.getItem("chosenWorkerName") || "";
+
+    if (!workerPhone || workerRole !== service) {
+      showToast("⚠️ Please choose a worker for the selected service first!", "error");
+      const wrow = document.getElementById("workerRow");
+      wrow.style.animation = "none"; wrow.offsetHeight;
+      wrow.style.animation = "shake 0.5s ease";
+      document.getElementById("chooseWorkerBtn").style.boxShadow = "0 0 0 3px rgba(239,68,68,0.5)";
+      setTimeout(() => { document.getElementById("chooseWorkerBtn").style.boxShadow = ""; wrow.style.animation = ""; }, 2000);
+      return;
+    }
+
+    if (!custName || !address || !date) { showToast("❌ Please fill in all fields", "error"); return; }
+
+    document.getElementById("paySummaryService").textContent = service.charAt(0).toUpperCase() + service.slice(1);
+    document.getElementById("paySummaryWorker").textContent = workerName + " (" + workerPhone + ")";
+    document.getElementById("paySummaryDate").textContent = date;
+    document.getElementById("payOverlay").classList.add("open");
+  }, true);
+
+  document.getElementById("proceedPayBtn").addEventListener("click", async function() {
+    const btn = this;
+    btn.textContent = "Processing...";
+    btn.disabled = true;
+
+    try {
+      const orderRes = await fetch("/create-payment-order", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ amount: 29, currency: "INR" })
+      });
+      if (!orderRes.ok) throw new Error("failed");
+      const order = await orderRes.json();
+
+      const options = {
+        key: order.key_id, amount: order.amount, currency: order.currency,
+        name: "QuickServe", description: "Booking Fee", order_id: order.id,
+        prefill: { name: localStorage.getItem("name") || "", email: localStorage.getItem("email") || "", contact: localStorage.getItem("phone") || "" },
+        theme: { color: "#1d4ed8" },
+        handler: async function(response) {
+          document.getElementById("payOverlay").classList.remove("open");
+          const service = document.getElementById("serviceSelect").value;
+          const custName = document.getElementById("custName").value.trim();
+          const address = document.getElementById("address").value.trim();
+          const date = document.getElementById("date").value;
+          const wPhone = (localStorage.getItem("chosenWorkerPhone") || "").trim();
+          const wRole = (localStorage.getItem("chosenWorkerRole") || "").trim().toLowerCase();
+
+          const res = await fetch("/book", {
+            method: "POST", headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ name: custName, phone: localStorage.getItem("phone") || "", service, address, date, chosenWorkerPhone: wPhone, chosenWorkerRole: wRole })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            const wName = localStorage.getItem("chosenWorkerName") || "Worker";
+            document.getElementById("bconf-service").textContent = service.charAt(0).toUpperCase() + service.slice(1);
+            document.getElementById("bconf-worker").textContent = wName + " (" + wPhone + ")";
+            document.getElementById("bconf-address").textContent = address;
+            document.getElementById("bconf-date").textContent = date;
+            document.getElementById("bookingSuccessOverlay").style.display = "flex";
+            document.getElementById("bconfViewBtn").onclick = () => window.location.href = "mybooking.html";
+            document.getElementById("bconfCloseBtn").onclick = () => { document.getElementById("bookingSuccessOverlay").style.display = "none"; };
+            document.getElementById("bookingForm").reset();
+            document.getElementById("date").min = new Date().toISOString().split("T")[0];
+            localStorage.removeItem("chosenWorkerPhone");
+            localStorage.removeItem("chosenWorkerName");
+            localStorage.removeItem("chosenWorkerRole");
+          } else {
+            showToast("❌ " + (data.error || "Booking failed"), "error");
+          }
+        },
+        modal: { ondismiss: function() { btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay ₹29 & Confirm Booking'; btn.disabled = false; } }
+      };
+      new Razorpay(options).open();
+    } catch(err) {
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Pay ₹29 & Confirm Booking';
+      btn.disabled = false;
+      const note = document.querySelector(".pay-razorpay-note");
+      if (note) {
+        note.innerHTML = '⚙️ <strong>Payment not configured yet.</strong> Razorpay keys are being set up. Please try again soon.';
+        note.style.color = '#ef4444';
+      }
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", function() {
+    localStorage.clear();
+    window.location.href = "login.html";
+  });
+});
+</script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="js/bookings.js"></script>
 </body>
 </html>

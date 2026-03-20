@@ -1,4 +1,7 @@
 // server.js
+require("dotenv").config();
+const crypto     = require("crypto");
+const nodemailer = require("nodemailer");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -7,6 +10,8 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
+const Chat = require("./models/chat");
+const PENDING_EXPIRY_HOURS = 24; // change to 48 if you want
 
 const app = express();
 
@@ -120,7 +125,7 @@ app.post("/admin/verify-proof/:phone", requireAdmin, async (req, res) => {
     }
 
     if (decision === "approve") {
-      user.status = "full_access";
+      user.status = "probation";
       user.proofReview = {
         status: "approved",
         reason: "",
@@ -194,11 +199,12 @@ app.get("/admin/submitted-jobs", requireAdmin, async (req, res) => {
 });
 
 // Approve / Reject submitted job video
+// Approve / Reject submitted job video
 app.post("/admin/verify-job/:jobId", requireAdmin, async (req, res) => {
   try {
-    const jobId = req.params.jobId;
+    const jobId    = req.params.jobId;
     const decision = (req.body.decision || "").trim().toLowerCase();
-    const reason = (req.body.reason || "").trim();
+    const reason   = (req.body.reason   || "").trim();
 
     if (!["approve", "reject"].includes(decision)) {
       return res.status(400).json({ error: "Decision must be approve or reject" });
@@ -212,59 +218,80 @@ app.post("/admin/verify-job/:jobId", requireAdmin, async (req, res) => {
     if (decision === "approve") {
       job.status = "completed";
       job.videoReview = {
-        status: "approved",
-        reason: "",
+        status:     "approved",
+        reason:     "",
         reviewedAt: new Date(),
         reviewedBy: ADMIN_USERNAME
       };
-
       await job.save();
 
+      // ✅ NO createdAt — timestamps:true handles it automatically
       await VerificationLog.create({
-        type: "job",
+        type:        "job_video",
         workerPhone: job.assignedTo || "",
-        workerRole: worker ? worker.role : "",
-        decision: "approved",
-        reason: "",
-        createdAt: new Date()
+        workerRole:  worker ? worker.role : "",
+        decision:    "approved",
+        reason:      ""
       });
 
+      // ✅ Check if all 3 probation videos approved → promote to full_access
+      if (worker) {
+        const allJobs = await Job.find({ assignedTo: job.assignedTo });
+        const approvedCount = allJobs.filter(
+          j => (j.status || "").toLowerCase() === "completed" && Number(j.videoIndex) > 0
+        ).length;
+
+        console.log(`Worker ${job.assignedTo} approved videos: ${approvedCount}/3`);
+
+        if (approvedCount >= 3) {
+          worker.status = "full_access";
+          await worker.save();
+          console.log(`🎉 Worker ${job.assignedTo} promoted to full_access!`);
+          return res.json({
+            message: "✅ Video approved! All 3 videos done — worker now has full access!",
+            job,
+            promoted: true
+          });
+        }
+      }
+
       return res.json({
-        message: "Job video approved successfully. Job marked completed.",
-        job
+        message: "Job video approved successfully.",
+        job,
+        promoted: false
       });
     }
 
-    // reject
+    // ── REJECT ──
     if (!reason) {
       return res.status(400).json({ error: "Reason is required for rejection" });
     }
 
     job.status = "rejected";
     job.videoReview = {
-      status: "rejected",
+      status:     "rejected",
       reason,
       reviewedAt: new Date(),
       reviewedBy: ADMIN_USERNAME
     };
-
     await job.save();
 
+    // ✅ NO createdAt — timestamps:true handles it automatically
     await VerificationLog.create({
-      type: "job",
+      type:        "job_video",
       workerPhone: job.assignedTo || "",
-      workerRole: worker ? worker.role : "",
-      decision: "rejected",
-      reason,
-      createdAt: new Date()
+      workerRole:  worker ? worker.role : "",
+      decision:    "rejected",
+      reason
     });
 
     return res.json({
       message: "Job video rejected",
       job
     });
+
   } catch (err) {
-    console.log(err);
+    console.log("Verify job error:", err.message);
     res.status(500).json({ error: "Error verifying submitted job video" });
   }
 });
@@ -836,6 +863,915 @@ app.use((err, req, res, next) => {
     return res.status(400).json({ error: "File too large" });
   }
   return res.status(400).json({ error: err.message || "Upload error" });
+});
+
+
+// ============================================================
+// Nodemailer transporter setup (add near top of server.js)
+// ============================================================
+const nodemailerTransporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// ============================================================
+// In-memory token store (simple — no extra DB collection needed)
+// token → { email, expiresAt }
+// ============================================================
+const resetTokens = new Map();
+
+// ============================================================
+// ROUTE 1: POST /forgot-password
+// User submits their email → send reset link
+// ============================================================
+app.post("/forgot-password", async (req, res) => {
+  try {
+    const email = (req.body.email || "").trim().toLowerCase();
+
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    // Always respond with success (security: don't reveal if email exists)
+    res.json({ message: "If this email is registered, a reset link has been sent." });
+
+    // Find user silently after responding
+    const user = await User.findOne({ email });
+    if (!user) return; // don't send email, but user already got success message
+
+    // Generate a secure random token
+    const token     = crypto.randomBytes(32).toString("hex");
+    const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hour from now
+
+    // Store token in memory
+    resetTokens.set(token, { email: user.email, expiresAt });
+
+    // Build reset link
+    const resetLink = `http://localhost:5000/reset-password.html?token=${token}`;
+
+    // Send email
+    await nodemailerTransporter.sendMail({
+      from: `"QuickServe" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "QuickServe — Reset Your Password",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #f4f4f4; padding: 30px; border-radius: 12px;">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h2 style="color: #4f8ef7; margin: 0;">QuickServe</h2>
+          </div>
+          <div style="background: white; padding: 28px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+            <h3 style="margin-top: 0; color: #1e2140;">Reset Your Password</h3>
+            <p style="color: #555; line-height: 1.6;">Hi <strong>${user.name}</strong>,</p>
+            <p style="color: #555; line-height: 1.6;">
+              We received a request to reset your QuickServe password.
+              Click the button below to set a new password:
+            </p>
+            <div style="text-align: center; margin: 28px 0;">
+              <a href="${resetLink}"
+                 style="background: linear-gradient(135deg, #4f8ef7, #38e8c6);
+                        color: white; padding: 14px 32px; border-radius: 10px;
+                        text-decoration: none; font-weight: bold; font-size: 16px;
+                        display: inline-block;">
+                Reset Password
+              </a>
+            </div>
+            <p style="color: #888; font-size: 13px; line-height: 1.6;">
+              ⏰ This link expires in <strong>1 hour</strong>.<br>
+              If you didn't request this, you can safely ignore this email.
+            </p>
+          </div>
+          <p style="text-align: center; color: #aaa; font-size: 12px; margin-top: 20px;">
+            © QuickServe. All rights reserved.
+          </p>
+        </div>
+      `,
+    });
+
+  } catch (err) {
+    console.log("Forgot password error:", err);
+    // Don't expose errors to user
+  }
+});
+
+// ============================================================
+// ROUTE 2: GET /verify-reset-token?token=xxx
+// Frontend checks if token is still valid on page load
+// ============================================================
+app.get("/verify-reset-token", (req, res) => {
+  const token = (req.query.token || "").trim();
+
+  if (!token) {
+    return res.json({ valid: false });
+  }
+
+  const record = resetTokens.get(token);
+
+  if (!record || Date.now() > record.expiresAt) {
+    resetTokens.delete(token); // cleanup expired
+    return res.json({ valid: false });
+  }
+
+  res.json({ valid: true });
+});
+
+// ============================================================
+// ROUTE 3: POST /reset-password
+// User submits new password with the token
+// ============================================================
+app.post("/reset-password", async (req, res) => {
+  try {
+    const token       = (req.body.token       || "").trim();
+    const newPassword = (req.body.newPassword || "").trim();
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ error: "Token and new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: "Password must be at least 6 characters" });
+    }
+
+    // Check token
+    const record = resetTokens.get(token);
+    if (!record || Date.now() > record.expiresAt) {
+      resetTokens.delete(token);
+      return res.status(400).json({ error: "Invalid or expired token" });
+    }
+
+    // Find user by email stored in token
+    const user = await User.findOne({ email: record.email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Hash new password and save
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    // Delete token so it can't be reused
+    resetTokens.delete(token);
+
+    res.json({ message: "Password reset successful" });
+
+  } catch (err) {
+    console.log("Reset password error:", err);
+    res.status(500).json({ error: "Error resetting password" });
+  }
+});
+
+
+// ============================================================
+// ROUTE 1: POST /create-payment-order
+// Frontend calls this to create a Razorpay order before payment
+// ============================================================
+app.post("/create-payment-order", async (req, res) => {
+  try {
+    const amount   = 29;   // ₹29 fixed
+    const currency = "INR";
+ 
+    const options = {
+      amount:   amount * 100,  // Razorpay uses paise (₹29 = 2900 paise)
+      currency: currency,
+      receipt:  "order_" + Date.now(),
+    };
+ 
+    const order = await razorpay.orders.create(options);
+ 
+    res.json({
+      id:       order.id,
+      amount:   order.amount,
+      currency: order.currency,
+      key_id:   process.env.RAZORPAY_KEY_ID   // safe to send to frontend
+    });
+  } catch (err) {
+    console.log("Razorpay order error:", err);
+    res.status(500).json({ error: "Could not create payment order" });
+  }
+});
+ 
+// ============================================================
+// ROUTE 2: POST /book-with-payment
+// Verifies Razorpay signature + saves booking in one step
+// Your ₹29 is already in your Razorpay account at this point
+// ============================================================
+app.post("/book-with-payment", async (req, res) => {
+  try {
+    const {
+      name, phone, service, address, date,
+      chosenWorkerPhone, chosenWorkerRole,
+      paymentId, orderId, signature
+    } = req.body;
+ 
+    // ── Verify Razorpay signature (SECURITY — prevents fake payments) ──
+    const crypto = require("crypto");
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(orderId + "|" + paymentId)
+      .digest("hex");
+ 
+    if (expectedSignature !== signature) {
+      return res.status(400).json({ error: "Payment verification failed. Please contact support." });
+    }
+ 
+    // ── Signature valid → save booking ──
+    const booking = new Booking({
+      name:             (name   || "").trim(),
+      phone:            (phone  || "").trim(),
+      service:          (service|| "").trim().toLowerCase(),
+      address:          (address|| "").trim(),
+      date:             date,
+      chosenWorkerPhone:(chosenWorkerPhone || "").trim(),
+      chosenWorkerRole: (chosenWorkerRole  || "").trim().toLowerCase(),
+      status:           "pending",
+      paymentId:        paymentId,   // store for records
+      orderId:          orderId,
+      visitTime:        "",
+      workerMessage:    "",
+      rejectReason:     "",
+      completedAt:      null,
+      reviewed:         false
+    });
+ 
+    await booking.save();
+ 
+    res.status(201).json({
+      message: "Booking confirmed and payment verified!",
+      booking
+    });
+  } catch (err) {
+    console.log("Book with payment error:", err);
+    res.status(500).json({ error: "Error confirming booking" });
+  }
+});
+ 
+// ============================================================
+// ROUTE 3: PUT /update-profile/:phone
+// Allows user to update their name and email from Edit Profile
+// ============================================================
+app.put("/update-profile/:phone", async (req, res) => {
+  try {
+    const phone = (req.params.phone || "").trim();
+    const name  = (req.body.name  || "").trim();
+    const email = (req.body.email || "").trim().toLowerCase();
+ 
+    if (!name)  return res.status(400).json({ error: "Name is required" });
+    if (!email) return res.status(400).json({ error: "Email is required" });
+ 
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ error: "User not found" });
+ 
+    // Check email not taken by someone else
+    const existing = await User.findOne({ email, phone: { $ne: phone } });
+    if (existing) return res.status(400).json({ error: "Email already in use" });
+ 
+    user.name  = name;
+    user.email = email;
+    await user.save();
+ 
+    res.json({ message: "Profile updated", user: { name: user.name, email: user.email } });
+  } catch (err) {
+    console.log("Update profile error:", err);
+    res.status(500).json({ error: "Error updating profile" });
+  }
+});
+
+// ============================================================
+// PASTE THESE INTO server.js BEFORE app.listen()
+// Also add at the top of server.js:
+//   const Chat = require("./models/Chat");
+// ============================================================
+
+// GET /chat/:bookingId — fetch all messages for a booking
+app.get("/chat/:bookingId", async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+    let chat = await Chat.findOne({ bookingId });
+    if (!chat) return res.json({ messages: [] });
+    res.json({ messages: chat.messages });
+  } catch (err) {
+    console.log("Chat fetch error:", err);
+    res.status(500).json({ error: "Error fetching messages" });
+  }
+});
+
+// POST /chat/send — send a message
+app.post("/chat/send", async (req, res) => {
+  try {
+    const { bookingId, senderPhone, senderName, senderRole, text } = req.body;
+    if (!bookingId || !senderPhone || !text) {
+      return res.status(400).json({ error: "bookingId, senderPhone and text are required" });
+    }
+
+    // Get booking to find customer + worker phones
+    const booking = await Booking.findById(bookingId);
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    // Find or create chat
+    let chat = await Chat.findOne({ bookingId });
+    if (!chat) {
+      chat = await Chat.create({
+        bookingId,
+        customerPhone: booking.phone,
+        workerPhone:   booking.chosenWorkerPhone || "",
+        messages: []
+      });
+    }
+
+    chat.messages.push({ senderPhone, senderName: senderName || "", senderRole: senderRole || "customer", text });
+    await chat.save();
+
+    res.json({ message: "Sent", total: chat.messages.length });
+  } catch (err) {
+    console.log("Chat send error:", err);
+    res.status(500).json({ error: "Error sending message" });
+  }
+});
+
+// ============================================================
+// ✅ FIXED CANCEL BOOKING ENDPOINT
+// PUT /bookings/:id/cancel — cancel a pending booking
+// REPLACE THE OLD CANCEL ENDPOINT WITH THIS
+// ============================================================
+
+app.put("/bookings/:id/cancel", async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    if (!bookingId) {
+      return res.status(400).json({ error: "Booking ID is required" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    const currentStatus = (booking.status || "pending").toLowerCase();
+    if (currentStatus !== "pending") {
+      return res.status(400).json({ 
+        error: `Cannot cancel ${currentStatus} booking. Only pending bookings can be cancelled.`
+      });
+    }
+
+    booking.status = "cancelled";
+    booking.cancelledAt = new Date();
+    booking.refundStatus = "non-refundable";
+    booking.refundAmount = 0;
+    booking.notes = "Booking cancelled by customer. ₹29 fee is non-refundable.";
+
+    await booking.save();
+
+    res.status(200).json({ 
+      success: true,
+      message: "✅ Booking cancelled successfully. ₹29 is non-refundable.",
+      booking
+    });
+
+  } catch (err) {
+    console.error("Cancel booking error:", err);
+    res.status(500).json({ error: "Server error: " + err.message });
+  }
+});
+
+// ============================================================
+// ✅ COMPLETE CHAT ENDPOINTS
+// REPLACE ALL OLD CHAT CODE WITH THIS
+// ============================================================
+
+// GET /messages/:bookingId
+app.get("/messages/:bookingId", async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+    if (!bookingId) {
+      return res.status(400).json({ error: "Booking ID is required" });
+    }
+
+    let chat = await Chat.findOne({ bookingId });
+    if (!chat) {
+      return res.json([]);
+    }
+
+    res.json(chat.messages || []);
+
+  } catch (err) {
+    console.error("Chat fetch error:", err);
+    res.status(500).json({ error: "Error fetching messages" });
+  }
+});
+
+// POST /messages/send
+app.post("/messages/send", async (req, res) => {
+  try {
+    const {
+      bookingId,
+      senderPhone,
+      senderName,
+      senderRole,
+      text
+    } = req.body;
+
+    if (!bookingId || !senderPhone || !text) {
+      return res.status(400).json({
+        error: "bookingId, senderPhone, and text are required"
+      });
+    }
+
+    const messageText = String(text).trim();
+    if (!messageText) {
+      return res.status(400).json({ error: "Message cannot be empty" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    let chat = await Chat.findOne({ bookingId });
+
+    if (!chat) {
+      chat = await Chat.create({
+        bookingId,
+        customerPhone: booking.phone,
+        workerPhone: booking.chosenWorkerPhone || "",
+        messages: []
+      });
+    }
+
+    const message = {
+      _id: new mongoose.Types.ObjectId(),
+      senderPhone: String(senderPhone).trim(),
+      senderName: String(senderName || "User").trim(),
+      senderRole: String(senderRole || "customer").toLowerCase(),
+      text: messageText,
+      timestamp: new Date(),
+      createdAt: new Date()
+    };
+
+    chat.messages.push(message);
+    await chat.save();
+
+    res.status(201).json({
+      ...message,
+      _id: message._id.toString()
+    });
+
+  } catch (err) {
+    console.error("Chat send error:", err);
+    res.status(500).json({ error: "Error sending message: " + err.message });
+  }
+});
+
+// GET /chat/:bookingId (FALLBACK)
+app.get("/chat/:bookingId", async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+    if (!bookingId) {
+      return res.status(400).json({ error: "Booking ID is required" });
+    }
+
+    let chat = await Chat.findOne({ bookingId });
+    if (!chat) {
+      return res.json({ messages: [] });
+    }
+
+    res.json({ messages: chat.messages || [] });
+
+  } catch (err) {
+    console.error("Chat fetch error:", err);
+    res.status(500).json({ error: "Error fetching messages" });
+  }
+});
+
+// POST /chat/send (FALLBACK)
+app.post("/chat/send", async (req, res) => {
+  try {
+    const {
+      bookingId,
+      senderPhone,
+      senderName,
+      senderRole,
+      text
+    } = req.body;
+
+    if (!bookingId || !senderPhone || !text) {
+      return res.status(400).json({
+        error: "bookingId, senderPhone, and text are required"
+      });
+    }
+
+    const messageText = String(text).trim();
+    if (!messageText) {
+      return res.status(400).json({ error: "Message cannot be empty" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    let chat = await Chat.findOne({ bookingId });
+
+    if (!chat) {
+      chat = await Chat.create({
+        bookingId,
+        customerPhone: booking.phone,
+        workerPhone: booking.chosenWorkerPhone || "",
+        messages: []
+      });
+    }
+
+    const message = {
+      _id: new mongoose.Types.ObjectId(),
+      senderPhone: String(senderPhone).trim(),
+      senderName: String(senderName || "User").trim(),
+      senderRole: String(senderRole || "customer").toLowerCase(),
+      text: messageText,
+      timestamp: new Date(),
+      createdAt: new Date()
+    };
+
+    chat.messages.push(message);
+    await chat.save();
+
+    res.status(201).json({
+      ...message,
+      _id: message._id.toString()
+    });
+
+  } catch (err) {
+    console.error("Chat send error:", err);
+    res.status(500).json({ error: "Error sending message: " + err.message });
+  }
+});
+
+// ============================================================
+// DASHBOARD & PROFILE ENDPOINTS
+// Add these BEFORE app.listen() in server.js
+// ============================================================
+
+// GET /dashboard/:phone — Get dashboard stats and bookings
+app.get("/dashboard/:phone", async (req, res) => {
+  try {
+    const phone = (req.params.phone || "").trim();
+
+    // Get user info
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Get all bookings for this customer
+    const bookings = await Booking.find({ phone }).sort({ createdAt: -1 });
+
+    // Calculate stats
+    const totalBookings = bookings.length;
+    const completedBookings = bookings.filter(b => b.status === "completed").length;
+    const upcomingBookings = bookings.filter(b => b.status === "pending" || b.status === "accepted");
+    const totalSpent = totalBookings * 29; // Each booking costs ₹29
+
+    // Get member since date
+    const memberSince = user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
+
+    // Get recent bookings (last 5)
+    const recentBookings = bookings.slice(0, 5).map(b => ({
+      _id: b._id,
+      service: b.service,
+      status: b.status,
+      date: b.date,
+      worker: b.chosenWorkerRole,
+      createdAt: b.createdAt
+    }));
+
+    // Get upcoming bookings (pending or accepted, sorted by date)
+    const upcomingList = upcomingBookings
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 3)
+      .map(b => ({
+        _id: b._id,
+        service: b.service,
+        status: b.status,
+        date: b.date,
+        worker: b.chosenWorkerRole || "Not assigned",
+        address: b.address
+      }));
+
+    res.json({
+      user: {
+        name: user.name,
+        phone: user.phone,
+        email: user.email
+      },
+      stats: {
+        totalBookings,
+        completedBookings,
+        totalSpent,
+        memberSince
+      },
+      recentBookings,
+      upcomingBookings: upcomingList
+    });
+
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).json({ error: "Error fetching dashboard data" });
+  }
+});
+
+// GET /profile/:phone — Get user profile
+
+
+// PUT /profile/:phone — Update profile (name & email)
+
+
+// PUT /profile/:phone/password — Change password
+app.put("/profile/:phone/password", async (req, res) => {
+  try {
+    const phone = (req.params.phone || "").trim();
+    const currentPassword = req.body.currentPassword || "";
+    const newPassword = req.body.newPassword || "";
+    const confirmPassword = req.body.confirmPassword || "";
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ error: "All password fields are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: "New password must be at least 6 characters" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ error: "New passwords do not match" });
+    }
+
+    const user = await User.findOne({ phone });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ error: "Current password is incorrect" });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({
+      message: "Password changed successfully"
+    });
+
+  } catch (err) {
+    console.error("Password change error:", err);
+    res.status(500).json({ error: "Error changing password" });
+  }
+});
+
+// ADD THESE ENDPOINTS TO YOUR server.js
+// These save address, preferences, and bio to the database so they persist after logout
+
+// ========== ADDRESS ENDPOINT ==========
+app.put("/profile/:phone/address", async (req, res) => {
+  try {
+    const { phone } = req.params;
+    const { address, city, state, pincode, country } = req.body;
+
+    if (!address || !city || !state || !pincode) {
+      return res.status(400).json({ error: "All address fields are required" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { phone },
+      { address, city, state, pincode, country: country || "India" },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "Address saved successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ========== PREFERENCES ENDPOINT ==========
+app.put("/profile/:phone/preferences", async (req, res) => {
+  try {
+    const { phone } = req.params;
+    const { preferredService, communicationPref, preferredTime } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { phone },
+      { preferredService, communicationPref, preferredTime },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "Preferences saved successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ========== UPDATE PROFILE ENDPOINT (add bio field) ==========
+// If you already have a PUT /profile/:phone endpoint, UPDATE IT to include bio:
+app.put("/profile/:phone", async (req, res) => {
+  try {
+    const { phone } = req.params;
+    const { name, email, bio } = req.body;
+
+    // Validate email if provided
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    // Check if email already exists (for other users)
+    if (email) {
+      const existingUser = await User.findOne({ email, phone: { $ne: phone } });
+      if (existingUser) {
+        return res.status(400).json({ error: "Email already in use" });
+      }
+    }
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (bio !== undefined) updateData.bio = bio;
+
+    const user = await User.findOneAndUpdate(
+      { phone },
+      updateData,
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ========== GET PROFILE ENDPOINT (returns all data including address) ==========
+// Update your existing GET /profile/:phone to return address fields:
+app.get("/profile/:phone", async (req, res) => {
+  try {
+    const { phone } = req.params;
+    const user = await User.findOne({ phone });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      createdAt: user.createdAt,
+      bio: user.bio || "",
+      address: user.address || "",
+      city: user.city || "",
+      state: user.state || "",
+      pincode: user.pincode || "",
+      country: user.country || "India",
+      preferredService: user.preferredService || "",
+      communicationPref: user.communicationPref || "email",
+      preferredTime: user.preferredTime || "flexible"
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================================
+// ADD THIS TO server.js BEFORE app.listen()
+// PUT /bookings/:id/reschedule — customer reschedules a pending booking
+// ============================================================
+app.put("/bookings/:id/reschedule", async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const newDate   = (req.body.date || "").trim();
+
+    if (!newDate) {
+      return res.status(400).json({ error: "New date is required" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    const currentStatus = (booking.status || "pending").toLowerCase();
+    if (currentStatus !== "pending") {
+      return res.status(400).json({
+        error: `Cannot reschedule a ${currentStatus} booking. Only pending bookings can be rescheduled.`
+      });
+    }
+
+    booking.date = newDate;
+    await booking.save();
+
+    res.json({
+      success: true,
+      message: `Booking rescheduled to ${newDate}`,
+      booking
+    });
+
+  } catch (err) {
+    console.error("Reschedule error:", err);
+    res.status(500).json({ error: "Server error: " + err.message });
+  }
+});
+
+// ============================================================
+// AUTO-EXPIRY: Cancel pending bookings older than 24 hours
+// Runs every hour automatically
+// ============================================================
+async function autoExpirePendingBookings() {
+  try {
+    const cutoff = new Date(Date.now() - PENDING_EXPIRY_HOURS * 60 * 60 * 1000);
+
+    const result = await Booking.updateMany(
+      {
+        status: "pending",
+        createdAt: { $lt: cutoff }
+      },
+      {
+        $set: {
+          status:       "cancelled",
+          cancelledAt:  new Date(),
+          refundStatus: "non-refundable",
+          refundAmount: 0,
+          notes:        "Auto-cancelled: Worker did not respond within 24 hours."
+        }
+      }
+    );
+
+    if (result.modifiedCount > 0) {
+      console.log(`⏰ Auto-expired ${result.modifiedCount} pending booking(s)`);
+    }
+  } catch (err) {
+    console.error("Auto-expiry error:", err);
+  }
+}
+
+// Run once on server start, then every hour
+autoExpirePendingBookings();
+setInterval(autoExpirePendingBookings, 60 * 60 * 1000);
+
+// ============================================================
+// REPLACE your existing /probation-job/create route in server.js
+// ============================================================
+
+app.post("/probation-job/create", async (req, res) => {
+  console.log("PROBATION CREATE HIT:", req.body); // ← ADD THIS
+  try {
+    const { phone, role, videoIndex } = req.body;
+    if (!phone || !role || !videoIndex) {
+      return res.status(400).json({ error: "phone, role and videoIndex are required" });
+    }
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    let job = await Job.findOne({ assignedTo: phone, videoIndex: Number(videoIndex) });
+    if (job) {
+      if (job.status === "rejected") {
+        job.status = "pending";
+        job.videoProofPath = "";
+        job.videoReview = { status: "none", reason: "", reviewedAt: null, reviewedBy: "" };
+        await job.save();
+      }
+      return res.json({ jobId: job._id, message: "Job slot ready" });
+    }
+
+    // ✅ FIXED: jobType is required field
+    job = await Job.create({
+      assignedTo:  phone,
+      jobType:     role,
+      workerRole:  role,
+      videoIndex:  Number(videoIndex),
+      description: `Probation video ${videoIndex} — ${role}`,
+      status:      "pending",
+      videoReview: { status: "none", reason: "", reviewedAt: null, reviewedBy: "" }
+    });
+
+    res.json({ jobId: job._id, message: "Job slot created" });
+  } catch (err) {
+    console.log("Probation job create error:", err.message);
+    res.status(500).json({ error: err.message || "Error creating job slot" });
+  }
 });
 
 // ========================

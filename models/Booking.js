@@ -18,12 +18,12 @@ const bookingSchema = new mongoose.Schema(
     chosenWorkerRole: { type: String, default: "" },
 
     // ======================
-    // Booking status
+    // Booking status (✅ FIXED: Added "cancelled")
     // ======================
     status: {
       type: String,
       default: "pending",
-      enum: ["pending", "accepted", "rejected", "completed"] // ✅ added completed
+      enum: ["pending", "accepted", "rejected", "completed", "cancelled"] // ✅ ADDED "cancelled"
     },
 
     // ======================
@@ -37,6 +37,14 @@ const bookingSchema = new mongoose.Schema(
     // Completion tracking
     // ======================
     completedAt: { type: Date, default: null },
+
+    // ======================
+    // Cancellation tracking (✅ ADDED)
+    // ======================
+    cancelledAt: { type: Date, default: null },
+    refundStatus: { type: String, default: "" }, // "non-refundable"
+    refundAmount: { type: Number, default: 0 },
+    notes: { type: String, default: "" },
 
     // ======================
     // Rating tracking

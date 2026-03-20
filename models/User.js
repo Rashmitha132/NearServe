@@ -1,64 +1,95 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
-{
-    name: String,
-    email: String,
-    phone: String,
-    password: String,
-
-    role: { 
-        type: String, 
-        enum: ["customer", "electrician", "plumber", "carpenter"], 
-        default: "customer" 
+  {
+    name: {
+      type: String,
+      required: true,
     },
-
-    status: { 
-        type: String, 
-        enum: [
-            "pending_verification",   // worker signed up but no proof yet
-            "proof_submitted",        // proof uploaded, waiting admin approval
-            "probation",              // admin approved proof
-            "full_access",            // probation jobs completed
-            "blocked"
-        ], 
-        default: "pending_verification"
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-
-    // PDF proof uploaded by worker
-    proofFile: {
-        type: String,
-        default: ""
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
     },
-
-    // ===============================
-    // Admin review result for proof
-    // ===============================
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["customer", "electrician", "plumber", "carpenter"],
+      default: "customer",
+    },
+    status: {
+      type: String,
+      enum: ["full_access", "pending_verification", "proof_submitted", "probation"],
+      default: "full_access",
+    },
+    proofFile: String,
     proofReview: {
-        status: {
-            type: String,
-            enum: ["none", "approved", "rejected"],
-            default: "none"
-        },
+      type: Object,
+      default: {}
+    },
 
-        reason: {
-            type: String,
-            default: ""
-        },
+    // ADDRESS FIELDS
+    address: {
+      type: String,
+      default: "",
+    },
+    city: {
+      type: String,
+      default: "",
+    },
+    state: {
+      type: String,
+      default: "",
+    },
+    pincode: {
+      type: String,
+      default: "",
+    },
+    country: {
+      type: String,
+      default: "India",
+    },
 
-        reviewedAt: {
-            type: Date,
-            default: null
-        },
+    // BIO
+    bio: {
+      type: String,
+      default: "",
+    },
 
-        reviewedBy: {
-            type: String,
-            default: ""
-        }
-    }
-
-},
-{ timestamps: true }
+    // PREFERENCES
+    preferredService: {
+      type: String,
+      default: "",
+    },
+    communicationPref: {
+      type: String,
+      enum: ["email", "sms", "both"],
+      default: "email",
+    },
+    preferredTime: {
+      type: String,
+      enum: ["morning", "afternoon", "evening", "flexible"],
+      default: "flexible",
+    },
+  },
+  { timestamps: true }
 );
+
+// ✅ REMOVED pre-save hook — server.js already hashes password with bcrypt.hash()
+// Keeping pre-save hook caused "next is not a function" error on signup
+
+// ✅ KEPT — useful for password change feature (profile page)
+userSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 module.exports = mongoose.model("User", userSchema);

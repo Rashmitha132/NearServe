@@ -2,8 +2,12 @@ const mongoose = require("mongoose");
 
 const jobSchema = new mongoose.Schema(
   {
-    jobType: { type: String, required: true },      // electrician/plumber/carpenter
+    jobType:    { type: String, default: "" },      // electrician/plumber/carpenter
+    workerRole: { type: String, default: "" },      // same as jobType — kept for compatibility
     assignedTo: { type: String, required: true },   // worker phone number
+
+    // ✅ ADDED: which video slot this is (1, 2, or 3)
+    videoIndex: { type: Number, default: 0 },
 
     status: {
       type: String,
@@ -11,23 +15,13 @@ const jobSchema = new mongoose.Schema(
       default: "pending"
     },
 
-    // Show meaningful instructions in worker dashboard
-    description: { type: String, default: "" },
-
-    // Store uploaded video file path (uploads/videos/....)
+    description:    { type: String, default: "" },
     videoProofPath: { type: String, default: "" },
 
-    // ===============================
-    // Admin review result for video ✅ ADDED
-    // ===============================
     videoReview: {
-      status: {
-        type: String,
-        enum: ["none", "approved", "rejected"],
-        default: "none"
-      },
-      reason: { type: String, default: "" },
-      reviewedAt: { type: Date, default: null },
+      status:     { type: String, enum: ["none", "approved", "rejected"], default: "none" },
+      reason:     { type: String, default: "" },
+      reviewedAt: { type: Date,   default: null },
       reviewedBy: { type: String, default: "" }
     },
 

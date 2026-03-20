@@ -1,241 +1,573 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Select Worker</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Select Worker - NearServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:   #2563eb;
+      --teal:   #0d9488;
+      --teal2:  #14b8a6;
+      --dark:   #0f172a;
+      --mid:    #475569;
+      --soft:   #94a3b8;
+      --border: #e2eaf4;
     }
+
+    html, body { height: 100%; }
 
     body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: url("/uploads/booking.jpg") no-repeat center center fixed;
-      background-size: cover;
       min-height: 100vh;
-      padding: 40px 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      background: #f0f7ff;
     }
 
-    .page {
-      width: 100%;
-      max-width: 1100px;
-      background: rgba(255, 255, 255, 0.78);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-radius: 22px;
-      padding: 32px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.45);
+    .left-panel {
+      width: 300px;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 32px;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      width: 320px; height: 320px; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      top: -100px; right: -100px;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      bottom: -60px; left: -60px;
+    }
+
+    .deco-ring {
+      position: absolute; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.08);
+    }
+    .r1 { width:160px; height:160px; top:35%; right:-40px; }
+    .r2 { width: 90px; height: 90px; top:58%; right:36px; border-color:rgba(255,255,255,0.05); }
+    .r3 { width: 60px; height: 60px; top:15%; left:20px;  border-color:rgba(255,255,255,0.06); }
+
+    .fi {
+      position: absolute;
+      width: 48px; height: 48px; border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      animation: bob ease-in-out infinite alternate;
+    }
+    .fi1 { top:15%; left:8%;   animation-duration:3.2s; animation-delay:0s; }
+    .fi2 { top:38%; right:10%; animation-duration:2.8s; animation-delay:0.5s; }
+    .fi3 { top:60%; left:14%;  animation-duration:3.6s; animation-delay:1s; }
+    .fi4 { top:75%; right:16%; animation-duration:2.5s; animation-delay:0.3s; }
+
+    @keyframes bob {
+      from { transform: translateY(0) rotate(-3deg); }
+      to   { transform: translateY(-12px) rotate(3deg); }
+    }
+
+    .l-logo {
+      position: relative; z-index: 2;
+      display: flex; align-items: center; gap: 11px;
+    }
+    .l-logo-icon {
+      width: 42px; height: 42px; border-radius: 13px;
+      background: rgba(255,255,255,0.16);
+      border: 1.5px solid rgba(255,255,255,0.28);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .l-logo span {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.2rem; font-weight: 900; color: #fff;
+    }
+
+    .l-main {
+      position: relative; z-index: 2;
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; padding: 28px 0;
+    }
+    .l-main h2 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.85rem; font-weight: 900;
+      color: #fff; line-height: 1.25;
+      margin-bottom: 12px;
+    }
+    .l-main h2 em {
+      font-style: normal;
+      background: linear-gradient(90deg, #7dd3fc, #5eead4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .l-main p {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.85rem; line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      padding: 6px 13px; border-radius: 50px;
+      background: rgba(255,255,255,0.11);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 0.75rem; font-weight: 600;
+    }
+
+    .l-stats { position: relative; z-index: 2; display: flex; gap: 18px; align-items: center; }
+    .stat-num { font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 900; color: #fff; }
+    .stat-lbl { font-size: 0.68rem; color: rgba(255,255,255,0.55); }
+    .sdiv { width:1px; background: rgba(255,255,255,0.2); height: 32px; }
+
+    .right-panel {
+      margin-left: 300px;
+      flex: 1;
+      min-height: 100vh;
+      background: #fff;
+      padding: 40px 44px;
+      overflow-y: auto;
     }
 
     .topbar {
-      display: flex;
+      display: flex; align-items: center;
       justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1.5px solid var(--border);
+      flex-wrap: wrap; gap: 14px;
     }
 
     .title-wrap h1 {
-      margin: 0;
-      font-size: 44px;
-      color: #111827;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.65rem; font-weight: 900;
+      color: var(--dark); margin-bottom: 3px;
     }
-
     .title-wrap p {
-      margin: 10px 0 0;
-      color: #4b5563;
-      font-size: 18px;
+      color: var(--soft); font-size: 0.85rem;
+    }
+    .title-wrap p span {
+      color: var(--teal); font-weight: 700;
+      text-transform: capitalize;
     }
 
     .back-btn {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 18px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.25s ease;
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+      display: flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border: none; border-radius: 11px;
+      background: linear-gradient(135deg, #1d4ed8, #0d9488);
+      color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(29,78,216,0.28);
+      transition: transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .back-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(29,78,216,0.35); }
+
+    .search-wrap {
+      position: relative; margin-bottom: 28px;
+    }
+    .search-wrap input {
+      width: 100%; padding: 12px 16px 12px 46px;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      background: #fafcff; color: var(--dark);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem; outline: none;
+      transition: all 0.25s;
+    }
+    .search-wrap input::placeholder { color: #b0bec5; }
+    .search-wrap input:focus {
+      border-color: #93c5fd; background: #fff;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: #b0bec5;
     }
 
-    .back-btn:hover {
-      transform: translateY(-2px);
+    .sort-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 22px; flex-wrap: wrap;
+    }
+    .sort-lbl { font-size: 0.78rem; color: var(--soft); font-weight: 600; }
+    .sort-btn {
+      padding: 6px 14px; border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: #fafcff; color: var(--mid);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sort-btn:hover, .sort-btn.active {
+      background: #eff6ff; border-color: #93c5fd; color: var(--blue);
     }
 
     #list {
-      margin-top: 24px;
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 18px;
     }
 
     .worker-card {
-      background: rgba(255, 255, 255, 0.92);
+      background: #fff;
+      border: 1.5px solid var(--border);
       border-radius: 18px;
-      padding: 20px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-      transition: 0.25s ease;
+      padding: 22px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
-
+    .worker-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2563eb, #0d9488);
+      opacity: 0; transition: opacity 0.22s;
+    }
     .worker-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+      border-color: #93c5fd;
+    }
+    .worker-card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 16px;
     }
 
-    .worker-top {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .worker-avatar {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #60a5fa, #6366f1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 24px;
-      font-weight: 700;
+    .w-avatar {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #0d9488);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.3rem; font-weight: 900; color: #fff;
       flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.25);
     }
 
-    .worker-name {
-      font-size: 22px;
-      font-weight: 700;
-      color: #111827;
-      margin: 0;
+    .w-name {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem; font-weight: 800;
+      color: var(--dark); margin-bottom: 2px;
+    }
+    .w-role {
+      font-size: 0.75rem; color: var(--teal);
+      font-weight: 600; text-transform: capitalize;
     }
 
-    .worker-role {
-      margin: 4px 0 0;
-      color: #6b7280;
-      font-size: 14px;
+    .w-rating {
+      display: flex; align-items: center; gap: 5px;
+      margin-bottom: 12px;
+    }
+    .stars { color: #fbbf24; font-size: 0.85rem; }
+    .rating-num {
+      font-size: 0.82rem; font-weight: 700; color: var(--dark);
+    }
+    .review-count { font-size: 0.75rem; color: var(--soft); }
+
+    .card-info { margin-bottom: 16px; }
+    .info-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.82rem; color: var(--mid);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-icon {
+      width: 26px; height: 26px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 12px;
+    }
+    .ii-phone  { background: #eff6ff; }
+    .ii-email  { background: #f0fdf4; }
+
+    .btn-select {
+      width: 100%; padding: 11px;
+      border: none; border-radius: 11px;
+      background: linear-gradient(135deg, #2563eb, #0d9488);
+      color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-select:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.32); }
+
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center; padding: 60px 20px;
+      color: var(--soft);
+    }
+    .empty-state .e-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state h3 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
+      color: var(--mid); margin-bottom: 6px;
     }
 
-    .worker-info {
-      color: #374151;
-      font-size: 15px;
-      line-height: 1.8;
+    .loading {
+      grid-column: 1/-1;
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px; color: var(--soft); gap: 10px;
+      font-size: 0.9rem;
     }
-
-    .worker-info strong {
-      color: #111827;
+    .spinner {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 3px solid #e2eaf4;
+      border-top-color: var(--blue);
+      animation: spin 0.7s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .view-profile {
-      margin-top: 14px;
-      display: inline-block;
-      background: #22c55e;
-      color: white;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    @media (max-width: 700px) {
-      .page {
-        padding: 22px;
-      }
-
-      .title-wrap h1 {
-        font-size: 32px;
-      }
-
-      .title-wrap p {
-        font-size: 16px;
-      }
-
-      .back-btn {
-        width: 100%;
-      }
+    @media (max-width: 860px) {
+      .left-panel { display: none; }
+      .right-panel { margin-left: 0; padding: 24px 18px; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="topbar">
-      <div class="title-wrap">
-        <h1>Select a Worker</h1>
-        <p id="roleTitle"></p>
-      </div>
 
-      <button class="back-btn" onclick="window.location.href='booking.html'">
-        ← Back to Booking
-      </button>
+<!-- ══ LEFT PANEL ══ -->
+<div class="left-panel">
+  <div class="deco-ring r1"></div>
+  <div class="deco-ring r2"></div>
+  <div class="deco-ring r3"></div>
+
+  <div class="fi fi1">🔧</div>
+  <div class="fi fi2">⚡</div>
+  <div class="fi fi3">🪚</div>
+  <div class="fi fi4">⭐</div>
+
+  <div class="l-logo">
+    <div class="l-logo-icon">
+      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
+        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/>
+        <circle cx="19" cy="16" r="2.8" fill="#14b8a6"/>
+        <circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
+        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
+        <circle cx="32" cy="26" r="1.7" fill="white"/>
+        <circle cx="37" cy="26" r="1.7" fill="white"/>
+        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
+      </svg>
     </div>
-
-    <div id="list"></div>
+    <span>NearServe</span>
   </div>
 
-  <script src="js/worker_list.js"></script>
+  <div class="l-main">
+    <h2>Find Your <em>Perfect</em> Worker</h2>
+    <p>Browse verified professionals, check ratings and reviews, and pick the best one for your job.</p>
+    <div class="pills">
+      <div class="pill">✅ Verified</div>
+      <div class="pill">⭐ Rated</div>
+      <div class="pill">🔒 Trusted</div>
+      <div class="pill">⚡ Fast</div>
+    </div>
+  </div>
 
-  <script>
-    /* Optional beautification for cards generated by JS */
-    const observer = new MutationObserver(() => {
-      const cards = document.querySelectorAll("#list > div");
-      cards.forEach(card => {
-        if (!card.classList.contains("worker-card")) {
-          const lines = card.innerHTML.split("<br>").map(x => x.trim()).filter(Boolean);
+  <div class="l-stats">
+    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified Workers</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">🔒</div><div class="stat-lbl">Secure Booking</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">⚡</div><div class="stat-lbl">Quick & Easy</div></div>
+  </div>
 
-          let name = "";
-          let phone = "";
-          let email = "";
-          let rating = "";
-          let last = "";
+</div>
 
-          lines.forEach(line => {
-            const text = line.replace(/<[^>]*>/g, "").trim();
-            if (!name && text) name = text;
-            else if (text.toLowerCase().startsWith("phone:")) phone = text;
-            else if (text.toLowerCase().startsWith("email:")) email = text;
-            else if (text.toLowerCase().startsWith("rating:")) rating = text;
-            else last = text;
-          });
+<!-- ══ RIGHT PANEL ══ -->
+<div class="right-panel">
 
-          const firstLetter = name ? name.charAt(0).toUpperCase() : "W";
-          const roleText = document.getElementById("roleTitle")?.textContent || "Available workers";
+  <div class="topbar">
+    <div class="title-wrap">
+      <h1>👷 Select a Worker</h1>
+      <p id="roleTitle">Showing available <span id="roleSpan">workers</span></p>
+    </div>
+    <button class="back-btn" onclick="window.location.href='booking.html'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Back to Booking
+    </button>
+  </div>
 
-          card.className = "worker-card";
-          card.innerHTML = `
-            <div class="worker-top">
-              <div class="worker-avatar">${firstLetter}</div>
-              <div>
-                <h3 class="worker-name">${name || "Worker"}</h3>
-                <p class="worker-role">${roleText}</p>
-              </div>
-            </div>
+  <!-- Search -->
+  <div class="search-wrap">
+    <div class="search-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </div>
+    <input type="text" id="searchInput" placeholder="Search workers by name...">
+  </div>
 
-            <div class="worker-info">
-              <div><strong>${phone || ""}</strong></div>
-              <div>${email || ""}</div>
-              <div>${rating || ""}</div>
-            </div>
+  <!-- Sort -->
+  <div class="sort-row">
+    <span class="sort-lbl">Sort by:</span>
+    <button class="sort-btn active" id="sortName" onclick="sortCards('name')">🔤 Name</button>
+    <button class="sort-btn" id="sortRating" onclick="sortCards('rating')">⭐ Top Rated</button>
+    <button class="sort-btn" id="sortReviews" onclick="sortCards('reviews')">📝 Most Reviews</button>
+  </div>
 
-            <div class="view-profile">${last || "Click to view profile"}</div>
-          `;
-        }
-      });
+  <!-- Worker Cards Grid -->
+  <div id="list">
+    <div class="loading">
+      <div class="spinner"></div>
+      Loading workers...
+    </div>
+  </div>
+
+</div>
+
+<script src="js/worker_list.js"></script>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const role   = params.get("role") || "worker";
+  document.getElementById("roleSpan").textContent = role + "s";
+
+  document.getElementById("searchInput").addEventListener("input", function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll(".worker-card").forEach(card => {
+      const name = card.querySelector(".w-name")?.textContent.toLowerCase() || "";
+      card.style.display = name.includes(q) ? "" : "none";
+    });
+  });
+
+  function sortCards(by) {
+    document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById("sort" + by.charAt(0).toUpperCase() + by.slice(1))?.classList.add("active");
+
+    const list  = document.getElementById("list");
+    const cards = Array.from(list.querySelectorAll(".worker-card"));
+
+    cards.sort((a, b) => {
+      if (by === "name") {
+        return (a.querySelector(".w-name")?.textContent || "").localeCompare(b.querySelector(".w-name")?.textContent || "");
+      }
+      if (by === "rating") {
+        const ra = parseFloat(a.querySelector(".rating-num")?.textContent) || 0;
+        const rb = parseFloat(b.querySelector(".rating-num")?.textContent) || 0;
+        return rb - ra;
+      }
+      if (by === "reviews") {
+        const ra = parseInt(a.querySelector(".review-count")?.textContent) || 0;
+        const rb = parseInt(b.querySelector(".review-count")?.textContent) || 0;
+        return rb - ra;
+      }
+      return 0;
     });
 
-    observer.observe(document.getElementById("list"), { childList: true, subtree: true });
-  </script>
+    cards.forEach(c => list.appendChild(c));
+  }
+
+  // Beautify cards injected by worker_list.js
+  const observer = new MutationObserver(() => {
+    const cards = document.querySelectorAll("#list > div:not(.worker-card):not(.loading):not(.empty-state)");
+
+    cards.forEach(card => {
+      const lines = card.innerHTML.split("<br>").map(x => x.replace(/<[^>]*>/g, "").trim()).filter(Boolean);
+
+      let name = "", phone = "", email = "", rating = "0", reviews = "0";
+      const anchor = card.querySelector("a, button");
+
+      lines.forEach((line, i) => {
+        if (i === 0) { name = line; return; }
+        if (line.toLowerCase().startsWith("phone:"))  phone   = line.replace(/^phone:\s*/i, "");
+        if (line.toLowerCase().startsWith("email:"))  email   = line.replace(/^email:\s*/i, "");
+        if (line.toLowerCase().startsWith("rating:")) {
+          const m = line.match(/[\d.]+/g);
+          rating  = m?.[0] || "0";
+          reviews = m?.[1] || "0";
+        }
+      });
+
+      const letter     = name ? name.charAt(0).toUpperCase() : "W";
+      const ratingNum  = parseFloat(rating) || 0;
+      const stars      = "★".repeat(Math.round(ratingNum)) + "☆".repeat(5 - Math.round(ratingNum));
+      const roleLabel  = document.getElementById("roleSpan")?.textContent || "worker";
+      const onclickVal = anchor ? (anchor.getAttribute("onclick") || "") : "";
+
+      card.className = "worker-card";
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="w-avatar">${letter}</div>
+          <div>
+            <div class="w-name">${name || "Worker"}</div>
+            <div class="w-role">${roleLabel}</div>
+          </div>
+        </div>
+        <div class="w-rating">
+          <span class="stars">${stars}</span>
+          <span class="rating-num">${ratingNum.toFixed(1)}</span>
+          <span class="review-count">(${reviews} reviews)</span>
+        </div>
+        <div class="card-info">
+          <div class="info-row">
+            <div class="info-icon ii-phone">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            ${phone || "—"}
+          </div>
+          <div class="info-row">
+            <div class="info-icon ii-email">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="3"/>
+                <polyline points="2,4 12,13 22,4"/>
+              </svg>
+            </div>
+            ${email || "—"}
+          </div>
+        </div>
+        <button class="btn-select" onclick="${onclickVal}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Select This Worker
+        </button>
+      `;
+    });
+
+    const realCards = document.querySelectorAll(".worker-card");
+    const loading   = document.querySelector(".loading");
+    if (loading) loading.remove();
+
+    if (realCards.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.innerHTML = `
+        <div class="e-icon">👷</div>
+        <h3>No workers available</h3>
+        <p>There are no verified workers for this service right now.</p>
+      `;
+      document.getElementById("list").appendChild(empty);
+    }
+  });
+
+  observer.observe(document.getElementById("list"), { childList: true, subtree: true });
+</script>
 </body>
 </html>

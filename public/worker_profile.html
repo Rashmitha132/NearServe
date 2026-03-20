@@ -3,349 +3,554 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Worker Profile</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Worker Profile - NearServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --blue:#2563eb; --teal:#0d9488; --teal2:#14b8a6; --dark:#0f172a; --mid:#475569; --soft:#94a3b8; --border:#e2eaf4; }
+    html, body { height: 100%; }
+    body { min-height:100vh; font-family:'Plus Jakarta Sans',sans-serif; display:flex; background:#f0f7ff; }
 
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: url("/uploads/booking.jpg") no-repeat center center fixed;
-      background-size: cover;
-      min-height: 100vh;
-      padding: 30px 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+    /* ══ LEFT PANEL ══ */
+    .left-panel { width:300px; min-height:100vh; background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%); position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; justify-content:space-between; padding:40px 32px; overflow:hidden; z-index:10; }
+    .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
+    .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
+    .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.08); }
+    .r1{width:160px;height:160px;top:35%;right:-40px;} .r2{width:90px;height:90px;top:58%;right:36px;border-color:rgba(255,255,255,0.05);} .r3{width:60px;height:60px;top:15%;left:20px;border-color:rgba(255,255,255,0.06);}
+    .fi { position:absolute; width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(0,0,0,0.15); animation:bob ease-in-out infinite alternate; }
+    .fi1{top:15%;left:8%;animation-duration:3.2s;} .fi2{top:38%;right:10%;animation-duration:2.8s;animation-delay:0.5s;} .fi3{top:60%;left:14%;animation-duration:3.6s;animation-delay:1s;} .fi4{top:75%;right:16%;animation-duration:2.5s;animation-delay:0.3s;}
+    @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-12px) rotate(3deg);} }
+    .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:11px; }
+    .l-logo-icon { width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
+    .l-logo span { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; }
+    .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:22px 0; }
+    .l-main h2 { font-family:'Nunito',sans-serif; font-size:1.85rem; font-weight:900; color:#fff; line-height:1.25; margin-bottom:12px; }
+    .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .l-main p { color:rgba(255,255,255,0.65); font-size:0.85rem; line-height:1.7; margin-bottom:24px; }
+    .l-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:22px; }
+    .l-step { display:flex; align-items:flex-start; gap:11px; }
+    .l-step-num { width:26px; height:26px; border-radius:8px; background:rgba(255,255,255,0.18); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:0.75rem; font-weight:900; color:#fff; flex-shrink:0; margin-top:1px; }
+    .l-step-text strong { display:block; font-size:0.8rem; font-weight:700; color:#fff; margin-bottom:1px; }
+    .l-step-text span { font-size:0.72rem; color:rgba(255,255,255,0.55); line-height:1.4; }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; }
+    .pill { padding:6px 13px; border-radius:50px; background:rgba(255,255,255,0.11); border:1.5px solid rgba(255,255,255,0.2); color:#fff; font-size:0.75rem; font-weight:600; }
 
-    .container {
-      width: 100%;
-      max-width: 950px;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-radius: 22px;
-      padding: 30px;
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.20);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
+    /* ══ RIGHT PANEL ══ */
+    .right-panel { margin-left:300px; flex:1; min-height:100vh; background:#fff; padding:40px 44px; overflow-y:auto; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; padding-bottom:20px; border-bottom:1.5px solid var(--border); flex-wrap:wrap; gap:14px; }
+    .title-wrap h1 { font-family:'Nunito',sans-serif; font-size:1.65rem; font-weight:900; color:var(--dark); margin-bottom:3px; }
+    .title-wrap p { color:var(--soft); font-size:0.85rem; }
+    .title-wrap p span { color:var(--teal); font-weight:700; text-transform:capitalize; }
+    .top-buttons { display:flex; gap:10px; flex-wrap:wrap; }
+    .top-btn { display:flex; align-items:center; gap:7px; padding:10px 20px; border:none; border-radius:11px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:transform 0.2s; white-space:nowrap; }
+    .btn-list    { background:linear-gradient(135deg,#1d4ed8,#0d9488); box-shadow:0 4px 14px rgba(29,78,216,0.28); }
+    .btn-booking { background:linear-gradient(135deg,#d97706,#f59e0b); box-shadow:0 4px 14px rgba(217,119,6,0.28); }
+    .top-btn:hover { transform:translateY(-2px); }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
+    .profile-layout { display:grid; grid-template-columns:285px 1fr; gap:22px; }
+    .left-card { background:#fff; border:1.5px solid var(--border); border-radius:20px; padding:26px 20px 20px; box-shadow:0 4px 20px rgba(0,0,0,0.06); position:relative; overflow:hidden; align-self:start; }
+    .left-card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background:linear-gradient(90deg,#2563eb,#0d9488); }
+    .avatar { width:78px; height:78px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.9rem; font-weight:900; color:#fff; margin:8px auto 13px; box-shadow:0 6px 20px rgba(37,99,235,0.28); }
+    .worker-name { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:var(--dark); text-align:center; margin-bottom:3px; }
+    .worker-role { text-align:center; color:var(--teal); font-size:0.78rem; font-weight:700; text-transform:capitalize; margin-bottom:14px; }
+    .rating-box { text-align:center; margin-bottom:16px; }
+    .stars { color:#fbbf24; font-size:1.1rem; letter-spacing:3px; margin-bottom:4px; }
+    .rating-text { font-size:0.78rem; color:var(--mid); font-weight:600; }
+    .mini-info { display:grid; gap:8px; margin-bottom:14px; }
+    .info-item { background:#f8fafc; border:1.5px solid var(--border); border-radius:10px; padding:9px 12px; font-size:0.8rem; color:var(--mid); display:flex; align-items:center; gap:9px; }
+    .info-icon { width:26px; height:26px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .ii-phone { background:#eff6ff; } .ii-email { background:#f0fdf4; }
 
-    .top-bar h1 {
-      margin: 0;
-      color: #111827;
-      font-size: 42px;
-    }
+    .call-btn { width:100%; padding:11px; border:none; border-radius:11px; background:linear-gradient(135deg,#0d9488,#14b8a6); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.84rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(13,148,136,0.26); transition:transform 0.2s, box-shadow 0.2s; display:flex; align-items:center; justify-content:center; gap:7px; text-decoration:none; }
+    .call-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(13,148,136,0.34); }
 
-    .top-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .right-col { display:flex; flex-direction:column; gap:18px; }
+    .section-card { background:#fff; border:1.5px solid var(--border); border-radius:20px; padding:22px 24px; box-shadow:0 4px 16px rgba(0,0,0,0.05); position:relative; overflow:hidden; }
+    .section-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#2563eb,#0d9488); }
+    .section-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; color:var(--dark); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .st-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+    .sti-blue{background:#eff6ff;} .sti-green{background:#f0fdf4;}
+    .detail-grid { display:grid; gap:8px; }
+    .detail-row { display:flex; align-items:center; gap:10px; background:#f8fafc; border:1.5px solid var(--border); border-radius:10px; padding:10px 13px; font-size:0.82rem; }
+    .detail-label { font-weight:700; color:var(--dark); min-width:62px; flex-shrink:0; }
+    .detail-value { color:var(--mid); }
+    #profile { display:none; }
+    .feedback-list { display:grid; gap:10px; }
+    .feedback-card { background:#f8fafc; border:1.5px solid var(--border); border-radius:13px; padding:13px 15px; }
+    .feedback-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; flex-wrap:wrap; gap:5px; }
+    .feedback-name { font-weight:700; color:var(--dark); font-size:0.84rem; }
+    .feedback-stars { color:#fbbf24; font-size:0.82rem; letter-spacing:1px; }
+    .feedback-text { color:var(--mid); font-size:0.81rem; line-height:1.6; }
+    .confirm-btn { width:100%; padding:13px; border:none; border-radius:12px; background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.92rem; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(34,197,94,0.26); transition:transform 0.2s, box-shadow 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .confirm-btn:hover { transform:translateY(-2px); box-shadow:0 6px 22px rgba(34,197,94,0.34); }
+    .loading-wrap { display:flex; align-items:center; gap:10px; color:var(--soft); font-size:0.86rem; padding:16px 0; }
+    .spinner { width:18px; height:18px; border-radius:50%; border:3px solid #e2eaf4; border-top-color:var(--blue); animation:spin 0.7s linear infinite; flex-shrink:0; }
+    @keyframes spin { to{transform:rotate(360deg);} }
 
-    .btn {
-      border: none;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 14px;
+    /* ══ CUSTOM CALL CONFIRM MODAL ══ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,0.55);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      display: none; align-items: center; justify-content: center;
     }
+    .modal-overlay.open { display: flex; }
 
-    .btn-blue {
-      background: #2563eb;
-      color: #fff;
+    .modal-box {
+      background: #fff;
+      border-radius: 24px;
+      padding: 0;
+      width: 360px; max-width: 95vw;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.22);
+      overflow: hidden;
+      animation: popUp 0.28s cubic-bezier(0.16,1,0.3,1) both;
     }
+    @keyframes popUp { from{opacity:0;transform:scale(0.92) translateY(16px);} to{opacity:1;transform:scale(1) translateY(0);} }
 
-    .btn-orange {
-      background: #f59e0b;
-      color: #fff;
-    }
-
-    .btn-green {
-      background: #22c55e;
-      color: #fff;
-    }
-
-    .btn-call {
-      background: #14b8a6;
-      color: #fff;
-    }
-
-    .profile-layout {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 24px;
-    }
-
-    .left-card,
-    .right-card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-      border: 1px solid #e5e7eb;
-    }
-
-    .avatar {
-      width: 95px;
-      height: 95px;
-      margin: 0 auto 16px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #3b82f6, #6366f1);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-      font-weight: 700;
-    }
-
-    .worker-name {
+    .modal-header {
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      padding: 24px 28px 20px;
       text-align: center;
-      font-size: 28px;
-      font-weight: 800;
-      margin: 0 0 8px;
-      color: #111827;
     }
-
-    .worker-role {
-      text-align: center;
-      color: #6b7280;
-      font-size: 16px;
-      margin-bottom: 14px;
-      text-transform: capitalize;
+    .modal-header-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin: 0 auto 12px;
     }
+    .modal-header h3 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.15rem; font-weight: 900; color: #fff; margin-bottom: 3px;
+    }
+    .modal-header p { font-size: 0.8rem; color: rgba(255,255,255,0.78); }
 
-    .rating-box {
-      text-align: center;
+    .modal-body { padding: 20px 24px; }
+    .modal-worker-info {
+      background: #f8faff;
+      border: 1.5px solid var(--border);
+      border-radius: 13px;
+      padding: 13px 16px;
       margin-bottom: 18px;
+      display: flex; align-items: center; gap: 13px;
+    }
+    .modal-worker-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #0d9488);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 900; color: #fff;
+      flex-shrink: 0;
+    }
+    .modal-worker-name { font-weight: 700; color: var(--dark); font-size: 0.9rem; margin-bottom: 2px; }
+    .modal-worker-phone { font-size: 0.8rem; color: var(--teal); font-weight: 600; }
+
+    .modal-note {
+      display: flex; align-items: center; gap: 8px;
+      background: #fffbeb; border: 1px solid #fde68a;
+      border-radius: 10px; padding: 10px 13px;
+      font-size: 0.77rem; color: #92400e; margin-bottom: 18px;
     }
 
-    .stars {
-      color: #fbbf24;
-      font-size: 22px;
-      letter-spacing: 2px;
-      margin-bottom: 6px;
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btn-cancel {
+      flex: 1; padding: 12px; border-radius: 11px;
+      border: 1.5px solid var(--border); background: #fff;
+      color: var(--mid); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s;
     }
-
-    .rating-text {
-      color: #374151;
-      font-weight: 600;
+    .modal-btn-cancel:hover { background: #f1f5f9; }
+    .modal-btn-call {
+      flex: 1; padding: 12px; border-radius: 11px; border: none;
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(13,148,136,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
+    .modal-btn-call:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13,148,136,0.4); }
 
-    .mini-info {
-      margin-top: 18px;
-      display: grid;
-      gap: 12px;
-    }
 
-    .info-item {
-      background: #f9fafb;
-      border-radius: 12px;
-      padding: 12px 14px;
-      color: #374151;
-      font-size: 15px;
-      border: 1px solid #e5e7eb;
-    }
+    /* ══ WORKER SELECTED SUCCESS MODAL ══ */
+    .success-modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); z-index:999; display:none; align-items:center; justify-content:center; }
+    .success-modal-overlay.open { display:flex; }
+    .success-modal-box { background:#fff; border-radius:24px; width:380px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.22); overflow:hidden; animation:popUp 0.28s cubic-bezier(0.16,1,0.3,1) both; }
+    .success-modal-header { background:linear-gradient(135deg,#16a34a,#22c55e); padding:26px 28px 22px; text-align:center; }
+    .success-check-wrap { width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin:0 auto 12px; }
+    .success-modal-header h3 { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; margin-bottom:4px; }
+    .success-modal-header p  { font-size:0.8rem; color:rgba(255,255,255,0.82); }
+    .success-modal-body { padding:22px 24px; }
+    .success-worker-card { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1.5px solid #bbf7d0; border-radius:13px; padding:14px 16px; display:flex; align-items:center; gap:13px; margin-bottom:16px; }
+    .success-worker-avatar { width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,#16a34a,#22c55e); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; flex-shrink:0; }
+    .success-worker-name { font-weight:800; color:#14532d; font-size:0.95rem; margin-bottom:2px; font-family:'Nunito',sans-serif; }
+    .success-worker-role { font-size:0.78rem; color:#16a34a; font-weight:600; text-transform:capitalize; }
+    .success-note { display:flex; align-items:flex-start; gap:8px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:10px 13px; font-size:0.78rem; color:#1e40af; margin-bottom:18px; line-height:1.5; }
+    .success-modal-btn { width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.92rem; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(34,197,94,0.3); transition:transform 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .success-modal-btn:hover { transform:translateY(-2px); }
 
-    .info-item strong {
-      color: #111827;
-    }
-
-    .section-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: #111827;
-      margin: 0 0 14px;
-    }
-
-    .profile-box {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 16px;
-      color: #374151;
-      line-height: 1.8;
-      margin-bottom: 20px;
-    }
-
-    .profile-box strong {
-      color: #111827;
-    }
-
-    .feedback-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .feedback-card {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 14px 16px;
-    }
-
-    .feedback-text {
-      color: #4b5563;
-      line-height: 1.6;
-      font-size: 15px;
-    }
-
-    .action-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 22px;
-    }
-
-    .confirm-btn {
-      flex: 1;
-      min-width: 220px;
-      font-size: 16px;
-      padding: 14px 18px;
-    }
-
-    .call-btn {
-      min-width: 180px;
-    }
-
-    @media (max-width: 860px) {
-      .profile-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .top-bar h1 {
-        font-size: 34px;
-      }
-    }
-
-    .feedback-list {
-  display: grid;
-  gap: 14px;
-}
-
-.feedback-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 16px 18px;
-}
-
-.feedback-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
-.feedback-name {
-  font-weight: 700;
-  color: #111827;
-  font-size: 16px;
-}
-
-.feedback-stars {
-  color: #fbbf24;
-  font-size: 16px;
-  letter-spacing: 1px;
-}
-
-.feedback-text {
-  color: #4b5563;
-  line-height: 1.6;
-  font-size: 15px;
-}
+    @media(max-width:860px) { .left-panel{display:none;} .right-panel{margin-left:0;padding:24px 18px;} .profile-layout{grid-template-columns:1fr;} }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="top-bar">
-      <h1>Worker Profile</h1>
-
-      <div class="top-buttons">
-        <button class="btn btn-blue" onclick="window.location.href='worker_list.html'">
-          <i class="fa-solid fa-arrow-left"></i> Back to Worker List
-        </button>
-
-        <button class="btn btn-orange" onclick="window.location.href='booking.html'">
-          <i class="fa-solid fa-house"></i> Back to Booking
-        </button>
-      </div>
+<!-- ══ LEFT PANEL ══ -->
+<div class="left-panel">
+  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
+  <div class="fi fi1">🔧</div><div class="fi fi2">⚡</div><div class="fi fi3">🪚</div><div class="fi fi4">🏠</div>
+  <div class="l-logo">
+    <div class="l-logo-icon">
+      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
+        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
+        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
+        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
+        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
+      </svg>
     </div>
+    <span>NearServe</span>
+  </div>
+  <div class="l-main">
+    <h2>Worker <em>Profile</em></h2>
+    <p>Review full details, ratings, and customer feedback before confirming your booking.</p>
+    <div class="l-steps">
+      <div class="l-step"><div class="l-step-num">1</div><div class="l-step-text"><strong>Check the Details</strong><span>Verify name, role, phone and email of the worker.</span></div></div>
+      <div class="l-step"><div class="l-step-num">2</div><div class="l-step-text"><strong>Read the Feedback</strong><span>See what past customers are saying about their experience.</span></div></div>
+      <div class="l-step"><div class="l-step-num">3</div><div class="l-step-text"><strong>Confirm Your Worker</strong><span>Happy with the profile? Hit confirm and complete your booking.</span></div></div>
+    </div>
+    <div class="pills">
+      <div class="pill">✅ Verified</div><div class="pill">⭐ Rated</div><div class="pill">🔒 Trusted</div><div class="pill">⚡ Fast</div>
+    </div>
+  </div>
+</div>
 
-    <div class="profile-layout">
-      <div class="left-card">
-        <div class="avatar" id="avatar">W</div>
-        <div class="worker-name" id="workerNameDisplay">Worker</div>
-        <div class="worker-role" id="workerRoleDisplay">Service Professional</div>
-
-        <div class="rating-box">
-          <div class="stars" id="starDisplay">★★★★★</div>
-          <div class="rating-text" id="ratingDisplay">5.0 rating</div>
-        </div>
-
-        <div class="mini-info">
-          <div class="info-item">
-            <strong><i class="fa-solid fa-phone"></i> Phone:</strong>
-            <span id="phoneDisplay">-</span>
-          </div>
-
-          <div class="info-item">
-            <strong><i class="fa-solid fa-envelope"></i> Email:</strong>
-            <span id="emailDisplay">-</span>
-          </div>
-        </div>
-
-        <div class="action-row">
-          <a class="btn btn-call call-btn" id="callBtn" href="javascript:void(0)">
-            <i class="fa-solid fa-phone-volume"></i> Call Worker
-          </a>
-        </div>
-      </div>
-
-      <div class="right-card">
-        <div class="section-title">Worker Details</div>
-        <div id="profile" class="profile-box"></div>
-
-        <div class="section-title">Customer Feedback</div>
-        <div class="feedback-list" id="feedbackList">
-          <div class="feedback-card">
-            <div class="feedback-text">No feedback yet</div>
-          </div>
-        </div>
-
-        <div class="action-row">
-          <button id="confirmBtn" class="btn btn-green confirm-btn">
-            <i class="fa-solid fa-circle-check"></i> Confirm this Worker
-          </button>
-        </div>
-      </div>
+<!-- ══ RIGHT PANEL ══ -->
+<div class="right-panel">
+  <div class="topbar">
+    <div class="title-wrap">
+      <h1>👷 Worker Profile</h1>
+      <p>Viewing profile of <span id="roleSpan">professional</span></p>
+    </div>
+    <div class="top-buttons">
+      <button class="top-btn btn-list" onclick="window.location.href='worker_list.html'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Worker List
+      </button>
+      <button class="top-btn btn-booking" onclick="window.location.href='booking.html'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Back to Booking
+      </button>
     </div>
   </div>
 
-  <script src="js/worker_profile.js"></script>
+  <div class="profile-layout">
+    <div class="left-card">
+      <div class="avatar" id="avatar">W</div>
+      <div class="worker-name" id="workerNameDisplay">Worker</div>
+      <div class="worker-role" id="workerRoleDisplay">Service Professional</div>
+      <div class="rating-box">
+        <div class="stars" id="starDisplay">☆☆☆☆☆</div>
+        <div class="rating-text" id="ratingDisplay">No rating yet</div>
+      </div>
+      <div class="mini-info">
+        <div class="info-item">
+          <div class="info-icon ii-phone">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <span id="phoneDisplay">—</span>
+        </div>
+        <div class="info-item">
+          <div class="info-icon ii-email">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2,4 12,13 22,4"/></svg>
+          </div>
+          <span id="emailDisplay">—</span>
+        </div>
+      </div>
+      <!-- Call button — opens custom modal -->
+      <button class="call-btn" id="callBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Call Worker
+      </button>
+    </div>
 
+    <div class="right-col">
+      <div class="section-card">
+        <div class="section-title">
+          <div class="st-icon sti-blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          Worker Details
+        </div>
+        <div class="detail-grid" id="detailGrid">
+          <div class="loading-wrap"><div class="spinner"></div>Loading details...</div>
+        </div>
+        <div id="profile" style="display:none;"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title">
+          <div class="st-icon sti-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          Customer Feedback
+        </div>
+        <div class="feedback-list" id="feedbackList">
+          <div class="feedback-card"><div class="feedback-text" style="color:var(--soft);text-align:center;padding:10px 0;">Loading feedback...</div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <button id="confirmBtn" class="confirm-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Confirm this Worker
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CUSTOM CALL CONFIRM MODAL ══ -->
+<div class="modal-overlay" id="callModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-icon">📞</div>
+      <h3>Call this Worker?</h3>
+      <p>You're about to call this professional</p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-worker-info">
+        <div class="modal-worker-avatar" id="modalAvatar">W</div>
+        <div>
+          <div class="modal-worker-name" id="modalWorkerName">Worker</div>
+          <div class="modal-worker-phone" id="modalWorkerPhone">—</div>
+        </div>
+      </div>
+      <div class="modal-note">
+        📱 This will open your phone's dialler. Standard call rates apply.
+      </div>
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" id="callModalCancel">Cancel</button>
+        <button class="modal-btn-call" id="callModalConfirm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Yes, Call Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/worker_profile.js"></script>
+
+<script>
+  // ── Enrich UI from worker_profile.js populated elements ──
+  function enrichUI() {
+    const name   = (document.getElementById("workerNameDisplay")?.innerText || "").trim();
+    const role   = (document.getElementById("workerRoleDisplay")?.innerText  || "").trim();
+    const phone  = (document.getElementById("phoneDisplay")?.innerText       || "").trim();
+    const email  = (document.getElementById("emailDisplay")?.innerText       || "").trim();
+    const rating = (document.getElementById("ratingDisplay")?.innerText      || "").trim();
+
+    if (!name || name === "Worker") return;
+
+    document.getElementById("roleSpan").textContent = role || "professional";
+
+    const grid = document.getElementById("detailGrid");
+    grid.innerHTML = "";
+    [
+      { label:"Name",   value:name,   emoji:"👤" },
+      { label:"Role",   value:role,   emoji:"🔧" },
+      { label:"Phone",  value:phone,  emoji:"📞" },
+      { label:"Email",  value:email,  emoji:"📧" },
+      { label:"Rating", value:rating, emoji:"⭐" },
+    ].forEach(r => {
+      const row = document.createElement("div");
+      row.className = "detail-row";
+      row.innerHTML = `<span class="detail-label">${r.emoji} ${r.label}</span><span class="detail-value">${r.value || "—"}</span>`;
+      grid.appendChild(row);
+    });
+  }
+
+  const obs = new MutationObserver(() => {
+    const name = (document.getElementById("workerNameDisplay")?.innerText || "").trim();
+    if (name && name !== "Worker") { obs.disconnect(); enrichUI(); }
+  });
+  obs.observe(document.body, { childList:true, subtree:true, characterData:true });
+  setTimeout(enrichUI, 1800);
+
+  // ── Custom Call Modal (replaces browser confirm()) ──
+  document.getElementById("callBtn").addEventListener("click", function() {
+    const workerPhone = document.getElementById("phoneDisplay").innerText.trim();
+    const workerName  = document.getElementById("workerNameDisplay").innerText.trim();
+
+    if (!workerPhone || workerPhone === "—") {
+      // Show a friendly inline message instead of alert()
+      this.textContent = "⚠️ Phone not available";
+      setTimeout(() => {
+        this.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call Worker`;
+      }, 2000);
+      return;
+    }
+
+    // Populate modal with worker info
+    const letter = workerName ? workerName.charAt(0).toUpperCase() : "W";
+    document.getElementById("modalAvatar").textContent     = letter;
+    document.getElementById("modalWorkerName").textContent = workerName || "Worker";
+    document.getElementById("modalWorkerPhone").textContent = "📞 " + workerPhone;
+
+    // Open modal
+    document.getElementById("callModal").classList.add("open");
+  });
+
+  // Close modal on cancel or backdrop click
+  document.getElementById("callModalCancel").addEventListener("click", () => {
+    document.getElementById("callModal").classList.remove("open");
+  });
+  document.getElementById("callModal").addEventListener("click", function(e) {
+    if (e.target === this) this.classList.remove("open");
+  });
+
+  // Confirm call
+  document.getElementById("callModalConfirm").addEventListener("click", function() {
+    const workerPhone = document.getElementById("phoneDisplay").innerText.trim();
+    document.getElementById("callModal").classList.remove("open");
+    window.location.href = "tel:" + workerPhone;
+  });
+</script>
+
+
+<!-- ══ CUSTOM CALL CONFIRM MODAL ══ -->
+<div class="modal-overlay" id="callModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-icon">📞</div>
+      <h3>Call this Worker?</h3>
+      <p>You're about to call this professional</p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-worker-info">
+        <div class="modal-worker-avatar" id="modalAvatar">W</div>
+        <div>
+          <div class="modal-worker-name"  id="modalWorkerName">Worker</div>
+          <div class="modal-worker-phone" id="modalWorkerPhone">—</div>
+        </div>
+      </div>
+      <div class="modal-note">
+        📱 This will open your phone's dialler. Standard call rates apply.
+      </div>
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" id="callModalCancel">Cancel</button>
+        <button class="modal-btn-call"   id="callModalConfirm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Yes, Call Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Custom Call Modal — replaces browser confirm() ──
+  document.getElementById("callBtn").addEventListener("click", function() {
+    const workerPhone = document.getElementById("phoneDisplay").innerText.trim();
+    const workerName  = document.getElementById("workerNameDisplay").innerText.trim();
+
+    if (!workerPhone || workerPhone === "—") {
+      this.textContent = "⚠️ Phone not available";
+      const btn = this;
+      setTimeout(() => {
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call Worker`;
+      }, 2000);
+      return;
+    }
+
+    document.getElementById("modalAvatar").textContent      = workerName ? workerName.charAt(0).toUpperCase() : "W";
+    document.getElementById("modalWorkerName").textContent  = workerName || "Worker";
+    document.getElementById("modalWorkerPhone").textContent = "📞 " + workerPhone;
+    document.getElementById("callModal").classList.add("open");
+  });
+
+  document.getElementById("callModalCancel").addEventListener("click", () => {
+    document.getElementById("callModal").classList.remove("open");
+  });
+  document.getElementById("callModal").addEventListener("click", function(e) {
+    if (e.target === this) this.classList.remove("open");
+  });
+  document.getElementById("callModalConfirm").addEventListener("click", function() {
+    const workerPhone = document.getElementById("phoneDisplay").innerText.trim();
+    document.getElementById("callModal").classList.remove("open");
+    window.location.href = "tel:" + workerPhone;
+  });
+</script>
+
+<!-- ══ WORKER SELECTED SUCCESS MODAL ══ -->
+<div class="success-modal-overlay" id="workerSuccessModal">
+  <div class="success-modal-box">
+    <div class="success-modal-header">
+      <div class="success-check-wrap">✅</div>
+      <h3>Worker Selected!</h3>
+      <p>Your preferred worker has been saved</p>
+    </div>
+    <div class="success-modal-body">
+      <div class="success-worker-card">
+        <div class="success-worker-avatar" id="successAvatar">W</div>
+        <div>
+          <div class="success-worker-name" id="successWorkerName">Worker</div>
+          <div class="success-worker-role" id="successWorkerRole">Professional</div>
+        </div>
+      </div>
+      <div class="success-note">
+        📋 Now complete your booking form to confirm the appointment.
+      </div>
+      <button class="success-modal-btn" id="successModalGoBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Go to Booking Form
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Override confirmBtn to show custom modal instead of alert()
+  // This runs AFTER worker_profile.js so we can safely override
+  document.addEventListener("DOMContentLoaded", function() {
+    // Small delay to let worker_profile.js attach its listener first
+    setTimeout(function() {
+      const confirmBtn = document.getElementById("confirmBtn");
+      if (!confirmBtn) return;
+
+      // Clone button to remove worker_profile.js listener
+      const newBtn = confirmBtn.cloneNode(true);
+      confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+
+      newBtn.addEventListener("click", function() {
+        const workerPhone = (new URLSearchParams(window.location.search).get("phone") || "").trim();
+        const workerRole  = (new URLSearchParams(window.location.search).get("role")  || "").trim().toLowerCase();
+        const workerName  = (document.getElementById("workerNameDisplay")?.innerText || "Worker").trim();
+
+        // Save to localStorage (same as worker_profile.js did)
+        localStorage.setItem("chosenWorkerPhone", workerPhone);
+        localStorage.setItem("chosenWorkerRole",  workerRole);
+        localStorage.setItem("chosenWorkerName",  workerName);
+
+        // Populate and show success modal
+        document.getElementById("successAvatar").textContent     = workerName.charAt(0).toUpperCase();
+        document.getElementById("successWorkerName").textContent = workerName;
+        document.getElementById("successWorkerRole").textContent = workerRole;
+        document.getElementById("workerSuccessModal").classList.add("open");
+      });
+
+      // Go to booking on button click
+      document.getElementById("successModalGoBtn").addEventListener("click", function() {
+        document.getElementById("workerSuccessModal").classList.remove("open");
+        window.location.href = "booking.html";
+      });
+
+      // Close on backdrop click
+      document.getElementById("workerSuccessModal").addEventListener("click", function(e) {
+        if (e.target === this) this.classList.remove("open");
+      });
+
+    }, 100);
+  });
+</script>
 </body>
 </html>

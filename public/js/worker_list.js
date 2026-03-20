@@ -14,48 +14,123 @@ if (!selectedRole) {
   window.location.href = "booking.html";
 }
 
-roleTitle.innerText = `Showing available ${selectedRole}s`;
+document.getElementById("roleSpan").textContent = selectedRole + "s";
 
+let allWorkers = []; // store all workers for filtering/sorting
+
+function renderWorkers(workers) {
+  list.innerHTML = "";
+
+  if (!Array.isArray(workers) || workers.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="e-icon">👷</div>
+        <h3>No workers available</h3>
+        <p>There are no verified workers for this service right now.</p>
+      </div>`;
+    return;
+  }
+
+  workers.forEach(w => {
+    const ratingNum = parseFloat(w.avgRating) || 0;
+    const reviewsCount = w.reviewsCount ?? 0;
+    const stars = "★".repeat(Math.round(ratingNum)) + "☆".repeat(5 - Math.round(ratingNum));
+    const letter = w.name ? w.name.charAt(0).toUpperCase() : "W";
+
+    const card = document.createElement("div");
+    card.className = "worker-card";
+
+    // Store data attributes for sort/search
+    card.dataset.name = w.name || "";
+    card.dataset.rating = ratingNum;
+    card.dataset.reviews = reviewsCount;
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="w-avatar">${letter}</div>
+        <div>
+          <div class="w-name">${w.name || "Worker"}</div>
+          <div class="w-role">${selectedRole}</div>
+        </div>
+      </div>
+
+      <div class="w-rating">
+        <span class="stars">${stars}</span>
+        <span class="rating-num">${ratingNum.toFixed(1)}</span>
+        <span class="review-count">(${reviewsCount} reviews)</span>
+      </div>
+
+      <div class="card-info">
+        <div class="info-row">
+          <div class="info-icon ii-phone">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          ${w.phone || "—"}
+        </div>
+        <div class="info-row">
+          <div class="info-icon ii-email">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="3"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </div>
+          ${w.email || "—"}
+        </div>
+      </div>
+
+      <button class="btn-select" onclick="window.location.href='worker_profile.html?phone=${encodeURIComponent(w.phone)}&role=${encodeURIComponent(selectedRole)}'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Select This Worker
+      </button>
+    `;
+
+    list.appendChild(card);
+  });
+}
+
+// ── Search ──
+document.getElementById("searchInput").addEventListener("input", function () {
+  const q = this.value.toLowerCase();
+  const filtered = allWorkers.filter(w => (w.name || "").toLowerCase().includes(q));
+  renderWorkers(filtered);
+});
+
+// ── Sort ──
+window.sortCards = function(by) {
+  document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("sort" + by.charAt(0).toUpperCase() + by.slice(1))?.classList.add("active");
+
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  let sorted = allWorkers.filter(w => (w.name || "").toLowerCase().includes(q));
+
+  if (by === "name") {
+    sorted.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+  } else if (by === "rating") {
+    sorted.sort((a, b) => (parseFloat(b.avgRating) || 0) - (parseFloat(a.avgRating) || 0));
+  } else if (by === "reviews") {
+    sorted.sort((a, b) => (b.reviewsCount ?? 0) - (a.reviewsCount ?? 0));
+  }
+
+  renderWorkers(sorted);
+};
+
+// ── Load from server ──
 async function loadWorkers() {
-  list.innerHTML = "Loading workers...";
+  list.innerHTML = `<div class="loading"><div class="spinner"></div>Loading workers...</div>`;
   try {
     const res = await fetch(`/workers?role=${encodeURIComponent(selectedRole)}`);
-    const workers = await res.json();
-
-    list.innerHTML = "";
-    if (!Array.isArray(workers) || workers.length === 0) {
-      list.innerHTML = "No workers available right now.";
-      return;
-    }
-
-    workers.forEach(w => {
-      const card = document.createElement("div");
-      card.style.border = "1px solid #ccc";
-      card.style.borderRadius = "10px";
-      card.style.padding = "12px";
-      card.style.width = "260px";
-      card.style.background = "#fff";
-      card.style.cursor = "pointer";
-
-      card.innerHTML = `
-        <b>${w.name}</b><br>
-        Phone: ${w.phone}<br>
-        Email: ${w.email || "-"}<br>
-        Rating: ${w.avgRating ?? "New"} (${w.reviewsCount ?? 0})<br>
-        <small>Click to view profile</small>
-      `;
-
-      card.addEventListener("click", () => {
-        // open worker details on new page
-        window.location.href = `worker_profile.html?phone=${encodeURIComponent(w.phone)}&role=${encodeURIComponent(selectedRole)}`;
-      });
-
-      list.appendChild(card);
-    });
-
+    allWorkers = await res.json();
+    // Default sort by name
+    allWorkers.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    renderWorkers(allWorkers);
   } catch (e) {
-    console.log(e);
-    list.innerHTML = "Error loading workers.";
+    console.error(e);
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">⚠️</div><h3>Error loading workers</h3><p>Please try again later.</p></div>`;
   }
 }
 

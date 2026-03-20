@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Worker Chat - QuickServe</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--blue:#2563eb;--teal:#0d9488;--dark:#0f172a;--mid:#475569;--soft:#94a3b8;--border:#e2eaf4;}
+  html, body { height: 100%; }
+  body{min-height:100vh;font-family:'Plus Jakarta Sans',sans-serif;background:#f0f7ff;display:flex;flex-direction:column;}
+
+  .chat-topbar{background:linear-gradient(135deg,#1d4ed8,#0d9488);padding:16px 24px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 20px rgba(29,78,216,0.3);}
+  .back-btn{background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.3);border-radius:10px;padding:8px 14px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.2s;}
+  .back-btn:hover{background:rgba(255,255,255,0.28);}
+  .chat-customer-info{flex:1;}
+  .chat-customer-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:#fff;}
+  .chat-customer-sub{font-size:0.75rem;color:rgba(255,255,255,0.7);margin-top:1px;}
+  .chat-customer-avatar{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:#fff;}
+
+  .chat-body{flex:1;padding:20px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;max-width:900px;width:100%;margin:0 auto;scroll-behavior:smooth;}
+
+  .msg{display:flex;flex-direction:column;max-width:75%;animation:slideIn 0.3s cubic-bezier(0.16,1,0.3,1) both;}
+  .msg.mine{align-self:flex-end;align-items:flex-end;}
+  .msg.theirs{align-self:flex-start;align-items:flex-start;}
+  @keyframes slideIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+  
+  .msg-bubble{padding:12px 16px;border-radius:18px;font-size:0.88rem;line-height:1.55;word-break:break-word;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+  .msg.mine .msg-bubble{background:linear-gradient(135deg,#2563eb,#0d9488);color:#fff;border-bottom-right-radius:5px;}
+  .msg.theirs .msg-bubble{background:#fff;color:var(--dark);border:1.5px solid var(--border);border-bottom-left-radius:5px;}
+  .msg-meta{font-size:0.68rem;color:var(--soft);margin-top:4px;padding:0 4px;display:flex;align-items:center;gap:4px;}
+  .msg-sender{font-size:0.72rem;font-weight:700;color:var(--teal);margin-bottom:4px;padding:0 4px;}
+
+  .chat-date-sep{text-align:center;font-size:0.72rem;color:var(--soft);padding:12px 0;position:relative;margin:8px 0;}
+  .chat-date-sep::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border);}
+  .chat-date-sep span{background:#f0f7ff;padding:0 10px;position:relative;z-index:1;}
+
+  .chat-input-bar{background:#fff;border-top:1.5px solid var(--border);padding:16px 24px;display:flex;gap:10px;align-items:flex-end;max-width:900px;width:100%;margin:0 auto;}
+  .chat-input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:24px;background:#fafcff;color:var(--dark);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;outline:none;resize:none;max-height:120px;transition:all 0.25s;line-height:1.5;}
+  .chat-input:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(59,130,246,0.1);background:#fff;}
+  .send-btn{width:46px;height:46px;border-radius:50%;border:none;background:linear-gradient(135deg,#2563eb,#0d9488);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(37,99,235,0.35);transition:transform 0.2s;flex-shrink:0;font-size:1.1rem;}
+  .send-btn:hover:not(:disabled){transform:scale(1.08);}
+  .send-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .empty-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--soft);text-align:center;padding:40px;}
+  .empty-chat-icon{font-size:3rem;margin-bottom:14px;}
+  .empty-chat-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--mid);margin-bottom:6px;}
+
+  .toast{position:fixed;bottom:28px;right:28px;padding:12px 18px;border-radius:12px;background:#0f172a;color:#fff;font-size:0.85rem;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,0.25);z-index:9999;transform:translateY(80px);opacity:0;transition:all 0.35s cubic-bezier(0.16,1,0.3,1);pointer-events:none;}
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.success{background:linear-gradient(135deg,#16a34a,#0d9488);}
+  .toast.error{background:linear-gradient(135deg,#dc2626,#ef4444);}
+
+  @media(max-width:600px) {
+    .msg{max-width:85%;}
+    .chat-input{font-size:16px;}
+    .chat-body{padding:16px;}
+    .chat-input-bar{padding:12px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="chat-topbar">
+  <button class="back-btn" id="backBtn">
+    <i class="fa-solid fa-arrow-left"></i>
+    Back
+  </button>
+  <div class="chat-customer-avatar" id="customerAvatar">C</div>
+  <div class="chat-customer-info">
+    <div class="chat-customer-name" id="customerName">Customer</div>
+    <div class="chat-customer-sub" id="customerSub">Booking chat</div>
+  </div>
+</div>
+
+<div class="chat-body" id="chatBody">
+  <div class="empty-chat" id="emptyChatMsg">
+    <div class="empty-chat-icon">💬</div>
+    <div class="empty-chat-title">No messages yet</div>
+    <p style="font-size:0.82rem;color:var(--soft);">Wait for customer to send a message!</p>
+  </div>
+</div>
+
+<div class="chat-input-bar">
+  <textarea class="chat-input" id="chatInput" placeholder="Type a message..." rows="1"></textarea>
+  <button class="send-btn" id="sendBtn" title="Send message">
+    <i class="fa-solid fa-paper-plane"></i>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ════════════════════════════════════════════
+  // CONFIGURATION & STATE
+  // ════════════════════════════════════════════
+  const bookingId = localStorage.getItem("workerChatBookingId") || "";
+  const customerPhone = localStorage.getItem("workerChatCustomerPhone") || "";
+  const myPhone = (localStorage.getItem("phone") || "").trim();
+  const myName = localStorage.getItem("name") || "Worker";
+  const myRole = "worker";
+
+  let messages = [];
+  let lastMessageCount = 0;
+  let isSending = false;
+  let pollInterval = null;
+
+  // ════════════════════════════════════════════
+  // VALIDATION
+  // ════════════════════════════════════════════
+  if (!bookingId || !customerPhone || !myPhone) {
+    alert("Invalid chat session. Please try again.");
+    window.location.href = "worker_bookings.html";
+  }
+
+  // ════════════════════════════════════════════
+  // UI SETUP
+  // ════════════════════════════════════════════
+  document.getElementById("customerName").textContent = "Customer · " + customerPhone;
+  document.getElementById("customerAvatar").textContent = customerPhone ? customerPhone.charAt(customerPhone.length - 1).toUpperCase() : "C";
+
+  // ════════════════════════════════════════════
+  // HELPERS
+  // ════════════════════════════════════════════
+  function showToast(msg, type = "success") {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.className = "toast " + type + " show";
+    setTimeout(() => { toast.className = "toast"; }, 3500);
+  }
+
+  function formatTime(dateStr) {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch {
+      return "";
+    }
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr);
+      const today = new Date();
+      if (d.toDateString() === today.toDateString()) return "Today";
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+      return d.toLocaleDateString();
+    } catch {
+      return "";
+    }
+  }
+
+  function scrollToBottom() {
+    setTimeout(() => {
+      const body = document.getElementById("chatBody");
+      body.scrollTop = body.scrollHeight;
+    }, 100);
+  }
+
+  function escapeHtml(text) {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
+
+  // ════════════════════════════════════════════
+  // LOAD & RENDER MESSAGES
+  // ════════════════════════════════════════════
+  async function loadMessages() {
+    try {
+      // Try primary endpoint first
+      let res = await fetch(`/messages/${encodeURIComponent(bookingId)}`);
+      
+      // Fallback to alternative endpoint
+      if (!res.ok || res.status === 404) {
+        res = await fetch(`/chat/${encodeURIComponent(bookingId)}`);
+      }
+
+      if (!res.ok) {
+        console.log("Could not load messages");
+        return;
+      }
+
+      const data = await res.json();
+      
+      // Handle both array and object responses
+      const msgArray = Array.isArray(data) ? data : (data.messages || []);
+      
+      if (!Array.isArray(msgArray)) return;
+
+      // Check if new messages arrived
+      if (msgArray.length === lastMessageCount && messages.length > 0) {
+        return; // No new messages
+      }
+
+      lastMessageCount = msgArray.length;
+      messages = msgArray.map(m => ({
+        ...m,
+        timestamp: m.timestamp || m.createdAt || new Date().toISOString()
+      }));
+
+      renderMessages();
+    } catch (err) {
+      console.log("Error loading messages:", err);
+    }
+  }
+
+  function renderMessages() {
+    const body = document.getElementById("chatBody");
+    const emptyMsg = document.getElementById("emptyChatMsg");
+
+    // Remove empty state if messages exist
+    if (messages.length > 0 && emptyMsg) {
+      emptyMsg.remove();
+    }
+
+    // If no messages, show empty state and return
+    if (messages.length === 0) {
+      if (!emptyMsg) {
+        body.innerHTML = `
+          <div class="empty-chat" id="emptyChatMsg">
+            <div class="empty-chat-icon">💬</div>
+            <div class="empty-chat-title">No messages yet</div>
+            <p style="font-size:0.82rem;color:var(--soft);">Wait for customer to send a message!</p>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    // Re-render all messages
+    body.innerHTML = "";
+    let lastDate = "";
+
+    messages.forEach((m, idx) => {
+      const timestamp = m.timestamp || m.createdAt || new Date().toISOString();
+      const msgDate = formatDate(timestamp);
+      
+      // Add date separator if date changed
+      if (msgDate !== lastDate) {
+        lastDate = msgDate;
+        body.innerHTML += `<div class="chat-date-sep"><span>${msgDate}</span></div>`;
+      }
+
+      // Determine if message is from worker
+      const isMine = m.senderPhone === myPhone || m.senderRole === "worker";
+      const senderName = m.senderName || (isMine ? myName : "Customer");
+
+      body.innerHTML += `
+        <div class="msg ${isMine ? "mine" : "theirs"}">
+          ${!isMine ? `<div class="msg-sender">${senderName}</div>` : ""}
+          <div class="msg-bubble">${escapeHtml(m.text || m.message || "")}</div>
+          <div class="msg-meta">
+            <span>${formatTime(timestamp)}</span>
+            ${isMine ? '<i class="fa-solid fa-check" style="opacity:0.6;"></i>' : ""}
+          </div>
+        </div>
+      `;
+    });
+
+    scrollToBottom();
+  }
+
+  // ════════════════════════════════════════════
+  // SEND MESSAGE
+  // ════════════════════════════════════════════
+  async function sendMessage() {
+    const input = document.getElementById("chatInput");
+    const text = input.value.trim();
+
+    if (!text) return;
+    if (isSending) return;
+
+    // Optimistic rendering
+    const tempMsg = {
+      _id: "temp-" + Date.now(),
+      text: text,
+      sender: "worker",
+      senderPhone: myPhone,
+      senderName: myName,
+      senderRole: myRole,
+      timestamp: new Date().toISOString()
+    };
+
+    messages.push(tempMsg);
+    renderMessages();
+    input.value = "";
+    input.style.height = "auto";
+    isSending = true;
+    document.getElementById("sendBtn").disabled = true;
+
+    try {
+      // Try primary endpoint
+      let res = await fetch("/messages/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookingId: bookingId,
+          senderPhone: myPhone,
+          senderName: myName,
+          senderRole: myRole,
+          text: text,
+          customerPhone: customerPhone
+        })
+      });
+
+      // Fallback to alternative endpoint
+      if (!res.ok || res.status === 404) {
+        res = await fetch("/chat/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            senderPhone: myPhone,
+            senderName: myName,
+            senderRole: "worker",
+            text: text
+          })
+        });
+      }
+
+      if (!res.ok) {
+        // Remove temp message on error
+        messages = messages.filter(m => m._id !== tempMsg._id);
+        renderMessages();
+        showToast("❌ Failed to send message", "error");
+      } else {
+        const data = await res.json();
+        if (data._id) {
+          // Replace temp with real message
+          const idx = messages.findIndex(m => m._id === tempMsg._id);
+          if (idx !== -1) {
+            messages[idx] = {
+              ...data,
+              timestamp: data.timestamp || data.createdAt || new Date().toISOString()
+            };
+          }
+        }
+        renderMessages();
+      }
+    } catch (err) {
+      console.log("Send error:", err);
+      messages = messages.filter(m => m._id !== tempMsg._id);
+      renderMessages();
+      showToast("❌ Error sending message", "error");
+    } finally {
+      isSending = false;
+      document.getElementById("sendBtn").disabled = false;
+      input.focus();
+    }
+  }
+
+  // ════════════════════════════════════════════
+  // EVENT LISTENERS
+  // ════════════════════════════════════════════
+  document.getElementById("sendBtn").addEventListener("click", sendMessage);
+
+  document.getElementById("chatInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Auto-resize textarea
+  document.getElementById("chatInput").addEventListener("input", function() {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 120) + "px";
+  });
+
+  // Back button
+  document.getElementById("backBtn").addEventListener("click", () => {
+    if (pollInterval) clearInterval(pollInterval);
+    localStorage.removeItem("workerChatBookingId");
+    localStorage.removeItem("workerChatCustomerPhone");
+    window.location.href = "worker_bookings.html";
+  });
+
+  // ════════════════════════════════════════════
+  // INITIALIZE & POLL
+  // ════════════════════════════════════════════
+  loadMessages();
+  pollInterval = setInterval(loadMessages, 3000); // Poll every 3 seconds
+
+  // Cleanup on page unload
+  window.addEventListener("beforeunload", () => {
+    if (pollInterval) clearInterval(pollInterval);
+  });
+
+  console.log("✅ Worker Chat initialized - Booking:", bookingId, "Customer:", customerPhone, "Me:", myPhone);
+</script>
+
+</body>
+</html>

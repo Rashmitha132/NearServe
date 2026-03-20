@@ -3,291 +3,529 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carpenter Requests</title>
+  <title>Carpenter Requests - NearServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--blue:#2563eb;--teal:#0d9488;--dark:#0f172a;--mid:#475569;--soft:#94a3b8;--bg:#f0f7ff;--border:#e2eaf4;}
+    html,body{height:100%;}
+    body{min-height:100vh;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:stretch;overflow-x:hidden;background:var(--bg);}
+
+    /* ══ LEFT PANEL ══ */
+    .left-panel{width:42%;min-height:100vh;background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%);position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:48px 44px;overflow:hidden;flex-shrink:0;}
+    .left-panel::before{content:'';position:absolute;width:450px;height:450px;border-radius:50%;background:rgba(255,255,255,0.05);top:-130px;right:-110px;}
+    .left-panel::after{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.04);bottom:-90px;left:-90px;}
+    .deco-ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,0.09);}
+    .r1{width:200px;height:200px;top:32%;right:-50px;}.r2{width:110px;height:110px;top:55%;right:44px;border-color:rgba(255,255,255,0.06);}.r3{width:75px;height:75px;top:18%;left:28px;border-color:rgba(255,255,255,0.07);}
+    .fi{position:absolute;width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,0.13);border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 24px rgba(0,0,0,0.18);animation:bob ease-in-out infinite alternate;}
+    .fi1{top:16%;left:10%;animation-duration:3.2s;}.fi2{top:36%;right:12%;animation-duration:2.8s;animation-delay:0.5s;}.fi3{top:56%;left:16%;animation-duration:3.6s;animation-delay:1s;}.fi4{top:72%;right:18%;animation-duration:2.5s;animation-delay:0.3s;}.fi5{top:25%;right:26%;animation-duration:3.9s;animation-delay:0.7s;}
+    @keyframes bob{from{transform:translateY(0) rotate(-3deg);}to{transform:translateY(-13px) rotate(3deg);}}
+    .l-logo{position:relative;z-index:2;display:flex;align-items:center;gap:12px;}
+    .l-logo-icon{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,0.16);border:1.5px solid rgba(255,255,255,0.28);display:flex;align-items:center;justify-content:center;}
+    .l-logo span{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;}
+    .l-main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:36px 0;}
+    .l-main h2{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;line-height:1.22;margin-bottom:16px;}
+    .l-main h2 em{font-style:normal;background:linear-gradient(90deg,#7dd3fc,#5eead4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .l-main p{color:rgba(255,255,255,0.68);font-size:0.93rem;line-height:1.75;max-width:290px;margin-bottom:28px;}
+    .l-pills{display:flex;flex-wrap:wrap;gap:9px;}
+    .l-pill{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:50px;background:rgba(255,255,255,0.11);border:1.5px solid rgba(255,255,255,0.2);color:#fff;font-size:0.8rem;font-weight:600;}
+    .l-stats{position:relative;z-index:2;display:flex;gap:22px;align-items:center;}
+    .stat-num{font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:#fff;}
+    .stat-lbl{font-size:0.73rem;color:rgba(255,255,255,0.58);}
+    .sdiv{width:1px;background:rgba(255,255,255,0.2);height:36px;}
+
+    /* ══ RIGHT PANEL ══ */
+    .right-panel{flex:1;min-height:100vh;background:#fff;display:flex;flex-direction:column;padding:48px 52px;overflow-y:auto;}
+
+    /* ── TOP BAR ── */
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:1.5px solid var(--border);flex-wrap:wrap;gap:14px;}
+    .worker-info{display:flex;align-items:center;gap:12px;}
+    .worker-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0d9488);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.3);}
+    .worker-name-el{font-size:0.92rem;font-weight:700;color:var(--dark);}
+    .worker-role-el{font-size:0.73rem;color:var(--soft);}
+    .topbar-btns{display:flex;gap:10px;}
+    .btn-refresh{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1.5px solid var(--border);background:#f8faff;color:var(--blue);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .btn-refresh:hover{background:#eff6ff;}
+    .btn-logout{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1.5px solid #fee2e2;background:#fff5f5;color:#ef4444;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .btn-logout:hover{background:#fee2e2;}
+
+    /* ── HEADER ── */
+    .fhead{margin-bottom:24px;}
+    .fhead h1{font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--dark);margin-bottom:4px;}
+    .fhead p{color:var(--soft);font-size:0.85rem;}
+
+    /* ── REQUEST CARDS ── */
+    .req-list{display:flex;flex-direction:column;gap:16px;}
+    .req-card{background:#fafcff;border:1.5px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden;transition:box-shadow 0.2s;}
+    .req-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);}
+    .req-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2563eb,#0d9488);}
+    .req-card.pending::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+    .req-card.accepted::before{background:linear-gradient(90deg,#16a34a,#22c55e);}
+    .req-card.completed::before{background:linear-gradient(90deg,#2563eb,#0d9488);}
+    .req-card.rejected::before{background:linear-gradient(90deg,#dc2626,#ef4444);}
+
+    .req-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+    .req-name{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:var(--dark);}
+    .req-date{font-size:0.78rem;color:var(--soft);display:flex;align-items:center;gap:5px;}
+
+    .req-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
+    .req-meta-item{display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--mid);background:#f1f5f9;border-radius:8px;padding:5px 10px;}
+
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;}
+    .badge-pending  {background:#fef3c7;color:#d97706;}
+    .badge-accepted {background:#dcfce7;color:#16a34a;}
+    .badge-completed{background:#dbeafe;color:#1d4ed8;}
+    .badge-rejected {background:#fee2e2;color:#dc2626;}
+
+    .req-extra{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.8rem;color:var(--mid);line-height:1.7;}
+    .req-extra strong{color:var(--dark);}
+
+    /* ── ACTION BUTTONS ── */
+    .req-actions{display:flex;flex-wrap:wrap;gap:8px;}
+    .btn-accept{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(22,163,74,0.25);transition:transform 0.2s;}
+    .btn-accept:hover{transform:translateY(-1px);}
+    .btn-reject{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:1.5px solid #fecaca;background:#fff5f5;color:#ef4444;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+    .btn-reject:hover{background:#fee2e2;}
+    .btn-complete{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#1d4ed8,#0d9488);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(29,78,216,0.25);transition:transform 0.2s;}
+    .btn-complete:hover{transform:translateY(-1px);}
+    .btn-chat{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:1.5px solid #bfdbfe;background:#eff6ff;color:var(--blue);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+    .btn-chat:hover{background:#dbeafe;}
+    .btn-call{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:1.5px solid #bbf7d0;background:#f0fdf4;color:#16a34a;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+    .btn-call:hover{background:#dcfce7;}
+
+    /* ── EMPTY STATE ── */
+    .empty-state{text-align:center;padding:60px 20px;color:var(--soft);}
+    .empty-icon{font-size:3rem;margin-bottom:14px;}
+    .empty-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--mid);margin-bottom:6px;}
+    .empty-text{font-size:0.85rem;line-height:1.6;}
+
+    /* ══ MODALS ══ */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(6px);z-index:999;display:none;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:#fff;border-radius:24px;width:420px;max-width:95vw;box-shadow:0 30px 80px rgba(0,0,0,0.22);overflow:hidden;animation:popUp 0.28s cubic-bezier(0.16,1,0.3,1) both;}
+    @keyframes popUp{from{opacity:0;transform:scale(0.92) translateY(16px);}to{opacity:1;transform:scale(1) translateY(0);}}
+    .modal-header{padding:22px 26px 18px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid var(--border);}
+    .modal-header-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+    .mhi-green{background:linear-gradient(135deg,#16a34a,#22c55e);}
+    .mhi-red  {background:linear-gradient(135deg,#dc2626,#ef4444);}
+    .mhi-blue {background:linear-gradient(135deg,#1d4ed8,#0d9488);}
+    .mhi-teal {background:linear-gradient(135deg,#0d9488,#14b8a6);}
+    .modal-header h3{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--dark);}
+    .modal-header p{font-size:0.78rem;color:var(--soft);}
+    .modal-body{padding:20px 26px 24px;}
+    .modal-label{font-size:0.72rem;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px;margin-top:14px;display:block;}
+    .modal-label:first-child{margin-top:0;}
+    .modal-input,.modal-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;background:#fafcff;color:var(--dark);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;outline:none;transition:all 0.2s;}
+    .modal-input:focus,.modal-textarea:focus{border-color:#93c5fd;background:#fff;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+    .modal-textarea{resize:vertical;min-height:80px;}
+    .modal-btns{display:flex;gap:10px;margin-top:18px;}
+    .modal-btn-cancel{flex:1;padding:12px;border-radius:11px;border:1.5px solid var(--border);background:#fff;color:var(--mid);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:background 0.2s;}
+    .modal-btn-cancel:hover{background:#f1f5f9;}
+    .modal-btn-confirm{flex:1;padding:12px;border-radius:11px;border:none;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:transform 0.2s;}
+    .modal-btn-confirm:hover{transform:translateY(-1px);}
+    .mbc-green{background:linear-gradient(135deg,#16a34a,#22c55e);}
+    .mbc-red  {background:linear-gradient(135deg,#dc2626,#ef4444);}
+    .mbc-blue {background:linear-gradient(135deg,#1d4ed8,#0d9488);}
+    .mbc-teal {background:linear-gradient(135deg,#0d9488,#14b8a6);}
+
+    /* Call modal worker info */
+    .modal-customer-info{background:#f8faff;border:1.5px solid var(--border);border-radius:13px;padding:13px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+    .modal-customer-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0d9488);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:#fff;flex-shrink:0;}
+    .modal-customer-name{font-weight:700;color:var(--dark);font-size:0.9rem;}
+    .modal-customer-phone{font-size:0.8rem;color:var(--teal);font-weight:600;}
+    .modal-note{display:flex;align-items:flex-start;gap:8px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 13px;font-size:0.77rem;color:#92400e;margin-bottom:4px;line-height:1.5;}
+
+    @media(max-width:780px){body{flex-direction:column;}.left-panel{width:100%;min-height:auto;padding:28px 24px;}.l-main h2{font-size:1.6rem;}.l-stats{display:none;}.fi3,.fi4,.fi5{display:none;}.right-panel{padding:28px 20px;}}
+  </style>
 </head>
+<body>
 
-<body class="carpenter-requests">
+<!-- ══ LEFT PANEL ══ -->
+<div class="left-panel">
+  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
+  <div class="fi fi1">🪚</div><div class="fi fi2">🔧</div><div class="fi fi3">🏠</div><div class="fi fi4">⭐</div><div class="fi fi5">📋</div>
+  <div class="l-logo">
+    <div class="l-logo-icon">
+      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
+        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
+        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
+        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
+        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
+      </svg>
+    </div>
+    <span>NearServe</span>
+  </div>
+  <div class="l-main">
+    <h2>Carpenter <em>Requests</em></h2>
+    <p>Customers who chose you will appear here. Accept, chat, call and complete jobs from this page.</p>
+    <div class="l-pills">
+      <div class="l-pill">🪚 Accept Jobs</div>
+      <div class="l-pill">💬 Chat</div>
+      <div class="l-pill">📞 Call</div>
+      <div class="l-pill">✅ Complete</div>
+    </div>
+  </div>
+  <div class="l-stats">
+    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">⭐</div><div class="stat-lbl">Rated</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">🪚</div><div class="stat-lbl">Fast</div></div>
+  </div>
+</div>
 
-  <div class="heroBg">
-    <div class="heroOverlay"></div>
+<!-- ══ RIGHT PANEL ══ -->
+<div class="right-panel">
 
-    <div class="board">
-      <div class="boardHeader">
-        <div class="brandLeft">
-          <img src="/uploads/tools.png" alt="Logo" class="brandLogo">
-          <div class="brandText">
-            <div class="brandTitle">Customer Requests</div>
-            <div class="brandSub">Only customers who chose you will be shown</div>
-          </div>
-        </div>
-
-        <div class="headerBtns">
-          <button class="qbtn ghost" onclick="fetchRequests()">
-            <i class="fa-solid fa-rotate"></i> Refresh
-          </button>
-          <button class="qbtn logout" onclick="logout()">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-          </button>
-        </div>
+  <div class="topbar">
+    <div class="worker-info">
+      <div class="worker-avatar" id="workerAvatar">C</div>
+      <div>
+        <div class="worker-name-el" id="workerNameEl">Carpenter</div>
+        <div class="worker-role-el">🪚 Carpenter · Full Access</div>
       </div>
-
-      <div class="boardBody">
-        <div class="sectionHead">
-          <div class="secTitle">
-            <i class="fa-solid fa-hammer"></i> Available Carpentry Jobs
-          </div>
-          <div class="secHint">
-            <i class="fa-solid fa-circle-info"></i>
-            Showing only “chosen” bookings
-          </div>
-        </div>
-
-        <ul id="requestList" class="rqList"></ul>
-
-        <div class="footNote">
-          This page shows only bookings where
-          <code>chosenWorkerRole="carpenter"</code> and <code>chosenWorkerPhone</code> matches your phone.
-        </div>
-      </div>
+    </div>
+    <div class="topbar-btns">
+      <button class="btn-refresh" onclick="fetchRequests()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh
+      </button>
+      <button class="btn-logout" onclick="logout()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </button>
     </div>
   </div>
 
+  <div class="fhead">
+    <h1>🪚 Customer Requests</h1>
+    <p>Customers who selected you for their booking will appear here.</p>
+  </div>
+
+  <div class="req-list" id="requestList">
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">Loading requests...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ ACCEPT MODAL ══ -->
+<div class="modal-overlay" id="acceptModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-icon mhi-green">✅</div>
+      <div><h3>Accept Job</h3><p>Set visit time and message for customer</p></div>
+    </div>
+    <div class="modal-body">
+      <span class="modal-label">Visit Time *</span>
+      <input class="modal-input" id="acceptVisitTime" placeholder="e.g. Today 6:30 PM or Tomorrow 10:00 AM">
+      <span class="modal-label">Message to Customer (optional)</span>
+      <textarea class="modal-textarea" id="acceptMessage" placeholder="e.g. I will call before arriving..."></textarea>
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" onclick="closeModal('acceptModal')">Cancel</button>
+        <button class="modal-btn-confirm mbc-green" id="acceptConfirmBtn">✅ Confirm Accept</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REJECT MODAL ══ -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-icon mhi-red">❌</div>
+      <div><h3>Reject Job</h3><p>Provide a reason for the customer</p></div>
+    </div>
+    <div class="modal-body">
+      <span class="modal-label">Reason for Rejection *</span>
+      <textarea class="modal-textarea" id="rejectReason" placeholder="e.g. Not available on this date, out of service area..."></textarea>
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" onclick="closeModal('rejectModal')">Cancel</button>
+        <button class="modal-btn-confirm mbc-red" id="rejectConfirmBtn">❌ Confirm Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COMPLETE MODAL ══ -->
+<div class="modal-overlay" id="completeModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-icon mhi-blue">🏁</div>
+      <div><h3>Mark as Completed</h3><p>Confirm job completion</p></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-customer-info" id="completeCustomerInfo">
+        <div class="modal-customer-avatar" id="completeAvatar">C</div>
+        <div>
+          <div class="modal-customer-name" id="completeCustomerName">Customer</div>
+          <div class="modal-customer-phone" id="completeCustomerPhone">—</div>
+        </div>
+      </div>
+      <div class="modal-note">🏁 Once marked complete, the customer can rate and review your service.</div>
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" onclick="closeModal('completeModal')">Cancel</button>
+        <button class="modal-btn-confirm mbc-blue" id="completeConfirmBtn">🏁 Yes, Mark Complete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CALL MODAL ══ -->
+<div class="modal-overlay" id="callModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-icon mhi-teal">📞</div>
+      <div><h3>Call Customer?</h3><p>You're about to call this customer</p></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-customer-info">
+        <div class="modal-customer-avatar" id="callAvatar">C</div>
+        <div>
+          <div class="modal-customer-name"  id="callCustomerName">Customer</div>
+          <div class="modal-customer-phone" id="callCustomerPhone">—</div>
+        </div>
+      </div>
+      <div class="modal-note">📱 This will open your phone dialler. Standard call rates apply.</div>
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" onclick="closeModal('callModal')">Cancel</button>
+        <button class="modal-btn-confirm mbc-teal" id="callConfirmBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Yes, Call Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   const phone = (localStorage.getItem("phone") || "").trim();
-  const role  = (localStorage.getItem("role") || "").trim().toLowerCase();
+  const role  = (localStorage.getItem("role")  || "").trim().toLowerCase();
+  const name  = localStorage.getItem("name") || localStorage.getItem("userName") || "Carpenter";
 
-  if (!phone) {
-    alert("Not authorized: please login first");
-    window.location.href = "login.html";
-  }
-  if (role !== "carpenter") {
-    alert("Not authorized: carpenter account required");
-    window.location.href = role ? `${role}_dashboard.html` : "login.html";
-  }
+  if (!phone) { window.location.href = "login.html"; }
+  if (role !== "carpenter") { window.location.href = "login.html"; }
 
-  function safe(v){ return (v === undefined || v === null || v === "") ? "-" : String(v); }
+  document.getElementById("workerNameEl").textContent   = name;
+  document.getElementById("workerAvatar").textContent   = name.charAt(0).toUpperCase();
 
-  function chosenByMe(job){
-    return (
-      (job.chosenWorkerRole || "").toLowerCase() === "carpenter" &&
-      String(job.chosenWorkerPhone || "") === String(phone)
-    );
+  let activeJobId = null;
+
+  function safe(v){ return (!v || v === "") ? "—" : String(v); }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove("open");
   }
 
-  function statusBadge(status){
+  document.querySelectorAll(".modal-overlay").forEach(m => {
+    m.addEventListener("click", function(e) { if(e.target === this) this.classList.remove("open"); });
+  });
+
+  function statusBadge(status) {
     const s = (status || "pending").toLowerCase();
-    if (s === "accepted") return `<span class="badge full_access">Accepted</span>`;
-    if (s === "rejected") return `<span class="badge blocked">Rejected</span>`;
-    if (s === "completed") return `<span class="badge probation">Completed</span>`;
-    return `<span class="badge pending_verification">Pending</span>`;
+    if (s === "accepted")  return `<span class="badge badge-accepted">✅ Accepted</span>`;
+    if (s === "rejected")  return `<span class="badge badge-rejected">❌ Rejected</span>`;
+    if (s === "completed") return `<span class="badge badge-completed">🏁 Completed</span>`;
+    return `<span class="badge badge-pending">⏳ Pending</span>`;
   }
 
-  function renderJob(job){
+  function renderJob(job) {
     const st = (job.status || "pending").toLowerCase();
 
-    // show worker response details to carpenter too
-    const workerInfo = `
-      <div style="margin-top:10px;">
-        <small><b>Status:</b> ${statusBadge(st)}</small><br>
-        <small><b>Visit Time:</b> ${safe(job.visitTime)}</small><br>
-        <small><b>Worker Message:</b> ${safe(job.workerMessage)}</small><br>
-        ${st === "rejected" ? `<small><b>Reject Reason:</b> ${safe(job.rejectReason)}</small><br>` : ``}
-        ${st === "completed" ? `<small><b>Completed At:</b> ${job.completedAt ? new Date(job.completedAt).toLocaleString() : "-"}</small><br>` : ``}
-      </div>
-    `;
+    let extraInfo = "";
+    if (st === "accepted") {
+      extraInfo = `<div class="req-extra">
+        <strong>Visit Time:</strong> ${safe(job.visitTime)}<br>
+        ${job.workerMessage ? `<strong>Your Message:</strong> ${safe(job.workerMessage)}` : ""}
+      </div>`;
+    }
+    if (st === "rejected") {
+      extraInfo = `<div class="req-extra"><strong>Reject Reason:</strong> ${safe(job.rejectReason)}</div>`;
+    }
+    if (st === "completed") {
+      extraInfo = `<div class="req-extra"><strong>Completed At:</strong> ${job.completedAt ? new Date(job.completedAt).toLocaleString() : "—"}</div>`;
+    }
 
-    // Buttons based on status
-    let actionButtons = "";
-
+    let actions = "";
     if (st === "pending") {
-      actionButtons = `
-        <button class="qbtn accept" onclick="acceptJob('${job._id}')">
-          <i class="fa-solid fa-check"></i> Accept
+      actions = `
+        <button class="btn-accept"  onclick="openAccept('${job._id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Accept
         </button>
-        <button class="qbtn reject" onclick="rejectJob('${job._id}')">
-          <i class="fa-solid fa-xmark"></i> Reject
+        <button class="btn-reject"  onclick="openReject('${job._id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Reject
         </button>
-      `;
+        <button class="btn-call"    onclick="openCall('${safe(job.name)}','${safe(job.phone)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Call
+        </button>`;
     } else if (st === "accepted") {
-      actionButtons = `
-        <button class="qbtn done" onclick="completeJob('${job._id}')">
-          <i class="fa-solid fa-clipboard-check"></i> Completed
+      actions = `
+        <button class="btn-complete" onclick="openComplete('${job._id}','${safe(job.name)}','${safe(job.phone)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Mark Complete
         </button>
-      `;
+        <button class="btn-chat" onclick="openChat('${job._id}','${safe(job.name)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Chat
+        </button>
+        <button class="btn-call" onclick="openCall('${safe(job.name)}','${safe(job.phone)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Call
+        </button>`;
     } else {
-      actionButtons = `
-        <button class="qbtn ghost" onclick="fetchRequests()">
-          <i class="fa-solid fa-rotate"></i> Refresh
-        </button>
-      `;
+      actions = `
+        <button class="btn-chat" onclick="openChat('${job._id}','${safe(job.name)}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Chat
+        </button>`;
     }
 
     return `
-      <li class="rqItem">
-        <div class="rqLeft">
-          <div class="rqTop">
-            <div class="rqName">${safe(job.name)}</div>
-            <div class="rqChip"><i class="fa-regular fa-clock"></i> ${safe(job.date)}</div>
+      <div class="req-card ${st}">
+        <div class="req-top">
+          <div class="req-name">👤 ${safe(job.name)}</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            ${statusBadge(st)}
+            <span class="req-date">📅 ${safe(job.date)}</span>
           </div>
-
-          <div class="rqMeta">
-            <span><i class="fa-solid fa-phone"></i> ${safe(job.phone)}</span>
-            <span class="rqDot"></span>
-            <span><i class="fa-solid fa-location-dot"></i> ${safe(job.address)}</span>
-          </div>
-
-          ${workerInfo}
         </div>
-
-        <div class="rqActions">
-          ${actionButtons}
+        <div class="req-meta">
+          <div class="req-meta-item">📞 ${safe(job.phone)}</div>
+          <div class="req-meta-item">📍 ${safe(job.address)}</div>
+          <div class="req-meta-item">🔧 ${safe(job.service)}</div>
         </div>
-      </li>
-    `;
+        ${extraInfo}
+        <div class="req-actions">${actions}</div>
+      </div>`;
   }
 
-  async function fetchRequests(){
+  async function fetchRequests() {
     const list = document.getElementById("requestList");
-    list.innerHTML = `
-      <li class="rqItem">
-        <div class="rqLeft">
-          <div class="rqName">Loading...</div>
-          <div class="rqMeta">Fetching chosen requests...</div>
-        </div>
-      </li>
-    `;
-
-    try{
-      let res = await fetch(`/bookings/chosen/carpenter/${encodeURIComponent(phone)}`);
-      if(!res.ok){
-        // fallback
-        res = await fetch("/bookings");
-      }
-
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Loading...</div></div>`;
+    try {
+      const res      = await fetch(`/bookings/chosen/carpenter/${encodeURIComponent(phone)}`);
       const bookings = await res.json();
-      const chosenForMe = (bookings || []).filter(chosenByMe);
 
-      if(chosenForMe.length === 0){
-        list.innerHTML = `
-          <li class="rqItem emptyState">
-            <div class="rqLeft">
-              <div class="rqName">No chosen requests for you.</div>
-              <div class="rqMeta">
-                Make sure each booking has:
-                <code>chosenWorkerRole:"carpenter"</code> and <code>chosenWorkerPhone:"${phone}"</code>
-              </div>
-            </div>
-          </li>
-        `;
+      const mine = (bookings || []).filter(j =>
+        (j.chosenWorkerRole || "").toLowerCase() === "carpenter" &&
+        String(j.chosenWorkerPhone || "") === String(phone)
+      );
+
+      if (mine.length === 0) {
+        list.innerHTML = `<div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">No requests yet</div>
+          <div class="empty-text">Customers who choose you will appear here automatically.</div>
+        </div>`;
         return;
       }
-
-      list.innerHTML = chosenForMe.map(renderJob).join("");
-
-    }catch(err){
+      list.innerHTML = mine.map(renderJob).join("");
+    } catch(err) {
       console.error(err);
-      alert("Error loading requests");
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Error loading requests</div></div>`;
     }
   }
 
-  // ✅ Accept booking:
-  // Sets status=accepted + visitTime + workerMessage
-  async function acceptJob(id){
-    const visitTime = prompt("Enter visit time (example: Today 6:30 PM):");
-    if (!visitTime) return alert("Visit time is required to accept.");
-
-    const msg = prompt("Optional message to customer (example: I will call before coming):") || "";
-
-    try{
-      const res = await fetch(`/bookings/${id}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: "accepted",
-          visitTime: visitTime.trim(),
-          workerMessage: msg.trim(),
-          rejectReason: ""
-        })
+  function openAccept(jobId) {
+    activeJobId = jobId;
+    document.getElementById("acceptVisitTime").value = "";
+    document.getElementById("acceptMessage").value   = "";
+    document.getElementById("acceptModal").classList.add("open");
+  }
+  document.getElementById("acceptConfirmBtn").addEventListener("click", async function() {
+    const visitTime = document.getElementById("acceptVisitTime").value.trim();
+    const msg       = document.getElementById("acceptMessage").value.trim();
+    if (!visitTime) { document.getElementById("acceptVisitTime").style.borderColor="#ef4444"; return; }
+    document.getElementById("acceptVisitTime").style.borderColor="";
+    this.textContent = "Accepting..."; this.disabled = true;
+    try {
+      const res = await fetch(`/bookings/${activeJobId}/status`, {
+        method:"PUT", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ status:"accepted", visitTime, workerMessage:msg, rejectReason:"" })
       });
-
       const data = await res.json();
-      if(!res.ok) return alert(data.error || "Accept failed");
+      if (!res.ok) { alert(data.error || "Accept failed"); }
+      else { closeModal("acceptModal"); fetchRequests(); }
+    } catch(e) { alert("Server error"); }
+    this.textContent = "✅ Confirm Accept"; this.disabled = false;
+  });
 
-      alert("Accepted ✅ Customer will see your visit time.");
-      fetchRequests();
-    }catch(err){
-      console.log(err);
-      alert("Server error while accepting");
-    }
+  function openReject(jobId) {
+    activeJobId = jobId;
+    document.getElementById("rejectReason").value = "";
+    document.getElementById("rejectModal").classList.add("open");
   }
-
-  // ✅ Reject booking:
-  // Sets status=rejected + rejectReason
-  async function rejectJob(id){
-    const reason = prompt("Reason for rejecting (required):");
-    if (!reason || !reason.trim()) return alert("Reject reason is required.");
-
-    try{
-      const res = await fetch(`/bookings/${id}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: "rejected",
-          rejectReason: reason.trim(),
-          visitTime: "",
-          workerMessage: ""
-        })
+  document.getElementById("rejectConfirmBtn").addEventListener("click", async function() {
+    const reason = document.getElementById("rejectReason").value.trim();
+    if (!reason) { document.getElementById("rejectReason").style.borderColor="#ef4444"; return; }
+    document.getElementById("rejectReason").style.borderColor="";
+    this.textContent = "Rejecting..."; this.disabled = true;
+    try {
+      const res = await fetch(`/bookings/${activeJobId}/status`, {
+        method:"PUT", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ status:"rejected", rejectReason:reason, visitTime:"", workerMessage:"" })
       });
-
       const data = await res.json();
-      if(!res.ok) return alert(data.error || "Reject failed");
+      if (!res.ok) { alert(data.error || "Reject failed"); }
+      else { closeModal("rejectModal"); fetchRequests(); }
+    } catch(e) { alert("Server error"); }
+    this.textContent = "❌ Confirm Reject"; this.disabled = false;
+  });
 
-      alert("Rejected ✅ Customer will see the reason.");
-      fetchRequests();
-    }catch(err){
-      console.log(err);
-      alert("Server error while rejecting");
-    }
+  function openComplete(jobId, custName, custPhone) {
+    activeJobId = jobId;
+    document.getElementById("completeAvatar").textContent       = custName.charAt(0).toUpperCase();
+    document.getElementById("completeCustomerName").textContent = custName;
+    document.getElementById("completeCustomerPhone").textContent = "📞 " + custPhone;
+    document.getElementById("completeModal").classList.add("open");
   }
-
-  // ✅ Complete booking:
-  // Worker marks job completed => status becomes completed
-  // After this customer will see “Rate Worker” button
-  async function completeJob(id){
-    const ok = confirm("Mark this job as COMPLETED? Customer can rate after this.");
-    if(!ok) return;
-
-    try{
-      const res = await fetch(`/bookings/${id}/complete`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          workerPhone: phone,
-          workerRole: role
-        })
+  document.getElementById("completeConfirmBtn").addEventListener("click", async function() {
+    this.textContent = "Completing..."; this.disabled = true;
+    try {
+      const res = await fetch(`/bookings/${activeJobId}/complete`, {
+        method:"PUT", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ workerPhone:phone, workerRole:role })
       });
-
       const data = await res.json();
-      if(!res.ok) return alert(data.error || "Complete failed");
+      if (!res.ok) { alert(data.error || "Complete failed"); }
+      else { closeModal("completeModal"); fetchRequests(); }
+    } catch(e) { alert("Server error"); }
+    this.textContent = "🏁 Yes, Mark Complete"; this.disabled = false;
+  });
 
-      alert("Marked completed ✅ Customer can now rate you.");
-      fetchRequests();
-    }catch(err){
-      console.log(err);
-      alert("Server error while completing");
-    }
+  function openChat(bookingId, custName) {
+    localStorage.setItem("chatBookingId",   bookingId);
+    localStorage.setItem("chatWorkerPhone", phone);
+    localStorage.setItem("chatWorkerName",  name);
+    localStorage.setItem("chatCustomerName", custName);
+    window.location.href = "worker_chat.html";
   }
 
-  function logout(){
-    localStorage.clear();
-    window.location.href = "login.html";
+  function openCall(custName, custPhone) {
+    if (!custPhone || custPhone === "—") { alert("Phone number not available."); return; }
+    document.getElementById("callAvatar").textContent       = custName ? custName.charAt(0).toUpperCase() : "C";
+    document.getElementById("callCustomerName").textContent = custName || "Customer";
+    document.getElementById("callCustomerPhone").textContent = "📞 " + custPhone;
+    document.getElementById("callModal").classList.add("open");
   }
+  document.getElementById("callConfirmBtn").addEventListener("click", function() {
+    const custPhone = document.getElementById("callCustomerPhone").textContent.replace("📞 ", "").trim();
+    closeModal("callModal");
+    window.location.href = "tel:" + custPhone;
+  });
+
+  function logout() { localStorage.clear(); window.location.href = "login.html"; }
 
   fetchRequests();
+  setInterval(fetchRequests, 30000);
 </script>
-
 </body>
 </html>

@@ -4,246 +4,677 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Bookings - QuickServe</title>
-
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --blue:#2563eb; --teal:#0d9488; --dark:#0f172a; --mid:#475569; --soft:#94a3b8; --border:#e2eaf4; }
+    html, body { height: 100%; }
+    body { min-height:100vh; font-family:'Plus Jakarta Sans',sans-serif; display:flex; background:#f0f7ff; }
 
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: url("/uploads/booking.jpg") no-repeat center center fixed;
-      background-size: cover;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 38px 20px;
-    }
+    /* ══ LEFT PANEL ══ */
+    .left-panel { width:300px; min-height:100vh; background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%); position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; justify-content:space-between; padding:40px 32px; overflow:hidden; z-index:10; }
+    .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
+    .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
+    .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.08); }
+    .r1{width:160px;height:160px;top:35%;right:-40px;} .r2{width:90px;height:90px;top:58%;right:36px;border-color:rgba(255,255,255,0.05);} .r3{width:60px;height:60px;top:15%;left:20px;border-color:rgba(255,255,255,0.06);}
+    .fi { position:absolute; width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(0,0,0,0.15); animation:bob ease-in-out infinite alternate; }
+    .fi1{top:15%;left:8%;animation-duration:3.2s;} .fi2{top:38%;right:10%;animation-duration:2.8s;animation-delay:0.5s;} .fi3{top:60%;left:14%;animation-duration:3.6s;animation-delay:1s;} .fi4{top:75%;right:16%;animation-duration:2.5s;animation-delay:0.3s;}
+    @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-12px) rotate(3deg);} }
+    .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:11px; }
+    .l-logo-icon { width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
+    .l-logo span { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; }
+    .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:22px 0; }
+    .l-main h2 { font-family:'Nunito',sans-serif; font-size:1.85rem; font-weight:900; color:#fff; line-height:1.25; margin-bottom:12px; }
+    .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .l-main p { color:rgba(255,255,255,0.65); font-size:0.85rem; line-height:1.7; margin-bottom:24px; }
+    .l-steps { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
+    .l-step { display:flex; align-items:flex-start; gap:10px; }
+    .l-step-icon { width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:1px; }
+    .l-step-text strong { display:block; font-size:0.8rem; font-weight:700; color:#fff; margin-bottom:1px; }
+    .l-step-text span { font-size:0.71rem; color:rgba(255,255,255,0.55); line-height:1.4; }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; }
+    .pill { padding:6px 13px; border-radius:50px; background:rgba(255,255,255,0.11); border:1.5px solid rgba(255,255,255,0.2); color:#fff; font-size:0.75rem; font-weight:600; }
 
-    .container {
-      width: 95%;
-      max-width: 1250px;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.45);
-    }
+    /* ══ RIGHT PANEL ══ */
+    .right-panel { margin-left:300px; flex:1; min-height:100vh; background:#fff; padding:40px 44px; overflow-y:auto; }
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 22px;
-    }
+    .topbar { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px; padding-bottom:20px; border-bottom:1.5px solid var(--border); flex-wrap:wrap; gap:14px; }
+    .title-wrap h1 { font-family:'Nunito',sans-serif; font-size:1.65rem; font-weight:900; color:var(--dark); margin-bottom:3px; display:flex; align-items:center; gap:10px; }
+    .title-wrap p { color:var(--soft); font-size:0.85rem; }
+    .title-wrap p span { color:var(--teal); font-weight:700; }
+    .top-buttons { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .top-btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border:none; border-radius:11px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:transform 0.2s; white-space:nowrap; }
+    .btn-booking { background:linear-gradient(135deg,#1d4ed8,#0d9488); box-shadow:0 4px 14px rgba(29,78,216,0.28); }
+    .btn-logout  { background:linear-gradient(135deg,#ef4444,#f87171); box-shadow:0 4px 14px rgba(239,68,68,0.28); }
+    .top-btn:hover { transform:translateY(-2px); }
 
-    .title-wrap h1 {
-      margin: 0;
-      font-size: 34px;
-      color: #1f2937;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    /* ── NOTIFICATION BADGE ── */
+    .notif-wrap { position:relative; display:inline-flex; }
+    .notif-badge { position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; border-radius:50%; width:18px; height:18px; font-size:0.65rem; font-weight:800; display:none; align-items:center; justify-content:center; border:2px solid #fff; animation:pulse 1.5s ease-in-out infinite; }
+    .notif-badge.show { display:flex; }
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
 
-    .title-wrap h1 i {
-      color: #2563eb;
-    }
+    /* ── FILTER TABS ── */
+    .filter-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+    .ftab { padding:7px 16px; border-radius:20px; border:1.5px solid var(--border); background:#fafcff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .ftab:hover, .ftab.active { background:#eff6ff; border-color:#93c5fd; color:var(--blue); }
+    .ftab.active { font-weight:700; }
 
-    .title-wrap h2 {
-      margin: 14px 0 0;
-      color: #374151;
-      font-weight: 600;
-      font-size: 18px;
-    }
+    /* ── BOOKING CARDS ── */
+    #cardsContainer { display:flex; flex-direction:column; gap:16px; }
 
-    .logout-btn,
-    .book-btn {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 18px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      color: white;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      transition: 0.2s ease;
+    .bcard {
+      background:#fff; border:1.5px solid var(--border); border-radius:18px;
+      overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.05);
+      transition:box-shadow 0.2s;
     }
+    .bcard:hover { box-shadow:0 8px 28px rgba(0,0,0,0.09); }
 
-    .logout-btn {
-      background: linear-gradient(135deg, #ef4444, #f87171);
-    }
+    /* coloured left bar by status */
+    .bcard.status-pending  { border-left:4px solid #f59e0b; }
+    .bcard.status-accepted { border-left:4px solid #10b981; }
+    .bcard.status-rejected { border-left:4px solid #ef4444; }
+    .bcard.status-completed{ border-left:4px solid #2563eb; }
 
-    .book-btn {
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      margin-top: 20px;
-    }
+    .bcard-top { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 12px; flex-wrap:wrap; gap:10px; }
+    .bcard-service { display:flex; align-items:center; gap:10px; }
+    .bcard-service-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .bcard-service-name { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:var(--dark); }
+    .bcard-service-date { font-size:0.75rem; color:var(--soft); margin-top:1px; }
 
-    .logout-btn:hover,
-    .book-btn:hover {
-      transform: translateY(-2px);
-    }
+    .bcard-status-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; }
+    .sp-pending  { background:#fef3c7; color:#d97706; }
+    .sp-accepted { background:#d1fae5; color:#059669; }
+    .sp-rejected { background:#fee2e2; color:#dc2626; }
+    .sp-completed{ background:#dbeafe; color:#1d4ed8; }
 
-    .table-wrap {
-      overflow-x: auto;
-      background: rgba(255, 255, 255, 0.45);
-      border-radius: 18px;
-      padding: 12px;
-    }
+    /* ── STATUS TRACKER ── */
+    .status-tracker { padding:14px 20px; background:#f8faff; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .tracker-steps { display:flex; align-items:center; gap:0; }
+    .tstep { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
+    .tstep-dot { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; z-index:1; transition:all 0.3s; }
+    .tstep-dot.done  { background:linear-gradient(135deg,#10b981,#0d9488); color:#fff; box-shadow:0 3px 10px rgba(16,185,129,0.4); }
+    .tstep-dot.active{ background:linear-gradient(135deg,#2563eb,#7c3aed); color:#fff; box-shadow:0 3px 10px rgba(37,99,235,0.4); animation:stepPulse 1.5s ease-in-out infinite; }
+    .tstep-dot.inactive{ background:#e2eaf4; color:#94a3b8; }
+    .tstep-dot.rejected-dot { background:linear-gradient(135deg,#ef4444,#f87171); color:#fff; }
+    @keyframes stepPulse { 0%,100%{box-shadow:0 3px 10px rgba(37,99,235,0.4);} 50%{box-shadow:0 3px 18px rgba(37,99,235,0.7);} }
+    .tstep-label { font-size:0.65rem; font-weight:600; color:var(--soft); margin-top:5px; text-align:center; }
+    .tstep-label.done-lbl { color:#059669; }
+    .tstep-label.active-lbl { color:var(--blue); font-weight:700; }
+    .tstep-line { flex:1; height:3px; background:#e2eaf4; margin-top:-14px; position:relative; z-index:0; }
+    .tstep-line.done-line { background:linear-gradient(90deg,#10b981,#0d9488); }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1100px;
-    }
+    .bcard-body { padding:14px 20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .binfo { display:flex; flex-direction:column; gap:2px; }
+    .binfo-label { font-size:0.68rem; color:var(--soft); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+    .binfo-val { font-size:0.85rem; color:var(--dark); font-weight:600; }
 
-    thead tr {
-      background: rgba(255, 255, 255, 0.55);
-    }
+    /* accepted details box */
+    .accepted-box { margin:0 20px 14px; padding:12px 16px; background:linear-gradient(135deg,#f0fdf4,#ecfdf5); border:1.5px solid #bbf7d0; border-radius:12px; }
+    .accepted-box-title { font-size:0.72rem; font-weight:700; color:#059669; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+    .accepted-row { display:flex; align-items:flex-start; gap:8px; font-size:0.83rem; color:var(--dark); margin-bottom:4px; }
+    .accepted-row:last-child { margin-bottom:0; }
+    .accepted-row strong { color:#059669; min-width:90px; flex-shrink:0; }
 
-    th {
-      text-align: left;
-      padding: 14px 12px;
-      color: #111827;
-      font-size: 15px;
-    }
+    /* rejected box */
+    .rejected-box { margin:0 20px 14px; padding:12px 16px; background:#fff5f5; border:1.5px solid #fecaca; border-radius:12px; }
+    .rejected-box-title { font-size:0.72rem; font-weight:700; color:#dc2626; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+    .rejected-reason { font-size:0.83rem; color:#7f1d1d; }
 
-    td {
-      padding: 14px 12px;
-      color: #374151;
-      border-top: 1px solid rgba(203, 213, 225, 0.75);
-      vertical-align: top;
-      font-size: 15px;
-    }
+    /* ── CARD FOOTER ACTIONS ── */
+    .bcard-footer { padding:12px 20px; border-top:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; background:#fafcff; }
+    .bcard-footer-left { display:flex; gap:8px; flex-wrap:wrap; }
 
-    tbody tr:hover {
-      background: rgba(255, 255, 255, 0.35);
-    }
+    .action-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:9px; border:none; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.78rem; font-weight:700; transition:all 0.2s; }
+    .btn-rebook  { background:#eff6ff; color:var(--blue); border:1.5px solid #bfdbfe; }
+    .btn-rebook:hover { background:#dbeafe; }
+    .btn-receipt { background:#f0fdf4; color:#16a34a; border:1.5px solid #bbf7d0; }
+    .btn-receipt:hover { background:#dcfce7; }
+    .btn-chat    { background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff; box-shadow:0 3px 10px rgba(124,58,237,0.3); }
+    .btn-chat:hover { transform:translateY(-1px); box-shadow:0 5px 14px rgba(124,58,237,0.4); }
+    .btn-rate    { background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; box-shadow:0 3px 10px rgba(245,158,11,0.3); }
+    .btn-rate:hover { transform:translateY(-1px); }
+    .btn-cancel  { background:#fff5f5; color:#ef4444; border:1.5px solid #fecaca; }
+    .btn-cancel:hover { background:#fee2e2; }
+    .rated-tag { display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:9px; background:#e0f2fe; color:#0369a1; font-size:0.78rem; font-weight:700; }
 
-    .service-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      color: #111827;
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(203, 213, 225, 0.9);
-    }
+    /* ── RATING MODAL ── */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:#fff; border-radius:22px; padding:30px; width:380px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.2); position:relative; animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes dropIn { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+    .modal-close { position:absolute; top:14px; right:14px; background:#f1f5f9; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-size:0.9rem; color:var(--mid); display:flex; align-items:center; justify-content:center; }
+    .modal-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; color:var(--dark); margin-bottom:4px; }
+    .modal-sub { font-size:0.82rem; color:var(--soft); margin-bottom:18px; }
+    .star-row { display:flex; gap:8px; justify-content:center; margin-bottom:18px; }
+    .star-btn { font-size:2rem; background:none; border:none; cursor:pointer; transition:transform 0.15s; color:#d1d5db; }
+    .star-btn.active, .star-btn:hover { color:#f59e0b; transform:scale(1.2); }
+    .modal-textarea { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:11px; background:#fafcff; color:var(--dark); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; outline:none; resize:vertical; min-height:80px; transition:all 0.25s; }
+    .modal-textarea:focus { border-color:#93c5fd; box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
+    .modal-save { width:100%; padding:12px; border:none; border-radius:11px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.9rem; font-weight:700; cursor:pointer; margin-top:12px; transition:transform 0.2s; }
+    .modal-save:hover { transform:translateY(-2px); }
 
-    .service-badge i {
-      font-size: 14px;
-    }
+    /* ── RECEIPT MODAL ── */
+    .receipt-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:300; display:none; align-items:center; justify-content:center; }
+    .receipt-overlay.open { display:flex; }
+    .receipt-box { background:#fff; border-radius:20px; width:420px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 30px 80px rgba(0,0,0,0.25); animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+    .receipt-header { background:linear-gradient(135deg,#1d4ed8,#0d9488); padding:24px 28px; text-align:center; }
+    .receipt-header h3 { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; margin-bottom:3px; }
+    .receipt-header p { color:rgba(255,255,255,0.75); font-size:0.8rem; }
+    .receipt-body { padding:22px 28px; }
+    .receipt-logo { text-align:center; margin-bottom:18px; }
+    .receipt-logo span { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; color:var(--dark); }
+    .receipt-id { text-align:center; font-size:0.75rem; color:var(--soft); margin-bottom:18px; }
+    .receipt-divider { height:1px; background:var(--border); margin:14px 0; }
+    .receipt-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:0.85rem; }
+    .receipt-row .rlbl { color:var(--soft); }
+    .receipt-row .rval { font-weight:700; color:var(--dark); }
+    .receipt-total { background:linear-gradient(135deg,#eff6ff,#f0fdf4); border-radius:10px; padding:12px 16px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; }
+    .receipt-total .rlbl { font-weight:700; color:var(--dark); }
+    .receipt-total .rval { font-weight:900; font-size:1.1rem; color:var(--blue); }
+    .receipt-status-badge { text-align:center; margin:12px 0; }
+    .receipt-btns { display:flex; gap:8px; padding:0 28px 22px; }
+    .receipt-print { flex:1; padding:11px; border:none; border-radius:11px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:transform 0.2s; }
+    .receipt-print:hover { transform:translateY(-2px); }
+    .receipt-close-btn { flex:1; padding:11px; border-radius:11px; border:1.5px solid var(--border); background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; }
 
-    .service-carpenter i {
-      color: #f59e0b;
-    }
+    /* ── TOAST ── */
+    .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:#0f172a; color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast.success { background:linear-gradient(135deg,#16a34a,#0d9488); }
+    .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
 
-    .service-plumber i {
-      color: #06b6d4;
-    }
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align:center; padding:60px 20px; color:var(--soft); }
+    .empty-icon { font-size:3rem; margin-bottom:12px; }
+    .empty-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; color:var(--mid); margin-bottom:6px; }
 
-    .service-electrician i {
-      color: #eab308;
-    }
+    .book-btn { border:none; border-radius:12px; padding:12px 18px; font-size:14px; font-weight:700; cursor:pointer; color:white; display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:0.2s ease; background:linear-gradient(135deg,#2563eb,#7c3aed); margin-top:20px; }
+    .book-btn:hover { transform:translateY(-2px); }
 
-    .status-done {
-      color: #16a34a;
-      font-weight: 700;
-    }
-
-    .status-pending {
-      color: #d97706;
-      font-weight: 700;
-    }
-
-    .worker-cell {
-      font-weight: 600;
-      color: #1f2937;
-    }
-
-    .rate-pill,
-    .rated-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .rate-pill {
-      background: #10b981;
-      color: white;
-    }
-
-    .rated-pill {
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-
-    @media (max-width: 700px) {
-      .title-wrap h1 {
-        font-size: 28px;
-      }
-
-      .title-wrap h2 {
-        font-size: 16px;
-      }
-    }
+    @media(max-width:860px) { .left-panel{display:none;} .right-panel{margin-left:0;padding:24px 18px;} .bcard-body{grid-template-columns:1fr 1fr;} }
+    @media(max-width:500px) { .bcard-body{grid-template-columns:1fr;} }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="topbar">
-      <div class="title-wrap">
-        <h1><i class="fa-solid fa-clock-rotate-left"></i> My Booking History</h1>
-        <h2 id="welcomeUser"></h2>
-      </div>
+<!-- ══ LEFT PANEL ══ -->
+<div class="left-panel">
+  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
+  <div class="fi fi1">📋</div><div class="fi fi2">⭐</div><div class="fi fi3">🔧</div><div class="fi fi4">✅</div>
+  <div class="l-logo">
+    <div class="l-logo-icon">
+      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
+        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
+        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
+        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
+        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
+      </svg>
+    </div>
+    <span>QuickServe</span>
+  </div>
+  <div class="l-main">
+    <h2>My <em>Booking</em><br>History</h2>
+    <p>Track all your service bookings, check their status, and rate completed jobs.</p>
+    <div class="l-steps">
+      <div class="l-step"><div class="l-step-icon">📌</div><div class="l-step-text"><strong>Track Status</strong><span>See if your booking is pending, accepted, or completed.</span></div></div>
+      <div class="l-step"><div class="l-step-icon">⭐</div><div class="l-step-text"><strong>Rate Workers</strong><span>Leave a rating for completed jobs to help others.</span></div></div>
+      <div class="l-step"><div class="l-step-icon">🔄</div><div class="l-step-text"><strong>Book Again</strong><span>Need another service? Book a new one anytime.</span></div></div>
+    </div>
+    <div class="pills">
+      <div class="pill">✅ Verified</div><div class="pill">⭐ Rated</div><div class="pill">🔒 Trusted</div><div class="pill">⚡ Fast</div>
+    </div>
+  </div>
+</div>
 
-      <button id="logoutBtn" class="logout-btn">
+<!-- ══ RIGHT PANEL ══ -->
+<div class="right-panel">
+
+  <div class="topbar">
+    <div class="title-wrap">
+      <h1><i class="fa-solid fa-clock-rotate-left" style="color:#2563eb;font-size:1.3rem;"></i> My Booking History</h1>
+      <p id="welcomeMsg" style="margin-top:4px;"></p>
+    </div>
+    <div class="top-buttons">
+      <!-- Notification bell -->
+      <div class="notif-wrap">
+        <button class="top-btn" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 4px 14px rgba(124,58,237,0.28);" id="notifBtn">
+          <i class="fa-solid fa-bell"></i> Updates
+        </button>
+        <span class="notif-badge" id="notifBadge">0</span>
+      </div>
+      <button class="top-btn btn-booking" onclick="window.location.href='booking.html'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Book a Service
+      </button>
+      <button class="top-btn btn-logout" id="logoutBtn">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
       </button>
     </div>
-
-    <div class="table-wrap">
-      <table id="bookingTable">
-        <thead>
-          <tr>
-            <th>Service</th>
-            <th>Worker</th>
-            <th>Address</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Arrival Time</th>
-            <th>Worker Message</th>
-            <th>Reject Reason</th>
-            <th>Rate</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <button class="book-btn" onclick="window.location.href='booking.html'">
-      <i class="fa-solid fa-plus"></i> Book Another Service
-    </button>
   </div>
 
-  <script src="js/mybooking.js"></script>
+  <!-- Filter tabs -->
+  <div class="filter-tabs">
+    <button class="ftab active" data-filter="all">All</button>
+    <button class="ftab" data-filter="pending">⏳ Pending</button>
+    <button class="ftab" data-filter="accepted">✅ Accepted</button>
+    <button class="ftab" data-filter="completed">🏁 Completed</button>
+    <button class="ftab" data-filter="rejected">❌ Rejected</button>
+  </div>
+
+  <!-- Cards -->
+  <div id="cardsContainer">
+    <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Loading your bookings...</div></div>
+  </div>
+
+  <button class="book-btn" onclick="window.location.href='booking.html'">
+    <i class="fa-solid fa-plus"></i> Book Another Service
+  </button>
+
+</div>
+
+<!-- ══ RATING MODAL ══ -->
+<div class="modal-overlay" id="ratingModal">
+  <div class="modal-box">
+    <button class="modal-close" id="ratingModalClose">✕</button>
+    <div class="modal-title">⭐ Rate this Worker</div>
+    <div class="modal-sub" id="ratingModalSub">How was your experience?</div>
+    <div class="star-row" id="starRow">
+      <button class="star-btn" data-val="1">★</button>
+      <button class="star-btn" data-val="2">★</button>
+      <button class="star-btn" data-val="3">★</button>
+      <button class="star-btn" data-val="4">★</button>
+      <button class="star-btn" data-val="5">★</button>
+    </div>
+    <textarea class="modal-textarea" id="ratingComment" placeholder="Write your feedback (optional)..."></textarea>
+    <button class="modal-save" id="ratingSubmitBtn">Submit Rating</button>
+  </div>
+</div>
+
+<!-- ══ RECEIPT MODAL ══ -->
+<div class="receipt-overlay" id="receiptModal">
+  <div class="receipt-box">
+    <div class="receipt-header">
+      <h3>🧾 Booking Receipt</h3>
+      <p>QuickServe — Service Booking</p>
+    </div>
+    <div class="receipt-body">
+      <div class="receipt-logo"><span>⚡ QuickServe</span></div>
+      <div class="receipt-id" id="receiptId">Booking ID: —</div>
+      <div class="receipt-divider"></div>
+      <div class="receipt-row"><span class="rlbl">Service</span><span class="rval" id="rService">—</span></div>
+      <div class="receipt-row"><span class="rlbl">Worker</span><span class="rval" id="rWorker">—</span></div>
+      <div class="receipt-row"><span class="rlbl">Address</span><span class="rval" id="rAddress">—</span></div>
+      <div class="receipt-row"><span class="rlbl">Date</span><span class="rval" id="rDate">—</span></div>
+      <div class="receipt-row"><span class="rlbl">Status</span><span class="rval" id="rStatus">—</span></div>
+      <div class="receipt-divider"></div>
+      <div class="receipt-total"><span class="rlbl">Booking Fee Paid</span><span class="rval">₹29</span></div>
+      <div class="receipt-status-badge" id="rStatusBadge"></div>
+    </div>
+    <div class="receipt-btns">
+      <button class="receipt-print" id="receiptPrintBtn">🖨️ Print / Save PDF</button>
+      <button class="receipt-close-btn" id="receiptCloseBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- Hidden table — keeps mybooking.js working (it still needs #bookingTable) -->
+<table id="bookingTable" style="display:none;"><thead><tr></tr></thead><tbody></tbody></table>
+
+<script>
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + (type || "success") + " show";
+  setTimeout(() => { t.className = "toast"; }, 3500);
+}
+
+const phone = (localStorage.getItem("phone") || "").trim();
+const uname = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+
+// Welcome message
+const msg = document.getElementById("welcomeMsg");
+if (uname && msg) msg.innerHTML = `Welcome, <span>${uname}</span>! Here are your bookings:`;
+
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.clear(); window.location.href = "login.html";
+});
+
+// ════════════════════════════════════════════
+// BOOKING DATA
+// ════════════════════════════════════════════
+let allBookings = [];
+let currentFilter = "all";
+let selectedRating = 0;
+let currentRatingBookingId = null;
+// Track last known statuses for notification badge
+let lastStatuses = JSON.parse(localStorage.getItem("qs_lastStatuses") || "{}");
+let newUpdatesCount = 0;
+
+function serviceIcon(s) {
+  if (s === "carpenter")   return { icon:"🪚", bg:"#fef3c7" };
+  if (s === "plumber")     return { icon:"🔧", bg:"#e0f2fe" };
+  if (s === "electrician") return { icon:"⚡", bg:"#fefce8" };
+  return { icon:"🛠️", bg:"#f1f5f9" };
+}
+
+function statusPill(s) {
+  const map = {
+    pending:   ["sp-pending",  "⏳ Pending"],
+    accepted:  ["sp-accepted", "✅ Accepted"],
+    rejected:  ["sp-rejected", "❌ Rejected"],
+    completed: ["sp-completed","🏁 Completed"],
+  };
+  const [cls, lbl] = map[s] || ["sp-pending","⏳ Pending"];
+  return `<span class="bcard-status-pill ${cls}">${lbl}</span>`;
+}
+
+function buildTracker(status) {
+  const steps = ["Booked", "Accepted", "Completed"];
+  const idx = status === "pending" ? 0 : status === "accepted" ? 1 : status === "completed" ? 2 : -1;
+  const isRejected = status === "rejected";
+
+  if (isRejected) {
+    return `<div class="status-tracker">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#dc2626;font-weight:700;">
+        <span style="font-size:1.1rem;">❌</span> Booking was rejected by the worker
+      </div>
+    </div>`;
+  }
+
+  let html = `<div class="status-tracker"><div class="tracker-steps">`;
+  steps.forEach((step, i) => {
+    const isDone   = i < idx || (idx === 2 && i <= 2);
+    const isActive = i === idx;
+    const dotClass = isDone ? "done" : isActive ? "active" : "inactive";
+    const lblClass = isDone ? "done-lbl" : isActive ? "active-lbl" : "";
+    const icon     = isDone ? "✓" : isActive ? (i === 0 ? "📋" : i === 1 ? "👷" : "🏁") : (i+1);
+
+    if (i > 0) {
+      html += `<div class="tstep-line ${i <= idx ? 'done-line' : ''}"></div>`;
+    }
+    html += `<div class="tstep">
+      <div class="tstep-dot ${dotClass}">${icon}</div>
+      <div class="tstep-label ${lblClass}">${step}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+function buildCard(b) {
+  const status  = (b.status || "pending").toLowerCase();
+  const svc     = serviceIcon(b.service);
+  const wText   = b.chosenWorkerRole && b.chosenWorkerPhone
+    ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}` : "—";
+
+  // Footer actions
+  let actions = `
+    <button class="action-btn btn-rebook" onclick="reBook('${b.service}','${b.chosenWorkerPhone}','${b.chosenWorkerRole}')">
+      🔄 Re-book
+    </button>
+    <button class="action-btn btn-receipt" onclick="showReceipt('${b._id}')">
+      🧾 Receipt
+    </button>`;
+
+  if (["pending","accepted","completed"].includes(status) && b.chosenWorkerPhone) {
+    const wName = b.chosenWorkerRole ? (b.chosenWorkerRole.charAt(0).toUpperCase()+b.chosenWorkerRole.slice(1)) : "Worker";
+    actions += `<button class="action-btn btn-chat" onclick="openChat('${b._id}','${b.chosenWorkerPhone}','${wName}')">
+      💬 Chat Worker
+    </button>`;
+  }
+
+  if (status === "completed" && !b.reviewed) {
+    actions += `<button class="action-btn btn-rate" onclick="openRating('${b._id}','${wText}')">
+      ⭐ Rate Worker
+    </button>`;
+  }
+
+  if (status === "pending") {
+    actions += `<button class="action-btn btn-cancel" onclick="cancelBooking('${b._id}')">
+      ✕ Cancel
+    </button>`;
+  }
+
+  let ratedTag = b.reviewed ? `<span class="rated-tag">⭐ Reviewed</span>` : "";
+
+  // Accepted details
+  let extraBox = "";
+  if (status === "accepted" || status === "completed") {
+    if (b.visitTime || b.workerMessage) {
+      extraBox = `<div class="accepted-box">
+        <div class="accepted-box-title">✅ Worker Response</div>
+        ${b.visitTime    ? `<div class="accepted-row"><strong>Arrival Time:</strong>${b.visitTime}</div>` : ""}
+        ${b.workerMessage? `<div class="accepted-row"><strong>Message:</strong>${b.workerMessage}</div>` : ""}
+      </div>`;
+    }
+  }
+  if (status === "rejected" && b.rejectReason) {
+    extraBox = `<div class="rejected-box">
+      <div class="rejected-box-title">❌ Rejection Reason</div>
+      <div class="rejected-reason">${b.rejectReason}</div>
+    </div>`;
+  }
+
+  return `
+  <div class="bcard status-${status}" data-id="${b._id}">
+    <div class="bcard-top">
+      <div class="bcard-service">
+        <div class="bcard-service-icon" style="background:${svc.bg};">${svc.icon}</div>
+        <div>
+          <div class="bcard-service-name">${(b.service||"").charAt(0).toUpperCase()+(b.service||"").slice(1)}</div>
+          <div class="bcard-service-date">📅 ${b.date || "—"}</div>
+        </div>
+      </div>
+      ${statusPill(status)}
+    </div>
+
+    ${buildTracker(status)}
+
+    <div class="bcard-body">
+      <div class="binfo"><div class="binfo-label">Worker</div><div class="binfo-val">👷 ${wText}</div></div>
+      <div class="binfo"><div class="binfo-label">Address</div><div class="binfo-val">📍 ${b.address||"—"}</div></div>
+      <div class="binfo"><div class="binfo-label">Booked On</div><div class="binfo-val">🗓️ ${b.createdAt ? new Date(b.createdAt).toLocaleDateString() : "—"}</div></div>
+    </div>
+
+    ${extraBox}
+
+    <div class="bcard-footer">
+      <div class="bcard-footer-left">${actions}</div>
+      ${ratedTag}
+    </div>
+  </div>`;
+}
+
+function renderCards() {
+  const container = document.getElementById("cardsContainer");
+  const filtered  = currentFilter === "all"
+    ? allBookings
+    : allBookings.filter(b => (b.status||"pending").toLowerCase() === currentFilter);
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">${currentFilter === "all" ? "📋" : "🔍"}</div>
+      <div class="empty-title">${currentFilter === "all" ? "No bookings yet" : "No " + currentFilter + " bookings"}</div>
+      <p style="font-size:0.85rem;color:var(--soft);margin-top:6px;">Book a service to get started!</p>
+    </div>`;
+    return;
+  }
+  container.innerHTML = filtered.map(b => buildCard(b)).join("");
+}
+
+// ════════════════════════════════════════════
+// FETCH + NOTIFICATION POLLING
+// ════════════════════════════════════════════
+async function fetchBookings(silent) {
+  try {
+    const res      = await fetch(`/mybookings/${encodeURIComponent(phone)}`);
+    const bookings = await res.json();
+    if (!Array.isArray(bookings)) return;
+
+    // Check for status changes → notification badge
+    if (silent) {
+      bookings.forEach(b => {
+        const prev = lastStatuses[b._id];
+        const curr = (b.status || "pending").toLowerCase();
+        if (prev && prev !== curr) {
+          newUpdatesCount++;
+        }
+        lastStatuses[b._id] = curr;
+      });
+      localStorage.setItem("qs_lastStatuses", JSON.stringify(lastStatuses));
+      if (newUpdatesCount > 0) {
+        const badge = document.getElementById("notifBadge");
+        badge.textContent = newUpdatesCount;
+        badge.classList.add("show");
+      }
+    } else {
+      // First load — record current statuses silently
+      bookings.forEach(b => {
+        if (!lastStatuses[b._id]) lastStatuses[b._id] = (b.status||"pending").toLowerCase();
+      });
+      localStorage.setItem("qs_lastStatuses", JSON.stringify(lastStatuses));
+    }
+
+    allBookings = bookings;
+    renderCards();
+  } catch(err) {
+    console.log("Error fetching bookings:", err);
+  }
+}
+
+// Initial load
+fetchBookings(false);
+// Poll every 30 seconds for status updates
+setInterval(() => fetchBookings(true), 30000);
+
+// Clear notification badge when clicked
+document.getElementById("notifBtn").addEventListener("click", () => {
+  newUpdatesCount = 0;
+  const badge = document.getElementById("notifBadge");
+  badge.textContent = "0";
+  badge.classList.remove("show");
+  showToast("✅ All updates seen!", "success");
+  fetchBookings(false);
+});
+
+// ════════════════════════════════════════════
+// FILTER TABS
+// ════════════════════════════════════════════
+document.querySelectorAll(".ftab").forEach(tab => {
+  tab.addEventListener("click", function() {
+    document.querySelectorAll(".ftab").forEach(t => t.classList.remove("active"));
+    this.classList.add("active");
+    currentFilter = this.dataset.filter;
+    renderCards();
+  });
+});
+
+// ════════════════════════════════════════════
+// RE-BOOK
+// ════════════════════════════════════════════
+function reBook(service, workerPhone, workerRole) {
+  localStorage.setItem("selectedServiceRole",  service);
+  localStorage.setItem("chosenWorkerPhone",    workerPhone);
+  localStorage.setItem("chosenWorkerRole",     workerRole);
+  window.location.href = "booking.html";
+}
+
+// ════════════════════════════════════════════
+// CANCEL BOOKING
+// ════════════════════════════════════════════
+async function cancelBooking(id) {
+  if (!confirm("Cancel this booking?")) return;
+  try {
+    const res  = await fetch(`/bookings/${id}/cancel`, { method:"PUT", headers:{"Content-Type":"application/json"} });
+    const data = await res.json();
+    if (res.ok) { showToast("✅ Booking cancelled"); fetchBookings(false); }
+    else showToast("❌ " + (data.error || "Could not cancel"), "error");
+  } catch(e) { showToast("❌ Server error", "error"); }
+}
+
+// ════════════════════════════════════════════
+// RECEIPT
+// ════════════════════════════════════════════
+function showReceipt(id) {
+  const b = allBookings.find(x => x._id === id);
+  if (!b) return;
+  document.getElementById("receiptId").textContent    = "Booking ID: " + b._id;
+  document.getElementById("rService").textContent     = (b.service||"—").charAt(0).toUpperCase()+(b.service||"").slice(1);
+  document.getElementById("rWorker").textContent      = b.chosenWorkerPhone ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}` : "—";
+  document.getElementById("rAddress").textContent     = b.address || "—";
+  document.getElementById("rDate").textContent        = b.date    || "—";
+  document.getElementById("rStatus").textContent      = (b.status||"pending").toUpperCase();
+  const status = (b.status||"pending").toLowerCase();
+  const badgeMap = { pending:"⏳ Pending", accepted:"✅ Accepted", completed:"🏁 Completed", rejected:"❌ Rejected" };
+  document.getElementById("rStatusBadge").innerHTML = `<span style="display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.82rem;background:${status==='completed'?'#dbeafe':status==='accepted'?'#d1fae5':status==='rejected'?'#fee2e2':'#fef3c7'};color:${status==='completed'?'#1d4ed8':status==='accepted'?'#059669':status==='rejected'?'#dc2626':'#d97706'};">${badgeMap[status]||status}</span>`;
+  document.getElementById("receiptModal").classList.add("open");
+}
+document.getElementById("receiptCloseBtn").addEventListener("click", () => document.getElementById("receiptModal").classList.remove("open"));
+document.getElementById("receiptModal").addEventListener("click", function(e) { if(e.target===this) this.classList.remove("open"); });
+document.getElementById("receiptPrintBtn").addEventListener("click", () => window.print());
+
+// ════════════════════════════════════════════
+// RATING MODAL
+// ════════════════════════════════════════════
+function openRating(bookingId, workerText) {
+  currentRatingBookingId = bookingId;
+  selectedRating = 0;
+  document.getElementById("ratingComment").value = "";
+  document.getElementById("ratingModalSub").textContent = "Rating for: " + workerText;
+  document.querySelectorAll(".star-btn").forEach(s => s.classList.remove("active"));
+  document.getElementById("ratingModal").classList.add("open");
+}
+document.getElementById("ratingModalClose").addEventListener("click", () => document.getElementById("ratingModal").classList.remove("open"));
+document.getElementById("ratingModal").addEventListener("click", function(e) { if(e.target===this) this.classList.remove("open"); });
+
+document.querySelectorAll(".star-btn").forEach(btn => {
+  btn.addEventListener("click", function() {
+    selectedRating = parseInt(this.dataset.val);
+    document.querySelectorAll(".star-btn").forEach((s,i) => {
+      s.classList.toggle("active", i < selectedRating);
+    });
+  });
+});
+
+document.getElementById("ratingSubmitBtn").addEventListener("click", async function() {
+  if (!selectedRating) { showToast("❌ Please select a star rating", "error"); return; }
+  const comment = document.getElementById("ratingComment").value.trim();
+  try {
+    const res  = await fetch("/reviews", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ bookingId:currentRatingBookingId, customerPhone:phone, rating:selectedRating, comment }) });
+    const data = await res.json();
+    if (res.ok) { document.getElementById("ratingModal").classList.remove("open"); showToast("⭐ Rating submitted! Thank you."); fetchBookings(false); }
+    else showToast("❌ " + (data.error || "Failed to submit"), "error");
+  } catch(e) { showToast("❌ Server error", "error"); }
+});
+
+// ════════════════════════════════════════════
+// CHAT — opens worker_chat.html
+// ════════════════════════════════════════════
+function openChat(bookingId, workerPhone, workerRoleName) {
+  const customerName = localStorage.getItem("name") || localStorage.getItem("userName") || "Customer";
+  const workerName   = (workerRoleName || "Worker") + " · " + workerPhone;
+
+  localStorage.setItem("chatBookingId",    bookingId);
+  localStorage.setItem("chatWorkerPhone",  workerPhone);
+  localStorage.setItem("chatWorkerName",   workerName);   // shown to customer as header
+  localStorage.setItem("chatCustomerName", customerName); // shown to worker as header
+  window.location.href = "worker_chat.html";
+}
+</script>
+
+<!-- mybooking.js still runs — it populates #bookingTable (hidden) but won't conflict -->
+<script src="js/mybooking.js"></script>
 </body>
 </html>
