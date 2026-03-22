@@ -1774,6 +1774,110 @@ app.post("/probation-job/create", async (req, res) => {
   }
 });
 
+// ============================================================
+// ADD THIS TO server.js BEFORE app.listen()
+// Handles chat for UNASSIGNED pending bookings (no worker yet)
+// ============================================================
+
+// GET /chat/:bookingId — UPDATED to handle unassigned bookings
+app.get("/chat/:bookingId", async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+    if (!bookingId) {
+      return res.status(400).json({ error: "Booking ID is required" });
+    }
+
+    let chat = await Chat.findOne({ bookingId });
+    
+    // If chat doesn't exist, check if booking exists
+    if (!chat) {
+      const booking = await Booking.findById(bookingId);
+      if (!booking) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+      // Create empty chat for this booking
+      chat = await Chat.create({
+        bookingId,
+        customerPhone: booking.phone,
+        workerPhone: booking.chosenWorkerPhone || "support@nearserve.com",
+        messages: []
+      });
+    }
+
+    res.json({ messages: chat.messages || [] });
+
+  } catch (err) {
+    console.error("Chat fetch error:", err);
+    res.status(500).json({ error: "Error fetching messages" });
+  }
+});
+
+// POST /chat/send — UPDATED to handle unassigned bookings
+app.post("/chat/send", async (req, res) => {
+  try {
+    const {
+      bookingId,
+      senderPhone,
+      senderName,
+      senderRole,
+      text
+    } = req.body;
+
+    if (!bookingId || !senderPhone || !text) {
+      return res.status(400).json({
+        error: "bookingId, senderPhone, and text are required"
+      });
+    }
+
+    const messageText = String(text).trim();
+    if (!messageText) {
+      return res.status(400).json({ error: "Message cannot be empty" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    let chat = await Chat.findOne({ bookingId });
+
+    if (!chat) {
+      // Create new chat for unassigned booking
+      chat = await Chat.create({
+        bookingId,
+        customerPhone: booking.phone,
+        workerPhone: booking.chosenWorkerPhone || "support@nearserve.com",
+        messages: []
+      });
+    }
+
+    const message = {
+      _id: new mongoose.Types.ObjectId(),
+      senderPhone: String(senderPhone).trim(),
+      senderName: String(senderName || "User").trim(),
+      senderRole: String(senderRole || "customer").toLowerCase(),
+      text: messageText,
+      timestamp: new Date(),
+      createdAt: new Date()
+    };
+
+    chat.messages.push(message);
+    await chat.save();
+
+    res.status(201).json({
+      ...message,
+      _id: message._id.toString()
+    });
+
+  } catch (err) {
+    console.error("Chat send error:", err);
+    res.status(500).json({ error: "Error sending message: " + err.message });
+  }
+});
+
+// DELETE OLD DUPLICATE ENDPOINTS IF THEY EXIST IN YOUR server.js
+// Keep only ONE set of /chat/:bookingId and /chat/send endpoints
+
 // ========================
 // Start server
 // ========================

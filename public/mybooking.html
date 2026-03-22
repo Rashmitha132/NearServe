@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Bookings - QuickServe</title>
+  <title>My Bookings - NearServe</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -77,6 +77,7 @@
     .bcard.status-accepted { border-left:4px solid #10b981; }
     .bcard.status-rejected { border-left:4px solid #ef4444; }
     .bcard.status-completed{ border-left:4px solid #2563eb; }
+    .bcard.status-cancelled{ border-left:4px solid #94a3b8; }
 
     .bcard-top { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 12px; flex-wrap:wrap; gap:10px; }
     .bcard-service { display:flex; align-items:center; gap:10px; }
@@ -89,6 +90,7 @@
     .sp-accepted { background:#d1fae5; color:#059669; }
     .sp-rejected { background:#fee2e2; color:#dc2626; }
     .sp-completed{ background:#dbeafe; color:#1d4ed8; }
+    .sp-cancelled{ background:#f1f5f9; color:#64748b; }
 
     /* ── STATUS TRACKER ── */
     .status-tracker { padding:14px 20px; background:#f8faff; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
@@ -186,6 +188,19 @@
     .toast.success { background:linear-gradient(135deg,#16a34a,#0d9488); }
     .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
 
+    /* ── CANCEL MODAL ── */
+    .cancel-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(6px); z-index:400; display:none; align-items:center; justify-content:center; }
+    .cancel-overlay.open { display:flex; }
+    .cancel-box { background:#fff; border-radius:22px; padding:32px 28px 24px; width:360px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.22); position:relative; animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; text-align:center; }
+    .cancel-icon-wrap { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#fee2e2,#fecaca); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.8rem; }
+    .cancel-title { font-family:'Nunito',sans-serif; font-size:1.15rem; font-weight:900; color:var(--dark); margin-bottom:6px; }
+    .cancel-sub { font-size:0.83rem; color:var(--soft); margin-bottom:22px; line-height:1.6; }
+    .cancel-btns { display:flex; gap:10px; }
+    .cancel-btn-no  { flex:1; padding:12px; border-radius:11px; border:1.5px solid var(--border); background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:background 0.2s; }
+    .cancel-btn-no:hover { background:#f1f5f9; }
+    .cancel-btn-yes { flex:1; padding:12px; border-radius:11px; border:none; background:linear-gradient(135deg,#ef4444,#f87171); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(239,68,68,0.3); transition:transform 0.2s; }
+    .cancel-btn-yes:hover { transform:translateY(-1px); }
+
     /* ── EMPTY STATE ── */
     .empty-state { text-align:center; padding:60px 20px; color:var(--soft); }
     .empty-icon { font-size:3rem; margin-bottom:12px; }
@@ -215,7 +230,7 @@
         <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
       </svg>
     </div>
-    <span>QuickServe</span>
+    <span>NearServe</span>
   </div>
   <div class="l-main">
     <h2>My <em>Booking</em><br>History</h2>
@@ -264,6 +279,7 @@
     <button class="ftab" data-filter="accepted">✅ Accepted</button>
     <button class="ftab" data-filter="completed">🏁 Completed</button>
     <button class="ftab" data-filter="rejected">❌ Rejected</button>
+    <button class="ftab" data-filter="cancelled">🚫 Cancelled</button>
   </div>
 
   <!-- Cards -->
@@ -322,6 +338,19 @@
   </div>
 </div>
 
+<!-- ══ CANCEL CONFIRM MODAL ══ -->
+<div class="cancel-overlay" id="cancelModal">
+  <div class="cancel-box">
+    <div class="cancel-icon-wrap">❌</div>
+    <div class="cancel-title">Cancel Booking?</div>
+    <div class="cancel-sub">Are you sure you want to cancel this booking?<br>This action cannot be undone.</div>
+    <div class="cancel-btns">
+      <button class="cancel-btn-no" id="cancelModalNo">Keep Booking</button>
+      <button class="cancel-btn-yes" id="cancelModalYes">Yes, Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ TOAST ══ -->
 <div class="toast" id="toast"></div>
 
@@ -358,7 +387,6 @@ let allBookings = [];
 let currentFilter = "all";
 let selectedRating = 0;
 let currentRatingBookingId = null;
-// Track last known statuses for notification badge
 let lastStatuses = JSON.parse(localStorage.getItem("qs_lastStatuses") || "{}");
 let newUpdatesCount = 0;
 
@@ -371,10 +399,11 @@ function serviceIcon(s) {
 
 function statusPill(s) {
   const map = {
-    pending:   ["sp-pending",  "⏳ Pending"],
-    accepted:  ["sp-accepted", "✅ Accepted"],
-    rejected:  ["sp-rejected", "❌ Rejected"],
-    completed: ["sp-completed","🏁 Completed"],
+    pending:   ["sp-pending",   "⏳ Pending"],
+    accepted:  ["sp-accepted",  "✅ Accepted"],
+    rejected:  ["sp-rejected",  "❌ Rejected"],
+    completed: ["sp-completed", "🏁 Completed"],
+    cancelled: ["sp-cancelled", "🚫 Cancelled"],
   };
   const [cls, lbl] = map[s] || ["sp-pending","⏳ Pending"];
   return `<span class="bcard-status-pill ${cls}">${lbl}</span>`;
@@ -383,12 +412,21 @@ function statusPill(s) {
 function buildTracker(status) {
   const steps = ["Booked", "Accepted", "Completed"];
   const idx = status === "pending" ? 0 : status === "accepted" ? 1 : status === "completed" ? 2 : -1;
-  const isRejected = status === "rejected";
+  const isRejected  = status === "rejected";
+  const isCancelled = status === "cancelled";
 
   if (isRejected) {
     return `<div class="status-tracker">
       <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#dc2626;font-weight:700;">
         <span style="font-size:1.1rem;">❌</span> Booking was rejected by the worker
+      </div>
+    </div>`;
+  }
+
+  if (isCancelled) {
+    return `<div class="status-tracker">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;font-weight:700;">
+        <span style="font-size:1.1rem;">🚫</span> This booking was cancelled by you
       </div>
     </div>`;
   }
@@ -428,9 +466,17 @@ function buildCard(b) {
       🧾 Receipt
     </button>`;
 
-  if (["pending","accepted","completed"].includes(status) && b.chosenWorkerPhone) {
-    const wName = b.chosenWorkerRole ? (b.chosenWorkerRole.charAt(0).toUpperCase()+b.chosenWorkerRole.slice(1)) : "Worker";
-    actions += `<button class="action-btn btn-chat" onclick="openChat('${b._id}','${b.chosenWorkerPhone}','${wName}')">
+  // ✅ CHAT BUTTON — Always uses chosenWorkerPhone (set at booking time by customer)
+  // Customer always picks a worker when booking, so phone is always available
+  const workerPhone = String(b.chosenWorkerPhone || "").trim();
+  const workerRole  = b.chosenWorkerRole
+    || (b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "Worker");
+
+  if (["pending", "accepted", "completed", "rejected"].includes(status)) {
+    // Always show chat — customer picks worker at booking time
+    // Fall back to service name if worker phone missing (older bookings)
+    const chatPhone = workerPhone || "support";
+    actions += `<button class="action-btn btn-chat" onclick="openChat('${b._id}','${chatPhone}','${workerRole}')">
       💬 Chat Worker
     </button>`;
   }
@@ -447,9 +493,16 @@ function buildCard(b) {
     </button>`;
   }
 
+  // No chat or rate for cancelled bookings
+  if (status === "cancelled") {
+    actions = `<button class="action-btn btn-rebook" onclick="reBook('${b.service}','${b.chosenWorkerPhone}','${b.chosenWorkerRole}')">
+      🔄 Re-book
+    </button>`;
+  }
+
   let ratedTag = b.reviewed ? `<span class="rated-tag">⭐ Reviewed</span>` : "";
 
-  // Accepted details
+  // Accepted/Completed details box
   let extraBox = "";
   if (status === "accepted" || status === "completed") {
     if (b.visitTime || b.workerMessage) {
@@ -523,7 +576,6 @@ async function fetchBookings(silent) {
     const bookings = await res.json();
     if (!Array.isArray(bookings)) return;
 
-    // Check for status changes → notification badge
     if (silent) {
       bookings.forEach(b => {
         const prev = lastStatuses[b._id];
@@ -540,7 +592,6 @@ async function fetchBookings(silent) {
         badge.classList.add("show");
       }
     } else {
-      // First load — record current statuses silently
       bookings.forEach(b => {
         if (!lastStatuses[b._id]) lastStatuses[b._id] = (b.status||"pending").toLowerCase();
       });
@@ -554,12 +605,9 @@ async function fetchBookings(silent) {
   }
 }
 
-// Initial load
 fetchBookings(false);
-// Poll every 30 seconds for status updates
 setInterval(() => fetchBookings(true), 30000);
 
-// Clear notification badge when clicked
 document.getElementById("notifBtn").addEventListener("click", () => {
   newUpdatesCount = 0;
   const badge = document.getElementById("notifBadge");
@@ -594,15 +642,40 @@ function reBook(service, workerPhone, workerRole) {
 // ════════════════════════════════════════════
 // CANCEL BOOKING
 // ════════════════════════════════════════════
-async function cancelBooking(id) {
-  if (!confirm("Cancel this booking?")) return;
+let _cancelBookingId = null;
+
+function cancelBooking(id) {
+  _cancelBookingId = id;
+  document.getElementById("cancelModal").classList.add("open");
+}
+
+document.getElementById("cancelModalNo").addEventListener("click", () => {
+  document.getElementById("cancelModal").classList.remove("open");
+  _cancelBookingId = null;
+});
+
+document.getElementById("cancelModal").addEventListener("click", function(e) {
+  if (e.target === this) {
+    this.classList.remove("open");
+    _cancelBookingId = null;
+  }
+});
+
+document.getElementById("cancelModalYes").addEventListener("click", async function() {
+  if (!_cancelBookingId) return;
+  this.textContent = "Cancelling...";
+  this.disabled = true;
   try {
-    const res  = await fetch(`/bookings/${id}/cancel`, { method:"PUT", headers:{"Content-Type":"application/json"} });
+    const res  = await fetch(`/bookings/${_cancelBookingId}/cancel`, { method:"PUT", headers:{"Content-Type":"application/json"} });
     const data = await res.json();
-    if (res.ok) { showToast("✅ Booking cancelled"); fetchBookings(false); }
+    document.getElementById("cancelModal").classList.remove("open");
+    if (res.ok) { showToast("✅ Booking cancelled successfully"); fetchBookings(false); }
     else showToast("❌ " + (data.error || "Could not cancel"), "error");
   } catch(e) { showToast("❌ Server error", "error"); }
-}
+  this.textContent = "Yes, Cancel";
+  this.disabled = false;
+  _cancelBookingId = null;
+});
 
 // ════════════════════════════════════════════
 // RECEIPT
@@ -617,8 +690,10 @@ function showReceipt(id) {
   document.getElementById("rDate").textContent        = b.date    || "—";
   document.getElementById("rStatus").textContent      = (b.status||"pending").toUpperCase();
   const status = (b.status||"pending").toLowerCase();
-  const badgeMap = { pending:"⏳ Pending", accepted:"✅ Accepted", completed:"🏁 Completed", rejected:"❌ Rejected" };
-  document.getElementById("rStatusBadge").innerHTML = `<span style="display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.82rem;background:${status==='completed'?'#dbeafe':status==='accepted'?'#d1fae5':status==='rejected'?'#fee2e2':'#fef3c7'};color:${status==='completed'?'#1d4ed8':status==='accepted'?'#059669':status==='rejected'?'#dc2626':'#d97706'};">${badgeMap[status]||status}</span>`;
+  const badgeMap = { pending:"⏳ Pending", accepted:"✅ Accepted", completed:"🏁 Completed", rejected:"❌ Rejected", cancelled:"🚫 Cancelled" };
+  const badgeBg  = status==='completed'?'#dbeafe':status==='accepted'?'#d1fae5':status==='rejected'?'#fee2e2':status==='cancelled'?'#f1f5f9':'#fef3c7';
+  const badgeClr = status==='completed'?'#1d4ed8':status==='accepted'?'#059669':status==='rejected'?'#dc2626':status==='cancelled'?'#64748b':'#d97706';
+  document.getElementById("rStatusBadge").innerHTML = `<span style="display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.82rem;background:${badgeBg};color:${badgeClr};">${badgeMap[status]||status}</span>`;
   document.getElementById("receiptModal").classList.add("open");
 }
 document.getElementById("receiptCloseBtn").addEventListener("click", () => document.getElementById("receiptModal").classList.remove("open"));
@@ -661,15 +736,20 @@ document.getElementById("ratingSubmitBtn").addEventListener("click", async funct
 
 // ════════════════════════════════════════════
 // CHAT — opens worker_chat.html
+// Customer always picks the worker themselves at booking time,
+// so chosenWorkerPhone is always available for all statuses.
 // ════════════════════════════════════════════
 function openChat(bookingId, workerPhone, workerRoleName) {
   const customerName = localStorage.getItem("name") || localStorage.getItem("userName") || "Customer";
-  const workerName   = (workerRoleName || "Worker") + " · " + workerPhone;
+  // Store role and phone separately so worker_chat.html can display them cleanly
+  const workerRole  = workerRoleName || "Worker";
+  const workerName  = workerRole + " · " + workerPhone;
 
   localStorage.setItem("chatBookingId",    bookingId);
   localStorage.setItem("chatWorkerPhone",  workerPhone);
-  localStorage.setItem("chatWorkerName",   workerName);   // shown to customer as header
-  localStorage.setItem("chatCustomerName", customerName); // shown to worker as header
+  localStorage.setItem("chatWorkerName",   workerName);
+  localStorage.setItem("chatWorkerRole",   workerRole);
+  localStorage.setItem("chatCustomerName", customerName);
   window.location.href = "worker_chat.html";
 }
 </script>

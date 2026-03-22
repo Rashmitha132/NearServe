@@ -55,7 +55,7 @@
   <div class="chat-worker-avatar" id="workerAvatar">W</div>
   <div class="chat-worker-info">
     <div class="chat-worker-name" id="workerName">Chat</div>
-    <div class="chat-worker-sub"  id="workerSub">Online</div>
+    <div class="chat-worker-sub"  id="workerSub">Worker · Online</div>
   </div>
 </div>
 
@@ -77,27 +77,46 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const bookingId   = localStorage.getItem("chatBookingId")    || "";
-  const workerPhone = localStorage.getItem("chatWorkerPhone")  || "";
-  const myPhone     = (localStorage.getItem("phone") || "").trim();
-  const myName      = localStorage.getItem("name") || localStorage.getItem("userName") || "User";
-  const myRole      = (localStorage.getItem("role") || "customer").toLowerCase();
+  const bookingId    = localStorage.getItem("chatBookingId")    || "";
+  const workerPhone  = localStorage.getItem("chatWorkerPhone")  || "";
+  const workerRole   = localStorage.getItem("chatWorkerRole")   || "";   // e.g. "Carpenter"
+  const myPhone      = (localStorage.getItem("phone") || "").trim();
+  const myName       = localStorage.getItem("name") || localStorage.getItem("userName") || "User";
+  const myRole       = (localStorage.getItem("role") || "customer").toLowerCase();
 
-  // ── Determine who the OTHER person is ──
+  // ── Determine if this user is a worker or customer ──
   const isWorker = ["carpenter","electrician","plumber"].includes(myRole);
-  const otherName = isWorker
-    ? (localStorage.getItem("chatCustomerName") || "Customer")
-    : (localStorage.getItem("chatWorkerName")   || "Worker");
-  const otherSub = isWorker ? "Customer" : "Worker · Online";
 
-  document.getElementById("workerName").textContent   = otherName;
-  document.getElementById("workerAvatar").textContent = otherName.charAt(0).toUpperCase();
-  document.getElementById("workerSub").textContent    = otherSub;
+  // ── Build clean header display ──
+  // For customer: show "Carpenter" as name and "7892282079 · Online" as sub
+  // For worker:   show customer name as name and "Customer" as sub
+  let displayName, displaySub;
+
+  if (isWorker) {
+    displayName = localStorage.getItem("chatCustomerName") || "Customer";
+    displaySub  = "Customer";
+  } else {
+    // Customer side — show worker role as title, phone as subtitle
+    displayName = workerRole
+      || (localStorage.getItem("chatWorkerName") || "Worker").split("·")[0].trim();
+    displaySub  = workerPhone
+      ? workerPhone + " · Online"
+      : "Worker · Online";
+  }
+
+  document.getElementById("workerName").textContent   = displayName;
+  document.getElementById("workerAvatar").textContent = displayName.charAt(0).toUpperCase();
+  document.getElementById("workerSub").textContent    = displaySub;
 
   if (!bookingId || !myPhone) {
     alert("Invalid chat session. Please try again.");
     window.location.href = isWorker ? (myRole + "_requests.html") : "mybooking.html";
   }
+
+  // otherName used in message rendering (who sent the message that's not mine)
+  const otherName = isWorker
+    ? (localStorage.getItem("chatCustomerName") || "Customer")
+    : displayName;
 
   let messages = [];
   let lastMessageCount = 0;
@@ -239,6 +258,7 @@
     if (pollInterval) clearInterval(pollInterval);
     localStorage.removeItem("chatBookingId");
     localStorage.removeItem("chatWorkerPhone");
+    localStorage.removeItem("chatWorkerRole");
     if      (myRole === "carpenter")   window.location.href = "carpenter_requests.html";
     else if (myRole === "electrician") window.location.href = "electrician_requests.html";
     else if (myRole === "plumber")     window.location.href = "plumber_requests.html";

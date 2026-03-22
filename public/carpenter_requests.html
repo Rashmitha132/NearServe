@@ -51,15 +51,21 @@
     .btn-logout:hover{background:#fee2e2;}
 
     /* ── HEADER ── */
-    .fhead{margin-bottom:24px;}
+    .fhead{margin-bottom:18px;}
     .fhead h1{font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--dark);margin-bottom:4px;}
     .fhead p{color:var(--soft);font-size:0.85rem;}
+
+    /* ── FILTER TABS ── */
+    .filter-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+    .ftab{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:#fafcff;color:var(--mid);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .ftab:hover,.ftab.active{background:#eff6ff;border-color:#93c5fd;color:var(--blue);}
+    .ftab.active{font-weight:700;}
 
     /* ── REQUEST CARDS ── */
     .req-list{display:flex;flex-direction:column;gap:16px;}
     .req-card{background:#fafcff;border:1.5px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden;transition:box-shadow 0.2s;}
     .req-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);}
-    .req-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2563eb,#0d9488);}
+    .req-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
     .req-card.pending::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
     .req-card.accepted::before{background:linear-gradient(90deg,#16a34a,#22c55e);}
     .req-card.completed::before{background:linear-gradient(90deg,#2563eb,#0d9488);}
@@ -89,8 +95,8 @@
     .btn-reject:hover{background:#fee2e2;}
     .btn-complete{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#1d4ed8,#0d9488);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(29,78,216,0.25);transition:transform 0.2s;}
     .btn-complete:hover{transform:translateY(-1px);}
-    .btn-chat{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:1.5px solid #bfdbfe;background:#eff6ff;color:var(--blue);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
-    .btn-chat:hover{background:#dbeafe;}
+    .btn-chat{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(124,58,237,0.25);transition:transform 0.2s;}
+    .btn-chat:hover{transform:translateY(-1px);}
     .btn-call{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:1.5px solid #bbf7d0;background:#f0fdf4;color:#16a34a;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
     .btn-call:hover{background:#dcfce7;}
 
@@ -129,7 +135,6 @@
     .mbc-blue {background:linear-gradient(135deg,#1d4ed8,#0d9488);}
     .mbc-teal {background:linear-gradient(135deg,#0d9488,#14b8a6);}
 
-    /* Call modal worker info */
     .modal-customer-info{background:#f8faff;border:1.5px solid var(--border);border-radius:13px;padding:13px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
     .modal-customer-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0d9488);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:#fff;flex-shrink:0;}
     .modal-customer-name{font-weight:700;color:var(--dark);font-size:0.9rem;}
@@ -205,6 +210,15 @@
     <p>Customers who selected you for their booking will appear here.</p>
   </div>
 
+  <!-- ── FILTER TABS ── -->
+  <div class="filter-tabs">
+    <button class="ftab active" data-filter="all">All</button>
+    <button class="ftab" data-filter="pending">⏳ Pending</button>
+    <button class="ftab" data-filter="accepted">✅ Accepted</button>
+    <button class="ftab" data-filter="completed">🏁 Completed</button>
+    <button class="ftab" data-filter="rejected">❌ Rejected</button>
+  </div>
+
   <div class="req-list" id="requestList">
     <div class="empty-state">
       <div class="empty-icon">📋</div>
@@ -215,17 +229,87 @@
 </div>
 
 <!-- ══ ACCEPT MODAL ══ -->
+<style>
+  .date-preset-btn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fafcff;color:var(--mid);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+  .date-preset-btn.active{background:#eff6ff;border-color:#93c5fd;color:var(--blue);}
+  .date-preset-btn:hover{background:#eff6ff;border-color:#93c5fd;color:var(--blue);}
+  .time-quick-btn{padding:5px 11px;border-radius:8px;border:1.5px solid var(--border);background:#fafcff;color:var(--mid);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+  .time-quick-btn.active,.time-quick-btn:hover{background:#eff6ff;border-color:#93c5fd;color:var(--blue);}
+  .msg-preset-btn{padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fafcff;color:var(--mid);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+  .msg-preset-btn.active{background:#f0fdf4;border-color:#bbf7d0;color:#16a34a;}
+  .msg-preset-btn:hover{background:#f0fdf4;border-color:#bbf7d0;color:#16a34a;}
+  .drum-col{flex:1;text-align:center;}
+  .drum-lbl{font-size:0.68rem;color:var(--soft);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+  .drum-up,.drum-dn{width:100%;padding:7px 4px;border:1.5px solid var(--border);background:#f8faff;cursor:pointer;font-size:0.95rem;transition:background 0.15s;}
+  .drum-up{border-radius:10px 10px 0 0;border-bottom:none;}
+  .drum-dn{border-radius:0 0 10px 10px;border-top:none;}
+  .drum-up:hover,.drum-dn:hover{background:#eff6ff;}
+  .drum-val{padding:12px 4px;background:#fff;border:1.5px solid var(--border);border-top:none;border-bottom:none;font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--dark);text-align:center;user-select:none;}
+  .drum-val.teal{color:var(--teal);}
+</style>
 <div class="modal-overlay" id="acceptModal">
-  <div class="modal-box">
+  <div class="modal-box" style="width:460px;max-width:96vw;">
     <div class="modal-header">
       <div class="modal-header-icon mhi-green">✅</div>
-      <div><h3>Accept Job</h3><p>Set visit time and message for customer</p></div>
+      <div><h3>Accept Job</h3><p>Pick visit date, time &amp; message</p></div>
     </div>
-    <div class="modal-body">
-      <span class="modal-label">Visit Time *</span>
-      <input class="modal-input" id="acceptVisitTime" placeholder="e.g. Today 6:30 PM or Tomorrow 10:00 AM">
-      <span class="modal-label">Message to Customer (optional)</span>
-      <textarea class="modal-textarea" id="acceptMessage" placeholder="e.g. I will call before arriving..."></textarea>
+    <div class="modal-body" style="max-height:75vh;overflow-y:auto;">
+
+      <!-- DATE -->
+      <span class="modal-label">Visit Date *</span>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <button class="date-preset-btn active" data-val="today"    onclick="selectDate(this)">📅 Today</button>
+        <button class="date-preset-btn"        data-val="tomorrow" onclick="selectDate(this)">📅 Tomorrow</button>
+        <button class="date-preset-btn"        data-val="custom"   onclick="selectDate(this)">🗓 Pick Date</button>
+      </div>
+      <input type="date" class="modal-input" id="acceptCustomDate" style="display:none;margin-bottom:10px;">
+
+      <!-- TIME DRUM -->
+      <span class="modal-label" style="margin-top:14px;">Visit Time *</span>
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
+        <div class="drum-col">
+          <div class="drum-lbl">Hour</div>
+          <button class="drum-up" onclick="changeTime('hour',-1)">▲</button>
+          <div class="drum-val" id="hourDisplay">06</div>
+          <button class="drum-dn" onclick="changeTime('hour',1)">▼</button>
+        </div>
+        <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:var(--dark);padding-top:30px;">:</div>
+        <div class="drum-col">
+          <div class="drum-lbl">Min</div>
+          <button class="drum-up" onclick="changeTime('min',-1)">▲</button>
+          <div class="drum-val" id="minDisplay">00</div>
+          <button class="drum-dn" onclick="changeTime('min',1)">▼</button>
+        </div>
+        <div class="drum-col">
+          <div class="drum-lbl">AM/PM</div>
+          <button class="drum-up" onclick="changeTime('ampm',-1)">▲</button>
+          <div class="drum-val teal" id="ampmDisplay">AM</div>
+          <button class="drum-dn" onclick="changeTime('ampm',1)">▼</button>
+        </div>
+      </div>
+
+      <!-- QUICK TIME PRESETS -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+        <button class="time-quick-btn" onclick="setQuickTime(8,0,'AM')">8:00 AM</button>
+        <button class="time-quick-btn" onclick="setQuickTime(10,0,'AM')">10:00 AM</button>
+        <button class="time-quick-btn" onclick="setQuickTime(12,0,'PM')">12:00 PM</button>
+        <button class="time-quick-btn" onclick="setQuickTime(2,0,'PM')">2:00 PM</button>
+        <button class="time-quick-btn" onclick="setQuickTime(4,0,'PM')">4:00 PM</button>
+        <button class="time-quick-btn" onclick="setQuickTime(6,0,'PM')">6:00 PM</button>
+      </div>
+
+      <!-- MESSAGE PRESETS -->
+      <span class="modal-label">Message to Customer</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+        <button class="msg-preset-btn" onclick="setMsg(this,'I will call before arriving.')">📞 Will call before</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'Please keep the area accessible.')">🚪 Keep area clear</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'I may arrive 15 minutes early.')">⏰ Might be early</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'Please confirm your address before I arrive.')">📍 Confirm address</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'I will bring all necessary tools.')">🧰 Bringing tools</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'')">✏️ Custom</button>
+      </div>
+      <textarea class="modal-textarea" id="acceptMessage" placeholder="Type a custom message or pick one above..." style="min-height:60px;"></textarea>
+
       <div class="modal-btns">
         <button class="modal-btn-cancel" onclick="closeModal('acceptModal')">Cancel</button>
         <button class="modal-btn-confirm mbc-green" id="acceptConfirmBtn">✅ Confirm Accept</button>
@@ -311,10 +395,12 @@
   if (!phone) { window.location.href = "login.html"; }
   if (role !== "carpenter") { window.location.href = "login.html"; }
 
-  document.getElementById("workerNameEl").textContent   = name;
-  document.getElementById("workerAvatar").textContent   = name.charAt(0).toUpperCase();
+  document.getElementById("workerNameEl").textContent = name;
+  document.getElementById("workerAvatar").textContent = name.charAt(0).toUpperCase();
 
-  let activeJobId = null;
+  let activeJobId  = null;
+  let allJobs      = [];
+  let currentFilter = "all";
 
   function safe(v){ return (!v || v === "") ? "—" : String(v); }
 
@@ -324,6 +410,16 @@
 
   document.querySelectorAll(".modal-overlay").forEach(m => {
     m.addEventListener("click", function(e) { if(e.target === this) this.classList.remove("open"); });
+  });
+
+  // ── FILTER TABS ──
+  document.querySelectorAll(".ftab").forEach(tab => {
+    tab.addEventListener("click", function() {
+      document.querySelectorAll(".ftab").forEach(t => t.classList.remove("active"));
+      this.classList.add("active");
+      currentFilter = this.dataset.filter;
+      renderJobs();
+    });
   });
 
   function statusBadge(status) {
@@ -351,18 +447,26 @@
       extraInfo = `<div class="req-extra"><strong>Completed At:</strong> ${job.completedAt ? new Date(job.completedAt).toLocaleString() : "—"}</div>`;
     }
 
+    // ✅ Chat button always shown for ALL statuses
+    const chatBtn = `
+      <button class="btn-chat" onclick="openChat('${job._id}','${safe(job.name)}','${safe(job.phone)}')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </button>`;
+
     let actions = "";
     if (st === "pending") {
       actions = `
-        <button class="btn-accept"  onclick="openAccept('${job._id}')">
+        <button class="btn-accept" onclick="openAccept('${job._id}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           Accept
         </button>
-        <button class="btn-reject"  onclick="openReject('${job._id}')">
+        <button class="btn-reject" onclick="openReject('${job._id}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           Reject
         </button>
-        <button class="btn-call"    onclick="openCall('${safe(job.name)}','${safe(job.phone)}')">
+        ${chatBtn}
+        <button class="btn-call" onclick="openCall('${safe(job.name)}','${safe(job.phone)}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           Call
         </button>`;
@@ -372,20 +476,14 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           Mark Complete
         </button>
-        <button class="btn-chat" onclick="openChat('${job._id}','${safe(job.name)}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Chat
-        </button>
+        ${chatBtn}
         <button class="btn-call" onclick="openCall('${safe(job.name)}','${safe(job.phone)}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           Call
         </button>`;
     } else {
-      actions = `
-        <button class="btn-chat" onclick="openChat('${job._id}','${safe(job.name)}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Chat
-        </button>`;
+      // completed or rejected — just chat
+      actions = chatBtn;
     }
 
     return `
@@ -407,6 +505,23 @@
       </div>`;
   }
 
+  function renderJobs() {
+    const list = document.getElementById("requestList");
+    const filtered = currentFilter === "all"
+      ? allJobs
+      : allJobs.filter(j => (j.status || "pending").toLowerCase() === currentFilter);
+
+    if (filtered.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">${currentFilter === "all" ? "📭" : "🔍"}</div>
+        <div class="empty-title">${currentFilter === "all" ? "No requests yet" : "No " + currentFilter + " requests"}</div>
+        <div class="empty-text">Customers who choose you will appear here automatically.</div>
+      </div>`;
+      return;
+    }
+    list.innerHTML = filtered.map(renderJob).join("");
+  }
+
   async function fetchRequests() {
     const list = document.getElementById("requestList");
     list.innerHTML = `<div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Loading...</div></div>`;
@@ -414,37 +529,92 @@
       const res      = await fetch(`/bookings/chosen/carpenter/${encodeURIComponent(phone)}`);
       const bookings = await res.json();
 
-      const mine = (bookings || []).filter(j =>
+      allJobs = (bookings || []).filter(j =>
         (j.chosenWorkerRole || "").toLowerCase() === "carpenter" &&
         String(j.chosenWorkerPhone || "") === String(phone)
       );
 
-      if (mine.length === 0) {
-        list.innerHTML = `<div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <div class="empty-title">No requests yet</div>
-          <div class="empty-text">Customers who choose you will appear here automatically.</div>
-        </div>`;
-        return;
-      }
-      list.innerHTML = mine.map(renderJob).join("");
+      renderJobs();
     } catch(err) {
       console.error(err);
       list.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Error loading requests</div></div>`;
     }
   }
 
+  // ── TIME DRUM STATE ──
+  let tHour = 6, tMin = 0, tAmpm = "AM";
+  let selectedDateMode = "today";
+
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function updateDrumDisplay(){
+    document.getElementById("hourDisplay").textContent = pad(tHour);
+    document.getElementById("minDisplay").textContent  = pad(tMin);
+    document.getElementById("ampmDisplay").textContent = tAmpm;
+  }
+  function changeTime(part, dir){
+    if(part === "hour"){
+      tHour = ((tHour - 1 + dir + 12) % 12) + 1; // 1-12
+    } else if(part === "min"){
+      tMin = (tMin + dir * 5 + 60) % 60;
+    } else {
+      tAmpm = tAmpm === "AM" ? "PM" : "AM";
+    }
+    updateDrumDisplay();
+    document.querySelectorAll(".time-quick-btn").forEach(b => b.classList.remove("active"));
+  }
+  function setQuickTime(h, m, ap){
+    tHour = h; tMin = m; tAmpm = ap;
+    updateDrumDisplay();
+    document.querySelectorAll(".time-quick-btn").forEach(b => b.classList.remove("active"));
+    event.target.classList.add("active");
+  }
+  function selectDate(btn){
+    document.querySelectorAll(".date-preset-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedDateMode = btn.dataset.val;
+    const customInput = document.getElementById("acceptCustomDate");
+    customInput.style.display = selectedDateMode === "custom" ? "block" : "none";
+  }
+  function setMsg(btn, text){
+    document.querySelectorAll(".msg-preset-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const ta = document.getElementById("acceptMessage");
+    ta.value = text;
+    if(!text){ ta.focus(); }
+  }
+  function getVisitTimeString(){
+    let dateStr = "";
+    if(selectedDateMode === "today")    dateStr = "Today";
+    else if(selectedDateMode === "tomorrow") dateStr = "Tomorrow";
+    else {
+      const d = document.getElementById("acceptCustomDate").value;
+      if(!d) return null;
+      dateStr = new Date(d).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+    }
+    return `${dateStr} ${pad(tHour)}:${pad(tMin)} ${tAmpm}`;
+  }
+
   function openAccept(jobId) {
     activeJobId = jobId;
-    document.getElementById("acceptVisitTime").value = "";
-    document.getElementById("acceptMessage").value   = "";
+    // Reset state
+    tHour = 6; tMin = 0; tAmpm = "AM";
+    selectedDateMode = "today";
+    updateDrumDisplay();
+    document.querySelectorAll(".date-preset-btn").forEach((b,i) => b.classList.toggle("active", i===0));
+    document.getElementById("acceptCustomDate").style.display = "none";
+    document.getElementById("acceptCustomDate").value = "";
+    document.getElementById("acceptMessage").value = "";
+    document.querySelectorAll(".msg-preset-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".time-quick-btn").forEach(b => b.classList.remove("active"));
     document.getElementById("acceptModal").classList.add("open");
   }
   document.getElementById("acceptConfirmBtn").addEventListener("click", async function() {
-    const visitTime = document.getElementById("acceptVisitTime").value.trim();
+    const visitTime = getVisitTimeString();
     const msg       = document.getElementById("acceptMessage").value.trim();
-    if (!visitTime) { document.getElementById("acceptVisitTime").style.borderColor="#ef4444"; return; }
-    document.getElementById("acceptVisitTime").style.borderColor="";
+    if (!visitTime) {
+      alert("Please select a visit date!");
+      return;
+    }
     this.textContent = "Accepting..."; this.disabled = true;
     try {
       const res = await fetch(`/bookings/${activeJobId}/status`, {
@@ -482,8 +652,8 @@
 
   function openComplete(jobId, custName, custPhone) {
     activeJobId = jobId;
-    document.getElementById("completeAvatar").textContent       = custName.charAt(0).toUpperCase();
-    document.getElementById("completeCustomerName").textContent = custName;
+    document.getElementById("completeAvatar").textContent        = custName.charAt(0).toUpperCase();
+    document.getElementById("completeCustomerName").textContent  = custName;
     document.getElementById("completeCustomerPhone").textContent = "📞 " + custPhone;
     document.getElementById("completeModal").classList.add("open");
   }
@@ -501,18 +671,21 @@
     this.textContent = "🏁 Yes, Mark Complete"; this.disabled = false;
   });
 
-  function openChat(bookingId, custName) {
-    localStorage.setItem("chatBookingId",   bookingId);
-    localStorage.setItem("chatWorkerPhone", phone);
-    localStorage.setItem("chatWorkerName",  name);
+  // ✅ Chat — passes customer phone so worker_chat.html shows correct name
+  function openChat(bookingId, custName, custPhone) {
+    localStorage.setItem("chatBookingId",    bookingId);
+    localStorage.setItem("chatWorkerPhone",  phone);
+    localStorage.setItem("chatWorkerName",   name);
+    localStorage.setItem("chatWorkerRole",   role);
     localStorage.setItem("chatCustomerName", custName);
+    localStorage.setItem("chatCustomerPhone", custPhone);
     window.location.href = "worker_chat.html";
   }
 
   function openCall(custName, custPhone) {
     if (!custPhone || custPhone === "—") { alert("Phone number not available."); return; }
-    document.getElementById("callAvatar").textContent       = custName ? custName.charAt(0).toUpperCase() : "C";
-    document.getElementById("callCustomerName").textContent = custName || "Customer";
+    document.getElementById("callAvatar").textContent        = custName ? custName.charAt(0).toUpperCase() : "C";
+    document.getElementById("callCustomerName").textContent  = custName || "Customer";
     document.getElementById("callCustomerPhone").textContent = "📞 " + custPhone;
     document.getElementById("callModal").classList.add("open");
   }
