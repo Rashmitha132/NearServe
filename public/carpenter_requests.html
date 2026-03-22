@@ -49,6 +49,8 @@
     .btn-refresh:hover{background:#eff6ff;}
     .btn-logout{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1.5px solid #fee2e2;background:#fff5f5;color:#ef4444;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
     .btn-logout:hover{background:#fee2e2;}
+    .btn-profile{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1.5px solid #bfdbfe;background:#eff6ff;color:#2563eb;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .btn-profile:hover{background:#dbeafe;transform:translateY(-1px);}
 
     /* ── HEADER ── */
     .fhead{margin-bottom:18px;}
@@ -186,8 +188,11 @@
 <div class="right-panel">
 
   <div class="topbar">
-    <div class="worker-info">
-      <div class="worker-avatar" id="workerAvatar">C</div>
+    <div class="worker-info" onclick="window.location.href='worker_myprofile.html'" style="cursor:pointer;" title="View My Profile">
+      <div style="position:relative;width:44px;height:44px;flex-shrink:0;">
+        <div class="worker-avatar" id="workerAvatar">C</div>
+        <img id="workerAvatarImg" src="" alt="" style="display:none;width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 4px 12px rgba(37,99,235,0.3);position:absolute;top:0;left:0;">
+      </div>
       <div>
         <div class="worker-name-el" id="workerNameEl">Carpenter</div>
         <div class="worker-role-el">🪚 Carpenter · Full Access</div>
@@ -197,6 +202,10 @@
       <button class="btn-refresh" onclick="fetchRequests()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         Refresh
+      </button>
+      <button class="btn-profile" onclick="window.location.href='worker_myprofile.html'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Profile
       </button>
       <button class="btn-logout" onclick="logout()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -397,6 +406,16 @@
 
   document.getElementById("workerNameEl").textContent = name;
   document.getElementById("workerAvatar").textContent = name.charAt(0).toUpperCase();
+
+  // Load profile picture from localStorage
+  const savedAvatar = localStorage.getItem("avatarBase64");
+  if (savedAvatar) {
+    const img = document.getElementById("workerAvatarImg");
+    const fallback = document.getElementById("workerAvatar");
+    img.src = savedAvatar;
+    img.style.display = "block";
+    fallback.style.display = "none";
+  }
 
   let activeJobId  = null;
   let allJobs      = [];

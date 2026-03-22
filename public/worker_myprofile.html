@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Profile - NearServe Worker</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:#2563eb; --teal:#0d9488; --teal2:#14b8a6;
+    --dark:#0f172a; --mid:#475569; --soft:#94a3b8;
+    --border:#e2eaf4; --bg:#f0f7ff;
+    --success:#16a34a; --error:#dc2626;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+    overflow-x: hidden;
+  }
+
+  /* ══ LEFT PANEL ══ */
+  .left-panel {
+    width: 380px; min-height: 100vh;
+    background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
+    position: fixed; top: 0; left: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    padding: 44px 38px;
+    overflow: hidden; z-index: 10;
+    flex-shrink: 0;
+  }
+  .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
+  .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
+
+  .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.08); }
+  .r1{width:160px;height:160px;top:35%;right:-40px;}
+  .r2{width:90px;height:90px;top:58%;right:36px;border-color:rgba(255,255,255,0.05);}
+  .r3{width:60px;height:60px;top:15%;left:20px;border-color:rgba(255,255,255,0.06);}
+
+  .fi { position:absolute; width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(0,0,0,0.15); animation:bob ease-in-out infinite alternate; }
+  .fi1{top:15%;left:8%;animation-duration:3.2s;}
+  .fi2{top:38%;right:10%;animation-duration:2.8s;animation-delay:0.5s;}
+  .fi3{top:60%;left:14%;animation-duration:3.6s;animation-delay:1s;}
+  .fi4{top:75%;right:16%;animation-duration:2.5s;animation-delay:0.3s;}
+  @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-12px) rotate(3deg);} }
+
+  .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:11px; }
+  .l-logo-icon { width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
+  .l-logo span { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; }
+
+  .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:28px 0; }
+  .l-main h2 { font-family:'Nunito',sans-serif; font-size:2.2rem; font-weight:900; color:#fff; line-height:1.25; margin-bottom:14px; }
+  .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .l-main p { color:rgba(255,255,255,0.65); font-size:0.92rem; line-height:1.75; margin-bottom:26px; }
+
+  .l-steps { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
+  .l-step { display:flex; align-items:flex-start; gap:10px; }
+  .l-step-icon { width:32px; height:32px; border-radius:9px; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:1px; }
+  .l-step-text strong { display:block; font-size:0.88rem; font-weight:700; color:#fff; margin-bottom:2px; }
+  .l-step-text span { font-size:0.78rem; color:rgba(255,255,255,0.55); line-height:1.4; }
+
+  .l-stats { position:relative; z-index:2; display:flex; gap:18px; align-items:center; }
+  .stat-num { font-family:'Nunito',sans-serif; font-size:1.55rem; font-weight:900; color:#fff; }
+  .stat-lbl { font-size:0.68rem; color:rgba(255,255,255,0.55); }
+  .sdiv { width:1px; background:rgba(255,255,255,0.2); height:32px; }
+
+  /* ══ RIGHT PANEL ══ */
+  .right-panel {
+    margin-left: 380px;
+    flex: 1; min-height: 100vh;
+    padding: 40px 44px;
+    overflow-y: auto;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1.5px solid var(--border);
+    flex-wrap: wrap; gap: 14px;
+  }
+  .topbar-left { display:flex; align-items:center; gap:12px; }
+  .back-btn {
+    width: 40px; height: 40px; border-radius: 10px;
+    border: 1.5px solid var(--border); background: #fff;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--mid);
+    transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .back-btn:hover { background: var(--border); transform: translateX(-2px); }
+  .page-title { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; color:var(--dark); }
+
+  .logout-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 16px; border-radius: 10px;
+    border: 1.5px solid #fee2e2; background: #fff5f5;
+    color: #ef4444; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .logout-btn:hover { background: #fee2e2; transform: translateY(-1px); }
+
+  /* ── PROFILE GRID ── */
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 22px;
+    margin-bottom: 24px;
+    align-items: start;
+  }
+  .left-col { display:flex; flex-direction:column; gap:18px; }
+
+  .profile-card {
+    background: #fff; border-radius: 18px;
+    padding: 24px; text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    border: 1.5px solid var(--border);
+    position: relative; overflow: hidden;
+    align-self: start;
+  }
+  .profile-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 4px; background: linear-gradient(90deg, #2563eb, #0d9488);
+  }
+
+  .avatar-wrapper { position:relative; width:100px; height:100px; margin:14px auto 14px; }
+  .avatar { width:100%; height:100%; border-radius:50%; }
+  .avatar-img { object-fit:cover; display:block; }
+  .avatar-fallback { background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:2.5rem; font-weight:900; color:#fff; box-shadow:0 6px 20px rgba(37,99,235,0.3); }
+  .hidden { display:none !important; }
+
+  .avatar-buttons { display:flex; gap:8px; justify-content:center; margin-top:10px; }
+  .avatar-edit-btn, .avatar-remove-btn { width:34px; height:34px; border-radius:50%; border:none; color:#fff; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+  .avatar-edit-btn { background:var(--blue); }
+  .avatar-edit-btn:hover { background:#1d4ed8; transform:scale(1.1); }
+  .avatar-remove-btn { background:#ef4444; }
+  .avatar-remove-btn:hover { background:#dc2626; transform:scale(1.1); }
+  .avatar-upload-input { display:none; }
+
+  .profile-name { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:var(--dark); margin-bottom:3px; }
+  .profile-role { font-size:0.82rem; color:var(--soft); margin-bottom:14px; }
+
+  .profile-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; padding-top:14px; border-top:1.5px solid var(--border); }
+  .stat-item { text-align:center; }
+  .stat-num-val { font-family:'Nunito',sans-serif; font-size:1.25rem; font-weight:900; color:var(--blue); }
+  .stat-label { font-size:0.68rem; color:var(--soft); margin-top:3px; font-weight:600; }
+
+  /* ── FORM SECTIONS ── */
+  .form-sections { display:flex; flex-direction:column; gap:20px; }
+
+  .form-section {
+    background: #fff; border-radius: 18px;
+    padding: 22px 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    border: 1.5px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .form-section::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 4px; background: linear-gradient(90deg, #2563eb, #0d9488);
+  }
+
+  .section-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .section-icon { font-size:1.1rem; }
+
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .form-row.full { grid-template-columns:1fr; }
+  .form-group { display:flex; flex-direction:column; }
+
+  .form-label { font-size:0.72rem; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:7px; }
+
+  .form-input, .form-select, .form-textarea {
+    padding: 11px 14px; border: 1.5px solid var(--border);
+    border-radius: 11px; background: #fafcff;
+    color: var(--dark); font-family:'Plus Jakarta Sans',sans-serif;
+    font-size: 0.88rem; outline: none; transition: all 0.25s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: #93c5fd; background: #fff;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+  .form-input:disabled { background:#f1f5f9; color:var(--soft); cursor:not-allowed; }
+  .form-textarea { resize:vertical; min-height:80px; font-family:'Plus Jakarta Sans',sans-serif; }
+  .form-select { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat:no-repeat; background-position:right 10px center; background-size:20px; padding-right:35px; }
+
+  .btn-group { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px; }
+  .btn-save { padding:12px; border:none; border-radius:11px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 14px rgba(29,78,216,0.28); }
+  .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(29,78,216,0.38); }
+  .btn-cancel { padding:12px; border:1.5px solid var(--border); border-radius:11px; background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+  .btn-cancel:hover { background:var(--border); transform:translateY(-1px); }
+
+  /* ── TOAST ── */
+  .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:var(--dark); color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast.success { background:linear-gradient(135deg,var(--success),var(--teal)); }
+  .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
+
+  /* ── MINI REVIEWS IN LEFT CARD ── */
+  .mini-reviews-card { background:#fff; border-radius:18px; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.06); border:1.5px solid var(--border); position:relative; overflow:hidden; }
+  .mini-reviews-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#f59e0b,#d97706); }
+  .mini-rating-top { display:flex; align-items:center; gap:14px; margin-bottom:16px; padding-bottom:14px; border-bottom:1.5px solid var(--border); }
+  .mini-rating-num { font-family:'Nunito',sans-serif; font-size:2.8rem; font-weight:900; color:#d97706; line-height:1; }
+  .mini-rating-right { flex:1; }
+  .mini-stars { display:flex; gap:3px; margin-bottom:4px; }
+  .mini-stars span { font-size:1.1rem; }
+  .mini-review-count { font-size:0.75rem; color:var(--soft); font-weight:600; }
+  .mini-review-item { padding:10px 0; border-bottom:1px solid var(--border); }
+  .mini-review-item:last-child { border-bottom:none; padding-bottom:0; }
+  .mini-review-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+  .mini-review-user { display:flex; align-items:center; gap:7px; }
+  .mini-avatar { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:0.75rem; font-weight:900; color:#fff; flex-shrink:0; }
+  .mini-name { font-size:0.8rem; font-weight:700; color:var(--dark); }
+  .mini-date { font-size:0.68rem; color:var(--soft); }
+  .mini-stars-small { display:flex; gap:1px; }
+  .mini-stars-small span { font-size:0.75rem; }
+  .mini-comment { font-size:0.78rem; color:var(--mid); line-height:1.5; font-style:italic; }
+  .mini-no-reviews { text-align:center; padding:20px 10px; }
+  .mini-no-icon { font-size:2rem; margin-bottom:8px; }
+  .mini-no-text { font-size:0.82rem; color:var(--soft); font-weight:600; }
+  .mini-section-title { font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:900; color:var(--dark); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+  .mini-section-title span { font-size:0.7rem; color:var(--soft); font-weight:600; }
+
+  @media(max-width:960px) { .left-panel{display:none;} .right-panel{margin-left:0; padding:24px 18px;} }
+  @media(max-width:700px) { .profile-grid{grid-template-columns:1fr;} .form-row{grid-template-columns:1fr;} .btn-group{grid-template-columns:1fr;} }
+
+  /* ── REVIEWS SECTION ── */
+  .reviews-section { background:#fff; border-radius:18px; padding:22px 24px; box-shadow:0 4px 16px rgba(0,0,0,0.05); border:1.5px solid var(--border); position:relative; overflow:hidden; margin-top:22px; }
+  .reviews-section::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#f59e0b,#d97706); }
+  .reviews-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px; }
+  .reviews-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; color:var(--dark); display:flex; align-items:center; gap:8px; }
+  .rating-summary { display:flex; align-items:center; gap:12px; background:#fffbeb; border:1.5px solid #fde68a; border-radius:12px; padding:10px 16px; }
+  .rating-big { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:#d97706; }
+  .rating-stars-big { display:flex; gap:3px; }
+  .rating-stars-big span { font-size:1.1rem; }
+  .rating-count { font-size:0.78rem; color:var(--soft); margin-top:2px; }
+  .review-card { background:#f8faff; border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+  .review-card:last-child { margin-bottom:0; }
+  .review-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px; }
+  .review-customer { display:flex; align-items:center; gap:8px; }
+  .review-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:900; color:#fff; flex-shrink:0; }
+  .review-name { font-weight:700; color:var(--dark); font-size:0.88rem; }
+  .review-date { font-size:0.72rem; color:var(--soft); }
+  .review-stars { display:flex; gap:2px; }
+  .review-stars span { font-size:0.9rem; }
+  .review-comment { font-size:0.85rem; color:var(--mid); line-height:1.6; margin-top:6px; }
+  .review-empty { text-align:center; padding:40px 20px; color:var(--soft); }
+  .review-empty-icon { font-size:2.5rem; margin-bottom:10px; }
+  .review-empty-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:var(--mid); }
+  .reviews-loading { text-align:center; padding:30px; color:var(--soft); font-size:0.88rem; }
+</style>
+</head>
+<body>
+
+<!-- ══ LEFT PANEL ══ -->
+<div class="left-panel">
+  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
+  <div class="fi fi1">👤</div><div class="fi fi2">✏️</div><div class="fi fi3">🔒</div><div class="fi fi4">⭐</div>
+
+  <div class="l-logo">
+    <div class="l-logo-icon">
+      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
+        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
+        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
+        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
+        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
+      </svg>
+    </div>
+    <span>NearServe</span>
+  </div>
+
+  <div class="l-main">
+    <h2>My <em>Profile</em></h2>
+    <p>Manage your personal information, address, preferences and account security all in one place.</p>
+    <div class="l-steps">
+      <div class="l-step">
+        <div class="l-step-icon">👤</div>
+        <div class="l-step-text"><strong>Personal Info</strong><span>Update your name, email and bio.</span></div>
+      </div>
+      <div class="l-step">
+        <div class="l-step-icon">📍</div>
+        <div class="l-step-text"><strong>Address</strong><span>Save your service location.</span></div>
+      </div>
+      <div class="l-step">
+        <div class="l-step-icon">⚙️</div>
+        <div class="l-step-text"><strong>Preferences</strong><span>Set your availability and contact preferences.</span></div>
+      </div>
+      <div class="l-step">
+        <div class="l-step-icon">🔒</div>
+        <div class="l-step-text"><strong>Security</strong><span>Change your password anytime.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="l-stats">
+    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">⭐</div><div class="stat-lbl">Rated</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">⚡</div><div class="stat-lbl">Fast</div></div>
+  </div>
+</div>
+
+<!-- ══ RIGHT PANEL ══ -->
+<div class="right-panel">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="back-btn" id="backBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="page-title">👤 My Profile</div>
+    </div>
+    <button class="logout-btn" id="logoutBtn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout
+    </button>
+  </div>
+
+  <div class="profile-grid">
+
+    <!-- LEFT COLUMN: Profile Card + Mini Reviews -->
+    <div class="left-col">
+    <div class="profile-card">
+      <div class="avatar-wrapper">
+        <img id="avatarImg" class="avatar avatar-img hidden" src="" alt="Profile Picture">
+        <div id="avatarFallback" class="avatar avatar-fallback">W</div>
+      </div>
+      <div class="avatar-buttons">
+        <button class="avatar-edit-btn" id="avatarEditBtn" title="Upload Profile Picture">📷</button>
+        <button class="avatar-remove-btn" id="avatarRemoveBtn" title="Remove Profile Picture">✕</button>
+        <input type="file" id="avatarUploadInput" class="avatar-upload-input" accept="image/*">
+      </div>
+      <div class="profile-name" id="profileName">—</div>
+      <div class="profile-role" id="profileRole">Worker</div>
+      <div class="profile-stats">
+        <div class="stat-item">
+          <div class="stat-num-val" id="completedJobs">—</div>
+          <div class="stat-label">Jobs Completed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num-val" id="memberSince">—</div>
+          <div class="stat-label">Member Since</div>
+        </div>
+      </div>
+    </div><!-- end profile-card -->
+
+    <!-- Mini Reviews Card -->
+    <div class="mini-reviews-card" id="miniReviewsCard">
+      <div class="mini-section-title">
+        ⭐ Customer Reviews
+        <span id="miniReviewLive">● Live</span>
+      </div>
+      <div id="miniRatingTop" class="mini-rating-top" style="display:none;">
+        <div class="mini-rating-num" id="miniAvgNum">0.0</div>
+        <div class="mini-rating-right">
+          <div class="mini-stars" id="miniStars"></div>
+          <div class="mini-review-count" id="miniReviewCount">0 reviews</div>
+        </div>
+      </div>
+      <div id="miniReviewsList">
+        <div class="mini-no-reviews">
+          <div class="mini-no-icon">⏳</div>
+          <div class="mini-no-text">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- end left-col -->
+
+    <!-- Form Sections -->
+    <div class="form-sections">
+
+      <!-- Personal Info -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">ℹ️</span> Personal Information</div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="fullName" placeholder="Your Full Name"></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="email" placeholder="your@email.com"></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Phone Number (Cannot be changed)</label><input type="text" class="form-input" id="phone" disabled></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Role (Cannot be changed)</label><input type="text" class="form-input" id="roleDisplay" disabled></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Bio / About You</label><textarea class="form-textarea" id="bio" placeholder="Tell customers about your experience and skills..."></textarea></div></div>
+        <div class="btn-group">
+          <button class="btn-save" id="savePersonalBtn">💾 Save Personal Info</button>
+          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">📍</span> Address & Location</div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Full Address</label><input type="text" class="form-input" id="address" placeholder="Street Address"></div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="city" placeholder="City"></div>
+          <div class="form-group"><label class="form-label">State</label><input type="text" class="form-input" id="state" placeholder="State"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Pincode</label><input type="text" class="form-input" id="pincode" placeholder="Pincode"></div>
+          <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-input" id="country" placeholder="Country" value="India"></div>
+        </div>
+        <div class="btn-group">
+          <button class="btn-save" id="saveAddressBtn">💾 Save Address</button>
+          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- Preferences -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">⚙️</span> Preferences & Settings</div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Availability</label>
+          <select class="form-select" id="availability">
+            <option value="available">✅ Available for Jobs</option>
+            <option value="busy">🔴 Currently Busy</option>
+            <option value="off">⛔ Not Taking Jobs</option>
+          </select>
+        </div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Communication Preference</label>
+          <select class="form-select" id="communicationPref">
+            <option value="chat">💬 Chat</option>
+            <option value="phone">📞 Phone Call</option>
+            <option value="email">📧 Email</option>
+          </select>
+        </div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Preferred Working Hours</label>
+          <select class="form-select" id="preferredTime">
+            <option value="morning">🌅 Morning (6 AM - 12 PM)</option>
+            <option value="afternoon">☀️ Afternoon (12 PM - 5 PM)</option>
+            <option value="evening">🌆 Evening (5 PM - 10 PM)</option>
+            <option value="flexible">⏰ Flexible Anytime</option>
+          </select>
+        </div></div>
+        <div class="btn-group">
+          <button class="btn-save" id="savePreferencesBtn">💾 Save Preferences</button>
+          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-section">
+        <div class="section-title"><span class="section-icon">🔐</span> Security & Password</div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" id="currentPassword" placeholder="Enter current password"></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="newPassword" placeholder="Enter new password (min 6 characters)"></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password"></div></div>
+        <div class="btn-group">
+          <button class="btn-save" id="savePasswordBtn">🔐 Change Password</button>
+          <button class="btn-cancel" onclick="document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value='';">↺ Clear</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + (type || "success") + " show";
+  setTimeout(() => { t.className = "toast"; }, 3500);
+}
+
+function getRoleEmoji(role) {
+  if (role === "carpenter")   return "🪚 Carpenter";
+  if (role === "electrician") return "⚡ Electrician";
+  if (role === "plumber")     return "🔧 Plumber";
+  return role ? role.charAt(0).toUpperCase() + role.slice(1) : "Worker";
+}
+
+function getDashboardUrl(role) {
+  if (role === "carpenter")   return "carpenter_requests.html";
+  if (role === "electrician") return "electrician_requests.html";
+  if (role === "plumber")     return "plumber_requests.html";
+  return "login.html";
+}
+
+window.addEventListener("DOMContentLoaded", async function() {
+  const phone      = (localStorage.getItem("phone") || "").trim();
+  const role       = (localStorage.getItem("role")  || "").trim().toLowerCase();
+  const storedName = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+
+  if (!phone || !role || role === "customer") {
+    window.location.href = "login.html"; return;
+  }
+
+  // Back button → role-specific requests page
+  document.getElementById("backBtn").addEventListener("click", () => {
+    window.location.href = getDashboardUrl(role);
+  });
+
+  // Set role display
+  document.getElementById("profileRole").textContent = getRoleEmoji(role);
+  document.getElementById("roleDisplay").value = getRoleEmoji(role);
+
+  const avatarImg      = document.getElementById("avatarImg");
+  const avatarFallback = document.getElementById("avatarFallback");
+
+  function setAvatar(nameText, imageSrc) {
+    const firstLetter = (nameText || "W").trim().charAt(0).toUpperCase() || "W";
+    if (imageSrc) {
+      avatarImg.src = imageSrc;
+      avatarImg.classList.remove("hidden");
+      avatarFallback.classList.add("hidden");
+    } else {
+      avatarFallback.textContent = firstLetter;
+      avatarFallback.classList.remove("hidden");
+      avatarImg.classList.add("hidden");
+      avatarImg.removeAttribute("src");
+    }
+  }
+
+  try {
+    // Fetch both endpoints in parallel — workers/:phone has avatar + preferences
+    const [profileRes, workerRes] = await Promise.all([
+      fetch("/profile/" + phone),
+      fetch("/workers/" + encodeURIComponent(phone))
+    ]);
+
+    if (profileRes.ok) {
+      const user = await profileRes.json();
+      let workerData = {};
+      try { if (workerRes.ok) workerData = await workerRes.json(); } catch(e) {}
+
+      const currentName = user.name || storedName || "Worker";
+
+      // Avatar: prefer DB version, fallback to localStorage
+      const dbAvatar    = workerData.avatarBase64 || "";
+      const localAvatar = localStorage.getItem("avatarBase64") || "";
+      const avatarToUse = dbAvatar || localAvatar;
+      if (dbAvatar) localStorage.setItem("avatarBase64", dbAvatar);
+      setAvatar(currentName, avatarToUse);
+
+      document.getElementById("profileName").textContent = user.name || "—";
+      document.getElementById("fullName").value          = user.name || "";
+      document.getElementById("email").value             = user.email || "";
+      document.getElementById("phone").value             = user.phone || "";
+      document.getElementById("bio").value               = user.bio || "";
+      document.getElementById("address").value           = user.address || "";
+      document.getElementById("city").value              = user.city || "";
+      document.getElementById("state").value             = user.state || "";
+      document.getElementById("pincode").value           = user.pincode || "";
+      document.getElementById("country").value           = user.country || "India";
+
+      // Preferences from workerData (has availability) with fallback to user data
+      document.getElementById("availability").value      = workerData.availability      || user.availability      || "available";
+      document.getElementById("communicationPref").value = workerData.communicationPref || user.communicationPref || "chat";
+      document.getElementById("preferredTime").value     = workerData.preferredTime     || user.preferredTime     || "flexible";
+
+      // Jobs completed — fetch from worker bookings endpoint
+      try {
+        const jobsRes = await fetch(`/bookings/chosen/${role}/${encodeURIComponent(phone)}`);
+        if (jobsRes.ok) {
+          const jobs = await jobsRes.json();
+          const completed = Array.isArray(jobs)
+            ? jobs.filter(j => (j.status||"").toLowerCase() === "completed").length
+            : 0;
+          document.getElementById("completedJobs").textContent = completed;
+        }
+      } catch(e) { document.getElementById("completedJobs").textContent = "0"; }
+
+      const createdYear = new Date(user.createdAt).getFullYear();
+      document.getElementById("memberSince").textContent = createdYear > 1970 ? createdYear : new Date().getFullYear();
+
+    } else {
+      setAvatar(storedName || "Worker", localStorage.getItem("avatarBase64") || "");
+    }
+  } catch(err) {
+    console.error("Error loading profile:", err);
+    setAvatar(storedName || "Worker", localStorage.getItem("avatarBase64") || "");
+  }
+
+  // ── Avatar upload ──
+  document.getElementById("avatarEditBtn").addEventListener("click", () => document.getElementById("avatarUploadInput").click());
+
+  document.getElementById("avatarUploadInput").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async function(event) {
+      const base64 = event.target.result;
+      localStorage.setItem("avatarBase64", base64);
+      setAvatar(document.getElementById("fullName").value.trim() || storedName || "Worker", base64);
+      // Save avatar to backend so customers can see it
+      try {
+        await fetch("/profile/" + phone, {
+  method: "PUT",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({ avatarBase64: base64 })
+});
+        showToast("✅ Profile picture updated!");
+      } catch(e) {
+        showToast("✅ Profile picture updated locally!");
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("avatarRemoveBtn").addEventListener("click", async function() {
+    localStorage.removeItem("avatarBase64");
+    setAvatar(document.getElementById("fullName").value.trim() || storedName || "Worker", "");
+    try {
+      await fetch("/profile/" + phone, {
+        method: "PUT",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ avatarBase64: "" })
+      });
+    } catch(e) {}
+    showToast("✅ Profile picture removed!");
+  });
+
+  // ── Save Personal Info ──
+  document.getElementById("savePersonalBtn").addEventListener("click", async function() {
+    const newName  = document.getElementById("fullName").value.trim();
+    const newEmail = document.getElementById("email").value.trim();
+    const bio      = document.getElementById("bio").value.trim();
+    if (!newName) { showToast("❌ Name cannot be empty", "error"); return; }
+    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { showToast("❌ Enter a valid email", "error"); return; }
+    try {
+      const res = await fetch("/profile/" + phone, {
+        method: "PUT", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ name:newName, email:newEmail, bio })
+      });
+      if (res.ok) {
+        localStorage.setItem("name", newName);
+        localStorage.setItem("userName", newName);
+        localStorage.setItem("email", newEmail);
+        document.getElementById("profileName").textContent = newName;
+        setAvatar(newName, localStorage.getItem("avatarBase64"));
+        showToast("✅ Personal info saved successfully!");
+      } else { const err = await res.json(); showToast("❌ " + (err.error || "Error saving"), "error"); }
+    } catch(err) { showToast("❌ Error saving profile", "error"); }
+  });
+
+  // ── Save Address ──
+  document.getElementById("saveAddressBtn").addEventListener("click", async function() {
+    const address = document.getElementById("address").value.trim();
+    const city    = document.getElementById("city").value.trim();
+    const state   = document.getElementById("state").value.trim();
+    const pincode = document.getElementById("pincode").value.trim();
+    const country = document.getElementById("country").value.trim();
+    if (!address || !city || !state || !pincode) { showToast("❌ Please fill all address fields", "error"); return; }
+    try {
+      const res = await fetch("/profile/" + phone + "/address", {
+        method: "PUT", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ address, city, state, pincode, country })
+      });
+      if (res.ok) { showToast("✅ Address saved successfully!"); }
+      else { const err = await res.json(); showToast("❌ " + (err.error || "Error saving"), "error"); }
+    } catch(err) { showToast("❌ Error saving address", "error"); }
+  });
+
+  // ── Save Preferences ──
+  document.getElementById("savePreferencesBtn").addEventListener("click", async function() {
+    const availability    = document.getElementById("availability").value;
+    const comm            = document.getElementById("communicationPref").value;
+    const time            = document.getElementById("preferredTime").value;
+    try {
+      const res = await fetch("/profile/" + phone + "/preferences", {
+        method: "PUT", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ availability, communicationPref:comm, preferredTime:time })
+      });
+      if (res.ok) { showToast("✅ Preferences saved successfully!"); }
+      else { const err = await res.json(); showToast("❌ " + (err.error || "Error saving"), "error"); }
+    } catch(err) { showToast("❌ Error saving preferences", "error"); }
+  });
+
+  // ── Change Password ──
+  document.getElementById("savePasswordBtn").addEventListener("click", async function() {
+    const current = document.getElementById("currentPassword").value;
+    const newPass = document.getElementById("newPassword").value;
+    const confirm = document.getElementById("confirmPassword").value;
+    if (!current || !newPass || !confirm) { showToast("❌ All password fields are required", "error"); return; }
+    if (newPass.length < 6) { showToast("❌ Password must be at least 6 characters", "error"); return; }
+    if (newPass !== confirm) { showToast("❌ Passwords do not match", "error"); return; }
+    try {
+      const res = await fetch("/profile/" + phone + "/password", {
+        method: "PUT", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ currentPassword:current, newPassword:newPass, confirmPassword:confirm })
+      });
+      if (res.ok) {
+        document.getElementById("currentPassword").value = "";
+        document.getElementById("newPassword").value = "";
+        document.getElementById("confirmPassword").value = "";
+        showToast("✅ Password changed successfully!");
+      } else { const err = await res.json(); showToast("❌ " + (err.error || "Error changing password"), "error"); }
+    } catch(err) { showToast("❌ Error changing password", "error"); }
+  });
+
+  // ── Logout ──
+  document.getElementById("logoutBtn").addEventListener("click", function() {
+    localStorage.clear(); window.location.href = "login.html";
+  });
+
+  // ── Load Reviews ──
+  async function loadReviews() {
+    const list = document.getElementById("miniReviewsList");
+    try {
+      // Use the existing /workers/:phone endpoint which already returns reviewsList
+      const res  = await fetch(`/workers/${encodeURIComponent(phone)}`);
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+
+      // data.reviewsList contains all reviews with comments
+      // data.avgRating, data.reviewsCount for summary
+      const reviews   = data.reviewsList || [];
+      const avgRating = parseFloat(data.avgRating) || 0;
+      const count     = data.reviewsCount || 0;
+
+      if (count === 0) {
+        list.innerHTML = `<div class="mini-no-reviews">
+          <div class="mini-no-icon">💬</div>
+          <div class="mini-no-text">No reviews yet</div>
+          <p style="font-size:0.75rem;color:var(--soft);margin-top:4px;">Complete jobs to get reviews!</p>
+        </div>`;
+        return;
+      }
+
+      // Show rating summary in mini card
+      document.getElementById("miniAvgNum").textContent    = avgRating.toFixed(1);
+      document.getElementById("miniReviewCount").textContent = count + " review" + (count !== 1 ? "s" : "");
+      const starsHtml = [1,2,3,4,5].map(i => {
+        if (i <= Math.floor(avgRating)) return '<span style="color:#f59e0b;">★</span>';
+        if (i - avgRating < 1 && i - avgRating > 0) return '<span style="color:#fcd34d;">★</span>';
+        return '<span style="color:#e5e7eb;">★</span>';
+      }).join("");
+      document.getElementById("miniStars").innerHTML = starsHtml;
+      document.getElementById("miniRatingTop").style.display = "flex";
+
+      if (reviews.length === 0) {
+        list.innerHTML = `<div class="mini-no-reviews">
+          <div class="mini-no-icon">⭐</div>
+          <div class="mini-no-text">${count} rating(s) — no comments yet</div>
+        </div>`;
+        return;
+      }
+
+      // Render mini reviews newest first
+      const sorted = [...reviews].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      list.innerHTML = sorted.map(r => {
+        const cName   = r.customerName || r.customerPhone || "Customer";
+        const initial = cName.charAt(0).toUpperCase();
+        const stars   = [1,2,3,4,5].map(i =>
+          `<span style="color:${i <= r.rating ? '#f59e0b' : '#e5e7eb'};">★</span>`
+        ).join("");
+        const date = r.createdAt
+          ? new Date(r.createdAt).toLocaleDateString("en-IN", {day:"numeric", month:"short", year:"numeric"})
+          : "";
+        return `<div class="mini-review-item">
+          <div class="mini-review-header">
+            <div class="mini-review-user">
+              <div class="mini-avatar">${initial}</div>
+              <div>
+                <div class="mini-name">${cName}</div>
+                <div class="mini-date">${date}</div>
+              </div>
+            </div>
+            <div class="mini-stars-small">${stars}</div>
+          </div>
+          <div class="mini-comment">"${r.comment}"</div>
+        </div>`;
+      }).join("");
+
+    } catch(err) {
+      console.error("Reviews error:", err);
+      list.innerHTML = `<div class="mini-no-reviews">
+        <div class="mini-no-icon">⚠️</div>
+        <div class="mini-no-text">Could not load reviews</div>
+      </div>`;
+    }
+  }
+
+  loadReviews();
+  // Refresh reviews every 30 seconds for real-time updates
+  setInterval(loadReviews, 30000);
+});
+</script>
+</body>
+</html>

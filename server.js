@@ -28,8 +28,8 @@ const Review = require("./models/Review"); // ✅ ratings
 // Middleware
 // ========================
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.json());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(express.json({ limit: "10mb" }));
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
@@ -519,77 +519,6 @@ app.get("/workers", async (req, res) => {
 });
 
 // ====================================================
-// ✅ WORKER PROFILE (REAL rating + latest feedback)
-// GET /workers/:phone
-// ====================================================
-app.get("/workers/:phone", async (req, res) => {
-  try {
-    const phone = req.params.phone.trim();
-
-    const worker = await User.findOne({ phone });
-    if (!worker) {
-      return res.status(404).json({ error: "Worker not found" });
-    }
-
-    const reviews = await Review.find({ workerPhone: phone }).sort({ createdAt: -1 });
-
-    let avgRating = 0;
-    let reviewsCount = reviews.length;
-    let feedbackSummary = "No feedback yet";
-
-    if (reviews.length > 0) {
-      const total = reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
-      avgRating = (total / reviews.length).toFixed(1);
-
-      const latestReviewWithComment = reviews.find(
-        r => r.comment && String(r.comment).trim() !== ""
-      );
-
-      if (latestReviewWithComment) {
-        feedbackSummary = latestReviewWithComment.comment.trim();
-      }
-    }
-
-   const reviewsList = await Promise.all(
-  reviews
-    .filter(r => r.comment && String(r.comment).trim() !== "")
-    .map(async (r) => {
-
-      let customerName = r.customerName || "";
-
-      // If old review does not have name, fetch it from User collection
-      if (!customerName && r.customerPhone) {
-        const customer = await User.findOne({ phone: r.customerPhone });
-        customerName = customer?.name || "Customer";
-      }
-
-      return {
-        rating: r.rating || 0,
-        comment: r.comment || "",
-        customerName,
-        customerPhone: r.customerPhone || "",
-        createdAt: r.createdAt || null
-      };
-    })
-);
-
-    res.json({
-      name: worker.name,
-      role: worker.role,
-      phone: worker.phone,
-      email: worker.email || "-",
-      avgRating,
-      reviewsCount,
-      feedbackSummary,
-      reviewsList
-    });
-  } catch (err) {
-    console.error("Error loading worker profile:", err);
-    res.status(500).json({ error: "Server error loading worker profile" });
-  }
-});
-
-// ====================================================
 // Booking Routes
 // ====================================================
 
@@ -854,18 +783,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// ====================================================
-// ✅ Multer / Upload Error Handler (VERY IMPORTANT)
-// ====================================================
-app.use((err, req, res, next) => {
-  if (!err) return next();
-  if (err.code === "LIMIT_FILE_SIZE") {
-    return res.status(400).json({ error: "File too large" });
-  }
-  return res.status(400).json({ error: err.message || "Upload error" });
-});
-
-
 // ============================================================
 // Nodemailer transporter setup (add near top of server.js)
 // ============================================================
@@ -914,9 +831,9 @@ app.post("/forgot-password", async (req, res) => {
 
     // Send email
     await nodemailerTransporter.sendMail({
-      from: `"QuickServe" <${process.env.EMAIL_USER}>`,
+      from: `"NearServe" <${process.env.EMAIL_USER}>`,
       to: user.email,
-      subject: "QuickServe — Reset Your Password",
+      subject: "NearServe — Reset Your Password",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #f4f4f4; padding: 30px; border-radius: 12px;">
           <div style="text-align: center; margin-bottom: 24px;">
@@ -1139,57 +1056,6 @@ app.put("/update-profile/:phone", async (req, res) => {
   }
 });
 
-// ============================================================
-// PASTE THESE INTO server.js BEFORE app.listen()
-// Also add at the top of server.js:
-//   const Chat = require("./models/Chat");
-// ============================================================
-
-// GET /chat/:bookingId — fetch all messages for a booking
-app.get("/chat/:bookingId", async (req, res) => {
-  try {
-    const bookingId = req.params.bookingId;
-    let chat = await Chat.findOne({ bookingId });
-    if (!chat) return res.json({ messages: [] });
-    res.json({ messages: chat.messages });
-  } catch (err) {
-    console.log("Chat fetch error:", err);
-    res.status(500).json({ error: "Error fetching messages" });
-  }
-});
-
-// POST /chat/send — send a message
-app.post("/chat/send", async (req, res) => {
-  try {
-    const { bookingId, senderPhone, senderName, senderRole, text } = req.body;
-    if (!bookingId || !senderPhone || !text) {
-      return res.status(400).json({ error: "bookingId, senderPhone and text are required" });
-    }
-
-    // Get booking to find customer + worker phones
-    const booking = await Booking.findById(bookingId);
-    if (!booking) return res.status(404).json({ error: "Booking not found" });
-
-    // Find or create chat
-    let chat = await Chat.findOne({ bookingId });
-    if (!chat) {
-      chat = await Chat.create({
-        bookingId,
-        customerPhone: booking.phone,
-        workerPhone:   booking.chosenWorkerPhone || "",
-        messages: []
-      });
-    }
-
-    chat.messages.push({ senderPhone, senderName: senderName || "", senderRole: senderRole || "customer", text });
-    await chat.save();
-
-    res.json({ message: "Sent", total: chat.messages.length });
-  } catch (err) {
-    console.log("Chat send error:", err);
-    res.status(500).json({ error: "Error sending message" });
-  }
-});
 
 // ============================================================
 // ✅ FIXED CANCEL BOOKING ENDPOINT
@@ -1325,89 +1191,6 @@ app.post("/messages/send", async (req, res) => {
   }
 });
 
-// GET /chat/:bookingId (FALLBACK)
-app.get("/chat/:bookingId", async (req, res) => {
-  try {
-    const bookingId = req.params.bookingId;
-    if (!bookingId) {
-      return res.status(400).json({ error: "Booking ID is required" });
-    }
-
-    let chat = await Chat.findOne({ bookingId });
-    if (!chat) {
-      return res.json({ messages: [] });
-    }
-
-    res.json({ messages: chat.messages || [] });
-
-  } catch (err) {
-    console.error("Chat fetch error:", err);
-    res.status(500).json({ error: "Error fetching messages" });
-  }
-});
-
-// POST /chat/send (FALLBACK)
-app.post("/chat/send", async (req, res) => {
-  try {
-    const {
-      bookingId,
-      senderPhone,
-      senderName,
-      senderRole,
-      text
-    } = req.body;
-
-    if (!bookingId || !senderPhone || !text) {
-      return res.status(400).json({
-        error: "bookingId, senderPhone, and text are required"
-      });
-    }
-
-    const messageText = String(text).trim();
-    if (!messageText) {
-      return res.status(400).json({ error: "Message cannot be empty" });
-    }
-
-    const booking = await Booking.findById(bookingId);
-    if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
-    }
-
-    let chat = await Chat.findOne({ bookingId });
-
-    if (!chat) {
-      chat = await Chat.create({
-        bookingId,
-        customerPhone: booking.phone,
-        workerPhone: booking.chosenWorkerPhone || "",
-        messages: []
-      });
-    }
-
-    const message = {
-      _id: new mongoose.Types.ObjectId(),
-      senderPhone: String(senderPhone).trim(),
-      senderName: String(senderName || "User").trim(),
-      senderRole: String(senderRole || "customer").toLowerCase(),
-      text: messageText,
-      timestamp: new Date(),
-      createdAt: new Date()
-    };
-
-    chat.messages.push(message);
-    await chat.save();
-
-    res.status(201).json({
-      ...message,
-      _id: message._id.toString()
-    });
-
-  } catch (err) {
-    console.error("Chat send error:", err);
-    res.status(500).json({ error: "Error sending message: " + err.message });
-  }
-});
-
 // ============================================================
 // DASHBOARD & PROFILE ENDPOINTS
 // Add these BEFORE app.listen() in server.js
@@ -1479,11 +1262,69 @@ app.get("/dashboard/:phone", async (req, res) => {
   }
 });
 
-// GET /profile/:phone — Get user profile
+app.put("/profile/:phone/avatar", async (req, res) => {
+  try {
+    const phone = (req.params.phone || "").trim();
+    const avatarBase64 = req.body.avatarBase64 || "";
+    const user = await User.findOneAndUpdate(
+      { phone },
+      { avatarBase64 },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json({ message: "Avatar saved" });
+  } catch (err) {
+    res.status(500).json({ error: "Error saving avatar" });
+  }
+});
 
+// ========== ADDRESS ENDPOINT ==========
+app.put("/profile/:phone/address", async (req, res) => {
+  try {
+    const { phone } = req.params;
+    const { address, city, state, pincode, country } = req.body;
 
-// PUT /profile/:phone — Update profile (name & email)
+    if (!address || !city || !state || !pincode) {
+      return res.status(400).json({ error: "All address fields are required" });
+    }
 
+    const user = await User.findOneAndUpdate(
+      { phone },
+      { address, city, state, pincode, country: country || "India" },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "Address saved successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ========== PREFERENCES ENDPOINT ==========
+app.put("/profile/:phone/preferences", async (req, res) => {
+  try {
+    const { phone } = req.params;
+    const { availability, communicationPref, preferredTime, preferredService, serviceLocation } = req.body;
+ 
+    const updateData = {};
+    if (availability)      updateData.availability      = availability;
+    if (communicationPref) updateData.communicationPref = communicationPref;
+    if (preferredTime)     updateData.preferredTime     = preferredTime;
+    if (preferredService)  updateData.preferredService  = preferredService;
+    if (serviceLocation)   updateData.preferredService  = serviceLocation; // customer alias
+ 
+    const user = await User.findOneAndUpdate({ phone }, updateData, { new: true });
+    if (!user) return res.status(404).json({ error: "User not found" });
+ 
+    res.json({ message: "Preferences saved successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // PUT /profile/:phone/password — Change password
 app.put("/profile/:phone/password", async (req, res) => {
@@ -1531,91 +1372,29 @@ app.put("/profile/:phone/password", async (req, res) => {
   }
 });
 
-// ADD THESE ENDPOINTS TO YOUR server.js
-// These save address, preferences, and bio to the database so they persist after logout
-
-// ========== ADDRESS ENDPOINT ==========
-app.put("/profile/:phone/address", async (req, res) => {
-  try {
-    const { phone } = req.params;
-    const { address, city, state, pincode, country } = req.body;
-
-    if (!address || !city || !state || !pincode) {
-      return res.status(400).json({ error: "All address fields are required" });
-    }
-
-    const user = await User.findOneAndUpdate(
-      { phone },
-      { address, city, state, pincode, country: country || "India" },
-      { new: true }
-    );
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({ message: "Address saved successfully", user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// ========== PREFERENCES ENDPOINT ==========
-app.put("/profile/:phone/preferences", async (req, res) => {
-  try {
-    const { phone } = req.params;
-    const { preferredService, communicationPref, preferredTime } = req.body;
-
-    const user = await User.findOneAndUpdate(
-      { phone },
-      { preferredService, communicationPref, preferredTime },
-      { new: true }
-    );
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({ message: "Preferences saved successfully", user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // ========== UPDATE PROFILE ENDPOINT (add bio field) ==========
 // If you already have a PUT /profile/:phone endpoint, UPDATE IT to include bio:
 app.put("/profile/:phone", async (req, res) => {
   try {
     const { phone } = req.params;
-    const { name, email, bio } = req.body;
+    const { name, email, bio, avatarBase64 } = req.body;
 
-    // Validate email if provided
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ error: "Invalid email format" });
     }
-
-    // Check if email already exists (for other users)
     if (email) {
       const existingUser = await User.findOne({ email, phone: { $ne: phone } });
-      if (existingUser) {
-        return res.status(400).json({ error: "Email already in use" });
-      }
+      if (existingUser) return res.status(400).json({ error: "Email already in use" });
     }
 
     const updateData = {};
-    if (name) updateData.name = name;
-    if (email) updateData.email = email;
-    if (bio !== undefined) updateData.bio = bio;
+    if (name)                    updateData.name         = name;
+    if (email)                   updateData.email        = email;
+    if (bio !== undefined)       updateData.bio          = bio;
+    if (avatarBase64 !== undefined) updateData.avatarBase64 = avatarBase64;
 
-    const user = await User.findOneAndUpdate(
-      { phone },
-      updateData,
-      { new: true }
-    );
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    const user = await User.findOneAndUpdate({ phone }, updateData, { new: true });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
     res.json({ message: "Profile updated successfully", user });
   } catch (error) {
@@ -1624,31 +1403,30 @@ app.put("/profile/:phone", async (req, res) => {
 });
 
 // ========== GET PROFILE ENDPOINT (returns all data including address) ==========
-// Update your existing GET /profile/:phone to return address fields:
+// ── 1. GET /profile/:phone — returns ALL fields including avatar + availability ──
 app.get("/profile/:phone", async (req, res) => {
   try {
     const { phone } = req.params;
     const user = await User.findOne({ phone });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
+    if (!user) return res.status(404).json({ error: "User not found" });
+ 
     res.json({
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      createdAt: user.createdAt,
-      bio: user.bio || "",
-      address: user.address || "",
-      city: user.city || "",
-      state: user.state || "",
-      pincode: user.pincode || "",
-      country: user.country || "India",
-      preferredService: user.preferredService || "",
+      name:              user.name              || "",
+      email:             user.email             || "",
+      phone:             user.phone             || "",
+      role:              user.role              || "",
+      createdAt:         user.createdAt,
+      avatarBase64:      user.avatarBase64      || "",   // ✅ profile picture
+      bio:               user.bio               || "",
+      address:           user.address           || "",
+      city:              user.city              || "",
+      state:             user.state             || "",
+      pincode:           user.pincode           || "",
+      country:           user.country           || "India",
+      availability:      user.availability      || "available",  // ✅ worker availability
       communicationPref: user.communicationPref || "email",
-      preferredTime: user.preferredTime || "flexible"
+      preferredTime:     user.preferredTime     || "flexible",
+      preferredService:  user.preferredService  || "",
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1876,7 +1654,78 @@ app.post("/chat/send", async (req, res) => {
 });
 
 // DELETE OLD DUPLICATE ENDPOINTS IF THEY EXIST IN YOUR server.js
-// Keep only ONE set of /chat/:bookingId and /chat/send endpoints
+
+// ── 4. GET /workers/:phone — returns ALL fields customers can see ──
+// REPLACE your existing GET /workers/:phone with this:
+app.get("/workers/:phone", async (req, res) => {
+  try {
+    const phone  = req.params.phone.trim();
+    const worker = await User.findOne({ phone });
+    if (!worker) return res.status(404).json({ error: "Worker not found" });
+ 
+    const reviews = await Review.find({ workerPhone: phone }).sort({ createdAt: -1 });
+ 
+    let avgRating    = 0;
+    let reviewsCount = reviews.length;
+    if (reviews.length > 0) {
+      const total = reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
+      avgRating   = (total / reviews.length).toFixed(1);
+    }
+ 
+    const reviewsList = await Promise.all(
+      reviews
+        .filter(r => r.comment && String(r.comment).trim() !== "")
+        .map(async (r) => {
+          let customerName = r.customerName || "";
+          if (!customerName && r.customerPhone) {
+            const customer = await User.findOne({ phone: r.customerPhone });
+            customerName   = customer?.name || "Customer";
+          }
+          return {
+            rating:        r.rating       || 0,
+            comment:       r.comment      || "",
+            customerName,
+            customerPhone: r.customerPhone || "",
+            createdAt:     r.createdAt    || null
+          };
+        })
+    );
+ 
+res.json({
+  name:              worker.name              || "",
+  role:              worker.role              || "",
+  phone:             worker.phone             || "",
+  email:             worker.email             || "",
+  avatarBase64:      worker.avatarBase64      || "",
+  bio:               worker.bio               || "",
+  address:           worker.address           || "",
+  city:              worker.city              || "",
+  state:             worker.state             || "",
+  pincode:           worker.pincode           || "",
+  country:           worker.country           || "India",
+  availability:      worker.availability      || "available",
+  communicationPref: worker.communicationPref || "email",
+  preferredTime:     worker.preferredTime     || "flexible",
+  avgRating,
+  reviewsCount,
+  reviewsList
+});
+  } catch (err) {
+    console.error("Error loading worker profile:", err);
+    res.status(500).json({ error: "Server error loading worker profile" });
+  }
+});
+
+// ====================================================
+// ✅ Multer / Upload Error Handler (VERY IMPORTANT)
+// ====================================================
+app.use((err, req, res, next) => {
+  if (!err) return next();
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({ error: "File too large" });
+  }
+  return res.status(400).json({ error: err.message || "Upload error" });
+});
 
 // ========================
 // Start server

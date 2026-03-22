@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["full_access", "pending_verification", "proof_submitted", "probation"],
+      enum: ["full_access", "pending_verification", "proof_submitted", "probation", "blocked"],
       default: "full_access",
     },
     proofFile: String,
@@ -37,44 +37,38 @@ const userSchema = new mongoose.Schema(
       default: {}
     },
 
-    // ADDRESS FIELDS
-    address: {
+    // PROFILE PICTURE (base64 stored in DB so all devices see it)
+    avatarBase64: {
       type: String,
       default: "",
-    },
-    city: {
-      type: String,
-      default: "",
-    },
-    state: {
-      type: String,
-      default: "",
-    },
-    pincode: {
-      type: String,
-      default: "",
-    },
-    country: {
-      type: String,
-      default: "India",
     },
 
+    // ADDRESS FIELDS
+    address: { type: String, default: "" },
+    city:    { type: String, default: "" },
+    state:   { type: String, default: "" },
+    pincode: { type: String, default: "" },
+    country: { type: String, default: "India" },
+
     // BIO
-    bio: {
+    bio: { type: String, default: "" },
+
+    // WORKER AVAILABILITY
+    availability: {
       type: String,
-      default: "",
+      enum: ["available", "busy", "off"],
+      default: "available",
     },
 
     // PREFERENCES
-    preferredService: {
-      type: String,
-      default: "",
-    },
+    preferredService: { type: String, default: "" },
+
     communicationPref: {
       type: String,
-      enum: ["email", "sms", "both"],
+      enum: ["email", "chat", "phone"],   // ✅ fixed to match frontend
       default: "email",
     },
+
     preferredTime: {
       type: String,
       enum: ["morning", "afternoon", "evening", "flexible"],
@@ -84,10 +78,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ REMOVED pre-save hook — server.js already hashes password with bcrypt.hash()
-// Keeping pre-save hook caused "next is not a function" error on signup
-
-// ✅ KEPT — useful for password change feature (profile page)
 userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
