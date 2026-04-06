@@ -1,0 +1,193 @@
+const bcrypt = require("bcrypt");
+const User = require("../models/User");
+const asyncHandler = require("../utils/asyncHandler");
+
+const getProfile = asyncHandler(async (req, res) => {
+  const { phone } = req.params;
+  const user = await User.findOne({ phone });
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({
+    name: user.name || "",
+    email: user.email || "",
+    phone: user.phone || "",
+    role: user.role || "",
+    createdAt: user.createdAt,
+    avatarBase64: user.avatarBase64 || "",
+    bio: user.bio || "",
+    address: user.address || "",
+    city: user.city || "",
+    state: user.state || "",
+    pincode: user.pincode || "",
+    country: user.country || "India",
+    availability: user.availability || "available",
+    communicationPref: user.communicationPref || "email",
+    preferredTime: user.preferredTime || "flexible",
+    preferredService: user.preferredService || "",
+  });
+});
+
+const updateProfile = asyncHandler(async (req, res) => {
+  const { phone } = req.params;
+  const { name, email, bio, avatarBase64 } = req.body;
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: "Invalid email format" });
+  }
+
+  if (email) {
+    const existingUser = await User.findOne({ email, phone: { $ne: phone } });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already in use" });
+    }
+  }
+
+  const updateData = {};
+  if (name) updateData.name = name;
+  if (email) updateData.email = email;
+  if (bio !== undefined) updateData.bio = bio;
+  if (avatarBase64 !== undefined) updateData.avatarBase64 = avatarBase64;
+
+  const user = await User.findOneAndUpdate({ phone }, updateData, { new: true });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({
+    message: "Profile updated successfully",
+    user: {
+      name: user.name,
+      email: user.email,
+      bio: user.bio || "",
+      avatarBase64: user.avatarBase64 || "",
+    },
+  });
+});
+
+const updateAvatar = asyncHandler(async (req, res) => {
+  const phone = (req.params.phone || "").trim();
+  const avatarBase64 = req.body.avatarBase64 || "";
+
+  const user = await User.findOneAndUpdate(
+    { phone },
+    { avatarBase64 },
+    { new: true }
+  );
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({ message: "Avatar saved" });
+});
+
+const updateAddress = asyncHandler(async (req, res) => {
+  const { phone } = req.params;
+  const { address, city, state, pincode, country } = req.body;
+
+  if (!address || !city || !state || !pincode) {
+    return res.status(400).json({ error: "All address fields are required" });
+  }
+
+  const user = await User.findOneAndUpdate(
+    { phone },
+    { address, city, state, pincode, country: country || "India" },
+    { new: true }
+  );
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({
+    message: "Address saved successfully",
+    user: {
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      pincode: user.pincode,
+      country: user.country,
+    },
+  });
+});
+
+const updatePreferences = asyncHandler(async (req, res) => {
+  const { phone } = req.params;
+  const {
+    availability,
+    communicationPref,
+    preferredTime,
+    preferredService,
+    serviceLocation,
+  } = req.body;
+
+  const updateData = {};
+  if (availability) updateData.availability = availability;
+  if (communicationPref) updateData.communicationPref = communicationPref;
+  if (preferredTime) updateData.preferredTime = preferredTime;
+  if (preferredService) updateData.preferredService = preferredService;
+  if (serviceLocation) updateData.preferredService = serviceLocation;
+
+  const user = await User.findOneAndUpdate({ phone }, updateData, { new: true });
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({
+    message: "Preferences saved successfully",
+    user: {
+      availability: user.availability || "",
+      communicationPref: user.communicationPref || "",
+      preferredTime: user.preferredTime || "",
+      preferredService: user.preferredService || "",
+    },
+  });
+});
+
+const updatePassword = asyncHandler(async (req, res) => {
+  const phone = (req.params.phone || "").trim();
+  const currentPassword = req.body.currentPassword || "";
+  const newPassword = req.body.newPassword || "";
+  const confirmPassword = req.body.confirmPassword || "";
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return res.status(400).json({ error: "All password fields are required" });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: "New password must be at least 6 characters" });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: "New passwords do not match" });
+  }
+
+  const user = await User.findOne({ phone });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+  if (!isPasswordValid) {
+    return res.status(400).json({ error: "Current password is incorrect" });
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
+
+  res.json({ message: "Password changed successfully" });
+});
+
+module.exports = {
+  getProfile,
+  updateProfile,
+  updateAvatar,
+  updateAddress,
+  updatePreferences,
+  updatePassword,
+};
