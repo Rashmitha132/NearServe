@@ -15,6 +15,7 @@ const workerRoutes = require("./routes/workerRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+//const paymentRoutes = require("./routes/paymentRoutes");
 
 // keep model imports only if needed elsewhere now
 require("./models/Booking");
@@ -34,14 +35,18 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
-
 if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
 if (!fs.existsSync("uploads/videos")) fs.mkdirSync("uploads/videos", { recursive: true });
 
+app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/login.html"));
+});
+
+app.get("/api/check-server", (req, res) => {
+  res.json({ message: "server route working" });
 });
 
 app.use("/api/admin", adminRoutes);
@@ -49,6 +54,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/workers", workerRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/chat", chatRoutes);
+//app.use("/api/payment", paymentRoutes);
 
 const hours = Number(process.env.PENDING_EXPIRY_HOURS || 24);
 autoExpirePendingBookings(hours);

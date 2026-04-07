@@ -52,6 +52,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (avatarBase64 !== undefined) updateData.avatarBase64 = avatarBase64;
 
   const user = await User.findOneAndUpdate({ phone }, updateData, { new: true });
+
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }

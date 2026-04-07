@@ -8,6 +8,10 @@ const {
   updatePasswordSchema,
 } = require("../validators/profileValidator");
 
+router.get("/test", (req, res) => {
+  res.json({ message: "profile route working" });
+});
+
 router.get("/:phone", profileController.getProfile);
 router.put("/:phone", validate(updateProfileSchema), profileController.updateProfile);
 router.put("/:phone/avatar", profileController.updateAvatar);

@@ -144,7 +144,6 @@
   .divider::before, .divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.1); }
   .divider span { font-size:0.75rem; color:rgba(255,255,255,0.3); white-space:nowrap; }
 
-  /* ── FORGOT PASSWORD MODAL ── */
   .modal-overlay {
     position:fixed; inset:0; background:rgba(0,0,0,0.55);
     backdrop-filter:blur(8px); z-index:100;
@@ -180,9 +179,6 @@
   .modal-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(13,148,136,0.5); }
   .modal-btn:active { transform:translateY(0); }
 
-  /* ════════════════════════════════════════
-     LOCATION CHECK OVERLAY
-  ════════════════════════════════════════ */
   #locationOverlay {
     display: none;
     position: fixed; inset: 0; z-index: 999;
@@ -248,7 +244,6 @@
     margin-bottom: 0; min-height: 22px;
   }
 
-  /* spinner dots */
   .loc-dots { display: inline-flex; gap: 5px; margin-top: 18px; }
   .loc-dots span {
     width: 8px; height: 8px; border-radius: 50%;
@@ -262,7 +257,6 @@
     40%         { transform: scale(1.1); background: rgba(255,255,255,0.8); }
   }
 
-  /* denied message */
   #locDeniedMsg { display: none; margin-top: 18px; }
   #locDeniedTitle {
     font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 10px;
@@ -279,7 +273,6 @@
     line-height: 1.6; margin-bottom: 22px;
   }
 
-  /* Karnataka badge */
   .karnataka-badge {
     display: inline-flex; align-items: center; gap: 8px;
     background: rgba(13,148,136,0.15); border: 1px solid rgba(13,148,136,0.3);
@@ -384,19 +377,15 @@
       </select>
     </div>
 
-    <button type="submit">Login</button>
+    <button type="submit" id="loginBtn">Login</button>
 
     <div class="divider"><span>New to NearServe?</span></div>
     <p class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></p>
   </form>
 </div>
 
-<!-- ════════════════════════════════════════
-     LOCATION CHECK OVERLAY
-════════════════════════════════════════ -->
 <div id="locationOverlay">
   <div class="loc-card">
-
     <div class="loc-icon-wrap checking" id="locIconWrap">
       <span id="locIcon">📍</span>
     </div>
@@ -404,12 +393,10 @@
     <div class="loc-title">Checking Location</div>
     <div id="locStatus">Detecting your location...</div>
 
-    <!-- animated dots shown while checking -->
     <div class="loc-dots" id="locDots">
       <span></span><span></span><span></span>
     </div>
 
-    <!-- shown only when denied / not Karnataka -->
     <div id="locDeniedMsg">
       <div id="locDeniedTitle">Service Not Available</div>
       <div id="locDeniedRegion"></div>
@@ -430,11 +417,9 @@
         ← Back to Login
       </button>
     </div>
-
   </div>
 </div>
 
-<!-- FORGOT PASSWORD MODAL -->
 <div class="modal-overlay" id="forgotModal">
   <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
@@ -456,7 +441,7 @@
         </div>
         <input type="email" id="resetEmail" placeholder="Enter your email">
       </div>
-      <button class="modal-btn" id="sendResetBtn">Send Reset Link</button>
+      <button class="modal-btn" id="sendResetBtn" type="button">Send Reset Link</button>
     </div>
     <div class="modal-success" id="modalSuccess">
       <div class="success-icon">
@@ -471,62 +456,107 @@
 </div>
 
 <script>
-  // Particle system
   const canvas = document.getElementById("particleCanvas");
   const ctx = canvas.getContext("2d");
   let particles = [];
-  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
   resize();
   window.addEventListener("resize", resize);
+
   class Particle {
     constructor() { this.reset(); }
+
     reset() {
-      this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
       this.size = Math.random() * 1.8 + 0.4;
-      this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3;
-      const colors = ["rgba(59,130,246,","rgba(13,148,136,","rgba(29,78,216,","rgba(99,102,241,","rgba(20,184,166,"];
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
+      const colors = [
+        "rgba(59,130,246,",
+        "rgba(13,148,136,",
+        "rgba(29,78,216,",
+        "rgba(99,102,241,",
+        "rgba(20,184,166,"
+      ];
       this.color = colors[Math.floor(Math.random() * colors.length)];
       this.alpha = Math.random() * 0.45 + 0.1;
-      this.life = 0; this.maxLife = Math.random() * 300 + 200;
+      this.life = 0;
+      this.maxLife = Math.random() * 300 + 200;
     }
+
     update() {
-      this.x += this.speedX; this.y += this.speedY; this.life++;
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life++;
       if (this.life > this.maxLife) this.reset();
       if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
     }
+
     draw() {
-      const fade = this.life < 40 ? this.life/40 : this.life > this.maxLife-40 ? (this.maxLife-this.life)/40 : 1;
-      ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = this.color + (this.alpha * fade) + ")"; ctx.fill();
+      const fade =
+        this.life < 40 ? this.life / 40 :
+        this.life > this.maxLife - 40 ? (this.maxLife - this.life) / 40 : 1;
+
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color + (this.alpha * fade) + ")";
+      ctx.fill();
     }
   }
-  for (let i = 0; i < 80; i++) { const p = new Particle(); p.life = Math.random() * p.maxLife; particles.push(p); }
+
+  for (let i = 0; i < 80; i++) {
+    const p = new Particle();
+    p.life = Math.random() * p.maxLife;
+    particles.push(p);
+  }
+
   function drawConnections() {
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
         if (dist < 100) {
-          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = "rgba(59,130,246," + (0.06 * (1 - dist/100)) + ")"; ctx.lineWidth = 0.5; ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = "rgba(59,130,246," + (0.06 * (1 - dist / 100)) + ")";
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
         }
       }
     }
   }
-  function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); drawConnections(); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawConnections();
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+
   animate();
 </script>
 
 <script src="js/login.js"></script>
 
 <script>
-  // Forgot password modal
-  const forgotLink   = document.getElementById('forgotLink');
-  const forgotModal  = document.getElementById('forgotModal');
-  const modalClose   = document.getElementById('modalClose');
+  const forgotLink = document.getElementById('forgotLink');
+  const forgotModal = document.getElementById('forgotModal');
+  const modalClose = document.getElementById('modalClose');
   const sendResetBtn = document.getElementById('sendResetBtn');
-  const resetEmail   = document.getElementById('resetEmail');
-  const modalForm    = document.getElementById('modalForm');
+  const resetEmail = document.getElementById('resetEmail');
+  const modalForm = document.getElementById('modalForm');
   const modalSuccess = document.getElementById('modalSuccess');
 
   forgotLink.addEventListener('click', (e) => {
@@ -536,60 +566,92 @@
     modalForm.style.display = 'block';
     modalSuccess.style.display = 'none';
   });
+
   modalClose.addEventListener('click', () => forgotModal.classList.remove('active'));
-  forgotModal.addEventListener('click', (e) => { if (e.target === forgotModal) forgotModal.classList.remove('active'); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') forgotModal.classList.remove('active'); });
+
+  forgotModal.addEventListener('click', (e) => {
+    if (e.target === forgotModal) forgotModal.classList.remove('active');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') forgotModal.classList.remove('active');
+  });
 
   sendResetBtn.addEventListener('click', async () => {
     const email = resetEmail.value.trim();
+
     if (!email) {
       resetEmail.style.borderColor = 'rgba(248,113,113,0.8)';
       resetEmail.placeholder = 'Please enter your email!';
-      setTimeout(() => { resetEmail.style.borderColor = ''; resetEmail.placeholder = 'Enter your email'; }, 2000);
+      setTimeout(() => {
+        resetEmail.style.borderColor = '';
+        resetEmail.placeholder = 'Enter your email';
+      }, 2000);
       return;
     }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       resetEmail.style.borderColor = 'rgba(248,113,113,0.8)';
       resetEmail.value = '';
       resetEmail.placeholder = 'Enter a valid email!';
-      setTimeout(() => { resetEmail.style.borderColor = ''; resetEmail.placeholder = 'Enter your email'; }, 2000);
+      setTimeout(() => {
+        resetEmail.style.borderColor = '';
+        resetEmail.placeholder = 'Enter your email';
+      }, 2000);
       return;
     }
+
     sendResetBtn.textContent = 'Sending...';
     sendResetBtn.disabled = true;
+
     try {
-      await fetch('http://localhost:5000/forgot-password', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-    } catch (err) {}
-    modalForm.style.display = 'none';
-    modalSuccess.style.display = 'block';
-    sendResetBtn.textContent = 'Send Reset Link';
-    sendResetBtn.disabled = false;
-    setTimeout(() => forgotModal.classList.remove('active'), 4000);
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        modalForm.style.display = 'none';
+        modalSuccess.style.display = 'block';
+        setTimeout(() => forgotModal.classList.remove('active'), 4000);
+      } else {
+        alert(data.message || 'Failed to send reset link');
+      }
+    } catch (err) {
+      alert('Server error while sending reset link');
+    } finally {
+      sendResetBtn.textContent = 'Send Reset Link';
+      sendResetBtn.disabled = false;
+    }
   });
 
-  // Location overlay buttons
   document.getElementById('locRetryBtn').addEventListener('click', () => {
-    // Hide denied msg, reset to checking state, re-trigger location
     document.getElementById('locDeniedMsg').style.display = 'none';
     document.getElementById('locDots').style.display = 'flex';
     document.getElementById('locIconWrap').className = 'loc-icon-wrap checking';
     document.getElementById('locIcon').textContent = '📍';
     document.getElementById('locStatus').textContent = 'Detecting your location...';
-    // Re-run location check — stored redirect is on window
-    if (window._pendingRedirect) {
+
+    if (window._pendingRedirect && typeof checkKarnataka === 'function') {
       checkKarnataka()
         .then(() => {
           document.getElementById('locIconWrap').className = 'loc-icon-wrap success';
           document.getElementById('locIcon').textContent = '✅';
           document.getElementById('locStatus').textContent = 'Karnataka confirmed! Redirecting...';
           document.getElementById('locDots').style.display = 'none';
-          setTimeout(() => { window.location.href = window._pendingRedirect; }, 1200);
+          setTimeout(() => {
+            window.location.href = window._pendingRedirect;
+          }, 1200);
         })
-        .catch(region => { showNotAvailable(region); });
+        .catch(region => {
+          if (typeof showNotAvailable === 'function') {
+            showNotAvailable(region);
+          }
+        });
     }
   });
 
