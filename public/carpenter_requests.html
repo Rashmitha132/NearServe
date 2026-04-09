@@ -397,6 +397,8 @@
 </div>
 
 <script>
+  const API_BASE = "/api";
+
   const phone = (localStorage.getItem("phone") || "").trim();
   const role  = (localStorage.getItem("role")  || "").trim().toLowerCase();
   const name  = localStorage.getItem("name") || localStorage.getItem("userName") || "Carpenter";
@@ -545,7 +547,7 @@
     const list = document.getElementById("requestList");
     list.innerHTML = `<div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Loading...</div></div>`;
     try {
-      const res      = await fetch(`/bookings/chosen/carpenter/${encodeURIComponent(phone)}`);
+      const res      = await fetch(`${API_BASE}/bookings/chosen/carpenter/${encodeURIComponent(phone)}`);
       const bookings = await res.json();
 
       allJobs = (bookings || []).filter(j =>
@@ -572,7 +574,7 @@
   }
   function changeTime(part, dir){
     if(part === "hour"){
-      tHour = ((tHour - 1 + dir + 12) % 12) + 1; // 1-12
+      tHour = ((tHour - 1 + dir + 12) % 12) + 1;
     } else if(part === "min"){
       tMin = (tMin + dir * 5 + 60) % 60;
     } else {
@@ -615,7 +617,6 @@
 
   function openAccept(jobId) {
     activeJobId = jobId;
-    // Reset state
     tHour = 6; tMin = 0; tAmpm = "AM";
     selectedDateMode = "today";
     updateDrumDisplay();
@@ -636,7 +637,7 @@
     }
     this.textContent = "Accepting..."; this.disabled = true;
     try {
-      const res = await fetch(`/bookings/${activeJobId}/status`, {
+      const res = await fetch(`${API_BASE}/bookings/${activeJobId}/status`, {
         method:"PUT", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ status:"accepted", visitTime, workerMessage:msg, rejectReason:"" })
       });
@@ -658,7 +659,7 @@
     document.getElementById("rejectReason").style.borderColor="";
     this.textContent = "Rejecting..."; this.disabled = true;
     try {
-      const res = await fetch(`/bookings/${activeJobId}/status`, {
+      const res = await fetch(`${API_BASE}/bookings/${activeJobId}/status`, {
         method:"PUT", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ status:"rejected", rejectReason:reason, visitTime:"", workerMessage:"" })
       });
@@ -679,7 +680,7 @@
   document.getElementById("completeConfirmBtn").addEventListener("click", async function() {
     this.textContent = "Completing..."; this.disabled = true;
     try {
-      const res = await fetch(`/bookings/${activeJobId}/complete`, {
+      const res = await fetch(`${API_BASE}/bookings/${activeJobId}/complete`, {
         method:"PUT", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ workerPhone:phone, workerRole:role })
       });

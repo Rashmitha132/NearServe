@@ -1,34 +1,56 @@
+const API_BASE = "/api";
 const token = localStorage.getItem("adminToken");
-if (!token) window.location.href = "/admin_login.html";
+
+if (!token) {
+  window.location.href = "admin_login.html";
+}
 
 const workerList = document.getElementById("workerList");
 const jobList = document.getElementById("jobList");
+const logoutBtn = document.getElementById("adminLogout");
+const refreshBtn = document.getElementById("refreshBtn");
 
-document.getElementById("adminLogout").addEventListener("click", () => {
-  localStorage.removeItem("adminToken");
-  window.location.href = "/admin_login.html";
-});
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("adminToken");
+    window.location.href = "admin_login.html";
+  });
+}
 
-document.getElementById("refreshBtn").addEventListener("click", () => loadAll());
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => loadAll());
+}
 
 function fmtDate(iso) {
-  try { return new Date(iso).toLocaleString(); } catch { return iso || "-"; }
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return iso || "-";
+  }
 }
 
 async function api(url, options = {}) {
-  const res = await fetch(url, {
+  const res = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers: {
       ...(options.headers || {}),
-      "Authorization": `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     }
   });
 
   const text = await res.text();
   let data = {};
-  try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
-  if (!res.ok) throw new Error(data.error || text || "Request failed");
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = { raw: text };
+  }
+
+  if (!res.ok) {
+    throw new Error(data.message || data.error || text || "Request failed");
+  }
+
   return data;
 }
 
@@ -63,15 +85,20 @@ function guessVideoType(url) {
 // =======================
 async function loadWorkers() {
   workerList.innerHTML = "";
+
   const data = await api("/admin/workers");
   const workers = data.workers || [];
 
   if (workers.length === 0) {
-    workerList.innerHTML = `<li class="item"><div><strong>No workers pending proof verification.</strong></div></li>`;
+    workerList.innerHTML = `
+      <li class="item">
+        <div><strong>No workers pending proof verification.</strong></div>
+      </li>
+    `;
     return;
   }
 
-  workers.forEach(w => {
+  workers.forEach((w) => {
     const li = document.createElement("li");
     li.className = "item";
 
@@ -102,7 +129,7 @@ async function loadWorkers() {
     workerList.appendChild(li);
   });
 
-  workerList.querySelectorAll("button[data-action]").forEach(btn => {
+  workerList.querySelectorAll("button[data-action]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const phone = btn.dataset.phone;
       const action = btn.dataset.action;
@@ -111,7 +138,7 @@ async function loadWorkers() {
         if (action === "approveProof") {
           await api(`/admin/verify-proof/${phone}`, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "approve" })
           });
           alert("✅ Proof approved!");
@@ -124,7 +151,7 @@ async function loadWorkers() {
 
           await api(`/admin/verify-proof/${phone}`, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "reject", reason })
           });
           alert("❌ Proof rejected.");
@@ -143,15 +170,20 @@ async function loadWorkers() {
 // =======================
 async function loadJobs() {
   jobList.innerHTML = "";
+
   const data = await api("/admin/submitted-jobs");
   const jobs = data.jobs || [];
 
   if (jobs.length === 0) {
-    jobList.innerHTML = `<li class="item"><div><strong>No submitted job videos to verify.</strong></div></li>`;
+    jobList.innerHTML = `
+      <li class="item">
+        <div><strong>No submitted job videos to verify.</strong></div>
+      </li>
+    `;
     return;
   }
 
-  jobs.forEach(j => {
+  jobs.forEach((j) => {
     const li = document.createElement("li");
     li.className = "item";
 
@@ -169,15 +201,17 @@ async function loadJobs() {
         <small>Status: ${j.status}</small><br>
 
         ${
-          videoUrl ? `
-          <video controls preload="metadata" style="width:100%; max-width:520px; margin-top:8px; border-radius:10px;">
-            <source src="${videoUrl}" ${videoType ? `type="${videoType}"` : ""}>
-            Your browser cannot play this video.
-          </video>
-          <div style="margin-top:6px;">
-            <a href="${videoUrl}" target="_blank">Open video in new tab</a>
-          </div>
-          ` : `<small style="color:crimson;">No video found</small>`
+          videoUrl
+            ? `
+            <video controls preload="metadata" style="width:100%; max-width:520px; margin-top:8px; border-radius:10px;">
+              <source src="${videoUrl}" ${videoType ? `type="${videoType}"` : ""}>
+              Your browser cannot play this video.
+            </video>
+            <div style="margin-top:6px;">
+              <a href="${videoUrl}" target="_blank">Open video in new tab</a>
+            </div>
+          `
+            : `<small style="color:crimson;">No video found</small>`
         }
       </div>
 
@@ -194,7 +228,7 @@ async function loadJobs() {
     jobList.appendChild(li);
   });
 
-  jobList.querySelectorAll("button[data-action]").forEach(btn => {
+  jobList.querySelectorAll("button[data-action]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const jobId = btn.dataset.jobid;
       const action = btn.dataset.action;
@@ -203,7 +237,7 @@ async function loadJobs() {
         if (action === "approveJob") {
           await api(`/admin/verify-job/${jobId}`, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "approve" })
           });
           alert("✅ Video approved. Job marked completed!");
@@ -216,7 +250,7 @@ async function loadJobs() {
 
           await api(`/admin/verify-job/${jobId}`, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "reject", reason })
           });
           alert("❌ Video rejected.");
@@ -239,12 +273,11 @@ async function loadAll() {
     await loadJobs();
   } catch (e) {
     alert(e.message);
-    if (
-      String(e.message).toLowerCase().includes("unauthorized") ||
-      String(e.message).toLowerCase().includes("invalid token")
-    ) {
+
+    const msg = String(e.message).toLowerCase();
+    if (msg.includes("unauthorized") || msg.includes("invalid token")) {
       localStorage.removeItem("adminToken");
-      window.location.href = "/admin_login.html";
+      window.location.href = "admin_login.html";
     }
   }
 }

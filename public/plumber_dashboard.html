@@ -219,12 +219,14 @@
 </div>
 
 <script>
+const API_BASE = "/api";
+
 (async function guardDashboard() {
   const phone = (localStorage.getItem("phone") || "").trim();
   const role  = (localStorage.getItem("role")  || "").trim().toLowerCase();
   if (!phone || role !== "plumber") { window.location.replace("login.html"); return; }
   try {
-    const res  = await fetch(`/user/${phone}`);
+    const res  = await fetch(`${API_BASE}/profile/${phone}`);
     const data = await res.json();
     if (!res.ok) { window.location.replace("login.html"); return; }
     const status = (data.status || "").toLowerCase();
@@ -297,14 +299,14 @@ document.getElementById("btnSubmitAll").addEventListener("click", async function
     if (submittedJobs[i] && submittedJobs[i].status === "submitted") continue;
     btn.innerHTML = `⏳ Uploading video ${i} of 3...`;
     try {
-      const createRes = await fetch("/probation-job/create", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ phone, role:"plumber", videoIndex:i }) });
+      const createRes = await fetch(`${API_BASE}/probation-job/create`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ phone, role:"plumber", videoIndex:i }) });
       const createData = await createRes.json();
       if (!createRes.ok) { showGlobal("❌ Failed to create job " + i + ": " + (createData.error||""), "error"); allSuccess=false; break; }
       const jobId = createData.jobId;
       const formData = new FormData();
       formData.append("status","submitted");
       formData.append("videoProof", selectedFiles[i]);
-      const uploadRes  = await fetch(`/update-job/${jobId}`, { method:"POST", body:formData });
+      const uploadRes  = await fetch(`${API_BASE}/update-job/${jobId}`, { method:"POST", body:formData });
       const uploadData = await uploadRes.json();
       if (!uploadRes.ok) { showGlobal("❌ Failed to upload video " + i + ": " + (uploadData.error||""), "error"); allSuccess=false; break; }
       submittedJobs[i] = { jobId, status:"submitted" };
@@ -330,7 +332,7 @@ document.getElementById("btnSubmitAll").addEventListener("click", async function
 function startPolling() {
   const poll = setInterval(async () => {
     try {
-      const res  = await fetch(`/my-jobs/${phone}`);
+      const res  = await fetch(`${API_BASE}/my-jobs/${phone}`);
       const jobs = await res.json();
       if (!Array.isArray(jobs)) return;
       let anyRejected = false;
@@ -374,7 +376,7 @@ function startPolling() {
 
 async function loadExistingJobs() {
   try {
-    const res  = await fetch(`/my-jobs/${phone}`);
+    const res  = await fetch(`${API_BASE}/my-jobs/${phone}`);
     const jobs = await res.json();
     if (!Array.isArray(jobs)||jobs.length===0) return;
     let hasSubmitted=false;

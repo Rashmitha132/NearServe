@@ -1,14 +1,18 @@
-const list = document.getElementById("list");
-const roleTitle = document.getElementById("roleTitle");
+const API_BASE = "/api";
 
-const phone = (localStorage.getItem("phone") || "").trim();
-const role = (localStorage.getItem("role") || "").trim().toLowerCase();
+const list = document.getElementById("list");
+
+// Support both old + new localStorage keys
+const phone = (localStorage.getItem("userPhone") || localStorage.getItem("phone") || "").trim();
+const role = (localStorage.getItem("userRole") || localStorage.getItem("role") || "").trim().toLowerCase();
+
 if (!phone || role !== "customer") {
   alert("Please login as customer");
   window.location.href = "login.html";
 }
 
 const selectedRole = (localStorage.getItem("selectedServiceRole") || "").trim().toLowerCase();
+
 if (!selectedRole) {
   alert("No service selected. Go back and choose a service.");
   window.location.href = "booking.html";
@@ -16,7 +20,15 @@ if (!selectedRole) {
 
 document.getElementById("roleSpan").textContent = selectedRole + "s";
 
-let allWorkers = []; // store all workers for filtering/sorting
+let allWorkers = [];
+
+// Save worker before moving to profile page
+function handleWorkerSelect(worker) {
+  localStorage.setItem("chosenWorkerPhone", worker.phone || "");
+  localStorage.setItem("chosenWorkerRole", selectedRole);
+  localStorage.setItem("chosenWorkerName", worker.name || "");
+  window.location.href = `worker_profile.html?phone=${encodeURIComponent(worker.phone)}&role=${encodeURIComponent(selectedRole)}`;
+}
 
 function renderWorkers(workers) {
   list.innerHTML = "";
@@ -31,16 +43,16 @@ function renderWorkers(workers) {
     return;
   }
 
-  workers.forEach(w => {
+  workers.forEach((w, index) => {
     const ratingNum = parseFloat(w.avgRating) || 0;
     const reviewsCount = w.reviewsCount ?? 0;
-    const stars = "★".repeat(Math.round(ratingNum)) + "☆".repeat(5 - Math.round(ratingNum));
+    const roundedStars = Math.round(ratingNum);
+    const stars = "★".repeat(roundedStars) + "☆".repeat(5 - roundedStars);
     const letter = w.name ? w.name.charAt(0).toUpperCase() : "W";
 
     const card = document.createElement("div");
     card.className = "worker-card";
 
-    // Store data attributes for sort/search
     card.dataset.name = w.name || "";
     card.dataset.rating = ratingNum;
     card.dataset.reviews = reviewsCount;
@@ -80,7 +92,7 @@ function renderWorkers(workers) {
         </div>
       </div>
 
-      <button class="btn-select" onclick="window.location.href='worker_profile.html?phone=${encodeURIComponent(w.phone)}&role=${encodeURIComponent(selectedRole)}'">
+      <button class="btn-select" id="selectBtn-${index}">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
@@ -90,17 +102,21 @@ function renderWorkers(workers) {
     `;
 
     list.appendChild(card);
+
+    document.getElementById(`selectBtn-${index}`).addEventListener("click", () => {
+      handleWorkerSelect(w);
+    });
   });
 }
 
-// ── Search ──
+// Search
 document.getElementById("searchInput").addEventListener("input", function () {
   const q = this.value.toLowerCase();
   const filtered = allWorkers.filter(w => (w.name || "").toLowerCase().includes(q));
   renderWorkers(filtered);
 });
 
-// ── Sort ──
+// Sort
 window.sortCards = function(by) {
   document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
   document.getElementById("sort" + by.charAt(0).toUpperCase() + by.slice(1))?.classList.add("active");
@@ -119,13 +135,21 @@ window.sortCards = function(by) {
   renderWorkers(sorted);
 };
 
-// ── Load from server ──
+// Load from server
 async function loadWorkers() {
   list.innerHTML = `<div class="loading"><div class="spinner"></div>Loading workers...</div>`;
+
   try {
-    const res = await fetch(`/workers?role=${encodeURIComponent(selectedRole)}`);
-    allWorkers = await res.json();
-    // Default sort by name
+    const res = await fetch(`${API_BASE}/workers?role=${encodeURIComponent(selectedRole)}`);
+    const data = await res.json().catch(() => ([]));
+
+    allWorkers = Array.isArray(data) ? data : (data.workers || []);
+
+    allWorkers = allWorkers.filter(w =>
+      (w.role || "").toLowerCase() === selectedRole &&
+      (!w.status || (w.status || "").toLowerCase() === "full_access")
+    );
+
     allWorkers.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     renderWorkers(allWorkers);
   } catch (e) {

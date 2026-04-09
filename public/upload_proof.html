@@ -12,7 +12,6 @@
     html, body { height: 100%; }
     body { min-height:100vh; font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:stretch; overflow-x:hidden; background:var(--bg); }
 
-    /* ══ LEFT PANEL ══ */
     .left-panel {
       width: 42%; min-height: 100vh;
       background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
@@ -44,25 +43,20 @@
     .stat-lbl { font-size:0.73rem; color:rgba(255,255,255,0.58); }
     .sdiv { width:1px; background:rgba(255,255,255,0.2); height:36px; }
 
-    /* ══ RIGHT PANEL ══ */
     .right-panel { flex:1; min-height:100vh; background:#fff; display:flex; flex-direction:column; justify-content:center; padding:48px 52px; overflow-y:auto; }
 
-    /* ── TOP BAR ── */
     .fhead { margin-bottom:28px; }
     .fhead h1 { font-family:'Nunito',sans-serif; font-size:1.7rem; font-weight:900; color:var(--dark); margin-bottom:4px; display:flex; align-items:center; gap:10px; }
     .fhead p { color:var(--soft); font-size:0.85rem; }
 
-    /* ── INFO BOX ── */
     .info-box { background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:13px; padding:16px 18px; margin-bottom:24px; }
     .info-box-title { font-size:0.78rem; font-weight:800; color:var(--blue); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
     .info-steps { display:flex; flex-direction:column; gap:6px; }
     .info-step { font-size:0.78rem; color:var(--mid); display:flex; align-items:flex-start; gap:8px; line-height:1.4; }
     .info-step span { color:var(--blue); font-weight:700; flex-shrink:0; }
 
-    /* ── SECTION LABEL ── */
     .slbl { font-size:0.71rem; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:1.1px; margin-bottom:8px; margin-top:18px; }
 
-    /* ── UPLOAD BOX ── */
     .upload-box { border:2px dashed var(--border); border-radius:13px; padding:30px 20px; text-align:center; background:#fafcff; transition:all 0.25s; cursor:pointer; margin-bottom:12px; }
     .upload-box:hover { border-color:#93c5fd; background:#eff6ff; }
     .upload-box.has-file { border-color:#0d9488; background:#f0fdf4; border-style:solid; }
@@ -70,7 +64,6 @@
     .upload-box-title { font-size:0.92rem; font-weight:700; color:var(--dark); margin-bottom:4px; }
     .upload-box-sub { font-size:0.78rem; color:var(--soft); line-height:1.5; }
 
-    /* ── FILE PREVIEW ── */
     .file-preview { display:none; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:12px 16px; margin-bottom:14px; align-items:center; gap:12px; }
     .file-preview.show { display:flex; }
     .fp-icon { font-size:1.4rem; flex-shrink:0; }
@@ -79,7 +72,6 @@
     .fp-remove { margin-left:auto; background:none; border:none; color:var(--soft); cursor:pointer; font-size:1rem; padding:4px; transition:color 0.2s; }
     .fp-remove:hover { color:#ef4444; }
 
-    /* ── STATUS MESSAGES ── */
     .msg-box { padding:11px 14px; border-radius:11px; font-size:0.82rem; font-weight:600; margin-bottom:14px; display:none; line-height:1.5; }
     .msg-box.show { display:block; }
     .msg-error   { background:#fff5f5; border:1.5px solid #fecaca; color:#dc2626; }
@@ -87,7 +79,6 @@
     .msg-info    { background:#eff6ff; border:1.5px solid #bfdbfe; color:var(--blue); }
     .msg-warning { background:#fffbeb; border:1.5px solid #fde68a; color:#d97706; }
 
-    /* ── SUBMIT BUTTON ── */
     .btn-sub { width:100%; padding:15px; border:none; border-radius:13px; background:linear-gradient(135deg,#1d4ed8 0%,#0d9488 100%); color:#fff; font-size:1rem; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 24px rgba(29,78,216,0.32); transition:transform 0.2s, box-shadow 0.2s; margin-top:8px; position:relative; overflow:hidden; }
     .btn-sub::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.16),transparent); opacity:0; transition:opacity 0.3s; }
     .btn-sub:disabled { opacity:0.45; cursor:not-allowed; transform:none !important; box-shadow:none; }
@@ -101,7 +92,6 @@
 </head>
 <body>
 
-<!-- ══ LEFT PANEL ══ -->
 <div class="left-panel">
   <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
   <div class="fi fi1">🪪</div><div class="fi fi2">🔐</div><div class="fi fi3">✅</div><div class="fi fi4">⚡</div><div class="fi fi5">🛡️</div>
@@ -152,7 +142,6 @@
   </div>
 </div>
 
-<!-- ══ RIGHT PANEL ══ -->
 <div class="right-panel">
 
   <div class="fhead" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
@@ -168,10 +157,8 @@
     </button>
   </div>
 
-  <!-- Status message (rejected/pending/approved) -->
   <div class="msg-box" id="globalMsg"></div>
 
-  <!-- How to info box -->
   <div class="info-box">
     <div class="info-box-title">📖 How to create a single PDF with both sides</div>
     <div class="info-steps">
@@ -182,7 +169,6 @@
     </div>
   </div>
 
-  <!-- Upload -->
   <div class="slbl">Aadhaar Card (Both Sides — Single PDF)</div>
 
   <div class="upload-box" id="aadhaarBox" onclick="document.getElementById('proofFile').click()">
@@ -192,7 +178,6 @@
   </div>
   <input type="file" id="proofFile" name="proof" accept="application/pdf" style="display:none">
 
-  <!-- Preview -->
   <div class="file-preview" id="preview">
     <span class="fp-icon">📄</span>
     <div>
@@ -202,8 +187,7 @@
     <button class="fp-remove" onclick="removeFile()">✕</button>
   </div>
 
-  <!-- Messages -->
-  <div class="msg-box msg-error"   id="errorMsg"></div>
+  <div class="msg-box msg-error" id="errorMsg"></div>
   <div class="msg-box msg-success" id="successMsg"></div>
 
   <button class="btn-sub" id="submitBtn" disabled>
@@ -221,17 +205,39 @@
 </div>
 
 <script>
+  const API_BASE = "/api";
   const MAX_SIZE = 2 * 1024 * 1024;
+
+  function getStoredPhone() {
+    return (localStorage.getItem("userPhone") || localStorage.getItem("phone") || "").trim();
+  }
+
+  function getStoredRole() {
+    return (localStorage.getItem("userRole") || localStorage.getItem("role") || "").trim().toLowerCase();
+  }
 
   function formatSize(bytes) {
     if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + " KB";
-    return (bytes/(1024*1024)).toFixed(2) + " MB";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
   }
 
-  function showError(msg)   { const e=document.getElementById("errorMsg");   e.textContent=msg; e.className="msg-box msg-error show"; }
-  function showSuccess(msg) { const e=document.getElementById("successMsg"); e.textContent=msg; e.className="msg-box msg-success show"; }
-  function clearMsgs()      { document.getElementById("errorMsg").className="msg-box msg-error"; document.getElementById("successMsg").className="msg-box msg-success"; }
+  function showError(msg) {
+    const e = document.getElementById("errorMsg");
+    e.textContent = msg;
+    e.className = "msg-box msg-error show";
+  }
+
+  function showSuccess(msg) {
+    const e = document.getElementById("successMsg");
+    e.textContent = msg;
+    e.className = "msg-box msg-success show";
+  }
+
+  function clearMsgs() {
+    document.getElementById("errorMsg").className = "msg-box msg-error";
+    document.getElementById("successMsg").className = "msg-box msg-success";
+  }
 
   function removeFile() {
     document.getElementById("proofFile").value = "";
@@ -241,14 +247,44 @@
     clearMsgs();
   }
 
-  document.getElementById("proofFile").addEventListener("change", function() {
+  function redirectToWorkerDashboard() {
+    const role = getStoredRole();
+
+    if (role === "carpenter") {
+      window.location.href = "/carpenter_dashboard.html";
+    } else if (role === "plumber") {
+      window.location.href = "/plumber_dashboard.html";
+    } else if (role === "electrician") {
+      window.location.href = "/electrician_dashboard.html";
+    } else {
+      window.location.href = "/login.html";
+    }
+  }
+
+  document.getElementById("proofFile").addEventListener("change", function () {
     clearMsgs();
     const file = this.files[0];
-    if (!file) { document.getElementById("submitBtn").disabled = true; return; }
+
+    if (!file) {
+      document.getElementById("submitBtn").disabled = true;
+      return;
+    }
 
     const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
-    if (!isPdf) { this.value=""; showError("❌ Only PDF files are allowed."); document.getElementById("submitBtn").disabled=true; return; }
-    if (file.size > MAX_SIZE) { this.value=""; showError("❌ File too large. Maximum allowed size is 2 MB."); document.getElementById("submitBtn").disabled=true; return; }
+
+    if (!isPdf) {
+      this.value = "";
+      showError("❌ Only PDF files are allowed.");
+      document.getElementById("submitBtn").disabled = true;
+      return;
+    }
+
+    if (file.size > MAX_SIZE) {
+      this.value = "";
+      showError("❌ File too large. Maximum allowed size is 2 MB.");
+      document.getElementById("submitBtn").disabled = true;
+      return;
+    }
 
     document.getElementById("fileName").textContent = file.name;
     document.getElementById("fileSize").textContent = formatSize(file.size);
@@ -257,77 +293,99 @@
     document.getElementById("submitBtn").disabled = false;
   });
 
-  document.getElementById("submitBtn").addEventListener("click", async function() {
-    const phone = (localStorage.getItem("phone") || "").trim();
-    const role  = (localStorage.getItem("role")  || "").trim();
-    const file  = document.getElementById("proofFile").files[0];
+  document.getElementById("submitBtn").addEventListener("click", async function () {
+    const phone = getStoredPhone();
+    const file = document.getElementById("proofFile").files[0];
 
-    if (!phone) { showError("❌ Phone not found. Please login again."); return; }
-    if (!file)  { showError("❌ Please select your Aadhaar PDF first."); return; }
+    if (!phone) {
+      showError("❌ Phone not found. Please login again.");
+      return;
+    }
+
+    if (!file) {
+      showError("❌ Please select your Aadhaar PDF first.");
+      return;
+    }
 
     const btn = this;
     btn.disabled = true;
-    btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Uploading...`;
+    btn.innerHTML = `
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Uploading...
+    `;
     clearMsgs();
 
     const formData = new FormData();
     formData.append("proof", file);
 
     try {
-      const res  = await fetch(`/upload-proof/${phone}`, { method:"POST", body:formData });
+      const res = await fetch(`${API_BASE}/workers/upload-proof/${phone}`, {
+        method: "POST",
+        body: formData
+      });
+
       const text = await res.text();
       let data = {};
       try { data = JSON.parse(text); } catch {}
 
       if (!res.ok) {
-        showError("❌ " + (data.error || "Upload failed. Please try again."));
+        showError("❌ " + (data.error || data.message || "Upload failed. Please try again."));
         btn.disabled = false;
-        btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Submit Aadhaar for Verification`;
+        btn.innerHTML = `
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Submit Aadhaar for Verification
+        `;
         return;
       }
 
-      // ✅ Show waiting message — do NOT redirect until admin approves
       showSuccess("✅ Aadhaar submitted successfully! Please wait for admin verification (24–48 hours). You'll get access once approved.");
       btn.innerHTML = `⏳ Waiting for Admin Approval`;
       btn.disabled = true;
-      // Hide upload box — they cannot re-upload until admin rejects
-      document.getElementById("aadhaarBox").style.display = "none";
-      document.getElementById("proofFile").style.display  = "none";
-      document.querySelector(".slbl").textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
 
-    } catch(err) {
+      document.getElementById("aadhaarBox").style.display = "none";
+      document.getElementById("proofFile").style.display = "none";
+      document.querySelector(".slbl").textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
+    } catch (err) {
       showError("❌ Server not responding. Please try again.");
       btn.disabled = false;
-      btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Submit Aadhaar for Verification`;
+      btn.innerHTML = `
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Submit Aadhaar for Verification
+      `;
     }
   });
 
-  // Load proof review status on page load
   async function loadProofReviewMessage() {
-    const phone = localStorage.getItem("phone");
+    const phone = getStoredPhone();
     if (!phone) return;
+
     try {
-      const res  = await fetch(`/worker/review/${phone}`);
+      const res = await fetch(`${API_BASE}/workers/review/${phone}`);
       const text = await res.text();
       let data = {};
       try { data = JSON.parse(text); } catch {}
+
       if (!res.ok) return;
 
-      const el  = document.getElementById("globalMsg");
+      const el = document.getElementById("globalMsg");
       const box = document.getElementById("aadhaarBox");
       const btn = document.getElementById("submitBtn");
       const lbl = document.querySelector(".slbl");
 
       if (data.proofReview && data.proofReview.status === "rejected") {
-        // Admin rejected — show reason and ALLOW re-upload
         el.textContent = "❌ Your Aadhaar was rejected: " + (data.proofReview.reason || "No reason given. Please re-upload.");
         el.className = "msg-box msg-error show";
-        // Keep upload box visible so they can re-upload
         box.style.display = "";
         btn.disabled = true;
 
       } else if (data.status === "proof_submitted") {
-        // Submitted but not yet reviewed — hide upload, show waiting
         el.textContent = "⏳ Aadhaar already submitted. Waiting for admin verification — please check back in 24–48 hours. You cannot re-upload until admin reviews.";
         el.className = "msg-box msg-info show";
         box.style.display = "none";
@@ -337,20 +395,18 @@
         if (lbl) lbl.textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
 
       } else if (data.proofReview && data.proofReview.status === "approved") {
-        // Admin approved — redirect to their dashboard
         el.textContent = "✅ Aadhaar approved! Redirecting to your dashboard...";
         el.className = "msg-box msg-success show";
         box.style.display = "none";
         btn.style.display = "none";
-        const role = (localStorage.getItem("role") || "").trim();
+
         setTimeout(() => {
-          if (role === "carpenter")        window.location.href = "/carpenter_dashboard.html";
-          else if (role === "plumber")     window.location.href = "/plumber_dashboard.html";
-          else if (role === "electrician") window.location.href = "/electrician_dashboard.html";
-          else window.location.href = "/login.html";
+          redirectToWorkerDashboard();
         }, 1500);
       }
-    } catch(err) {}
+    } catch (err) {
+      console.error("Error loading proof review message:", err);
+    }
   }
 
   document.getElementById("logoutBtn").addEventListener("click", () => {
@@ -358,44 +414,42 @@
     window.location.href = "login.html";
   });
 
-  // Run once on load
   loadProofReviewMessage();
 
-  // Poll every 10 seconds to check if admin has approved/rejected
   const pollInterval = setInterval(async () => {
-    const phone = localStorage.getItem("phone");
-    if (!phone) { clearInterval(pollInterval); return; }
+    const phone = getStoredPhone();
+    if (!phone) {
+      clearInterval(pollInterval);
+      return;
+    }
 
     try {
-      const res  = await fetch(`/user/${phone}`);
+      const res = await fetch(`${API_BASE}/profile/${phone}`);
       const data = await res.json();
+
       if (!res.ok) return;
 
-      const status       = (data.status || "").toLowerCase();
+      const status = (data.status || "").toLowerCase();
       const reviewStatus = (data.proofReview?.status || "").toLowerCase();
-      const role         = (localStorage.getItem("role") || "").trim().toLowerCase();
 
-      // Admin approved → redirect immediately
       if (reviewStatus === "approved" || status === "full_access" || status === "probation") {
         clearInterval(pollInterval);
         document.getElementById("globalMsg").textContent = "✅ Admin approved! Redirecting to your dashboard...";
-        document.getElementById("globalMsg").className   = "msg-box msg-success show";
+        document.getElementById("globalMsg").className = "msg-box msg-success show";
+
         setTimeout(() => {
-          if (role === "carpenter")        window.location.href = "/carpenter_dashboard.html";
-          else if (role === "plumber")     window.location.href = "/plumber_dashboard.html";
-          else if (role === "electrician") window.location.href = "/electrician_dashboard.html";
-          else window.location.href = "/login.html";
+          redirectToWorkerDashboard();
         }, 1500);
       }
 
-      // Admin rejected → reload page to show re-upload
       if (reviewStatus === "rejected" && status === "pending_verification") {
         clearInterval(pollInterval);
         window.location.reload();
       }
-
-    } catch(err) { /* silent */ }
-  }, 10000); // check every 10 seconds
+    } catch (err) {
+      console.error("Polling error:", err);
+    }
+  }, 10000);
 </script>
 </body>
 </html>

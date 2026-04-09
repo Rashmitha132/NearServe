@@ -7,19 +7,14 @@ const roleInput = document.getElementById("role");
 const loginBtn = document.getElementById("loginBtn");
 
 console.log("login.js loaded");
-console.log("loginForm:", loginForm);
-console.log("loginBtn:", loginBtn);
 
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("submit event triggered");
 
     const emailOrPhone = emailOrPhoneInput.value.trim();
     const password = passwordInput.value.trim();
     const role = roleInput.value;
-
-    console.log("form values:", { emailOrPhone, password, role });
 
     if (!emailOrPhone || !password || !role) {
       alert("Please fill all fields.");
@@ -32,8 +27,6 @@ if (loginForm) {
     }
 
     try {
-      console.log("sending login request...");
-
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: {
@@ -47,51 +40,99 @@ if (loginForm) {
       });
 
       const data = await res.json().catch(() => ({}));
-      console.log("LOGIN RESPONSE:", data);
 
       if (!res.ok) {
         alert(data.message || data.error || "Login failed");
         return;
       }
 
-      const user = data.user || {};
+      const user = data.user || data;
 
-      localStorage.setItem("userName", user.name || "");
-      localStorage.setItem("userPhone", user.phone || "");
-      localStorage.setItem("userEmail", user.email || "");
-      localStorage.setItem("userRole", user.role || "");
-      localStorage.setItem("userStatus", user.status || "");
+      const userName = user.name || "";
+      const userPhone = user.phone || "";
+      const userEmail = user.email || "";
+      const userRole = (user.role || "").toLowerCase();
+      const userStatus = (user.status || "").toLowerCase();
+
+      // ✅ SAVE USER DATA - save BOTH old + new keys for compatibility
+      localStorage.setItem("userName", userName);
+      localStorage.setItem("userPhone", userPhone);
+      localStorage.setItem("userEmail", userEmail);
+      localStorage.setItem("userRole", userRole);
+      localStorage.setItem("userStatus", userStatus);
+
+      localStorage.setItem("name", userName);
+      localStorage.setItem("phone", userPhone);
+      localStorage.setItem("email", userEmail);
+      localStorage.setItem("role", userRole);
+      localStorage.setItem("status", userStatus);
 
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
 
-      if (user.role === "customer") {
-        window.location.href = "dashboard.html";
+      console.log("Login success:", user);
+
+      // ✅ CUSTOMER
+      if (userRole === "customer") {
+        window.location.href = "booking.html";
         return;
       }
 
-      if (user.status === "pending_verification" || user.status === "proof_submitted") {
-        window.location.href = "verification_pending.html";
-        return;
+      // ✅ WORKER STATUS-BASED REDIRECTS
+      if (userRole === "carpenter") {
+        if (userStatus === "pending_verification" || userStatus === "proof_submitted") {
+          window.location.href = "upload_proof.html";
+          return;
+        }
+
+        if (userStatus === "probation") {
+          window.location.href = "carpenter_dashboard.html";
+          return;
+        }
+
+        if (userStatus === "full_access") {
+          window.location.href = "carpenter_requests.html";
+          return;
+        }
       }
 
-      if (user.role === "plumber") {
-        window.location.href = "plumber_dashboard.html";
-        return;
+      if (userRole === "plumber") {
+        if (userStatus === "pending_verification" || userStatus === "proof_submitted") {
+          window.location.href = "upload_proof.html";
+          return;
+        }
+
+        if (userStatus === "probation") {
+          window.location.href = "plumber_dashboard.html";
+          return;
+        }
+
+        if (userStatus === "full_access") {
+          window.location.href = "plumber_requests.html";
+          return;
+        }
       }
 
-      if (user.role === "electrician") {
-        window.location.href = "electrician_dashboard.html";
-        return;
-      }
+      if (userRole === "electrician") {
+        if (userStatus === "pending_verification" || userStatus === "proof_submitted") {
+          window.location.href = "upload_proof.html";
+          return;
+        }
 
-      if (user.role === "carpenter") {
-        window.location.href = "carpenter_dashboard.html";
-        return;
+        if (userStatus === "probation") {
+          window.location.href = "electrician_dashboard.html";
+          return;
+        }
+
+        if (userStatus === "full_access") {
+          window.location.href = "electrician_requests.html";
+          return;
+        }
       }
 
       alert("Login successful, but no redirect matched.");
+
     } catch (error) {
       console.error("Login error:", error);
       alert("Server error during login");

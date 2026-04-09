@@ -351,6 +351,8 @@
 </div>
 
 <script>
+  const API_BASE = "/api";
+
   const phone = (localStorage.getItem("phone") || "").trim();
   const role  = (localStorage.getItem("role")  || "").trim().toLowerCase();
   const name  = localStorage.getItem("name") || localStorage.getItem("userName") || "Plumber";
@@ -444,7 +446,7 @@
     const list = document.getElementById("requestList");
     list.innerHTML = `<div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Loading...</div></div>`;
     try {
-      const res = await fetch(`/bookings/chosen/plumber/${encodeURIComponent(phone)}`);
+      const res = await fetch(`${API_BASE}/bookings/chosen/plumber/${encodeURIComponent(phone)}`);
       const bookings = await res.json();
       allJobs = (bookings||[]).filter(j=>(j.chosenWorkerRole||"").toLowerCase()==="plumber" && String(j.chosenWorkerPhone||"")===String(phone));
       renderJobs();
@@ -513,7 +515,7 @@
     if(!visitTime){ alert("Please select a visit date!"); return; }
     this.textContent="Accepting..."; this.disabled=true;
     try {
-      const res=await fetch(`/bookings/${activeJobId}/status`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:"accepted",visitTime,workerMessage:msg,rejectReason:""})});
+      const res=await fetch(`${API_BASE}/bookings/${activeJobId}/status`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:"accepted",visitTime,workerMessage:msg,rejectReason:""})});
       const data=await res.json();
       if(!res.ok) alert(data.error||"Accept failed");
       else { closeModal("acceptModal"); fetchRequests(); }
@@ -532,7 +534,7 @@
     document.getElementById("rejectReason").style.borderColor="";
     this.textContent="Rejecting..."; this.disabled=true;
     try {
-      const res=await fetch(`/bookings/${activeJobId}/status`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:"rejected",rejectReason:reason,visitTime:"",workerMessage:""})});
+      const res=await fetch(`${API_BASE}/bookings/${activeJobId}/status`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:"rejected",rejectReason:reason,visitTime:"",workerMessage:""})});
       const data=await res.json();
       if(!res.ok) alert(data.error||"Reject failed");
       else { closeModal("rejectModal"); fetchRequests(); }
@@ -550,7 +552,7 @@
   document.getElementById("completeConfirmBtn").addEventListener("click", async function(){
     this.textContent="Completing..."; this.disabled=true;
     try {
-      const res=await fetch(`/bookings/${activeJobId}/complete`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({workerPhone:phone,workerRole:role})});
+      const res=await fetch(`${API_BASE}/bookings/${activeJobId}/complete`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({workerPhone:phone,workerRole:role})});
       const data=await res.json();
       if(!res.ok) alert(data.error||"Complete failed");
       else { closeModal("completeModal"); fetchRequests(); }

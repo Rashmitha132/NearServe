@@ -1,10 +1,18 @@
+const API_BASE = "/api";
 const token = localStorage.getItem("adminToken");
-if (!token) window.location.href = "/admin_login.html";
 
-document.getElementById("adminLogout").addEventListener("click", () => {
-  localStorage.removeItem("adminToken");
-  window.location.href = "/admin_login.html";
-});
+if (!token) {
+  window.location.href = "admin_login.html";
+}
+
+const logoutBtn = document.getElementById("adminLogout");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("adminToken");
+    window.location.href = "admin_login.html";
+  });
+}
 
 function fmtDate(iso) {
   try {
@@ -15,19 +23,27 @@ function fmtDate(iso) {
 }
 
 async function api(url, options = {}) {
-  const res = await fetch(url, {
+  const res = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers: {
       ...(options.headers || {}),
-      "Authorization": `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     }
   });
 
   const text = await res.text();
   let data = {};
-  try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
-  if (!res.ok) throw new Error(data.error || text || "Request failed");
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = { raw: text };
+  }
+
+  if (!res.ok) {
+    throw new Error(data.message || data.error || text || "Request failed");
+  }
+
   return data;
 }
 
@@ -43,7 +59,7 @@ async function loadHistory() {
       return;
     }
 
-    const rows = logs.map(l => {
+    const rows = logs.map((l) => {
       const typeText = l.type === "proof" ? "PDF Proof" : "Job Video";
       const decisionText = l.decision === "approved" ? "✅ Approved" : "❌ Rejected";
       const reasonText = l.reason ? l.reason : "-";
@@ -79,12 +95,11 @@ async function loadHistory() {
     `;
   } catch (e) {
     historyWrap.innerHTML = `<p class="note" style="color:crimson;">${e.message}</p>`;
-    if (
-      String(e.message).toLowerCase().includes("unauthorized") ||
-      String(e.message).toLowerCase().includes("invalid token")
-    ) {
+
+    const msg = String(e.message).toLowerCase();
+    if (msg.includes("unauthorized") || msg.includes("invalid token")) {
       localStorage.removeItem("adminToken");
-      window.location.href = "/admin_login.html";
+      window.location.href = "admin_login.html";
     }
   }
 }

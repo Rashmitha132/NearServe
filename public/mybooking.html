@@ -13,7 +13,6 @@
     html, body { height: 100%; }
     body { min-height:100vh; font-family:'Plus Jakarta Sans',sans-serif; display:flex; background:#f0f7ff; }
 
-    /* ══ LEFT PANEL ══ */
     .left-panel { width:300px; min-height:100vh; background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%); position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; justify-content:space-between; padding:40px 32px; overflow:hidden; z-index:10; }
     .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
     .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
@@ -37,7 +36,6 @@
     .pills { display:flex; flex-wrap:wrap; gap:8px; }
     .pill { padding:6px 13px; border-radius:50px; background:rgba(255,255,255,0.11); border:1.5px solid rgba(255,255,255,0.2); color:#fff; font-size:0.75rem; font-weight:600; }
 
-    /* ══ RIGHT PANEL ══ */
     .right-panel { margin-left:300px; flex:1; min-height:100vh; background:#fff; padding:40px 44px; overflow-y:auto; }
 
     .topbar { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px; padding-bottom:20px; border-bottom:1.5px solid var(--border); flex-wrap:wrap; gap:14px; }
@@ -50,19 +48,16 @@
     .btn-logout  { background:linear-gradient(135deg,#ef4444,#f87171); box-shadow:0 4px 14px rgba(239,68,68,0.28); }
     .top-btn:hover { transform:translateY(-2px); }
 
-    /* ── NOTIFICATION BADGE ── */
     .notif-wrap { position:relative; display:inline-flex; }
     .notif-badge { position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; border-radius:50%; width:18px; height:18px; font-size:0.65rem; font-weight:800; display:none; align-items:center; justify-content:center; border:2px solid #fff; animation:pulse 1.5s ease-in-out infinite; }
     .notif-badge.show { display:flex; }
     @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
 
-    /* ── FILTER TABS ── */
     .filter-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
     .ftab { padding:7px 16px; border-radius:20px; border:1.5px solid var(--border); background:#fafcff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
     .ftab:hover, .ftab.active { background:#eff6ff; border-color:#93c5fd; color:var(--blue); }
     .ftab.active { font-weight:700; }
 
-    /* ── BOOKING CARDS ── */
     #cardsContainer { display:flex; flex-direction:column; gap:16px; }
 
     .bcard {
@@ -72,7 +67,6 @@
     }
     .bcard:hover { box-shadow:0 8px 28px rgba(0,0,0,0.09); }
 
-    /* coloured left bar by status */
     .bcard.status-pending  { border-left:4px solid #f59e0b; }
     .bcard.status-accepted { border-left:4px solid #10b981; }
     .bcard.status-rejected { border-left:4px solid #ef4444; }
@@ -92,7 +86,6 @@
     .sp-completed{ background:#dbeafe; color:#1d4ed8; }
     .sp-cancelled{ background:#f1f5f9; color:#64748b; }
 
-    /* ── STATUS TRACKER ── */
     .status-tracker { padding:14px 20px; background:#f8faff; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
     .tracker-steps { display:flex; align-items:center; gap:0; }
     .tstep { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
@@ -100,7 +93,6 @@
     .tstep-dot.done  { background:linear-gradient(135deg,#10b981,#0d9488); color:#fff; box-shadow:0 3px 10px rgba(16,185,129,0.4); }
     .tstep-dot.active{ background:linear-gradient(135deg,#2563eb,#7c3aed); color:#fff; box-shadow:0 3px 10px rgba(37,99,235,0.4); animation:stepPulse 1.5s ease-in-out infinite; }
     .tstep-dot.inactive{ background:#e2eaf4; color:#94a3b8; }
-    .tstep-dot.rejected-dot { background:linear-gradient(135deg,#ef4444,#f87171); color:#fff; }
     @keyframes stepPulse { 0%,100%{box-shadow:0 3px 10px rgba(37,99,235,0.4);} 50%{box-shadow:0 3px 18px rgba(37,99,235,0.7);} }
     .tstep-label { font-size:0.65rem; font-weight:600; color:var(--soft); margin-top:5px; text-align:center; }
     .tstep-label.done-lbl { color:#059669; }
@@ -113,19 +105,16 @@
     .binfo-label { font-size:0.68rem; color:var(--soft); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
     .binfo-val { font-size:0.85rem; color:var(--dark); font-weight:600; }
 
-    /* accepted details box */
     .accepted-box { margin:0 20px 14px; padding:12px 16px; background:linear-gradient(135deg,#f0fdf4,#ecfdf5); border:1.5px solid #bbf7d0; border-radius:12px; }
     .accepted-box-title { font-size:0.72rem; font-weight:700; color:#059669; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
     .accepted-row { display:flex; align-items:flex-start; gap:8px; font-size:0.83rem; color:var(--dark); margin-bottom:4px; }
     .accepted-row:last-child { margin-bottom:0; }
     .accepted-row strong { color:#059669; min-width:90px; flex-shrink:0; }
 
-    /* rejected box */
     .rejected-box { margin:0 20px 14px; padding:12px 16px; background:#fff5f5; border:1.5px solid #fecaca; border-radius:12px; }
     .rejected-box-title { font-size:0.72rem; font-weight:700; color:#dc2626; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
     .rejected-reason { font-size:0.83rem; color:#7f1d1d; }
 
-    /* ── CARD FOOTER ACTIONS ── */
     .bcard-footer { padding:12px 20px; border-top:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; background:#fafcff; }
     .bcard-footer-left { display:flex; gap:8px; flex-wrap:wrap; }
 
@@ -142,7 +131,6 @@
     .btn-cancel:hover { background:#fee2e2; }
     .rated-tag { display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:9px; background:#e0f2fe; color:#0369a1; font-size:0.78rem; font-weight:700; }
 
-    /* ── RATING MODAL ── */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
     .modal-overlay.open { display:flex; }
     .modal-box { background:#fff; border-radius:22px; padding:30px; width:380px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.2); position:relative; animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
@@ -158,7 +146,6 @@
     .modal-save { width:100%; padding:12px; border:none; border-radius:11px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.9rem; font-weight:700; cursor:pointer; margin-top:12px; transition:transform 0.2s; }
     .modal-save:hover { transform:translateY(-2px); }
 
-    /* ── RECEIPT MODAL ── */
     .receipt-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:300; display:none; align-items:center; justify-content:center; }
     .receipt-overlay.open { display:flex; }
     .receipt-box { background:#fff; border-radius:20px; width:420px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 30px 80px rgba(0,0,0,0.25); animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
@@ -182,13 +169,11 @@
     .receipt-print:hover { transform:translateY(-2px); }
     .receipt-close-btn { flex:1; padding:11px; border-radius:11px; border:1.5px solid var(--border); background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; }
 
-    /* ── TOAST ── */
     .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:#0f172a; color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
     .toast.show { transform:translateY(0); opacity:1; }
     .toast.success { background:linear-gradient(135deg,#16a34a,#0d9488); }
     .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
 
-    /* ── CANCEL MODAL ── */
     .cancel-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(6px); z-index:400; display:none; align-items:center; justify-content:center; }
     .cancel-overlay.open { display:flex; }
     .cancel-box { background:#fff; border-radius:22px; padding:32px 28px 24px; width:360px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.22); position:relative; animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; text-align:center; }
@@ -201,10 +186,9 @@
     .cancel-btn-yes { flex:1; padding:12px; border-radius:11px; border:none; background:linear-gradient(135deg,#ef4444,#f87171); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(239,68,68,0.3); transition:transform 0.2s; }
     .cancel-btn-yes:hover { transform:translateY(-1px); }
 
-    /* ── EMPTY STATE ── */
     .empty-state { text-align:center; padding:60px 20px; color:var(--soft); }
     .empty-icon { font-size:3rem; margin-bottom:12px; }
-    .empty-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; color:var(--mid); margin-bottom:6px; }
+    .empty-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; color:var(--mid); }
 
     .book-btn { border:none; border-radius:12px; padding:12px 18px; font-size:14px; font-weight:700; cursor:pointer; color:white; display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:0.2s ease; background:linear-gradient(135deg,#2563eb,#7c3aed); margin-top:20px; }
     .book-btn:hover { transform:translateY(-2px); }
@@ -215,7 +199,6 @@
 </head>
 <body>
 
-<!-- ══ LEFT PANEL ══ -->
 <div class="left-panel">
   <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
   <div class="fi fi1">📋</div><div class="fi fi2">⭐</div><div class="fi fi3">🔧</div><div class="fi fi4">✅</div>
@@ -246,7 +229,6 @@
   </div>
 </div>
 
-<!-- ══ RIGHT PANEL ══ -->
 <div class="right-panel">
 
   <div class="topbar">
@@ -255,7 +237,6 @@
       <p id="welcomeMsg" style="margin-top:4px;"></p>
     </div>
     <div class="top-buttons">
-      <!-- Notification bell -->
       <div class="notif-wrap">
         <button class="top-btn" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 4px 14px rgba(124,58,237,0.28);" id="notifBtn">
           <i class="fa-solid fa-bell"></i> Updates
@@ -272,7 +253,6 @@
     </div>
   </div>
 
-  <!-- Filter tabs -->
   <div class="filter-tabs">
     <button class="ftab active" data-filter="all">All</button>
     <button class="ftab" data-filter="pending">⏳ Pending</button>
@@ -282,7 +262,6 @@
     <button class="ftab" data-filter="cancelled">🚫 Cancelled</button>
   </div>
 
-  <!-- Cards -->
   <div id="cardsContainer">
     <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Loading your bookings...</div></div>
   </div>
@@ -293,7 +272,6 @@
 
 </div>
 
-<!-- ══ RATING MODAL ══ -->
 <div class="modal-overlay" id="ratingModal">
   <div class="modal-box">
     <button class="modal-close" id="ratingModalClose">✕</button>
@@ -311,7 +289,6 @@
   </div>
 </div>
 
-<!-- ══ RECEIPT MODAL ══ -->
 <div class="receipt-overlay" id="receiptModal">
   <div class="receipt-box">
     <div class="receipt-header">
@@ -338,7 +315,6 @@
   </div>
 </div>
 
-<!-- ══ CANCEL CONFIRM MODAL ══ -->
 <div class="cancel-overlay" id="cancelModal">
   <div class="cancel-box">
     <div class="cancel-icon-wrap">❌</div>
@@ -351,16 +327,11 @@
   </div>
 </div>
 
-<!-- ══ TOAST ══ -->
 <div class="toast" id="toast"></div>
 
-<!-- Hidden table — keeps mybooking.js working (it still needs #bookingTable) -->
-<table id="bookingTable" style="display:none;"><thead><tr></tr></thead><tbody></tbody></table>
-
 <script>
-// ════════════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════════════
+const API_BASE = "/api";
+
 function showToast(msg, type) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -368,54 +339,60 @@ function showToast(msg, type) {
   setTimeout(() => { t.className = "toast"; }, 3500);
 }
 
-const phone = (localStorage.getItem("phone") || "").trim();
-const uname = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+const phone = (localStorage.getItem("userPhone") || "").trim();
+const uname = localStorage.getItem("userName") || "";
 
-// Welcome message
-const msg = document.getElementById("welcomeMsg");
-if (uname && msg) msg.innerHTML = `Welcome, <span>${uname}</span>! Here are your bookings:`;
+if (!phone) {
+  window.location.href = "login.html";
+}
 
-// Logout
+const welcomeMsg = document.getElementById("welcomeMsg");
+if (uname && welcomeMsg) {
+  welcomeMsg.innerHTML = `Welcome, <span>${uname}</span>! Here are your bookings:`;
+}
+
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.clear(); window.location.href = "login.html";
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userPhone");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("userStatus");
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
 });
 
-// ════════════════════════════════════════════
-// BOOKING DATA
-// ════════════════════════════════════════════
 let allBookings = [];
 let currentFilter = "all";
 let selectedRating = 0;
 let currentRatingBookingId = null;
 let lastStatuses = JSON.parse(localStorage.getItem("qs_lastStatuses") || "{}");
 let newUpdatesCount = 0;
+let cancelBookingId = null;
 
 function serviceIcon(s) {
-  if (s === "carpenter")   return { icon:"🪚", bg:"#fef3c7" };
-  if (s === "plumber")     return { icon:"🔧", bg:"#e0f2fe" };
-  if (s === "electrician") return { icon:"⚡", bg:"#fefce8" };
-  return { icon:"🛠️", bg:"#f1f5f9" };
+  if (s === "carpenter") return { icon: "🪚", bg: "#fef3c7" };
+  if (s === "plumber") return { icon: "🔧", bg: "#e0f2fe" };
+  if (s === "electrician") return { icon: "⚡", bg: "#fefce8" };
+  return { icon: "🛠️", bg: "#f1f5f9" };
 }
 
 function statusPill(s) {
   const map = {
-    pending:   ["sp-pending",   "⏳ Pending"],
-    accepted:  ["sp-accepted",  "✅ Accepted"],
-    rejected:  ["sp-rejected",  "❌ Rejected"],
+    pending: ["sp-pending", "⏳ Pending"],
+    accepted: ["sp-accepted", "✅ Accepted"],
+    rejected: ["sp-rejected", "❌ Rejected"],
     completed: ["sp-completed", "🏁 Completed"],
-    cancelled: ["sp-cancelled", "🚫 Cancelled"],
+    cancelled: ["sp-cancelled", "🚫 Cancelled"]
   };
-  const [cls, lbl] = map[s] || ["sp-pending","⏳ Pending"];
+  const [cls, lbl] = map[s] || ["sp-pending", "⏳ Pending"];
   return `<span class="bcard-status-pill ${cls}">${lbl}</span>`;
 }
 
 function buildTracker(status) {
   const steps = ["Booked", "Accepted", "Completed"];
   const idx = status === "pending" ? 0 : status === "accepted" ? 1 : status === "completed" ? 2 : -1;
-  const isRejected  = status === "rejected";
-  const isCancelled = status === "cancelled";
 
-  if (isRejected) {
+  if (status === "rejected") {
     return `<div class="status-tracker">
       <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#dc2626;font-weight:700;">
         <span style="font-size:1.1rem;">❌</span> Booking was rejected by the worker
@@ -423,7 +400,7 @@ function buildTracker(status) {
     </div>`;
   }
 
-  if (isCancelled) {
+  if (status === "cancelled") {
     return `<div class="status-tracker">
       <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;font-weight:700;">
         <span style="font-size:1.1rem;">🚫</span> This booking was cancelled by you
@@ -433,15 +410,16 @@ function buildTracker(status) {
 
   let html = `<div class="status-tracker"><div class="tracker-steps">`;
   steps.forEach((step, i) => {
-    const isDone   = i < idx || (idx === 2 && i <= 2);
+    const isDone = i < idx || (idx === 2 && i <= 2);
     const isActive = i === idx;
     const dotClass = isDone ? "done" : isActive ? "active" : "inactive";
     const lblClass = isDone ? "done-lbl" : isActive ? "active-lbl" : "";
-    const icon     = isDone ? "✓" : isActive ? (i === 0 ? "📋" : i === 1 ? "👷" : "🏁") : (i+1);
+    const icon = isDone ? "✓" : isActive ? (i === 0 ? "📋" : i === 1 ? "👷" : "🏁") : (i + 1);
 
     if (i > 0) {
       html += `<div class="tstep-line ${i <= idx ? 'done-line' : ''}"></div>`;
     }
+
     html += `<div class="tstep">
       <div class="tstep-dot ${dotClass}">${icon}</div>
       <div class="tstep-label ${lblClass}">${step}</div>
@@ -452,67 +430,68 @@ function buildTracker(status) {
 }
 
 function buildCard(b) {
-  const status  = (b.status || "pending").toLowerCase();
-  const svc     = serviceIcon(b.service);
-  const wText   = b.chosenWorkerRole && b.chosenWorkerPhone
-    ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}` : "—";
+  const status = (b.status || "pending").toLowerCase();
+  const svc = serviceIcon((b.service || "").toLowerCase());
+  const wText = b.chosenWorkerRole && b.chosenWorkerPhone
+    ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}`
+    : "—";
 
-  // Footer actions
   let actions = `
-    <button class="action-btn btn-rebook" onclick="reBook('${b.service}','${b.chosenWorkerPhone}','${b.chosenWorkerRole}')">
+    <button class="action-btn btn-rebook" onclick="reBook('${b.service || ""}','${b.chosenWorkerPhone || ""}','${b.chosenWorkerRole || ""}')">
       🔄 Re-book
     </button>
     <button class="action-btn btn-receipt" onclick="showReceipt('${b._id}')">
       🧾 Receipt
-    </button>`;
+    </button>
+  `;
 
-  // ✅ CHAT BUTTON — Always uses chosenWorkerPhone (set at booking time by customer)
-  // Customer always picks a worker when booking, so phone is always available
   const workerPhone = String(b.chosenWorkerPhone || "").trim();
-  const workerRole  = b.chosenWorkerRole
-    || (b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "Worker");
+  const workerRole = b.chosenWorkerRole || (b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "Worker");
 
   if (["pending", "accepted", "completed", "rejected"].includes(status)) {
-    // Always show chat — customer picks worker at booking time
-    // Fall back to service name if worker phone missing (older bookings)
     const chatPhone = workerPhone || "support";
-    actions += `<button class="action-btn btn-chat" onclick="openChat('${b._id}','${chatPhone}','${workerRole}')">
-      💬 Chat Worker
-    </button>`;
+    actions += `
+      <button class="action-btn btn-chat" onclick="openChat('${b._id}','${chatPhone}','${workerRole}')">
+        💬 Chat Worker
+      </button>
+    `;
   }
 
   if (status === "completed" && !b.reviewed) {
-    actions += `<button class="action-btn btn-rate" onclick="openRating('${b._id}','${wText}')">
-      ⭐ Rate Worker
-    </button>`;
+    actions += `
+      <button class="action-btn btn-rate" onclick="openRating('${b._id}','${wText}')">
+        ⭐ Rate Worker
+      </button>
+    `;
   }
 
   if (status === "pending") {
-    actions += `<button class="action-btn btn-cancel" onclick="cancelBooking('${b._id}')">
-      ✕ Cancel
-    </button>`;
+    actions += `
+      <button class="action-btn btn-cancel" onclick="cancelBooking('${b._id}')">
+        ✕ Cancel
+      </button>
+    `;
   }
 
-  // No chat or rate for cancelled bookings
   if (status === "cancelled") {
-    actions = `<button class="action-btn btn-rebook" onclick="reBook('${b.service}','${b.chosenWorkerPhone}','${b.chosenWorkerRole}')">
-      🔄 Re-book
-    </button>`;
+    actions = `
+      <button class="action-btn btn-rebook" onclick="reBook('${b.service || ""}','${b.chosenWorkerPhone || ""}','${b.chosenWorkerRole || ""}')">
+        🔄 Re-book
+      </button>
+    `;
   }
 
-  let ratedTag = b.reviewed ? `<span class="rated-tag">⭐ Reviewed</span>` : "";
+  const ratedTag = b.reviewed ? `<span class="rated-tag">⭐ Reviewed</span>` : "";
 
-  // Accepted/Completed details box
   let extraBox = "";
-  if (status === "accepted" || status === "completed") {
-    if (b.visitTime || b.workerMessage) {
-      extraBox = `<div class="accepted-box">
-        <div class="accepted-box-title">✅ Worker Response</div>
-        ${b.visitTime    ? `<div class="accepted-row"><strong>Arrival Time:</strong>${b.visitTime}</div>` : ""}
-        ${b.workerMessage? `<div class="accepted-row"><strong>Message:</strong>${b.workerMessage}</div>` : ""}
-      </div>`;
-    }
+  if ((status === "accepted" || status === "completed") && (b.visitTime || b.workerMessage)) {
+    extraBox = `<div class="accepted-box">
+      <div class="accepted-box-title">✅ Worker Response</div>
+      ${b.visitTime ? `<div class="accepted-row"><strong>Arrival Time:</strong>${b.visitTime}</div>` : ""}
+      ${b.workerMessage ? `<div class="accepted-row"><strong>Message:</strong>${b.workerMessage}</div>` : ""}
+    </div>`;
   }
+
   if (status === "rejected" && b.rejectReason) {
     extraBox = `<div class="rejected-box">
       <div class="rejected-box-title">❌ Rejection Reason</div>
@@ -520,13 +499,15 @@ function buildCard(b) {
     </div>`;
   }
 
+  const serviceName = b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "Service";
+
   return `
   <div class="bcard status-${status}" data-id="${b._id}">
     <div class="bcard-top">
       <div class="bcard-service">
         <div class="bcard-service-icon" style="background:${svc.bg};">${svc.icon}</div>
         <div>
-          <div class="bcard-service-name">${(b.service||"").charAt(0).toUpperCase()+(b.service||"").slice(1)}</div>
+          <div class="bcard-service-name">${serviceName}</div>
           <div class="bcard-service-date">📅 ${b.date || "—"}</div>
         </div>
       </div>
@@ -537,7 +518,7 @@ function buildCard(b) {
 
     <div class="bcard-body">
       <div class="binfo"><div class="binfo-label">Worker</div><div class="binfo-val">👷 ${wText}</div></div>
-      <div class="binfo"><div class="binfo-label">Address</div><div class="binfo-val">📍 ${b.address||"—"}</div></div>
+      <div class="binfo"><div class="binfo-label">Address</div><div class="binfo-val">📍 ${b.address || "—"}</div></div>
       <div class="binfo"><div class="binfo-label">Booked On</div><div class="binfo-val">🗓️ ${b.createdAt ? new Date(b.createdAt).toLocaleDateString() : "—"}</div></div>
     </div>
 
@@ -552,11 +533,11 @@ function buildCard(b) {
 
 function renderCards() {
   const container = document.getElementById("cardsContainer");
-  const filtered  = currentFilter === "all"
+  const filtered = currentFilter === "all"
     ? allBookings
-    : allBookings.filter(b => (b.status||"pending").toLowerCase() === currentFilter);
+    : allBookings.filter(b => (b.status || "pending").toLowerCase() === currentFilter);
 
-  if (filtered.length === 0) {
+  if (!filtered.length) {
     container.innerHTML = `<div class="empty-state">
       <div class="empty-icon">${currentFilter === "all" ? "📋" : "🔍"}</div>
       <div class="empty-title">${currentFilter === "all" ? "No bookings yet" : "No " + currentFilter + " bookings"}</div>
@@ -564,25 +545,23 @@ function renderCards() {
     </div>`;
     return;
   }
+
   container.innerHTML = filtered.map(b => buildCard(b)).join("");
 }
 
-// ════════════════════════════════════════════
-// FETCH + NOTIFICATION POLLING
-// ════════════════════════════════════════════
 async function fetchBookings(silent) {
   try {
-    const res      = await fetch(`/mybookings/${encodeURIComponent(phone)}`);
-    const bookings = await res.json();
+    const res = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
+    const data = await res.json().catch(() => ({}));
+    const bookings = Array.isArray(data) ? data : (data.bookings || []);
+
     if (!Array.isArray(bookings)) return;
 
     if (silent) {
       bookings.forEach(b => {
         const prev = lastStatuses[b._id];
         const curr = (b.status || "pending").toLowerCase();
-        if (prev && prev !== curr) {
-          newUpdatesCount++;
-        }
+        if (prev && prev !== curr) newUpdatesCount++;
         lastStatuses[b._id] = curr;
       });
       localStorage.setItem("qs_lastStatuses", JSON.stringify(lastStatuses));
@@ -593,15 +572,18 @@ async function fetchBookings(silent) {
       }
     } else {
       bookings.forEach(b => {
-        if (!lastStatuses[b._id]) lastStatuses[b._id] = (b.status||"pending").toLowerCase();
+        if (!lastStatuses[b._id]) {
+          lastStatuses[b._id] = (b.status || "pending").toLowerCase();
+        }
       });
       localStorage.setItem("qs_lastStatuses", JSON.stringify(lastStatuses));
     }
 
     allBookings = bookings;
     renderCards();
-  } catch(err) {
-    console.log("Error fetching bookings:", err);
+  } catch (err) {
+    console.error("Error fetching bookings:", err);
+    showToast("❌ Could not load bookings", "error");
   }
 }
 
@@ -617,9 +599,6 @@ document.getElementById("notifBtn").addEventListener("click", () => {
   fetchBookings(false);
 });
 
-// ════════════════════════════════════════════
-// FILTER TABS
-// ════════════════════════════════════════════
 document.querySelectorAll(".ftab").forEach(tab => {
   tab.addEventListener("click", function() {
     document.querySelectorAll(".ftab").forEach(t => t.classList.remove("active"));
@@ -629,80 +608,92 @@ document.querySelectorAll(".ftab").forEach(tab => {
   });
 });
 
-// ════════════════════════════════════════════
-// RE-BOOK
-// ════════════════════════════════════════════
 function reBook(service, workerPhone, workerRole) {
-  localStorage.setItem("selectedServiceRole",  service);
-  localStorage.setItem("chosenWorkerPhone",    workerPhone);
-  localStorage.setItem("chosenWorkerRole",     workerRole);
+  localStorage.setItem("selectedServiceRole", service || "");
+  localStorage.setItem("chosenWorkerPhone", workerPhone || "");
+  localStorage.setItem("chosenWorkerRole", workerRole || "");
   window.location.href = "booking.html";
 }
 
-// ════════════════════════════════════════════
-// CANCEL BOOKING
-// ════════════════════════════════════════════
-let _cancelBookingId = null;
-
 function cancelBooking(id) {
-  _cancelBookingId = id;
+  cancelBookingId = id;
   document.getElementById("cancelModal").classList.add("open");
 }
 
 document.getElementById("cancelModalNo").addEventListener("click", () => {
   document.getElementById("cancelModal").classList.remove("open");
-  _cancelBookingId = null;
+  cancelBookingId = null;
 });
 
 document.getElementById("cancelModal").addEventListener("click", function(e) {
   if (e.target === this) {
     this.classList.remove("open");
-    _cancelBookingId = null;
+    cancelBookingId = null;
   }
 });
 
 document.getElementById("cancelModalYes").addEventListener("click", async function() {
-  if (!_cancelBookingId) return;
+  if (!cancelBookingId) return;
+
   this.textContent = "Cancelling...";
   this.disabled = true;
+
   try {
-    const res  = await fetch(`/bookings/${_cancelBookingId}/cancel`, { method:"PUT", headers:{"Content-Type":"application/json"} });
-    const data = await res.json();
+    const res = await fetch(`${API_BASE}/bookings/${cancelBookingId}/cancel`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" }
+    });
+    const data = await res.json().catch(() => ({}));
+
     document.getElementById("cancelModal").classList.remove("open");
-    if (res.ok) { showToast("✅ Booking cancelled successfully"); fetchBookings(false); }
-    else showToast("❌ " + (data.error || "Could not cancel"), "error");
-  } catch(e) { showToast("❌ Server error", "error"); }
+
+    if (res.ok) {
+      showToast("✅ Booking cancelled successfully");
+      fetchBookings(false);
+    } else {
+      showToast("❌ " + (data.message || data.error || "Could not cancel"), "error");
+    }
+  } catch (e) {
+    showToast("❌ Server error", "error");
+  }
+
   this.textContent = "Yes, Cancel";
   this.disabled = false;
-  _cancelBookingId = null;
+  cancelBookingId = null;
 });
 
-// ════════════════════════════════════════════
-// RECEIPT
-// ════════════════════════════════════════════
 function showReceipt(id) {
   const b = allBookings.find(x => x._id === id);
   if (!b) return;
-  document.getElementById("receiptId").textContent    = "Booking ID: " + b._id;
-  document.getElementById("rService").textContent     = (b.service||"—").charAt(0).toUpperCase()+(b.service||"").slice(1);
-  document.getElementById("rWorker").textContent      = b.chosenWorkerPhone ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}` : "—";
-  document.getElementById("rAddress").textContent     = b.address || "—";
-  document.getElementById("rDate").textContent        = b.date    || "—";
-  document.getElementById("rStatus").textContent      = (b.status||"pending").toUpperCase();
-  const status = (b.status||"pending").toLowerCase();
+
+  document.getElementById("receiptId").textContent = "Booking ID: " + b._id;
+  document.getElementById("rService").textContent = b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "—";
+  document.getElementById("rWorker").textContent = b.chosenWorkerPhone ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}` : "—";
+  document.getElementById("rAddress").textContent = b.address || "—";
+  document.getElementById("rDate").textContent = b.date || "—";
+  document.getElementById("rStatus").textContent = (b.status || "pending").toUpperCase();
+
+  const status = (b.status || "pending").toLowerCase();
   const badgeMap = { pending:"⏳ Pending", accepted:"✅ Accepted", completed:"🏁 Completed", rejected:"❌ Rejected", cancelled:"🚫 Cancelled" };
   const badgeBg  = status==='completed'?'#dbeafe':status==='accepted'?'#d1fae5':status==='rejected'?'#fee2e2':status==='cancelled'?'#f1f5f9':'#fef3c7';
   const badgeClr = status==='completed'?'#1d4ed8':status==='accepted'?'#059669':status==='rejected'?'#dc2626':status==='cancelled'?'#64748b':'#d97706';
-  document.getElementById("rStatusBadge").innerHTML = `<span style="display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.82rem;background:${badgeBg};color:${badgeClr};">${badgeMap[status]||status}</span>`;
+
+  document.getElementById("rStatusBadge").innerHTML =
+    `<span style="display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.82rem;background:${badgeBg};color:${badgeClr};">${badgeMap[status] || status}</span>`;
+
   document.getElementById("receiptModal").classList.add("open");
 }
-document.getElementById("receiptCloseBtn").addEventListener("click", () => document.getElementById("receiptModal").classList.remove("open"));
-document.getElementById("receiptModal").addEventListener("click", function(e) { if(e.target===this) this.classList.remove("open"); });
+
+document.getElementById("receiptCloseBtn").addEventListener("click", () => {
+  document.getElementById("receiptModal").classList.remove("open");
+});
+
+document.getElementById("receiptModal").addEventListener("click", function(e) {
+  if (e.target === this) this.classList.remove("open");
+});
+
 document.getElementById("receiptPrintBtn").addEventListener("click", () => window.print());
 
-// ════════════════════════════════════════════
-// RATING MODAL
-// ════════════════════════════════════════════
 function openRating(bookingId, workerText) {
   currentRatingBookingId = bookingId;
   selectedRating = 0;
@@ -711,50 +702,71 @@ function openRating(bookingId, workerText) {
   document.querySelectorAll(".star-btn").forEach(s => s.classList.remove("active"));
   document.getElementById("ratingModal").classList.add("open");
 }
-document.getElementById("ratingModalClose").addEventListener("click", () => document.getElementById("ratingModal").classList.remove("open"));
-document.getElementById("ratingModal").addEventListener("click", function(e) { if(e.target===this) this.classList.remove("open"); });
+
+document.getElementById("ratingModalClose").addEventListener("click", () => {
+  document.getElementById("ratingModal").classList.remove("open");
+});
+
+document.getElementById("ratingModal").addEventListener("click", function(e) {
+  if (e.target === this) this.classList.remove("open");
+});
 
 document.querySelectorAll(".star-btn").forEach(btn => {
   btn.addEventListener("click", function() {
     selectedRating = parseInt(this.dataset.val);
-    document.querySelectorAll(".star-btn").forEach((s,i) => {
+    document.querySelectorAll(".star-btn").forEach((s, i) => {
       s.classList.toggle("active", i < selectedRating);
     });
   });
 });
 
 document.getElementById("ratingSubmitBtn").addEventListener("click", async function() {
-  if (!selectedRating) { showToast("❌ Please select a star rating", "error"); return; }
+  if (!selectedRating) {
+    showToast("❌ Please select a star rating", "error");
+    return;
+  }
+
   const comment = document.getElementById("ratingComment").value.trim();
+
   try {
-    const res  = await fetch("/reviews", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ bookingId:currentRatingBookingId, customerPhone:phone, rating:selectedRating, comment }) });
-    const data = await res.json();
-    if (res.ok) { document.getElementById("ratingModal").classList.remove("open"); showToast("⭐ Rating submitted! Thank you."); fetchBookings(false); }
-    else showToast("❌ " + (data.error || "Failed to submit"), "error");
-  } catch(e) { showToast("❌ Server error", "error"); }
+    const res = await fetch(`${API_BASE}/reviews`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        bookingId: currentRatingBookingId,
+        customerPhone: phone,
+        rating: selectedRating,
+        comment
+      })
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok) {
+      document.getElementById("ratingModal").classList.remove("open");
+      showToast("⭐ Rating submitted! Thank you.");
+      fetchBookings(false);
+    } else {
+      showToast("❌ " + (data.message || data.error || "Failed to submit"), "error");
+    }
+  } catch(e) {
+    showToast("❌ Server error", "error");
+  }
 });
 
-// ════════════════════════════════════════════
-// CHAT — opens worker_chat.html
-// Customer always picks the worker themselves at booking time,
-// so chosenWorkerPhone is always available for all statuses.
-// ════════════════════════════════════════════
 function openChat(bookingId, workerPhone, workerRoleName) {
-  const customerName = localStorage.getItem("name") || localStorage.getItem("userName") || "Customer";
-  // Store role and phone separately so worker_chat.html can display them cleanly
-  const workerRole  = workerRoleName || "Worker";
-  const workerName  = workerRole + " · " + workerPhone;
+  const customerName = localStorage.getItem("userName") || "Customer";
+  const workerRole = workerRoleName || "Worker";
+  const workerName = workerRole + " · " + workerPhone;
 
-  localStorage.setItem("chatBookingId",    bookingId);
-  localStorage.setItem("chatWorkerPhone",  workerPhone);
-  localStorage.setItem("chatWorkerName",   workerName);
-  localStorage.setItem("chatWorkerRole",   workerRole);
+  localStorage.setItem("chatBookingId", bookingId);
+  localStorage.setItem("chatWorkerPhone", workerPhone);
+  localStorage.setItem("chatWorkerName", workerName);
+  localStorage.setItem("chatWorkerRole", workerRole);
   localStorage.setItem("chatCustomerName", customerName);
   window.location.href = "worker_chat.html";
 }
 </script>
 
-<!-- mybooking.js still runs — it populates #bookingTable (hidden) but won't conflict -->
-<script src="js/mybooking.js"></script>
 </body>
 </html>

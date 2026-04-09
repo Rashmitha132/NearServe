@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Worker Chat - QuickServe</title>
+<title>Worker Chat - NearServe</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -25,7 +25,7 @@
   .msg.mine{align-self:flex-end;align-items:flex-end;}
   .msg.theirs{align-self:flex-start;align-items:flex-start;}
   @keyframes slideIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
-  
+
   .msg-bubble{padding:12px 16px;border-radius:18px;font-size:0.88rem;line-height:1.55;word-break:break-word;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
   .msg.mine .msg-bubble{background:linear-gradient(135deg,#2563eb,#0d9488);color:#fff;border-bottom-right-radius:5px;}
   .msg.theirs .msg-bubble{background:#fff;color:var(--dark);border:1.5px solid var(--border);border-bottom-left-radius:5px;}
@@ -78,7 +78,7 @@
   <div class="empty-chat" id="emptyChatMsg">
     <div class="empty-chat-icon">💬</div>
     <div class="empty-chat-title">No messages yet</div>
-    <p style="font-size:0.82rem;color:var(--soft);">Wait for customer to send a message!</p>
+    <p style="font-size:0.82rem;color:var(--soft);">Start the conversation with the customer.</p>
   </div>
 </div>
 
@@ -92,14 +92,17 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  const API_BASE = "/api";
+
   // ════════════════════════════════════════════
   // CONFIGURATION & STATE
   // ════════════════════════════════════════════
-  const bookingId = localStorage.getItem("workerChatBookingId") || "";
-  const customerPhone = localStorage.getItem("workerChatCustomerPhone") || "";
-  const myPhone = (localStorage.getItem("phone") || "").trim();
-  const myName = localStorage.getItem("name") || "Worker";
-  const myRole = "worker";
+  const bookingId = localStorage.getItem("chatBookingId") || localStorage.getItem("workerChatBookingId") || "";
+  const customerPhone = localStorage.getItem("chatCustomerPhone") || localStorage.getItem("workerChatCustomerPhone") || "";
+  const customerNameStored = localStorage.getItem("chatCustomerName") || "Customer";
+  const myPhone = (localStorage.getItem("phone") || localStorage.getItem("userPhone") || "").trim();
+  const myName = localStorage.getItem("name") || localStorage.getItem("userName") || "Worker";
+  const myRole = (localStorage.getItem("role") || localStorage.getItem("userRole") || "worker").toLowerCase();
 
   let messages = [];
   let lastMessageCount = 0;
@@ -111,14 +114,20 @@
   // ════════════════════════════════════════════
   if (!bookingId || !customerPhone || !myPhone) {
     alert("Invalid chat session. Please try again.");
-    window.location.href = "worker_bookings.html";
+    window.location.href =
+      myRole === "carpenter" ? "carpenter_requests.html" :
+      myRole === "plumber" ? "plumber_requests.html" :
+      myRole === "electrician" ? "electrician_requests.html" :
+      "login.html";
   }
 
   // ════════════════════════════════════════════
   // UI SETUP
   // ════════════════════════════════════════════
-  document.getElementById("customerName").textContent = "Customer · " + customerPhone;
-  document.getElementById("customerAvatar").textContent = customerPhone ? customerPhone.charAt(customerPhone.length - 1).toUpperCase() : "C";
+  document.getElementById("customerName").textContent = customerNameStored;
+  document.getElementById("customerSub").textContent = customerPhone ? `Customer · ${customerPhone}` : "Booking chat";
+  document.getElementById("customerAvatar").textContent =
+    customerNameStored ? customerNameStored.charAt(0).toUpperCase() : "C";
 
   // ════════════════════════════════════════════
   // HELPERS
@@ -170,7 +179,14 @@
       '"': "&quot;",
       "'": "&#039;"
     };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+  }
+
+  function getBackPage() {
+    if (myRole === "carpenter") return "carpenter_requests.html";
+    if (myRole === "plumber") return "plumber_requests.html";
+    if (myRole === "electrician") return "electrician_requests.html";
+    return "login.html";
   }
 
   // ════════════════════════════════════════════
@@ -178,13 +194,7 @@
   // ════════════════════════════════════════════
   async function loadMessages() {
     try {
-      // Try primary endpoint first
-      let res = await fetch(`/messages/${encodeURIComponent(bookingId)}`);
-      
-      // Fallback to alternative endpoint
-      if (!res.ok || res.status === 404) {
-        res = await fetch(`/chat/${encodeURIComponent(bookingId)}`);
-      }
+      let res = await fetch(`${API_BASE}/chat/${encodeURIComponent(bookingId)}`);
 
       if (!res.ok) {
         console.log("Could not load messages");
@@ -192,15 +202,12 @@
       }
 
       const data = await res.json();
-      
-      // Handle both array and object responses
       const msgArray = Array.isArray(data) ? data : (data.messages || []);
-      
+
       if (!Array.isArray(msgArray)) return;
 
-      // Check if new messages arrived
       if (msgArray.length === lastMessageCount && messages.length > 0) {
-        return; // No new messages
+        return;
       }
 
       lastMessageCount = msgArray.length;
@@ -219,46 +226,44 @@
     const body = document.getElementById("chatBody");
     const emptyMsg = document.getElementById("emptyChatMsg");
 
-    // Remove empty state if messages exist
     if (messages.length > 0 && emptyMsg) {
       emptyMsg.remove();
     }
 
-    // If no messages, show empty state and return
     if (messages.length === 0) {
       if (!emptyMsg) {
         body.innerHTML = `
           <div class="empty-chat" id="emptyChatMsg">
             <div class="empty-chat-icon">💬</div>
             <div class="empty-chat-title">No messages yet</div>
-            <p style="font-size:0.82rem;color:var(--soft);">Wait for customer to send a message!</p>
+            <p style="font-size:0.82rem;color:var(--soft);">Start the conversation with the customer.</p>
           </div>
         `;
       }
       return;
     }
 
-    // Re-render all messages
     body.innerHTML = "";
     let lastDate = "";
 
-    messages.forEach((m, idx) => {
+    messages.forEach((m) => {
       const timestamp = m.timestamp || m.createdAt || new Date().toISOString();
       const msgDate = formatDate(timestamp);
-      
-      // Add date separator if date changed
+
       if (msgDate !== lastDate) {
         lastDate = msgDate;
         body.innerHTML += `<div class="chat-date-sep"><span>${msgDate}</span></div>`;
       }
 
-      // Determine if message is from worker
-      const isMine = m.senderPhone === myPhone || m.senderRole === "worker";
-      const senderName = m.senderName || (isMine ? myName : "Customer");
+      const senderPhone = m.senderPhone || "";
+      const senderRole = (m.senderRole || "").toLowerCase();
+      const isMine = senderPhone === myPhone || senderRole === myRole || senderRole === "worker";
+
+      const senderName = m.senderName || (isMine ? myName : customerNameStored);
 
       body.innerHTML += `
         <div class="msg ${isMine ? "mine" : "theirs"}">
-          ${!isMine ? `<div class="msg-sender">${senderName}</div>` : ""}
+          ${!isMine ? `<div class="msg-sender">${escapeHtml(senderName)}</div>` : ""}
           <div class="msg-bubble">${escapeHtml(m.text || m.message || "")}</div>
           <div class="msg-meta">
             <span>${formatTime(timestamp)}</span>
@@ -278,14 +283,11 @@
     const input = document.getElementById("chatInput");
     const text = input.value.trim();
 
-    if (!text) return;
-    if (isSending) return;
+    if (!text || isSending) return;
 
-    // Optimistic rendering
     const tempMsg = {
       _id: "temp-" + Date.now(),
       text: text,
-      sender: "worker",
       senderPhone: myPhone,
       senderName: myName,
       senderRole: myRole,
@@ -300,8 +302,7 @@
     document.getElementById("sendBtn").disabled = true;
 
     try {
-      // Try primary endpoint
-      let res = await fetch("/messages/send", {
+      const res = await fetch(`${API_BASE}/chat/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -314,30 +315,13 @@
         })
       });
 
-      // Fallback to alternative endpoint
-      if (!res.ok || res.status === 404) {
-        res = await fetch("/chat/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            bookingId: bookingId,
-            senderPhone: myPhone,
-            senderName: myName,
-            senderRole: "worker",
-            text: text
-          })
-        });
-      }
-
       if (!res.ok) {
-        // Remove temp message on error
         messages = messages.filter(m => m._id !== tempMsg._id);
         renderMessages();
         showToast("❌ Failed to send message", "error");
       } else {
         const data = await res.json();
-        if (data._id) {
-          // Replace temp with real message
+        if (data && data._id) {
           const idx = messages.findIndex(m => m._id === tempMsg._id);
           if (idx !== -1) {
             messages[idx] = {
@@ -372,27 +356,30 @@
     }
   });
 
-  // Auto-resize textarea
   document.getElementById("chatInput").addEventListener("input", function() {
     this.style.height = "auto";
     this.style.height = Math.min(this.scrollHeight, 120) + "px";
   });
 
-  // Back button
   document.getElementById("backBtn").addEventListener("click", () => {
     if (pollInterval) clearInterval(pollInterval);
+
+    localStorage.removeItem("chatBookingId");
+    localStorage.removeItem("chatCustomerPhone");
+    localStorage.removeItem("chatCustomerName");
+
     localStorage.removeItem("workerChatBookingId");
     localStorage.removeItem("workerChatCustomerPhone");
-    window.location.href = "worker_bookings.html";
+
+    window.location.href = getBackPage();
   });
 
   // ════════════════════════════════════════════
   // INITIALIZE & POLL
   // ════════════════════════════════════════════
   loadMessages();
-  pollInterval = setInterval(loadMessages, 3000); // Poll every 3 seconds
+  pollInterval = setInterval(loadMessages, 3000);
 
-  // Cleanup on page unload
   window.addEventListener("beforeunload", () => {
     if (pollInterval) clearInterval(pollInterval);
   });

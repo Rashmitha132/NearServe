@@ -3,45 +3,505 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin History - QuickServe</title>
-
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Verification History — NearServe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* ── TOKENS (identical to dashboard) ────────────── */
+    :root {
+      --bg:          #0d0f14;
+      --surface:     #13161d;
+      --surface2:    #1a1e29;
+      --border:      #252a38;
+      --border-hi:   #2e3547;
+      --accent:      #f97316;
+      --accent-dim:  rgba(249,115,22,.15);
+      --accent-glow: rgba(249,115,22,.35);
+      --teal:        #14b8a6;
+      --teal-dim:    rgba(20,184,166,.15);
+      --green:       #22c55e;
+      --green-dim:   rgba(34,197,94,.15);
+      --red:         #ef4444;
+      --red-dim:     rgba(239,68,68,.15);
+      --yellow:      #facc15;
+      --yellow-dim:  rgba(250,204,21,.12);
+      --text:        #e8eaf0;
+      --text-muted:  #6b7280;
+      --text-dim:    #9ca3af;
+      --radius:      14px;
+      --radius-sm:   8px;
+      --shadow:      0 4px 24px rgba(0,0,0,.5);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 900px 600px at 10% 0%, rgba(249,115,22,.06) 0%, transparent 65%),
+        radial-gradient(ellipse 600px 400px at 90% 100%, rgba(20,184,166,.05) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .shell { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ── TOP NAV ─────────────────────────────────────── */
+    .topnav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 68px;
+      background: rgba(13,15,20,.9);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--accent), #fb923c);
+      border-radius: 10px; display: grid; place-items: center;
+      font-size: 16px; color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .brand-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--text); letter-spacing: -.3px; }
+    .brand-name span { color: var(--accent); }
+    .badge-admin {
+      font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-dim);
+      border: 1px solid var(--accent-glow); padding: 2px 8px; border-radius: 20px; margin-left: 6px;
+    }
+
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 500;
+      cursor: pointer; transition: all .2s; border: 1px solid transparent; text-decoration: none;
+    }
+    .nav-btn-ghost { background: transparent; color: var(--text-dim); border-color: var(--border); }
+    .nav-btn-ghost:hover { background: var(--surface2); border-color: var(--border-hi); color: var(--text); }
+    .nav-btn-danger { background: transparent; color: var(--red); border-color: var(--border); }
+    .nav-btn-danger:hover { background: var(--red-dim); border-color: var(--red); }
+
+    /* ── MAIN ────────────────────────────────────────── */
+    main { flex: 1; padding: 36px 32px; max-width: 1400px; width: 100%; margin: 0 auto; }
+
+    /* ── PAGE HEADER ─────────────────────────────────── */
+    .page-header { margin-bottom: 28px; animation: fadeUp .45s ease both; }
+    .page-header h1 {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      letter-spacing: -.5px; color: var(--text);
+    }
+    .page-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+    /* ── FILTER BAR ──────────────────────────────────── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 20px;
+      animation: fadeUp .45s .05s ease both;
+    }
+
+    .filter-group { display: flex; align-items: center; gap: 8px; }
+
+    .filter-select {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-dim); font-family: 'DM Sans', sans-serif;
+      font-size: 13px; padding: 7px 12px; border-radius: var(--radius-sm);
+      cursor: pointer; outline: none; transition: border-color .2s;
+    }
+    .filter-select:focus { border-color: var(--accent); color: var(--text); }
+
+    .search-wrap {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 7px 12px;
+      flex: 1; min-width: 200px; max-width: 300px;
+      transition: border-color .2s;
+    }
+    .search-wrap:focus-within { border-color: var(--accent); }
+    .search-wrap i { color: var(--text-muted); font-size: 13px; }
+    .search-wrap input {
+      background: none; border: none; outline: none;
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px;
+      width: 100%;
+    }
+    .search-wrap input::placeholder { color: var(--text-muted); }
+
+    .record-count {
+      margin-left: auto; font-size: 12.5px; color: var(--text-muted);
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 6px 12px; border-radius: var(--radius-sm);
+    }
+    .record-count span { color: var(--text); font-weight: 600; }
+
+    /* ── TABLE CARD ──────────────────────────────────── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: fadeUp .45s .1s ease both;
+    }
+
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    thead {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      text-align: left; padding: 14px 18px;
+      font-family: 'Syne', sans-serif; font-size: 11.5px;
+      font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text-muted); white-space: nowrap;
+    }
+
+    th i { margin-right: 6px; font-size: 10px; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+
+    td { padding: 13px 18px; vertical-align: middle; color: var(--text-dim); white-space: nowrap; }
+
+    /* date cell */
+    .td-date { color: var(--text-muted); font-size: 12.5px; }
+
+    /* type badge */
+    .type-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .type-badge.pdf   { background: var(--accent-dim); color: var(--accent); }
+    .type-badge.video { background: var(--teal-dim);   color: var(--teal);   }
+
+    /* phone */
+    .td-phone { font-family: 'Syne', sans-serif; font-size: 13px; color: var(--text); }
+
+    /* role chip */
+    .role-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11.5px; color: var(--text-muted);
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      padding: 2px 9px; border-radius: 20px; text-transform: capitalize;
+    }
+
+    /* decision badge */
+    .decision-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 600; padding: 4px 11px;
+      border-radius: 20px;
+    }
+    .decision-badge.approved { background: var(--green-dim); color: var(--green); }
+    .decision-badge.rejected { background: var(--red-dim);   color: var(--red);   }
+
+    /* reason */
+    .td-reason { max-width: 260px; white-space: normal; font-size: 12.5px; color: var(--text-muted); }
+    .td-reason.na { color: var(--border-hi); font-style: italic; }
+
+    /* ── EMPTY / LOADING ─────────────────────────────── */
+    .state-row td {
+      padding: 48px 20px; text-align: center;
+    }
+    .state-inner { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--text-muted); }
+    .state-inner i { font-size: 28px; opacity: .35; }
+    .state-inner p { font-size: 14px; }
+
+    .spinner {
+      width: 26px; height: 26px;
+      border: 3px solid var(--border-hi);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    /* ── TABLE FOOTER ────────────────────────────────── */
+    .table-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+      font-size: 12.5px; color: var(--text-muted);
+    }
+
+    /* ── KEYFRAMES ───────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── SCROLLBAR ───────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 20px; }
+
+    @media (max-width: 600px) {
+      .topnav { padding: 0 16px; }
+      main    { padding: 24px 16px; }
+      .badge-admin { display: none; }
+      .filter-bar { flex-direction: column; align-items: stretch; }
+      .record-count { margin-left: 0; }
+    }
+  </style>
 </head>
-<body class="admin-bg">
+<body>
 
-<div class="bg-overlay"></div>
+<div class="shell">
 
-<div class="page-wrap">
-  <div class="card admin-card">
-    <div class="card-header">
-      <div class="brand">
-        <img src="/uploads/shield.png" alt="Shield">
-        <div>
-          <h1>Verification History</h1>
-          <small>Approved and rejected worker/job records</small>
-        </div>
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <a class="brand" href="admin_dashboard.html">
+      <div class="brand-icon"><i class="fa-solid fa-location-dot"></i></div>
+      <span class="brand-name">Near<span>Serve</span></span>
+      <span class="badge-admin">Admin</span>
+    </a>
+
+    <div class="nav-actions">
+      <a href="admin_dashboard.html" class="nav-btn nav-btn-ghost">
+        <i class="fa-solid fa-arrow-left"></i> Dashboard
+      </a>
+      <button class="nav-btn nav-btn-danger" id="adminLogout">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- Page Title -->
+    <div class="page-header">
+      <h1><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent);margin-right:10px;font-size:22px;"></i>Verification History</h1>
+      <p>Complete log of approved and rejected worker proof &amp; job video submissions</p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" id="filterBar" style="display:none;">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search phone, role, reason…">
       </div>
 
-      <div class="header-actions">
-        <a href="/admin_dashboard.html" class="btn btn-secondary">
-          <i class="fa fa-arrow-left"></i> Back to Dashboard
-        </a>
-        <button class="btn btn-logout" id="adminLogout">
-          <i class="fa fa-right-from-bracket"></i> Logout
-        </button>
+      <div class="filter-group">
+        <select class="filter-select" id="typeFilter">
+          <option value="">All Types</option>
+          <option value="proof">PDF Proof</option>
+          <option value="job">Job Video</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select class="filter-select" id="decisionFilter">
+          <option value="">All Decisions</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="record-count" id="recordCount">
+        Showing <span id="countNum">0</span> records
       </div>
     </div>
 
-    <div class="card-body">
-      <div class="section-title">History Records</div>
-      <div id="historyWrap">
-        <p class="note">Loading history...</p>
+    <!-- Table Card -->
+    <div class="table-card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th><i class="fa-solid fa-calendar-days"></i>Date</th>
+              <th><i class="fa-solid fa-layer-group"></i>Type</th>
+              <th><i class="fa-solid fa-phone"></i>Worker Phone</th>
+              <th><i class="fa-solid fa-screwdriver-wrench"></i>Role</th>
+              <th><i class="fa-solid fa-gavel"></i>Decision</th>
+              <th><i class="fa-solid fa-comment-dots"></i>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr class="state-row">
+              <td colspan="6">
+                <div class="state-inner">
+                  <div class="spinner"></div>
+                  <p>Loading history…</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer" id="tableFooter" style="display:none;">
+        <span id="footerText">–</span>
+        <span style="color:var(--accent);font-weight:600;">NearServe Admin</span>
       </div>
     </div>
-  </div>
+
+  </main>
 </div>
 
-<script src="js/admin_history.js"></script>
+<script>
+/* ── AUTH ──────────────────────────────────────────── */
+const API_BASE = "/api";
+const token    = localStorage.getItem("adminToken");
+if (!token) window.location.href = "admin_login.html";
+
+document.getElementById("adminLogout").addEventListener("click", () => {
+  localStorage.removeItem("adminToken");
+  window.location.href = "admin_login.html";
+});
+
+/* ── HELPERS ───────────────────────────────────────── */
+function fmtDate(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })
+      + " · " + d.toLocaleTimeString("en-IN", { hour:"2-digit", minute:"2-digit" });
+  } catch { return iso || "–"; }
+}
+
+async function api(url, options = {}) {
+  const res = await fetch(`${API_BASE}${url}`, {
+    ...options,
+    headers: { ...(options.headers || {}), Authorization: `Bearer ${token}` }
+  });
+  const text = await res.text();
+  let data = {};
+  try { data = JSON.parse(text); } catch { data = { raw: text }; }
+  if (!res.ok) throw new Error(data.message || data.error || text || "Request failed");
+  return data;
+}
+
+/* ── STATE ─────────────────────────────────────────── */
+let allLogs = [];
+
+function renderRows(logs) {
+  const tbody = document.getElementById("historyBody");
+
+  if (!logs.length) {
+    tbody.innerHTML = `
+      <tr class="state-row">
+        <td colspan="6">
+          <div class="state-inner">
+            <i class="fa-solid fa-inbox"></i>
+            <p>No matching records found</p>
+          </div>
+        </td>
+      </tr>`;
+    document.getElementById("countNum").textContent = 0;
+    document.getElementById("footerText").textContent = "0 records";
+    return;
+  }
+
+  tbody.innerHTML = logs.map((l, i) => {
+    const typeLabel = l.type === "proof" ? "PDF Proof" : "Job Video";
+    const typeClass = l.type === "proof" ? "pdf" : "video";
+    const typeIcon  = l.type === "proof" ? "fa-file-pdf" : "fa-video";
+    const isApproved = l.decision === "approved";
+
+    return `
+      <tr style="animation: fadeUp .3s ${i * 0.03}s ease both; opacity:0;">
+        <td class="td-date">${fmtDate(l.createdAt)}</td>
+        <td>
+          <span class="type-badge ${typeClass}">
+            <i class="fa-solid ${typeIcon}"></i> ${typeLabel}
+          </span>
+        </td>
+        <td class="td-phone">${l.workerPhone || "–"}</td>
+        <td>
+          <span class="role-chip">
+            <i class="fa-solid fa-screwdriver-wrench" style="font-size:9px;"></i>
+            ${l.workerRole || "–"}
+          </span>
+        </td>
+        <td>
+          <span class="decision-badge ${isApproved ? "approved" : "rejected"}">
+            <i class="fa-solid ${isApproved ? "fa-circle-check" : "fa-circle-xmark"}"></i>
+            ${isApproved ? "Approved" : "Rejected"}
+          </span>
+        </td>
+        <td class="td-reason ${!l.reason ? "na" : ""}">${l.reason || "–"}</td>
+      </tr>`;
+  }).join("");
+
+  document.getElementById("countNum").textContent = logs.length;
+  document.getElementById("footerText").textContent = `${logs.length} record${logs.length !== 1 ? "s" : ""} · Last updated ${new Date().toLocaleTimeString()}`;
+}
+
+function applyFilters() {
+  const q        = document.getElementById("searchInput").value.toLowerCase();
+  const typeF    = document.getElementById("typeFilter").value;
+  const decisionF= document.getElementById("decisionFilter").value;
+
+  const filtered = allLogs.filter(l => {
+    const matchSearch   = !q || [l.workerPhone, l.workerRole, l.reason].some(v => (v||"").toLowerCase().includes(q));
+    const matchType     = !typeF     || (typeF === "proof" ? l.type === "proof" : l.type !== "proof");
+    const matchDecision = !decisionF || l.decision === decisionF;
+    return matchSearch && matchType && matchDecision;
+  });
+
+  renderRows(filtered);
+}
+
+/* ── LOAD ──────────────────────────────────────────── */
+async function loadHistory() {
+  try {
+    const data = await api("/admin/history");
+    allLogs = data.logs || [];
+
+    document.getElementById("filterBar").style.display   = "flex";
+    document.getElementById("tableFooter").style.display = "flex";
+
+    renderRows(allLogs);
+
+    document.getElementById("searchInput").addEventListener("input",  applyFilters);
+    document.getElementById("typeFilter").addEventListener("change",  applyFilters);
+    document.getElementById("decisionFilter").addEventListener("change", applyFilters);
+
+  } catch (e) {
+    document.getElementById("historyBody").innerHTML = `
+      <tr class="state-row">
+        <td colspan="6">
+          <div class="state-inner" style="color:var(--red);">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>${e.message}</p>
+          </div>
+        </td>
+      </tr>`;
+
+    const msg = String(e.message).toLowerCase();
+    if (msg.includes("unauthorized") || msg.includes("invalid token")) {
+      localStorage.removeItem("adminToken");
+      window.location.href = "admin_login.html";
+    }
+  }
+}
+
+loadHistory();
+</script>
 </body>
 </html>

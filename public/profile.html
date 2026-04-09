@@ -26,7 +26,6 @@
     overflow-x: hidden;
   }
 
-  /* ══ LEFT PANEL ══ */
   .left-panel {
     width: 380px; min-height: 100vh;
     background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
@@ -72,7 +71,6 @@
   .stat-lbl { font-size:0.68rem; color:rgba(255,255,255,0.55); }
   .sdiv { width:1px; background:rgba(255,255,255,0.2); height:32px; }
 
-  /* ══ RIGHT PANEL ══ */
   .right-panel {
     margin-left: 380px;
     flex: 1; min-height: 100vh;
@@ -80,7 +78,6 @@
     overflow-y: auto;
   }
 
-  /* ── TOP BAR ── */
   .topbar {
     display: flex; align-items: center;
     justify-content: space-between;
@@ -109,7 +106,6 @@
   }
   .logout-btn:hover { background: #fee2e2; transform: translateY(-1px); }
 
-  /* ── PROFILE GRID ── */
   .profile-grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -152,7 +148,6 @@
   .stat-num-val { font-family:'Nunito',sans-serif; font-size:1.25rem; font-weight:900; color:var(--blue); }
   .stat-label { font-size:0.68rem; color:var(--soft); margin-top:3px; font-weight:600; }
 
-  /* ── FORM SECTIONS ── */
   .form-sections { display:flex; flex-direction:column; gap:20px; }
 
   .form-section {
@@ -196,7 +191,6 @@
   .btn-cancel { padding:12px; border:1.5px solid var(--border); border-radius:11px; background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
   .btn-cancel:hover { background:var(--border); transform:translateY(-1px); }
 
-  /* ── TOAST ── */
   .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:var(--dark); color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
   .toast.show { transform:translateY(0); opacity:1; }
   .toast.success { background:linear-gradient(135deg,var(--success),var(--teal)); }
@@ -208,7 +202,6 @@
 </head>
 <body>
 
-<!-- ══ LEFT PANEL ══ -->
 <div class="left-panel">
   <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
   <div class="fi fi1">👤</div><div class="fi fi2">✏️</div><div class="fi fi3">🔒</div><div class="fi fi4">⭐</div>
@@ -259,7 +252,6 @@
   </div>
 </div>
 
-<!-- ══ RIGHT PANEL ══ -->
 <div class="right-panel">
 
   <div class="topbar">
@@ -279,7 +271,6 @@
 
   <div class="profile-grid">
 
-    <!-- Profile Card -->
     <div class="profile-card">
       <div class="avatar-wrapper">
         <img id="avatarImg" class="avatar avatar-img hidden" src="" alt="Profile Picture">
@@ -304,10 +295,8 @@
       </div>
     </div>
 
-    <!-- Form Sections -->
     <div class="form-sections">
 
-      <!-- Personal Info -->
       <div class="form-section">
         <div class="section-title"><span class="section-icon">ℹ️</span> Personal Information</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="fullName" placeholder="Your Full Name"></div></div>
@@ -320,7 +309,6 @@
         </div>
       </div>
 
-      <!-- Address -->
       <div class="form-section">
         <div class="section-title"><span class="section-icon">📍</span> Address & Location</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Full Address</label><input type="text" class="form-input" id="address" placeholder="Street Address"></div></div>
@@ -338,7 +326,6 @@
         </div>
       </div>
 
-      <!-- Preferences -->
       <div class="form-section">
         <div class="section-title"><span class="section-icon">⚙️</span> Preferences & Settings</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Service Location</label><select class="form-select" id="serviceLocation"><option value="">Select a Location</option><option value="home">🏠 Home</option><option value="office">🏢 Office</option><option value="shop">🏪 Shop</option><option value="other">📍 Other</option></select></div></div>
@@ -350,7 +337,6 @@
         </div>
       </div>
 
-      <!-- Password -->
       <div class="form-section">
         <div class="section-title"><span class="section-icon">🔐</span> Security & Password</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" id="currentPassword" placeholder="Enter current password"></div></div>
@@ -377,10 +363,15 @@ function showToast(msg, type) {
 }
 
 window.addEventListener("DOMContentLoaded", async function() {
-  const phone = (localStorage.getItem("phone") || "").trim();
-  const storedName = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+  const API_BASE = "/api";
+  const phone = (localStorage.getItem("userPhone") || "").trim();
+  const storedName = localStorage.getItem("userName") || "";
+  const storedEmail = localStorage.getItem("userEmail") || "";
 
-  if (!phone) { window.location.href = "login.html"; return; }
+  if (!phone) {
+    window.location.href = "login.html";
+    return;
+  }
 
   const avatarImg = document.getElementById("avatarImg");
   const avatarFallback = document.getElementById("avatarFallback");
@@ -401,17 +392,19 @@ window.addEventListener("DOMContentLoaded", async function() {
   }
 
   try {
-    const res = await fetch("/profile/" + phone);
+    const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`);
     if (res.ok) {
-      const user = await res.json();
+      const data = await res.json().catch(() => ({}));
+      const user = data.profile || data || {};
       const currentName = user.name || storedName || "User";
       const savedAvatar = localStorage.getItem("avatarBase64");
+
       setAvatar(currentName, savedAvatar);
 
       document.getElementById("profileName").textContent = user.name || "—";
       document.getElementById("fullName").value = user.name || "";
-      document.getElementById("email").value = user.email || "";
-      document.getElementById("phone").value = user.phone || "";
+      document.getElementById("email").value = user.email || storedEmail || "";
+      document.getElementById("phone").value = user.phone || phone;
       document.getElementById("bio").value = user.bio || "";
       document.getElementById("address").value = user.address || "";
       document.getElementById("city").value = user.city || "";
@@ -422,26 +415,37 @@ window.addEventListener("DOMContentLoaded", async function() {
       document.getElementById("communicationPref").value = user.communicationPref || "email";
       document.getElementById("preferredTime").value = user.preferredTime || "flexible";
 
-      const bookingsRes = await fetch("/mybookings/" + phone);
+      const bookingsRes = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
       if (bookingsRes.ok) {
-        const bookings = await bookingsRes.json();
+        const bookingsData = await bookingsRes.json().catch(() => ([]));
+        const bookings = Array.isArray(bookingsData) ? bookingsData : (bookingsData.bookings || []);
         document.getElementById("totalBookings").textContent = Array.isArray(bookings) ? bookings.length : 0;
       }
-      const createdYear = new Date(user.createdAt).getFullYear();
+
+      const createdYear = user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
       document.getElementById("memberSince").textContent = createdYear > 1970 ? createdYear : new Date().getFullYear();
     } else {
       setAvatar(storedName || "User", localStorage.getItem("avatarBase64"));
+      document.getElementById("profileName").textContent = storedName || "—";
+      document.getElementById("email").value = storedEmail || "";
+      document.getElementById("phone").value = phone;
     }
-  } catch(err) {
+  } catch (err) {
     console.error("Error loading profile:", err);
     setAvatar(storedName || "User", localStorage.getItem("avatarBase64"));
+    document.getElementById("profileName").textContent = storedName || "—";
+    document.getElementById("email").value = storedEmail || "";
+    document.getElementById("phone").value = phone;
   }
 
-  document.getElementById("avatarEditBtn").addEventListener("click", () => document.getElementById("avatarUploadInput").click());
+  document.getElementById("avatarEditBtn").addEventListener("click", () => {
+    document.getElementById("avatarUploadInput").click();
+  });
 
   document.getElementById("avatarUploadInput").addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = function(event) {
       const base64 = event.target.result;
@@ -459,67 +463,146 @@ window.addEventListener("DOMContentLoaded", async function() {
   });
 
   document.getElementById("savePersonalBtn").addEventListener("click", async function() {
-    const newName  = document.getElementById("fullName").value.trim();
+    const newName = document.getElementById("fullName").value.trim();
     const newEmail = document.getElementById("email").value.trim();
-    const bio      = document.getElementById("bio").value.trim();
-    if (!newName) { showToast("❌ Name cannot be empty", "error"); return; }
-    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { showToast("❌ Enter a valid email", "error"); return; }
+    const bio = document.getElementById("bio").value.trim();
+
+    if (!newName) {
+      showToast("❌ Name cannot be empty", "error");
+      return;
+    }
+
+    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+      showToast("❌ Enter a valid email", "error");
+      return;
+    }
+
     try {
-      const res = await fetch("/profile/" + phone, { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ name:newName, email:newEmail, bio }) });
+      const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newName, email: newEmail, bio })
+      });
+
       if (res.ok) {
-        localStorage.setItem("name", newName); localStorage.setItem("userName", newName); localStorage.setItem("email", newEmail);
+        localStorage.setItem("userName", newName);
+        localStorage.setItem("userEmail", newEmail);
         document.getElementById("profileName").textContent = newName;
         setAvatar(newName, localStorage.getItem("avatarBase64"));
         showToast("✅ Personal info saved successfully!");
-      } else { const err = await res.json(); showToast("❌ " + (err.error || "Error saving"), "error"); }
-    } catch(err) { showToast("❌ Error saving profile", "error"); }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast("❌ " + (err.message || err.error || "Error saving"), "error");
+      }
+    } catch (err) {
+      showToast("❌ Error saving profile", "error");
+    }
   });
 
   document.getElementById("saveAddressBtn").addEventListener("click", async function() {
     const address = document.getElementById("address").value.trim();
-    const city    = document.getElementById("city").value.trim();
-    const state   = document.getElementById("state").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const state = document.getElementById("state").value.trim();
     const pincode = document.getElementById("pincode").value.trim();
     const country = document.getElementById("country").value.trim();
-    if (!address || !city || !state || !pincode) { showToast("❌ Please fill all address fields", "error"); return; }
+
+    if (!address || !city || !state || !pincode) {
+      showToast("❌ Please fill all address fields", "error");
+      return;
+    }
+
     try {
-      const res = await fetch("/profile/" + phone + "/address", { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ address, city, state, pincode, country }) });
-      if (res.ok) { showToast("✅ Address saved successfully!"); }
-      else { const err = await res.json(); showToast("❌ " + (err.error || "Error saving"), "error"); }
-    } catch(err) { showToast("❌ Error saving address", "error"); }
+      const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}/address`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address, city, state, pincode, country })
+      });
+
+      if (res.ok) {
+        localStorage.setItem("address", address);
+        showToast("✅ Address saved successfully!");
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast("❌ " + (err.message || err.error || "Error saving"), "error");
+      }
+    } catch (err) {
+      showToast("❌ Error saving address", "error");
+    }
   });
 
   document.getElementById("savePreferencesBtn").addEventListener("click", async function() {
     const serviceLocation = document.getElementById("serviceLocation").value;
-    const comm = document.getElementById("communicationPref").value;
-    const time = document.getElementById("preferredTime").value;
+    const communicationPref = document.getElementById("communicationPref").value;
+    const preferredTime = document.getElementById("preferredTime").value;
+
     try {
-      const res = await fetch("/profile/" + phone + "/preferences", { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ serviceLocation, communicationPref:comm, preferredTime:time }) });
-      if (res.ok) { showToast("✅ Preferences saved successfully!"); }
-      else { const err = await res.json(); showToast("❌ " + (err.error || "Error saving"), "error"); }
-    } catch(err) { showToast("❌ Error saving preferences", "error"); }
+      const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}/preferences`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ serviceLocation, communicationPref, preferredTime })
+      });
+
+      if (res.ok) {
+        showToast("✅ Preferences saved successfully!");
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast("❌ " + (err.message || err.error || "Error saving"), "error");
+      }
+    } catch (err) {
+      showToast("❌ Error saving preferences", "error");
+    }
   });
 
   document.getElementById("savePasswordBtn").addEventListener("click", async function() {
-    const current = document.getElementById("currentPassword").value;
-    const newPass = document.getElementById("newPassword").value;
-    const confirm = document.getElementById("confirmPassword").value;
-    if (!current || !newPass || !confirm) { showToast("❌ All password fields are required", "error"); return; }
-    if (newPass.length < 6) { showToast("❌ Password must be at least 6 characters", "error"); return; }
-    if (newPass !== confirm) { showToast("❌ Passwords do not match", "error"); return; }
+    const currentPassword = document.getElementById("currentPassword").value;
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      showToast("❌ All password fields are required", "error");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      showToast("❌ Password must be at least 6 characters", "error");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      showToast("❌ Passwords do not match", "error");
+      return;
+    }
+
     try {
-      const res = await fetch("/profile/" + phone + "/password", { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ currentPassword:current, newPassword:newPass, confirmPassword:confirm }) });
+      const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}/password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+      });
+
       if (res.ok) {
         document.getElementById("currentPassword").value = "";
         document.getElementById("newPassword").value = "";
         document.getElementById("confirmPassword").value = "";
         showToast("✅ Password changed successfully!");
-      } else { const err = await res.json(); showToast("❌ " + (err.error || "Error changing password"), "error"); }
-    } catch(err) { showToast("❌ Error changing password", "error"); }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast("❌ " + (err.message || err.error || "Error changing password"), "error");
+      }
+    } catch (err) {
+      showToast("❌ Error changing password", "error");
+    }
   });
 
   document.getElementById("logoutBtn").addEventListener("click", function() {
-    localStorage.clear(); window.location.href = "login.html";
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userPhone");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userStatus");
+    localStorage.removeItem("token");
+    localStorage.removeItem("address");
+    window.location.href = "login.html";
   });
 });
 </script>

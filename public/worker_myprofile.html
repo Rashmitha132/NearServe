@@ -466,6 +466,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
+const API_BASE = "/api";
+
 function showToast(msg, type) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -525,8 +527,8 @@ window.addEventListener("DOMContentLoaded", async function() {
   try {
     // Fetch both endpoints in parallel — workers/:phone has avatar + preferences
     const [profileRes, workerRes] = await Promise.all([
-      fetch("/profile/" + phone),
-      fetch("/workers/" + encodeURIComponent(phone))
+      fetch(`${API_BASE}/profile/${phone}`),
+      fetch(`${API_BASE}/workers/${encodeURIComponent(phone)}`)
     ]);
 
     if (profileRes.ok) {
@@ -561,7 +563,7 @@ window.addEventListener("DOMContentLoaded", async function() {
 
       // Jobs completed — fetch from worker bookings endpoint
       try {
-        const jobsRes = await fetch(`/bookings/chosen/${role}/${encodeURIComponent(phone)}`);
+        const jobsRes = await fetch(`${API_BASE}/bookings/chosen/${role}/${encodeURIComponent(phone)}`);
         if (jobsRes.ok) {
           const jobs = await jobsRes.json();
           const completed = Array.isArray(jobs)
@@ -595,11 +597,11 @@ window.addEventListener("DOMContentLoaded", async function() {
       setAvatar(document.getElementById("fullName").value.trim() || storedName || "Worker", base64);
       // Save avatar to backend so customers can see it
       try {
-        await fetch("/profile/" + phone, {
-  method: "PUT",
-  headers: {"Content-Type":"application/json"},
-  body: JSON.stringify({ avatarBase64: base64 })
-});
+        await fetch(`${API_BASE}/profile/${phone}`, {
+          method: "PUT",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ avatarBase64: base64 })
+        });
         showToast("✅ Profile picture updated!");
       } catch(e) {
         showToast("✅ Profile picture updated locally!");
@@ -612,7 +614,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     localStorage.removeItem("avatarBase64");
     setAvatar(document.getElementById("fullName").value.trim() || storedName || "Worker", "");
     try {
-      await fetch("/profile/" + phone, {
+      await fetch(`${API_BASE}/profile/${phone}`, {
         method: "PUT",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ avatarBase64: "" })
@@ -629,7 +631,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     if (!newName) { showToast("❌ Name cannot be empty", "error"); return; }
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { showToast("❌ Enter a valid email", "error"); return; }
     try {
-      const res = await fetch("/profile/" + phone, {
+      const res = await fetch(`${API_BASE}/profile/${phone}`, {
         method: "PUT", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ name:newName, email:newEmail, bio })
       });
@@ -653,7 +655,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     const country = document.getElementById("country").value.trim();
     if (!address || !city || !state || !pincode) { showToast("❌ Please fill all address fields", "error"); return; }
     try {
-      const res = await fetch("/profile/" + phone + "/address", {
+      const res = await fetch(`${API_BASE}/profile/${phone}/address`, {
         method: "PUT", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ address, city, state, pincode, country })
       });
@@ -668,7 +670,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     const comm            = document.getElementById("communicationPref").value;
     const time            = document.getElementById("preferredTime").value;
     try {
-      const res = await fetch("/profile/" + phone + "/preferences", {
+      const res = await fetch(`${API_BASE}/profile/${phone}/preferences`, {
         method: "PUT", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ availability, communicationPref:comm, preferredTime:time })
       });
@@ -686,7 +688,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     if (newPass.length < 6) { showToast("❌ Password must be at least 6 characters", "error"); return; }
     if (newPass !== confirm) { showToast("❌ Passwords do not match", "error"); return; }
     try {
-      const res = await fetch("/profile/" + phone + "/password", {
+      const res = await fetch(`${API_BASE}/profile/${phone}/password`, {
         method: "PUT", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ currentPassword:current, newPassword:newPass, confirmPassword:confirm })
       });
@@ -709,7 +711,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     const list = document.getElementById("miniReviewsList");
     try {
       // Use the existing /workers/:phone endpoint which already returns reviewsList
-      const res  = await fetch(`/workers/${encodeURIComponent(phone)}`);
+      const res  = await fetch(`${API_BASE}/workers/${encodeURIComponent(phone)}`);
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
 

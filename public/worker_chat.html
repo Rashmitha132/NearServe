@@ -55,7 +55,7 @@
   <div class="chat-worker-avatar" id="workerAvatar">W</div>
   <div class="chat-worker-info">
     <div class="chat-worker-name" id="workerName">Chat</div>
-    <div class="chat-worker-sub"  id="workerSub">Worker · Online</div>
+    <div class="chat-worker-sub" id="workerSub">Worker · Online</div>
   </div>
 </div>
 
@@ -77,43 +77,36 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const bookingId    = localStorage.getItem("chatBookingId")    || "";
-  const workerPhone  = localStorage.getItem("chatWorkerPhone")  || "";
-  const workerRole   = localStorage.getItem("chatWorkerRole")   || "";   // e.g. "Carpenter"
-  const myPhone      = (localStorage.getItem("phone") || "").trim();
-  const myName       = localStorage.getItem("name") || localStorage.getItem("userName") || "User";
-  const myRole       = (localStorage.getItem("role") || "customer").toLowerCase();
+  const API_BASE = "/api";
 
-  // ── Determine if this user is a worker or customer ──
+  const bookingId   = localStorage.getItem("chatBookingId") || "";
+  const workerPhone = localStorage.getItem("chatWorkerPhone") || "";
+  const workerRole  = localStorage.getItem("chatWorkerRole") || "";
+  const myPhone     = (localStorage.getItem("userPhone") || "").trim();
+  const myName      = localStorage.getItem("userName") || "User";
+  const myRole      = (localStorage.getItem("userRole") || "customer").toLowerCase();
+
   const isWorker = ["carpenter","electrician","plumber"].includes(myRole);
 
-  // ── Build clean header display ──
-  // For customer: show "Carpenter" as name and "7892282079 · Online" as sub
-  // For worker:   show customer name as name and "Customer" as sub
   let displayName, displaySub;
 
   if (isWorker) {
     displayName = localStorage.getItem("chatCustomerName") || "Customer";
-    displaySub  = "Customer";
+    displaySub = "Customer";
   } else {
-    // Customer side — show worker role as title, phone as subtitle
-    displayName = workerRole
-      || (localStorage.getItem("chatWorkerName") || "Worker").split("·")[0].trim();
-    displaySub  = workerPhone
-      ? workerPhone + " · Online"
-      : "Worker · Online";
+    displayName = workerRole || (localStorage.getItem("chatWorkerName") || "Worker").split("·")[0].trim();
+    displaySub = workerPhone ? workerPhone + " · Online" : "Worker · Online";
   }
 
-  document.getElementById("workerName").textContent   = displayName;
+  document.getElementById("workerName").textContent = displayName;
   document.getElementById("workerAvatar").textContent = displayName.charAt(0).toUpperCase();
-  document.getElementById("workerSub").textContent    = displaySub;
+  document.getElementById("workerSub").textContent = displaySub;
 
   if (!bookingId || !myPhone) {
     alert("Invalid chat session. Please try again.");
     window.location.href = isWorker ? (myRole + "_requests.html") : "mybooking.html";
   }
 
-  // otherName used in message rendering (who sent the message that's not mine)
   const otherName = isWorker
     ? (localStorage.getItem("chatCustomerName") || "Customer")
     : displayName;
@@ -125,13 +118,18 @@
 
   function showToast(msg, type="success") {
     const t = document.getElementById("toast");
-    t.textContent = msg; t.className = "toast " + type + " show";
+    t.textContent = msg;
+    t.className = "toast " + type + " show";
     setTimeout(() => { t.className = "toast"; }, 3500);
   }
 
   function formatTime(dateStr) {
     if (!dateStr) return "";
-    try { return new Date(dateStr).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}); } catch { return ""; }
+    try {
+      return new Date(dateStr).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+    } catch {
+      return "";
+    }
   }
 
   function formatDate(dateStr) {
@@ -140,10 +138,13 @@
       const d = new Date(dateStr);
       const today = new Date();
       if (d.toDateString() === today.toDateString()) return "Today";
-      const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
       if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
       return d.toLocaleDateString();
-    } catch { return ""; }
+    } catch {
+      return "";
+    }
   }
 
   function scrollToBottom() {
@@ -160,38 +161,56 @@
 
   async function loadMessages() {
     try {
-      let res = await fetch(`/messages/${encodeURIComponent(bookingId)}`);
-      if (!res.ok) res = await fetch(`/chat/${encodeURIComponent(bookingId)}`);
+      const res = await fetch(`${API_BASE}/chat/${encodeURIComponent(bookingId)}`);
       if (!res.ok) return;
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       const msgArray = Array.isArray(data) ? data : (data.messages || []);
+
       if (!Array.isArray(msgArray)) return;
       if (msgArray.length === lastMessageCount && messages.length > 0) return;
 
       lastMessageCount = msgArray.length;
-      messages = msgArray.map(m => ({...m, timestamp: m.timestamp || m.createdAt || new Date().toISOString()}));
+      messages = msgArray.map(m => ({
+        ...m,
+        timestamp: m.timestamp || m.createdAt || new Date().toISOString()
+      }));
+
       renderMessages();
-    } catch(err) { console.log("Error loading messages:", err); }
+    } catch (err) {
+      console.log("Error loading messages:", err);
+    }
   }
 
   function renderMessages() {
     const body = document.getElementById("chatBody");
+
     if (messages.length === 0) {
-      body.innerHTML = `<div class="empty-chat" id="emptyChatMsg"><div class="empty-chat-icon">💬</div><div class="empty-chat-title">No messages yet</div><p style="font-size:0.82rem;color:var(--soft);">Send a message to start the conversation!</p></div>`;
+      body.innerHTML = `
+        <div class="empty-chat" id="emptyChatMsg">
+          <div class="empty-chat-icon">💬</div>
+          <div class="empty-chat-title">No messages yet</div>
+          <p style="font-size:0.82rem;color:var(--soft);">Send a message to start the conversation!</p>
+        </div>
+      `;
       return;
     }
+
     body.innerHTML = "";
     let lastDate = "";
+
     messages.forEach(m => {
       const timestamp = m.timestamp || m.createdAt || new Date().toISOString();
       const msgDate = formatDate(timestamp);
+
       if (msgDate !== lastDate) {
         lastDate = msgDate;
         body.innerHTML += `<div class="chat-date-sep"><span>${msgDate}</span></div>`;
       }
+
       const isMine = m.senderPhone === myPhone;
       const senderName = m.senderName || (isMine ? myName : otherName);
+
       body.innerHTML += `
         <div class="msg ${isMine ? "mine" : "theirs"}">
           ${!isMine ? `<div class="msg-sender">${escapeHtml(senderName)}</div>` : ""}
@@ -202,6 +221,7 @@
           </div>
         </div>`;
     });
+
     scrollToBottom();
   }
 
@@ -210,64 +230,107 @@
     const text = input.value.trim();
     if (!text || isSending) return;
 
-    const tempMsg = {_id:"temp-"+Date.now(), text, senderPhone:myPhone, senderName:myName, senderRole:myRole, timestamp:new Date().toISOString()};
+    const tempMsg = {
+      _id: "temp-" + Date.now(),
+      text,
+      senderPhone: myPhone,
+      senderName: myName,
+      senderRole: myRole,
+      timestamp: new Date().toISOString()
+    };
+
     messages.push(tempMsg);
     renderMessages();
-    input.value = ""; input.style.height = "auto";
-    isSending = true; document.getElementById("sendBtn").disabled = true;
+
+    input.value = "";
+    input.style.height = "auto";
+
+    isSending = true;
+    document.getElementById("sendBtn").disabled = true;
 
     try {
-      let res = await fetch("/messages/send", {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({bookingId, senderPhone:myPhone, senderName:myName, senderRole:myRole, text})
+      const res = await fetch(`${API_BASE}/chat/send`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          bookingId,
+          senderPhone: myPhone,
+          senderName: myName,
+          senderRole: myRole,
+          text
+        })
       });
-      if (!res.ok) res = await fetch("/chat/send", {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({bookingId, senderPhone:myPhone, senderName:myName, senderRole:myRole, text})
-      });
+
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
         messages = messages.filter(m => m._id !== tempMsg._id);
-        renderMessages(); showToast("❌ Failed to send", "error");
+        renderMessages();
+        showToast("❌ Failed to send", "error");
       } else {
-        const data = await res.json();
-        if (data._id) {
+        if (data._id || data.message || data.text) {
           const idx = messages.findIndex(m => m._id === tempMsg._id);
-          if (idx !== -1) messages[idx] = {...data, timestamp: data.timestamp || data.createdAt || new Date().toISOString()};
+          if (idx !== -1) {
+            messages[idx] = {
+              ...tempMsg,
+              ...data,
+              timestamp: data.timestamp || data.createdAt || tempMsg.timestamp
+            };
+          }
         }
         renderMessages();
       }
-    } catch(err) {
+    } catch (err) {
       messages = messages.filter(m => m._id !== tempMsg._id);
-      renderMessages(); showToast("❌ Error sending", "error");
+      renderMessages();
+      showToast("❌ Error sending", "error");
     } finally {
-      isSending = false; document.getElementById("sendBtn").disabled = false; input.focus();
+      isSending = false;
+      document.getElementById("sendBtn").disabled = false;
+      input.focus();
     }
   }
 
   document.getElementById("sendBtn").addEventListener("click", sendMessage);
+
   document.getElementById("chatInput").addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   });
+
   document.getElementById("chatInput").addEventListener("input", function() {
     this.style.height = "auto";
     this.style.height = Math.min(this.scrollHeight, 120) + "px";
   });
 
-  // ── Back button — goes to correct page based on role ──
   document.getElementById("backBtn").addEventListener("click", () => {
     if (pollInterval) clearInterval(pollInterval);
+
     localStorage.removeItem("chatBookingId");
     localStorage.removeItem("chatWorkerPhone");
     localStorage.removeItem("chatWorkerRole");
-    if      (myRole === "carpenter")   window.location.href = "carpenter_requests.html";
-    else if (myRole === "electrician") window.location.href = "electrician_requests.html";
-    else if (myRole === "plumber")     window.location.href = "plumber_requests.html";
-    else                               window.location.href = "mybooking.html";
+    localStorage.removeItem("chatWorkerName");
+    localStorage.removeItem("chatCustomerName");
+
+    if (myRole === "carpenter") {
+      window.location.href = "carpenter_requests.html";
+    } else if (myRole === "electrician") {
+      window.location.href = "electrician_requests.html";
+    } else if (myRole === "plumber") {
+      window.location.href = "plumber_requests.html";
+    } else {
+      window.location.href = "mybooking.html";
+    }
   });
 
   loadMessages();
   pollInterval = setInterval(loadMessages, 3000);
-  window.addEventListener("beforeunload", () => { if (pollInterval) clearInterval(pollInterval); });
+
+  window.addEventListener("beforeunload", () => {
+    if (pollInterval) clearInterval(pollInterval);
+  });
 </script>
 </body>
 </html>

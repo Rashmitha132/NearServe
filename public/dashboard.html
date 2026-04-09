@@ -2,123 +2,619 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard - NearServe</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root { --blue:#2563eb; --teal:#0d9488; --teal2:#14b8a6; --dark:#0f172a; --mid:#475569; --soft:#94a3b8; --bg:#f0f7ff; --border:#e2eaf4; }
+  :root {
+    --blue:#2563eb;
+    --teal:#0d9488;
+    --dark:#0f172a;
+    --mid:#475569;
+    --soft:#94a3b8;
+    --bg:#f0f7ff;
+    --border:#e2eaf4;
+  }
+
   html, body { height: 100%; }
-  body { min-height:100vh; font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:stretch; overflow-x:hidden; background:var(--bg); }
+  body {
+    min-height: 100vh;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    align-items: stretch;
+    overflow-x: hidden;
+    background: var(--bg);
+  }
 
-  .left-panel { width:42%; min-height:100vh; background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%); position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:48px 44px; overflow:hidden; flex-shrink:0; }
-  .left-panel::before { content:''; position:absolute; width:450px; height:450px; border-radius:50%; background:rgba(255,255,255,0.05); top:-130px; right:-110px; }
-  .left-panel::after  { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-90px; left:-90px; }
-  .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.09); }
-  .r1{width:200px;height:200px;top:32%;right:-50px;} .r2{width:110px;height:110px;top:55%;right:44px;border-color:rgba(255,255,255,0.06);} .r3{width:75px;height:75px;top:18%;left:28px;border-color:rgba(255,255,255,0.07);}
-  .fi { position:absolute; width:54px; height:54px; border-radius:16px; background:rgba(255,255,255,0.13); border:1.5px solid rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 8px 24px rgba(0,0,0,0.18); animation:bob ease-in-out infinite alternate; }
-  .fi1{top:16%;left:10%;animation-duration:3.2s;} .fi2{top:36%;right:12%;animation-duration:2.8s;animation-delay:0.5s;} .fi3{top:56%;left:16%;animation-duration:3.6s;animation-delay:1s;} .fi4{top:72%;right:18%;animation-duration:2.5s;animation-delay:0.3s;} .fi5{top:25%;right:26%;animation-duration:3.9s;animation-delay:0.7s;}
-  @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-13px) rotate(3deg);} }
-  .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:12px; }
-  .l-logo-icon { width:46px; height:46px; border-radius:14px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
-  .l-logo span { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:#fff; }
-  .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:36px 0; }
-  .l-main h2 { font-family:'Nunito',sans-serif; font-size:2.35rem; font-weight:900; color:#fff; line-height:1.22; margin-bottom:16px; text-shadow:0 2px 20px rgba(0,0,0,0.2); }
-  .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .l-main p { color:rgba(255,255,255,0.68); font-size:0.93rem; line-height:1.75; max-width:290px; margin-bottom:32px; }
-  .pills { display:flex; flex-wrap:wrap; gap:9px; }
-  .pill { display:flex; align-items:center; gap:7px; padding:8px 15px; border-radius:50px; background:rgba(255,255,255,0.11); border:1.5px solid rgba(255,255,255,0.2); color:#fff; font-size:0.8rem; font-weight:600; backdrop-filter:blur(5px); }
-  .l-stats { position:relative; z-index:2; display:flex; gap:22px; align-items:center; }
-  .stat-num { font-family:'Nunito',sans-serif; font-size:1.55rem; font-weight:900; color:#fff; }
-  .stat-lbl { font-size:0.73rem; color:rgba(255,255,255,0.58); }
-  .sdiv { width:1px; background:rgba(255,255,255,0.2); height:36px; }
+  .left-panel {
+    width: 42%;
+    min-height: 100vh;
+    background: linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px 44px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
 
-  .right-panel { flex:1; min-height:100vh; background:#fff; display:flex; flex-direction:column; justify-content:flex-start; padding:48px 52px; overflow-y:auto; }
+  .left-panel::before {
+    content:'';
+    position:absolute;
+    width:450px;
+    height:450px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    top:-130px;
+    right:-110px;
+  }
 
-  .ubar { display:flex; align-items:center; justify-content:space-between; margin-bottom:34px; padding-bottom:20px; border-bottom:1.5px solid var(--border); position:relative; flex-wrap:wrap; gap:16px; }
-  .uinfo { display:flex; align-items:center; gap:12px; cursor:pointer; user-select:none; }
-  .uavatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; color:#fff; box-shadow:0 4px 12px rgba(37,99,235,0.3); transition:transform 0.2s; }
+  .left-panel::after {
+    content:'';
+    position:absolute;
+    width:320px;
+    height:320px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.04);
+    bottom:-90px;
+    left:-90px;
+  }
+
+  .deco-ring {
+    position:absolute;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,0.09);
+  }
+
+  .r1 { width:200px; height:200px; top:32%; right:-50px; }
+  .r2 { width:110px; height:110px; top:55%; right:44px; border-color:rgba(255,255,255,0.06); }
+  .r3 { width:75px; height:75px; top:18%; left:28px; border-color:rgba(255,255,255,0.07); }
+
+  .fi {
+    position:absolute;
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.13);
+    border:1.5px solid rgba(255,255,255,0.22);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.18);
+    animation:bob ease-in-out infinite alternate;
+  }
+
+  .fi1 { top:16%; left:10%; animation-duration:3.2s; }
+  .fi2 { top:36%; right:12%; animation-duration:2.8s; animation-delay:0.5s; }
+  .fi3 { top:56%; left:16%; animation-duration:3.6s; animation-delay:1s; }
+  .fi4 { top:72%; right:18%; animation-duration:2.5s; animation-delay:0.3s; }
+  .fi5 { top:25%; right:26%; animation-duration:3.9s; animation-delay:0.7s; }
+
+  @keyframes bob {
+    from { transform:translateY(0) rotate(-3deg); }
+    to   { transform:translateY(-13px) rotate(3deg); }
+  }
+
+  .l-logo {
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .l-logo-icon {
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.16);
+    border:1.5px solid rgba(255,255,255,0.28);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .l-logo span {
+    font-family:'Nunito',sans-serif;
+    font-size:1.3rem;
+    font-weight:900;
+    color:#fff;
+  }
+
+  .l-main {
+    position:relative;
+    z-index:2;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:36px 0;
+  }
+
+  .l-main h2 {
+    font-family:'Nunito',sans-serif;
+    font-size:2.35rem;
+    font-weight:900;
+    color:#fff;
+    line-height:1.22;
+    margin-bottom:16px;
+    text-shadow:0 2px 20px rgba(0,0,0,0.2);
+  }
+
+  .l-main h2 em {
+    font-style:normal;
+    background:linear-gradient(90deg,#7dd3fc,#5eead4);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+
+  .l-main p {
+    color:rgba(255,255,255,0.68);
+    font-size:0.93rem;
+    line-height:1.75;
+    max-width:290px;
+    margin-bottom:32px;
+  }
+
+  .pills {
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+  }
+
+  .pill {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 15px;
+    border-radius:50px;
+    background:rgba(255,255,255,0.11);
+    border:1.5px solid rgba(255,255,255,0.2);
+    color:#fff;
+    font-size:0.8rem;
+    font-weight:600;
+    backdrop-filter:blur(5px);
+  }
+
+  .l-stats {
+    position:relative;
+    z-index:2;
+    display:flex;
+    gap:22px;
+    align-items:center;
+  }
+
+  .stat-num {
+    font-family:'Nunito',sans-serif;
+    font-size:1.55rem;
+    font-weight:900;
+    color:#fff;
+  }
+
+  .stat-lbl {
+    font-size:0.73rem;
+    color:rgba(255,255,255,0.58);
+  }
+
+  .sdiv {
+    width:1px;
+    background:rgba(255,255,255,0.2);
+    height:36px;
+  }
+
+  .right-panel {
+    flex:1;
+    min-height:100vh;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    padding:48px 52px;
+    overflow-y:auto;
+  }
+
+  .ubar {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:34px;
+    padding-bottom:20px;
+    border-bottom:1.5px solid var(--border);
+    position:relative;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+
+  .uinfo {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .uavatar {
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#0d9488);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Nunito',sans-serif;
+    font-size:1.1rem;
+    font-weight:800;
+    color:#fff;
+    box-shadow:0 4px 12px rgba(37,99,235,0.3);
+    transition:transform 0.2s;
+  }
+
   .uinfo:hover .uavatar { transform:scale(1.08); }
-  .uname { font-size:0.92rem; font-weight:700; color:var(--dark); }
-  .urole { font-size:0.73rem; color:var(--soft); }
-  .ubar-right { display:flex; align-items:center; gap:10px; }
-  .btn-nav { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; border:1.5px solid #bfdbfe; background:#eff6ff; color:var(--blue); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer; transition:background 0.2s, transform 0.2s; }
-  .btn-nav:hover { background:#dbeafe; transform:translateY(-1px); }
-  .btn-logout { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; border:1.5px solid #fee2e2; background:#fff5f5; color:#ef4444; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer; transition:background 0.2s, transform 0.2s; }
-  .btn-logout:hover { background:#fee2e2; transform:translateY(-1px); }
 
-  .dheader { margin-bottom:32px; }
-  .dheader h1 { font-family:'Nunito',sans-serif; font-size:1.8rem; font-weight:900; color:var(--dark); margin-bottom:6px; display:flex; align-items:center; gap:10px; }
-  .dheader h1 i { color:var(--blue); font-size:1.3rem; }
-  .dheader p { color:var(--soft); font-size:0.85rem; }
+  .uname {
+    font-size:0.92rem;
+    font-weight:700;
+    color:var(--dark);
+  }
 
-  /* ── STATS GRID ── */
-  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:32px; }
-  .stat-card { background:#fff; border:1.5px solid var(--border); border-radius:16px; padding:20px; transition:box-shadow 0.2s; }
-  .stat-card:hover { box-shadow:0 8px 24px rgba(0,0,0,0.08); }
-  .stat-card.bookings  { border-left:4px solid var(--blue);  background:linear-gradient(135deg,#eff6ff 0%,#f0fdf4 100%); }
+  .urole {
+    font-size:0.73rem;
+    color:var(--soft);
+  }
+
+  .ubar-right {
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .btn-nav {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 16px;
+    border-radius:10px;
+    border:1.5px solid #bfdbfe;
+    background:#eff6ff;
+    color:var(--blue);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:0.8rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.2s, transform 0.2s;
+  }
+
+  .btn-nav:hover {
+    background:#dbeafe;
+    transform:translateY(-1px);
+  }
+
+  .btn-logout {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 16px;
+    border-radius:10px;
+    border:1.5px solid #fee2e2;
+    background:#fff5f5;
+    color:#ef4444;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:0.8rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.2s, transform 0.2s;
+  }
+
+  .btn-logout:hover {
+    background:#fee2e2;
+    transform:translateY(-1px);
+  }
+
+  .dheader {
+    margin-bottom:32px;
+  }
+
+  .dheader h1 {
+    font-family:'Nunito',sans-serif;
+    font-size:1.8rem;
+    font-weight:900;
+    color:var(--dark);
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .dheader h1 i {
+    color:var(--blue);
+    font-size:1.3rem;
+  }
+
+  .dheader p {
+    color:var(--soft);
+    font-size:0.85rem;
+  }
+
+  .stats-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:16px;
+    margin-bottom:32px;
+  }
+
+  .stat-card {
+    background:#fff;
+    border:1.5px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    transition:box-shadow 0.2s;
+  }
+
+  .stat-card:hover {
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .stat-card.bookings  { border-left:4px solid var(--blue); background:linear-gradient(135deg,#eff6ff 0%,#f0fdf4 100%); }
   .stat-card.completed { border-left:4px solid #10b981; background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%); }
-  /* CHANGED: spent -> pending, orange -> amber/blue */
   .stat-card.pending   { border-left:4px solid #f59e0b; background:linear-gradient(135deg,#fef9c3 0%,#fef3c7 100%); }
   .stat-card.member    { border-left:4px solid #a78bfa; background:linear-gradient(135deg,#f3e8ff 0%,#e0e7ff 100%); }
-  .stat-icon { font-size:2rem; margin-bottom:8px; }
-  .stat-value { font-family:'Nunito',sans-serif; font-size:1.8rem; font-weight:900; color:var(--dark); margin-bottom:4px; }
-  .stat-label { font-size:0.85rem; color:var(--soft); }
 
-  .section { margin-bottom:32px; }
-  .section-title { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-  .section-title i { color:var(--blue); }
+  .stat-icon {
+    font-size:2rem;
+    margin-bottom:8px;
+  }
 
-  .booking-list { display:flex; flex-direction:column; gap:12px; }
-  .booking-item { background:#fafcff; border:1.5px solid var(--border); border-radius:12px; padding:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; transition:box-shadow 0.2s; }
-  .booking-item:hover { box-shadow:0 4px 12px rgba(0,0,0,0.08); }
-  .booking-item-left { display:flex; align-items:center; gap:12px; flex:1; }
-  .booking-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
-  .booking-icon.carpenter{background:#fef3c7;} .booking-icon.plumber{background:#e0f2fe;} .booking-icon.electrician{background:#fefce8;}
-  .booking-detail { display:flex; flex-direction:column; gap:2px; }
-  .booking-detail h4 { font-size:0.95rem; font-weight:700; color:var(--dark); }
-  .booking-detail p { font-size:0.8rem; color:var(--soft); }
-  .booking-status { display:inline-flex; align-items:center; gap:4px; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; }
-  .status-pending{background:#fef3c7;color:#d97706;} .status-accepted{background:#d1fae5;color:#059669;} .status-completed{background:#dbeafe;color:#1d4ed8;}
-  .booking-action { display:flex; gap:8px; }
-  .btn-small { padding:8px 14px; border-radius:9px; border:none; cursor:pointer; font-size:0.78rem; font-weight:700; transition:all 0.2s; }
-  .btn-view { background:#eff6ff; color:var(--blue); border:1.5px solid #bfdbfe; }
-  .btn-view:hover { background:#dbeafe; }
-  .empty-state { text-align:center; padding:40px 20px; color:var(--soft); }
-  .empty-icon { font-size:2.5rem; margin-bottom:12px; }
-  .empty-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:var(--mid); margin-bottom:6px; }
-  .empty-text { font-size:0.85rem; margin-bottom:16px; }
-  .btn-book { display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:10px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; border:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:transform 0.2s; }
-  .btn-book:hover { transform:translateY(-2px); }
-  .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:#0f172a; color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
-  .toast.show { transform:translateY(0); opacity:1; }
+  .stat-value {
+    font-family:'Nunito',sans-serif;
+    font-size:1.8rem;
+    font-weight:900;
+    color:var(--dark);
+    margin-bottom:4px;
+  }
+
+  .stat-label {
+    font-size:0.85rem;
+    color:var(--soft);
+  }
+
+  .section {
+    margin-bottom:32px;
+  }
+
+  .section-title {
+    font-family:'Nunito',sans-serif;
+    font-size:1.2rem;
+    font-weight:900;
+    color:var(--dark);
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .section-title i {
+    color:var(--blue);
+  }
+
+  .booking-list {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .booking-item {
+    background:#fafcff;
+    border:1.5px solid var(--border);
+    border-radius:12px;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    transition:box-shadow 0.2s;
+  }
+
+  .booking-item:hover {
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .booking-item-left {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1;
+  }
+
+  .booking-icon {
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+  }
+
+  .booking-icon.carpenter  { background:#fef3c7; }
+  .booking-icon.plumber    { background:#e0f2fe; }
+  .booking-icon.electrician{ background:#fefce8; }
+
+  .booking-detail {
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  .booking-detail h4 {
+    font-size:0.95rem;
+    font-weight:700;
+    color:var(--dark);
+  }
+
+  .booking-detail p {
+    font-size:0.8rem;
+    color:var(--soft);
+  }
+
+  .booking-status {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:0.75rem;
+    font-weight:700;
+  }
+
+  .status-pending { background:#fef3c7; color:#d97706; }
+  .status-accepted { background:#d1fae5; color:#059669; }
+  .status-completed { background:#dbeafe; color:#1d4ed8; }
+  .status-rejected { background:#fee2e2; color:#dc2626; }
+
+  .btn-small {
+    padding:8px 14px;
+    border-radius:9px;
+    border:none;
+    cursor:pointer;
+    font-size:0.78rem;
+    font-weight:700;
+    transition:all 0.2s;
+  }
+
+  .btn-view {
+    background:#eff6ff;
+    color:var(--blue);
+    border:1.5px solid #bfdbfe;
+  }
+
+  .btn-view:hover {
+    background:#dbeafe;
+  }
+
+  .empty-state {
+    text-align:center;
+    padding:40px 20px;
+    color:var(--soft);
+  }
+
+  .empty-icon {
+    font-size:2.5rem;
+    margin-bottom:12px;
+  }
+
+  .empty-title {
+    font-family:'Nunito',sans-serif;
+    font-size:1rem;
+    font-weight:800;
+    color:var(--mid);
+    margin-bottom:6px;
+  }
+
+  .empty-text {
+    font-size:0.85rem;
+    margin-bottom:16px;
+  }
+
+  .btn-book {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 16px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#1d4ed8,#0d9488);
+    color:#fff;
+    border:none;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:0.85rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform 0.2s;
+  }
+
+  .btn-book:hover {
+    transform:translateY(-2px);
+  }
+
+  .toast {
+    position:fixed;
+    bottom:28px;
+    right:28px;
+    padding:12px 18px;
+    border-radius:12px;
+    background:#0f172a;
+    color:#fff;
+    font-size:0.85rem;
+    font-weight:600;
+    box-shadow:0 8px 28px rgba(0,0,0,0.25);
+    z-index:9999;
+    transform:translateY(80px);
+    opacity:0;
+    transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
+    pointer-events:none;
+  }
+
+  .toast.show {
+    transform:translateY(0);
+    opacity:1;
+  }
+
   .toast.success { background:linear-gradient(135deg,#16a34a,#0d9488); }
   .toast.error { background:linear-gradient(135deg,#dc2626,#ef4444); }
 
-  @media(max-width:780px) { body{flex-direction:column;} .left-panel{width:100%;min-height:auto;padding:28px 24px;} .l-main h2{font-size:1.6rem;} .l-stats{display:none;} .fi3,.fi4,.fi5{display:none;} .right-panel{padding:28px 22px;} .stats-grid{grid-template-columns:repeat(2,1fr);} }
-  @media(max-width:500px) { .stats-grid{grid-template-columns:1fr;} .booking-item{flex-direction:column;align-items:flex-start;} .ubar{flex-direction:column;align-items:flex-start;} }
+  @media(max-width:780px) {
+    body { flex-direction:column; }
+    .left-panel { width:100%; min-height:auto; padding:28px 24px; }
+    .l-main h2 { font-size:1.6rem; }
+    .l-stats { display:none; }
+    .fi3, .fi4, .fi5 { display:none; }
+    .right-panel { padding:28px 22px; }
+    .stats-grid { grid-template-columns:repeat(2,1fr); }
+  }
+
+  @media(max-width:500px) {
+    .stats-grid { grid-template-columns:1fr; }
+    .booking-item { flex-direction:column; align-items:flex-start; }
+    .ubar { flex-direction:column; align-items:flex-start; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ══ LEFT PANEL ══ -->
 <div class="left-panel">
-  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">🔧</div><div class="fi fi2">⚡</div><div class="fi fi3">🪚</div><div class="fi fi4">⭐</div><div class="fi fi5">🛠️</div>
+  <div class="deco-ring r1"></div>
+  <div class="deco-ring r2"></div>
+  <div class="deco-ring r3"></div>
+
+  <div class="fi fi1">🔧</div>
+  <div class="fi fi2">⚡</div>
+  <div class="fi fi3">🪚</div>
+  <div class="fi fi4">⭐</div>
+  <div class="fi fi5">🛠️</div>
+
   <div class="l-logo">
     <div class="l-logo-icon">
       <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
         <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/>
+        <circle cx="19" cy="16" r="2.8" fill="#14b8a6"/>
+        <circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
         <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
         <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
+        <circle cx="32" cy="26" r="1.7" fill="white"/>
+        <circle cx="37" cy="26" r="1.7" fill="white"/>
         <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
       </svg>
     </div>
     <span>NearServe</span>
   </div>
+
   <div class="l-main">
     <h2>Your <em>Booking</em><br>Dashboard</h2>
     <p>Track your service bookings, view upcoming appointments, and manage your profile all in one place.</p>
@@ -128,18 +624,26 @@
       <div class="pill">🔒 Secure</div>
     </div>
   </div>
+
   <div class="l-stats">
-    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified Workers</div></div>
+    <div>
+      <div class="stat-num">✅</div>
+      <div class="stat-lbl">Verified Workers</div>
+    </div>
     <div class="sdiv"></div>
-    <div><div class="stat-num">🔒</div><div class="stat-lbl">Secure Booking</div></div>
+    <div>
+      <div class="stat-num">🔒</div>
+      <div class="stat-lbl">Secure Booking</div>
+    </div>
     <div class="sdiv"></div>
-    <div><div class="stat-num">⚡</div><div class="stat-lbl">Quick & Easy</div></div>
+    <div>
+      <div class="stat-num">⚡</div>
+      <div class="stat-lbl">Quick & Easy</div>
+    </div>
   </div>
 </div>
 
-<!-- ══ RIGHT PANEL ══ -->
 <div class="right-panel">
-
   <div class="ubar">
     <div class="uinfo" id="profileInfo">
       <div class="uavatar" id="userAvatar">?</div>
@@ -148,17 +652,30 @@
         <div class="urole">Customer</div>
       </div>
     </div>
+
     <div class="ubar-right">
       <button class="btn-nav" onclick="window.location.href='profile.html'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
         My Profile
       </button>
+
       <button class="btn-nav" onclick="window.location.href='booking.html'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
         Book Service
       </button>
+
       <button class="btn-logout" id="logoutBtn">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
         Logout
       </button>
     </div>
@@ -169,7 +686,6 @@
     <p>Track your bookings and manage your account</p>
   </div>
 
-  <!-- Stats Grid — CHANGED: Total Spent → Pending Bookings -->
   <div class="stats-grid">
     <div class="stat-card bookings">
       <div class="stat-icon">📋</div>
@@ -193,7 +709,6 @@
     </div>
   </div>
 
-  <!-- Upcoming Bookings -->
   <div class="section">
     <div class="section-title"><i class="fa-solid fa-hourglass-start"></i> Upcoming Bookings</div>
     <div class="booking-list" id="upcomingList">
@@ -208,7 +723,6 @@
     </div>
   </div>
 
-  <!-- Recent Bookings -->
   <div class="section">
     <div class="section-title"><i class="fa-solid fa-history"></i> Recent Bookings</div>
     <div class="booking-list" id="recentList">
@@ -222,98 +736,155 @@
       </div>
     </div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+const API_BASE = "/api";
+
 function showToast(msg, type) {
   const t = document.getElementById("toast");
   t.textContent = msg;
   t.className = "toast " + (type || "success") + " show";
-  setTimeout(() => { t.className = "toast"; }, 3500);
+  setTimeout(() => {
+    t.className = "toast";
+  }, 3500);
 }
 
-function serviceIcon(s) {
-  const map = { carpenter:"🪚", plumber:"🔧", electrician:"⚡" };
-  return map[s] || "🛠️";
+function serviceIcon(service) {
+  const map = {
+    carpenter: "🪚",
+    plumber: "🔧",
+    electrician: "⚡"
+  };
+  return map[service] || "🛠️";
 }
 
 function getStatusClass(status) {
-  const map = { pending:"status-pending", accepted:"status-accepted", completed:"status-completed" };
+  const map = {
+    pending: "status-pending",
+    accepted: "status-accepted",
+    completed: "status-completed",
+    rejected: "status-rejected"
+  };
   return map[status] || "status-pending";
 }
 
 function getStatusLabel(status) {
-  const map = { pending:"⏳ Pending", accepted:"✅ Accepted", completed:"🏁 Completed" };
+  const map = {
+    pending: "⏳ Pending",
+    accepted: "✅ Accepted",
+    completed: "🏁 Completed",
+    rejected: "❌ Rejected"
+  };
   return map[status] || status;
 }
 
-function buildBookingItem(b) {
-  const status  = (b.status || "pending").toLowerCase();
-  const service = (b.service || "").toLowerCase();
+function buildBookingItem(booking) {
+  const status = (booking.status || "pending").toLowerCase();
+  const service = (booking.service || "").toLowerCase();
+  const serviceLabel = service
+    ? service.charAt(0).toUpperCase() + service.slice(1)
+    : "Service";
+
   return `
     <div class="booking-item">
       <div class="booking-item-left">
         <div class="booking-icon ${service}">${serviceIcon(service)}</div>
         <div class="booking-detail">
-          <h4>${service.charAt(0).toUpperCase() + service.slice(1)}</h4>
-          <p>📍 ${b.address || "—"} | 📅 ${b.date || "—"}</p>
+          <h4>${serviceLabel}</h4>
+          <p>📍 ${booking.address || "—"} | 📅 ${booking.date || "—"}</p>
         </div>
       </div>
       <span class="booking-status ${getStatusClass(status)}">${getStatusLabel(status)}</span>
       <button class="btn-small btn-view" onclick="window.location.href='mybooking.html'">View Details</button>
-    </div>`;
+    </div>
+  `;
 }
 
 async function loadDashboard() {
-  const phone = (localStorage.getItem("phone") || "").trim();
-  const name  = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+  const phone = (localStorage.getItem("userPhone") || "").trim();
+  const name = (localStorage.getItem("userName") || "").trim();
+  const role = (localStorage.getItem("userRole") || "").trim();
 
-  if (!phone) { window.location.href = "login.html"; return; }
-
-  if (name) {
-    document.getElementById("userAvatar").textContent  = name.charAt(0).toUpperCase();
-    document.getElementById("welcomeUser").textContent = "Welcome, " + name + "!";
+  if (!phone || role !== "customer") {
+    window.location.href = "login.html";
+    return;
   }
 
+  document.getElementById("userAvatar").textContent = name ? name.charAt(0).toUpperCase() : "U";
+  document.getElementById("welcomeUser").textContent = name ? `Welcome, ${name}!` : "Welcome!";
+
   try {
-    const res  = await fetch(`/mybookings/${encodeURIComponent(phone)}`);
-    const bookings = await res.json();
+    const res = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
+    const data = await res.json().catch(() => ({}));
 
-    if (!Array.isArray(bookings)) throw new Error("Bad response");
+    const bookings = Array.isArray(data) ? data : (data.bookings || []);
 
-    // ── Calculate stats from real booking data ──
-    const total     = bookings.length;
-    const completed = bookings.filter(b => b.status === "completed").length;
-    const pending   = bookings.filter(b => b.status === "pending").length;   // REAL pending count
-    const memberYear = new Date().getFullYear();
+    if (!Array.isArray(bookings)) {
+      throw new Error("Invalid bookings response");
+    }
+
+    const total = bookings.length;
+    const completed = bookings.filter(b => (b.status || "").toLowerCase() === "completed").length;
+    const pending = bookings.filter(b => (b.status || "").toLowerCase() === "pending").length;
 
     document.getElementById("statTotalBookings").textContent = total;
-    document.getElementById("statCompleted").textContent     = completed;
-    document.getElementById("statPending").textContent       = pending;      // REPLACED spent
-    document.getElementById("statMember").textContent        = memberYear;
+    document.getElementById("statCompleted").textContent = completed;
+    document.getElementById("statPending").textContent = pending;
+    document.getElementById("statMember").textContent = new Date().getFullYear();
 
-    // Upcoming = pending + accepted
-    const upcoming = bookings.filter(b => ["pending","accepted"].includes((b.status||"").toLowerCase()));
-    // Recent = last 5 completed/rejected
-    const recent   = bookings.filter(b => ["completed","rejected"].includes((b.status||"").toLowerCase())).slice(0, 5);
+    const upcoming = bookings.filter(b =>
+      ["pending", "accepted"].includes((b.status || "").toLowerCase())
+    );
 
-    const emptyUpcoming = `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No upcoming bookings</div><div class="empty-text">You don't have any pending or accepted bookings right now.</div><button class="btn-book" onclick="window.location.href='booking.html'"><i class="fa-solid fa-plus"></i> Book a Service</button></div>`;
-    const emptyRecent   = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No recent bookings</div><div class="empty-text">Your booking history will appear here.</div><button class="btn-book" onclick="window.location.href='booking.html'"><i class="fa-solid fa-plus"></i> Book a Service</button></div>`;
+    const recent = bookings.filter(b =>
+      ["completed", "rejected"].includes((b.status || "").toLowerCase())
+    ).slice(0, 5);
 
-    document.getElementById("upcomingList").innerHTML = upcoming.length > 0 ? upcoming.map(buildBookingItem).join("") : emptyUpcoming;
-    document.getElementById("recentList").innerHTML   = recent.length   > 0 ? recent.map(buildBookingItem).join("")   : emptyRecent;
+    const emptyUpcoming = `
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">No upcoming bookings</div>
+        <div class="empty-text">You don't have any pending or accepted bookings right now.</div>
+        <button class="btn-book" onclick="window.location.href='booking.html'">
+          <i class="fa-solid fa-plus"></i> Book a Service
+        </button>
+      </div>
+    `;
 
-  } catch(err) {
+    const emptyRecent = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-title">No recent bookings</div>
+        <div class="empty-text">Your booking history will appear here.</div>
+        <button class="btn-book" onclick="window.location.href='booking.html'">
+          <i class="fa-solid fa-plus"></i> Book a Service
+        </button>
+      </div>
+    `;
+
+    document.getElementById("upcomingList").innerHTML =
+      upcoming.length ? upcoming.map(buildBookingItem).join("") : emptyUpcoming;
+
+    document.getElementById("recentList").innerHTML =
+      recent.length ? recent.map(buildBookingItem).join("") : emptyRecent;
+
+  } catch (err) {
     console.error("Dashboard error:", err);
     showToast("⚠️ Could not load dashboard", "error");
   }
 }
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.clear(); window.location.href = "login.html";
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userPhone");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("userStatus");
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
 });
 
 window.addEventListener("DOMContentLoaded", loadDashboard);

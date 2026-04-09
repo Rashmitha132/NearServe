@@ -1,6 +1,7 @@
 window.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("adminLoginForm");
   const msg = document.getElementById("msg");
+  const loginBtn = document.getElementById("adminLoginBtn");
 
   function showMsg(text, color = "crimson") {
     msg.style.color = color;
@@ -8,36 +9,41 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (!form) {
-    console.log("Form not found");
+    console.log("Admin login form not found");
     return;
   }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("Submit event working");
-
-    //showMsg("");
+    console.log("Admin submit event triggered");
 
     const username = document.getElementById("adminUser").value.trim();
     const password = document.getElementById("adminPass").value.trim();
 
+    if (!username || !password) {
+      showMsg("Please fill all fields.");
+      return;
+    }
+
+    showMsg("");
+
+    if (loginBtn) {
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Logging in...";
+    }
+
     try {
-      const res = await fetch("/admin/login", {
+      const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
 
-      const text = await res.text();
-      let data = {};
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = {};
-      }
+      const data = await res.json().catch(() => ({}));
+      console.log("ADMIN LOGIN RESPONSE:", data);
 
       if (!res.ok) {
-        showMsg(data.error || text || "Login failed");
+        showMsg(data.message || data.error || "Login failed");
         return;
       }
 
@@ -47,10 +53,20 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       localStorage.setItem("adminToken", data.token);
-      window.location.href = "/admin_dashboard.html";
+
+      if (data.admin) {
+        localStorage.setItem("adminUser", data.admin.username || username);
+      }
+
+      window.location.href = "admin_dashboard.html";
     } catch (err) {
+      console.error("Admin login error:", err);
       showMsg("Server not responding");
-      console.error(err);
+    } finally {
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+      }
     }
   });
 });

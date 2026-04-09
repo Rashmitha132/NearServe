@@ -3,38 +3,358 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Login - QuickServe</title>
+  <title>Admin Login – NearServe</title>
 
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body class="admin-bg">
-<div class="bg-overlay"></div>
 
-<div class="login-container">
-  <div class="logo">
-    <img src="/uploads/admin.png" alt="Admin Logo">
-    <h2>QuickServe Admin</h2>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d0d;
+      --surface:   #161616;
+      --surface2:  #1e1e1e;
+      --border:    #2a2a2a;
+      --orange:    #f97316;
+      --orange2:   #ea6a0a;
+      --green:     #22c55e;
+      --red:       #ef4444;
+      --text:      #f1f1f1;
+      --muted:     #6b7280;
+      --white:     #ffffff;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Sora', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* subtle grid dots */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── static bubbles ── */
+    .bubble {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bubble-1  { width: 320px; height: 320px; top: -80px;  left: -80px;  background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.10), transparent 70%); border: 1px solid rgba(249,115,22,0.08); }
+    .bubble-2  { width: 200px; height: 200px; top: 10%;    right: 5%;    background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.07), transparent 70%); border: 1px solid rgba(249,115,22,0.06); }
+    .bubble-3  { width: 120px; height: 120px; top: 30%;    left: 4%;     background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.03), transparent 70%); border: 1px solid rgba(255,255,255,0.04); }
+    .bubble-4  { width: 260px; height: 260px; bottom: -60px; right: -60px; background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.09), transparent 70%); border: 1px solid rgba(249,115,22,0.07); }
+    .bubble-5  { width: 80px;  height: 80px;  bottom: 20%; left: 12%;    background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.02), transparent 70%); border: 1px solid rgba(255,255,255,0.04); }
+    .bubble-6  { width: 50px;  height: 50px;  top: 55%;    right: 12%;   background: transparent; border: 1px solid rgba(249,115,22,0.10); }
+    .bubble-7  { width: 30px;  height: 30px;  top: 20%;    left: 30%;    background: transparent; border: 1px solid rgba(255,255,255,0.05); }
+    .bubble-8  { width: 160px; height: 160px; bottom: 30%; right: 3%;    background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.05), transparent 70%); border: 1px solid rgba(249,115,22,0.06); }
+
+    /* ── card wrapper ── */
+    .card-wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      padding: 1rem;
+      animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    /* ── header ── */
+    .card-head {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2rem 1.8rem;
+      text-align: center;
+    }
+
+    /* navbar-style logo row */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: var(--orange);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-icon svg { width: 22px; height: 22px; }
+
+    .logo-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.3px;
+    }
+
+    .logo-name span { color: var(--orange); }
+
+    .admin-badge {
+      display: inline-block;
+      background: rgba(249,115,22,0.15);
+      border: 1px solid rgba(249,115,22,0.3);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 0.68rem;
+      color: var(--orange);
+      letter-spacing: 0.5px;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-left: 4px;
+    }
+
+    .card-head p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ── body ── */
+    .card-body {
+      padding: 1.8rem 2rem;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .input-wrap {
+      position: relative;
+      margin-bottom: 1.2rem;
+    }
+
+    .input-wrap .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      height: 46px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0 14px 0 40px;
+      font-size: 0.88rem;
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-wrap input::placeholder { color: #3d3d3d; }
+
+    .input-wrap input:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.12);
+    }
+
+    .input-wrap .toggle-pass {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 4px;
+      transition: color 0.15s;
+    }
+    .input-wrap .toggle-pass:hover { color: var(--text); }
+
+    /* ── submit btn ── */
+    #adminLoginBtn {
+      width: 100%;
+      height: 46px;
+      background: var(--orange);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.4rem;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    #adminLoginBtn:hover {
+      background: var(--orange2);
+      box-shadow: 0 6px 20px rgba(249,115,22,0.25);
+    }
+    #adminLoginBtn:active { transform: scale(0.98); }
+    #adminLoginBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── msg ── */
+    #msg {
+      min-height: 20px;
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 12px;
+      border-radius: 8px;
+      padding: 0 4px;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    /* ── divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0 1rem;
+    }
+
+    .secure-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.68rem;
+      color: #3a3a3a;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .secure-line i { color: var(--orange); font-size: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="bubble bubble-1"></div>
+  <div class="bubble bubble-2"></div>
+  <div class="bubble bubble-3"></div>
+  <div class="bubble bubble-4"></div>
+  <div class="bubble bubble-5"></div>
+  <div class="bubble bubble-6"></div>
+  <div class="bubble bubble-7"></div>
+  <div class="bubble bubble-8"></div>
+
+  <div class="card-wrap">
+    <div class="card">
+
+      <div class="card-head">
+        <div class="logo-row">
+          <div class="logo-icon">
+            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 4C12.48 4 8 8.48 8 14c0 8.5 10 18 10 18s10-9.5 10-18c0-5.52-4.48-10-10-10z" fill="white"/>
+              <circle cx="18" cy="14" r="4" fill="#f97316"/>
+            </svg>
+          </div>
+          <span class="logo-name">Near<span>Serve</span></span>
+          <span class="admin-badge">Admin</span>
+        </div>
+        <p>Manage worker proofs and verification</p>
+      </div>
+
+      <div class="card-body">
+        <form id="adminLoginForm" autocomplete="off">
+
+          <label class="field-label" for="adminUser">Username</label>
+          <div class="input-wrap">
+            <i class="fa fa-user icon"></i>
+            <input id="adminUser" type="text" placeholder="Enter admin username" required autocomplete="username" />
+          </div>
+
+          <label class="field-label" for="adminPass">Password</label>
+          <div class="input-wrap">
+            <i class="fa fa-lock icon"></i>
+            <input id="adminPass" type="password" placeholder="Enter password" required autocomplete="current-password" />
+            <button type="button" class="toggle-pass" onclick="togglePass(this)" tabindex="-1">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+
+          <button type="submit" id="adminLoginBtn">
+            <i class="fa fa-right-to-bracket"></i>
+            Login
+          </button>
+
+          <p id="msg"></p>
+        </form>
+
+        <hr class="divider">
+        <div class="secure-line">
+          <i class="fa fa-shield-halved"></i>
+          Secured Admin Access &nbsp;·&nbsp; NearServe v2.0
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <form id="adminLoginForm">
-    <h3>Admin Login</h3>
+  <script>
+    function togglePass(btn) {
+      const input = document.getElementById('adminPass');
+      const icon  = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa fa-eye';
+      }
+    }
+  </script>
 
-    <div class="input-box">
-      <i class="fa fa-user"></i>
-      <input id="adminUser" type="text" placeholder="Admin Username" required>
-    </div>
-
-    <div class="input-box">
-      <i class="fa fa-lock"></i>
-      <input id="adminPass" type="password" placeholder="Admin Password" required>
-    </div>
-
-    <button type="submit">Login</button>
-    <p class="signup-link" id="msg" style="margin-top:12px;"></p>
-  </form>
-</div>
-
-<script src="js/admin_login.js"></script>
+  <script src="js/admin_login.js"></script>
 </body>
 </html>
