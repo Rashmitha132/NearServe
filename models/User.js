@@ -6,52 +6,94 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
+      lowercase: true,
     },
+
     phone: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
+
     password: {
       type: String,
       required: true,
     },
+
     role: {
       type: String,
       enum: ["customer", "electrician", "plumber", "carpenter"],
       default: "customer",
     },
+
     status: {
       type: String,
       enum: ["full_access", "pending_verification", "proof_submitted", "probation", "blocked"],
       default: "full_access",
     },
-    proofFile: String,
-    proofReview: {
-      type: Object,
-      default: {}
+
+    proofFile: {
+      type: String,
+      default: "",
     },
 
-    // PROFILE PICTURE (base64 stored in DB so all devices see it)
+    proofReview: {
+      type: Object,
+      default: {},
+    },
+
+    // PROFILE PICTURE
     avatarBase64: {
       type: String,
       default: "",
     },
 
-    // ADDRESS FIELDS
-    address: { type: String, default: "" },
-    city:    { type: String, default: "" },
-    state:   { type: String, default: "" },
-    pincode: { type: String, default: "" },
-    country: { type: String, default: "India" },
+    // ADDRESS
+    address: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    city: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    state: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    pincode: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    country: {
+      type: String,
+      default: "India",
+      trim: true,
+    },
 
     // BIO
-    bio: { type: String, default: "" },
+    bio: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
     // WORKER AVAILABILITY
     availability: {
@@ -61,11 +103,15 @@ const userSchema = new mongoose.Schema(
     },
 
     // PREFERENCES
-    preferredService: { type: String, default: "" },
+    serviceLocation: {
+      type: String,
+      enum: ["", "home", "office", "shop", "other"],
+      default: "",
+    },
 
     communicationPref: {
       type: String,
-      enum: ["email", "chat", "phone"],   // ✅ fixed to match frontend
+      enum: ["email", "chat", "phone"],
       default: "email",
     },
 

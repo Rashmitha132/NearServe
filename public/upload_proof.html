@@ -261,6 +261,41 @@
     }
   }
 
+  function setWaitingUI() {
+    const box = document.getElementById("aadhaarBox");
+    const btn = document.getElementById("submitBtn");
+    const lbl = document.querySelector(".slbl");
+
+    box.style.display = "none";
+    document.getElementById("proofFile").style.display = "none";
+    btn.innerHTML = "⏳ Waiting for Admin Approval";
+    btn.disabled = true;
+    if (lbl) lbl.textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
+  }
+
+  function setApprovedUI() {
+    const el = document.getElementById("globalMsg");
+    const box = document.getElementById("aadhaarBox");
+    const btn = document.getElementById("submitBtn");
+
+    el.textContent = "✅ Aadhaar approved! Redirecting to your dashboard...";
+    el.className = "msg-box msg-success show";
+    box.style.display = "none";
+    btn.style.display = "none";
+  }
+
+  function setRejectedUI(reason) {
+    const el = document.getElementById("globalMsg");
+    const box = document.getElementById("aadhaarBox");
+    const btn = document.getElementById("submitBtn");
+
+    el.textContent = "❌ Your Aadhaar was rejected: " + (reason || "No reason given. Please re-upload.");
+    el.className = "msg-box msg-error show";
+    box.style.display = "";
+    btn.style.display = "";
+    btn.disabled = true;
+  }
+
   document.getElementById("proofFile").addEventListener("change", function () {
     clearMsgs();
     const file = this.files[0];
@@ -344,12 +379,7 @@
       }
 
       showSuccess("✅ Aadhaar submitted successfully! Please wait for admin verification (24–48 hours). You'll get access once approved.");
-      btn.innerHTML = `⏳ Waiting for Admin Approval`;
-      btn.disabled = true;
-
-      document.getElementById("aadhaarBox").style.display = "none";
-      document.getElementById("proofFile").style.display = "none";
-      document.querySelector(".slbl").textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
+      setWaitingUI();
     } catch (err) {
       showError("❌ Server not responding. Please try again.");
       btn.disabled = false;
@@ -374,32 +404,22 @@
 
       if (!res.ok) return;
 
-      const el = document.getElementById("globalMsg");
-      const box = document.getElementById("aadhaarBox");
-      const btn = document.getElementById("submitBtn");
-      const lbl = document.querySelector(".slbl");
+      const status = (data.status || "").toLowerCase();
+      const reviewStatus = (data.proofReview?.status || "").toLowerCase();
 
-      if (data.proofReview && data.proofReview.status === "rejected") {
-        el.textContent = "❌ Your Aadhaar was rejected: " + (data.proofReview.reason || "No reason given. Please re-upload.");
-        el.className = "msg-box msg-error show";
-        box.style.display = "";
-        btn.disabled = true;
-
-      } else if (data.status === "proof_submitted") {
+      if (reviewStatus === "rejected") {
+        setRejectedUI(data.proofReview?.reason || "No reason given. Please re-upload.");
+      } else if (status === "proof_submitted") {
+        const el = document.getElementById("globalMsg");
         el.textContent = "⏳ Aadhaar already submitted. Waiting for admin verification — please check back in 24–48 hours. You cannot re-upload until admin reviews.";
         el.className = "msg-box msg-info show";
-        box.style.display = "none";
-        document.getElementById("proofFile").style.display = "none";
-        btn.innerHTML = "⏳ Waiting for Admin Approval";
-        btn.disabled = true;
-        if (lbl) lbl.textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
-
-      } else if (data.proofReview && data.proofReview.status === "approved") {
-        el.textContent = "✅ Aadhaar approved! Redirecting to your dashboard...";
-        el.className = "msg-box msg-success show";
-        box.style.display = "none";
-        btn.style.display = "none";
-
+        setWaitingUI();
+      } else if (
+        reviewStatus === "approved" ||
+        status === "probation" ||
+        status === "full_access"
+      ) {
+        setApprovedUI();
         setTimeout(() => {
           redirectToWorkerDashboard();
         }, 1500);
@@ -425,18 +445,20 @@
 
     try {
       const res = await fetch(`${API_BASE}/profile/${phone}`);
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) return;
 
       const status = (data.status || "").toLowerCase();
       const reviewStatus = (data.proofReview?.status || "").toLowerCase();
 
-      if (reviewStatus === "approved" || status === "full_access" || status === "probation") {
+      if (
+        reviewStatus === "approved" ||
+        status === "probation" ||
+        status === "full_access"
+      ) {
         clearInterval(pollInterval);
-        document.getElementById("globalMsg").textContent = "✅ Admin approved! Redirecting to your dashboard...";
-        document.getElementById("globalMsg").className = "msg-box msg-success show";
-
+        setApprovedUI();
         setTimeout(() => {
           redirectToWorkerDashboard();
         }, 1500);

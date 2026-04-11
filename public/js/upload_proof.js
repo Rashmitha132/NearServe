@@ -7,6 +7,58 @@ const fileSizeEl = document.getElementById("fileSize");
 const errorMsg = document.getElementById("errorMsg");
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+let statusPoller = null;
+
+function getCurrentPhone() {
+  return (
+    localStorage.getItem("userPhone") ||
+    localStorage.getItem("phone") ||
+    ""
+  ).trim();
+}
+
+function getCurrentRole() {
+  return (
+    localStorage.getItem("userRole") ||
+    localStorage.getItem("role") ||
+    ""
+  ).trim().toLowerCase();
+}
+
+function goToNextPageByRole(role, status) {
+  if (status === "probation") {
+    if (role === "carpenter") {
+      window.location.href = "/carpenter_dashboard.html";
+      return;
+    }
+    if (role === "plumber") {
+      window.location.href = "/plumber_dashboard.html";
+      return;
+    }
+    if (role === "electrician") {
+      window.location.href = "/electrician_dashboard.html";
+      return;
+    }
+    window.location.href = "/dashboard.html";
+    return;
+  }
+
+  if (status === "full_access") {
+    if (role === "carpenter") {
+      window.location.href = "/carpenter_dashboard.html";
+      return;
+    }
+    if (role === "plumber") {
+      window.location.href = "/plumber_dashboard.html";
+      return;
+    }
+    if (role === "electrician") {
+      window.location.href = "/electrician_dashboard.html";
+      return;
+    }
+    window.location.href = "/dashboard.html";
+  }
+}
 
 function showError(msg) {
   errorMsg.style.color = "#c0392b";
@@ -37,144 +89,197 @@ function formatSize(bytes) {
   return (bytes / (1024 * 1024)).toFixed(2) + " MB";
 }
 
-// ✅ NEW: show admin reject reason / status message on page load
 async function loadProofReviewMessage() {
-  const phone = localStorage.getItem("phone");
+  const phone = getCurrentPhone();
+  const role = getCurrentRole();
+
   if (!phone) return;
 
   try {
-    // This endpoint must exist in server.js:
-    // GET /worker/review/:phone
-    const res = await fetch(`/worker/review/${phone}`);
+    const res = await fetch(`/worker/review/${encodeURIComponent(phone)}`);
     const text = await res.text();
+
     let data = {};
-    try { data = JSON.parse(text); } catch {}
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = {};
+    }
 
     if (!res.ok) return;
 
-    // When admin rejected proof, show reason
-    if (data.proofReview && data.proofReview.status === "rejected") {
-      showError("❌ Proof rejected: " + (data.proofReview.reason || "No reason given."));
+    const status = (data.status || "").trim().toLowerCase();
+    const proofReviewStatus = (
+      data.proofReview?.status || ""
+    ).trim().toLowerCase();
+
+    // ✅ If admin already approved and user moved ahead, redirect immediately
+    if (status === "probation" || status === "full_access") {
+      showSuccess("✅ Verification approved. Redirecting...");
+      setTimeout(() => {
+        goToNextPageByRole(role, status);
+      }, 800);
       return;
     }
 
-    // When proof uploaded and waiting admin
-    if (data.status === "proof_submitted") {
-      showInfo("⏳ Proof already submitted. Waiting for admin verification.");
-      return;
-    }
-
-    // When admin approved and moved to probation
-    if (data.proofReview && data.proofReview.status === "approved") {
-      showSuccess("✅ Proof approved by admin. You can proceed.");
-      return;
-    }
-
-  } catch (err) {
-    // ignore silently (not critical)
-  }
-}
-
-fileInput.addEventListener("change", () => {
-  clearMsg();
-
-  const file = fileInput.files[0];
-  if (!file) {
-    submitBtn.disabled = true;
-    preview.classList.add("hidden");
-    return;
-  }
-
-  const isPdf =
-    file.type === "application/pdf" ||
-    file.name.toLowerCase().endsWith(".pdf");
-
-  if (!isPdf) {
-    fileInput.value = "";
-    submitBtn.disabled = true;
-    preview.classList.add("hidden");
-    showError("Only PDF files are allowed.");
-    return;
-  }
-
-  if (file.size > MAX_SIZE) {
-    fileInput.value = "";
-    submitBtn.disabled = true;
-    preview.classList.add("hidden");
-    showError(`File too large. Max allowed is ${formatSize(MAX_SIZE)}.`);
-    return;
-  }
-
-  // Preview
-  fileNameEl.textContent = file.name;
-  fileSizeEl.textContent = formatSize(file.size);
-  preview.classList.remove("hidden");
-
-  submitBtn.disabled = false;
-});
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  clearMsg();
-
-  const file = fileInput.files[0];
-  if (!file) {
-    showError("Please select a PDF first.");
-    return;
-  }
-
-  const phone = localStorage.getItem("phone");
-  const role = localStorage.getItem("role");
-
-  if (!phone) {
-    showError("Phone not found. Please login again.");
-    return;
-  }
-
-  if (!role) {
-    showError("Role not found. Please login again.");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("proof", file);
-
-  try {
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Uploading...";
-
-    const res = await fetch(`/upload-proof/${phone}`, {
-      method: "POST",
-      body: formData
-    });
-
-    const text = await res.text();
-    let data = {};
-    try { data = JSON.parse(text); } catch {}
-
-    if (!res.ok) {
-      showError(data.error || text || "Upload failed.");
-      submitBtn.textContent = "Submit Proof";
+    // ✅ Rejected
+    if (proofReviewStatus === "rejected") {
+      showError(
+        "❌ Proof rejected: " + (data.proofReview.reason || "No reason given.")
+      );
       submitBtn.disabled = false;
       return;
     }
 
-    // ✅ SUCCESS MESSAGE
-    showSuccess((data.message || "✅ Proof uploaded successfully!") + " Redirecting...");
+    // ✅ Waiting
+    if (status === "proof_submitted") {
+      showInfo("⏳ Proof already submitted. Waiting for admin verification.");
+      submitBtn.disabled = true;
+      return;
+    }
 
-    setTimeout(() => {
-      if (role === "carpenter") window.location.href = "/carpenter_dashboard.html";
-      else if (role === "plumber") window.location.href = "/plumber_dashboard.html";
-      else if (role === "electrician") window.location.href = "/electrician_dashboard.html";
-      else window.location.href = "/login.html";
-    }, 1000);
-
+    // ✅ Pending verification can upload
+    if (status === "pending_verification") {
+      submitBtn.disabled = false;
+      return;
+    }
   } catch (err) {
-    showError("Server not responding. Check server and route /upload-proof/:phone");
-    submitBtn.textContent = "Submit Proof";
-    submitBtn.disabled = false;
+    console.log("Review check failed:", err);
   }
-});
+}
 
-// Run on page load
+function startStatusPolling() {
+  if (statusPoller) clearInterval(statusPoller);
+
+  statusPoller = setInterval(async () => {
+    const phone = getCurrentPhone();
+    const role = getCurrentRole();
+    if (!phone) return;
+
+    try {
+      const res = await fetch(`/worker/review/${encodeURIComponent(phone)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return;
+
+      const status = (data.status || "").trim().toLowerCase();
+
+      if (status === "probation" || status === "full_access") {
+        clearInterval(statusPoller);
+        showSuccess("✅ Admin approved your proof. Redirecting...");
+        setTimeout(() => {
+          goToNextPageByRole(role, status);
+        }, 800);
+      }
+    } catch (err) {
+      console.log("Polling failed:", err);
+    }
+  }, 5000);
+}
+
+if (fileInput) {
+  fileInput.addEventListener("change", () => {
+    clearMsg();
+
+    const file = fileInput.files[0];
+    if (!file) {
+      submitBtn.disabled = true;
+      preview.classList.add("hidden");
+      return;
+    }
+
+    const isPdf =
+      file.type === "application/pdf" ||
+      file.name.toLowerCase().endsWith(".pdf");
+
+    if (!isPdf) {
+      fileInput.value = "";
+      submitBtn.disabled = true;
+      preview.classList.add("hidden");
+      showError("Only PDF files are allowed.");
+      return;
+    }
+
+    if (file.size > MAX_SIZE) {
+      fileInput.value = "";
+      submitBtn.disabled = true;
+      preview.classList.add("hidden");
+      showError(`File too large. Max allowed is ${formatSize(MAX_SIZE)}.`);
+      return;
+    }
+
+    fileNameEl.textContent = file.name;
+    fileSizeEl.textContent = formatSize(file.size);
+    preview.classList.remove("hidden");
+    submitBtn.disabled = false;
+  });
+}
+
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearMsg();
+
+    const file = fileInput.files[0];
+    if (!file) {
+      showError("Please select a PDF first.");
+      return;
+    }
+
+    const phone = getCurrentPhone();
+    const role = getCurrentRole();
+
+    if (!phone) {
+      showError("Phone not found. Please login again.");
+      return;
+    }
+
+    if (!role) {
+      showError("Role not found. Please login again.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("proof", file);
+
+    try {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Uploading...";
+
+      const res = await fetch(`/upload-proof/${encodeURIComponent(phone)}`, {
+        method: "POST",
+        body: formData
+      });
+
+      const text = await res.text();
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = {};
+      }
+
+      if (!res.ok) {
+        showError(data.error || text || "Upload failed.");
+        submitBtn.textContent = "Submit Proof";
+        submitBtn.disabled = false;
+        return;
+      }
+
+      showSuccess((data.message || "✅ Proof uploaded successfully!") + " Waiting for admin approval...");
+      preview.classList.remove("hidden");
+      submitBtn.textContent = "Submitted";
+      submitBtn.disabled = true;
+
+      // ✅ Start checking until admin approves
+      startStatusPolling();
+
+    } catch (err) {
+      showError("Server not responding. Check server and route /upload-proof/:phone");
+      submitBtn.textContent = "Submit Proof";
+      submitBtn.disabled = false;
+    }
+  });
+}
+
 loadProofReviewMessage();
+startStatusPolling();

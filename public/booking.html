@@ -374,10 +374,9 @@ function updateSelectedWorkerText() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", async function() {
+window.addEventListener("DOMContentLoaded", async function () {
   const pPhone = (localStorage.getItem("userPhone") || "").trim();
   const pName = localStorage.getItem("userName") || "";
-  const avatarBase64 = localStorage.getItem("avatarBase64") || "";
 
   if (!pPhone) {
     window.location.href = "login.html";
@@ -386,44 +385,48 @@ window.addEventListener("DOMContentLoaded", async function() {
 
   const userAvatar = document.getElementById("userAvatar");
   const avatarContainer = document.querySelector(".avatar-container");
-
-  if (avatarBase64) {
-    const img = document.createElement("img");
-    img.src = avatarBase64;
-    img.style.width = "44px";
-    img.style.height = "44px";
-    img.style.borderRadius = "50%";
-    img.style.objectFit = "cover";
-    img.style.boxShadow = "0 4px 12px rgba(37,99,235,0.3)";
-    avatarContainer.innerHTML = "";
-    avatarContainer.appendChild(img);
-  } else if (pName) {
-    userAvatar.textContent = pName.charAt(0).toUpperCase();
-  }
-
-  document.getElementById("welcomeUser").textContent = "Welcome, " + (pName || "Guest") + "!";
-
   const custNameInput = document.getElementById("custName");
-  if (pName) custNameInput.value = pName;
+  const addressInput = document.getElementById("address");
+  const dateInput = document.getElementById("date");
 
-  const savedAddress = localStorage.getItem("address");
-  if (savedAddress) {
-    document.getElementById("address").value = savedAddress;
-  } else {
-    try {
-      const r = await fetch(`${API_BASE}/profile/${encodeURIComponent(pPhone)}`);
-      const data = await r.json().catch(() => ({}));
-      const profile = data.profile || data || {};
-      const parts = [profile.address, profile.city, profile.state, profile.pincode].filter(v => v && String(v).trim());
-      const fullAddress = parts.join(", ");
-      if (fullAddress) {
-        document.getElementById("address").value = fullAddress;
-        localStorage.setItem("address", fullAddress);
-      }
-    } catch {}
+  try {
+    const r = await fetch(`${API_BASE}/profile/${encodeURIComponent(pPhone)}`);
+    const data = await r.json().catch(() => ({}));
+    const profile = data.profile || data || {};
+
+    const fullName = (profile.name || pName || "").trim();
+    const fullAddress = [profile.address, profile.city, profile.state, profile.pincode]
+      .filter(v => v && String(v).trim())
+      .join(", ");
+
+    const avatarBase64 = profile.avatarBase64 || "";
+
+    if (avatarBase64) {
+      const img = document.createElement("img");
+      img.src = avatarBase64;
+      img.style.width = "44px";
+      img.style.height = "44px";
+      img.style.borderRadius = "50%";
+      img.style.objectFit = "cover";
+      img.style.boxShadow = "0 4px 12px rgba(37,99,235,0.3)";
+      avatarContainer.innerHTML = "";
+      avatarContainer.appendChild(img);
+    } else {
+      userAvatar.textContent = (fullName || "U").charAt(0).toUpperCase();
+    }
+
+    document.getElementById("welcomeUser").textContent = "Welcome, " + (fullName || "Guest") + "!";
+    custNameInput.value = fullName || "";
+    addressInput.value = fullAddress || "";
+  } catch (err) {
+    console.error("Profile load error:", err);
+    userAvatar.textContent = (pName || "U").charAt(0).toUpperCase();
+    document.getElementById("welcomeUser").textContent = "Welcome, " + (pName || "Guest") + "!";
+    custNameInput.value = pName || "";
+    addressInput.value = "";
   }
 
-  document.getElementById("date").min = new Date().toISOString().split("T")[0];
+  dateInput.min = new Date().toISOString().split("T")[0];
   updateSelectedWorkerText();
 
   const presetService = localStorage.getItem("selectedServiceRole");
@@ -461,13 +464,13 @@ window.addEventListener("DOMContentLoaded", async function() {
     updateSelectedWorkerText();
   });
 
-  document.getElementById("bookingForm").addEventListener("submit", async function(e) {
+  document.getElementById("bookingForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const service = document.getElementById("serviceSelect").value;
-    const custName = document.getElementById("custName").value.trim();
-    const address = document.getElementById("address").value.trim();
-    const date = document.getElementById("date").value;
+    const custName = custNameInput.value.trim();
+    const address = addressInput.value.trim();
+    const date = dateInput.value;
     const wPhone = (localStorage.getItem("chosenWorkerPhone") || "").trim();
     const wRole = (localStorage.getItem("chosenWorkerRole") || "").trim().toLowerCase();
     const wName = localStorage.getItem("chosenWorkerName") || "";
@@ -517,8 +520,10 @@ window.addEventListener("DOMContentLoaded", async function() {
         return;
       }
 
-      document.getElementById("bconf-service").textContent = service.charAt(0).toUpperCase() + service.slice(1);
-      document.getElementById("bconf-worker").textContent = wName ? `${wName} (${wPhone})` : `${wRole} (${wPhone})`;
+      document.getElementById("bconf-service").textContent =
+        service.charAt(0).toUpperCase() + service.slice(1);
+      document.getElementById("bconf-worker").textContent =
+        wName ? `${wName} (${wPhone})` : `${wRole} (${wPhone})`;
       document.getElementById("bconf-address").textContent = address;
       document.getElementById("bconf-date").textContent = date;
       document.getElementById("bookingSuccessOverlay").style.display = "flex";
@@ -530,11 +535,9 @@ window.addEventListener("DOMContentLoaded", async function() {
       document.getElementById("bconfCloseBtn").onclick = () => {
         document.getElementById("bookingSuccessOverlay").style.display = "none";
         document.getElementById("bookingForm").reset();
-        document.getElementById("date").min = new Date().toISOString().split("T")[0];
-        if (pName) document.getElementById("custName").value = pName;
-        if (localStorage.getItem("address")) {
-          document.getElementById("address").value = localStorage.getItem("address");
-        }
+        dateInput.min = new Date().toISOString().split("T")[0];
+        custNameInput.value = pName || "";
+        addressInput.value = "";
       };
 
       localStorage.removeItem("chosenWorkerPhone");
@@ -551,13 +554,17 @@ window.addEventListener("DOMContentLoaded", async function() {
     }
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", function() {
+  document.getElementById("logoutBtn").addEventListener("click", function () {
     localStorage.removeItem("userName");
     localStorage.removeItem("userPhone");
     localStorage.removeItem("userEmail");
     localStorage.removeItem("userRole");
     localStorage.removeItem("userStatus");
     localStorage.removeItem("token");
+    localStorage.removeItem("chosenWorkerPhone");
+    localStorage.removeItem("chosenWorkerName");
+    localStorage.removeItem("chosenWorkerRole");
+    localStorage.removeItem("selectedServiceRole");
     window.location.href = "login.html";
   });
 });

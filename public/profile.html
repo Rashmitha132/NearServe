@@ -375,6 +375,7 @@ window.addEventListener("DOMContentLoaded", async function() {
 
   const avatarImg = document.getElementById("avatarImg");
   const avatarFallback = document.getElementById("avatarFallback");
+  let currentAvatarBase64 = "";
 
   function setAvatar(nameText, imageSrc) {
     const safeName = (nameText || "User").trim();
@@ -391,52 +392,59 @@ window.addEventListener("DOMContentLoaded", async function() {
     }
   }
 
-  try {
-    const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`);
-    if (res.ok) {
-      const data = await res.json().catch(() => ({}));
-      const user = data.profile || data || {};
-      const currentName = user.name || storedName || "User";
-      const savedAvatar = localStorage.getItem("avatarBase64");
+  async function loadProfile() {
+    try {
+      const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`);
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const user = data.profile || data || {};
 
-      setAvatar(currentName, savedAvatar);
+        currentAvatarBase64 = user.avatarBase64 || "";
+        const currentName = user.name || storedName || "User";
 
-      document.getElementById("profileName").textContent = user.name || "—";
-      document.getElementById("fullName").value = user.name || "";
-      document.getElementById("email").value = user.email || storedEmail || "";
-      document.getElementById("phone").value = user.phone || phone;
-      document.getElementById("bio").value = user.bio || "";
-      document.getElementById("address").value = user.address || "";
-      document.getElementById("city").value = user.city || "";
-      document.getElementById("state").value = user.state || "";
-      document.getElementById("pincode").value = user.pincode || "";
-      document.getElementById("country").value = user.country || "India";
-      document.getElementById("serviceLocation").value = user.serviceLocation || "";
-      document.getElementById("communicationPref").value = user.communicationPref || "email";
-      document.getElementById("preferredTime").value = user.preferredTime || "flexible";
+        setAvatar(currentName, currentAvatarBase64);
 
-      const bookingsRes = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
-      if (bookingsRes.ok) {
-        const bookingsData = await bookingsRes.json().catch(() => ([]));
-        const bookings = Array.isArray(bookingsData) ? bookingsData : (bookingsData.bookings || []);
-        document.getElementById("totalBookings").textContent = Array.isArray(bookings) ? bookings.length : 0;
+        document.getElementById("profileName").textContent = user.name || "—";
+        document.getElementById("fullName").value = user.name || "";
+        document.getElementById("email").value = user.email || storedEmail || "";
+        document.getElementById("phone").value = user.phone || phone;
+        document.getElementById("bio").value = user.bio || "";
+        document.getElementById("address").value = user.address || "";
+        document.getElementById("city").value = user.city || "";
+        document.getElementById("state").value = user.state || "";
+        document.getElementById("pincode").value = user.pincode || "";
+        document.getElementById("country").value = user.country || "India";
+        document.getElementById("serviceLocation").value = user.serviceLocation || "";
+        document.getElementById("communicationPref").value = user.communicationPref || "email";
+        document.getElementById("preferredTime").value = user.preferredTime || "flexible";
+
+        const bookingsRes = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
+        if (bookingsRes.ok) {
+          const bookingsData = await bookingsRes.json().catch(() => ([]));
+          const bookings = Array.isArray(bookingsData) ? bookingsData : (bookingsData.bookings || []);
+          document.getElementById("totalBookings").textContent = Array.isArray(bookings) ? bookings.length : 0;
+        }
+
+        const createdYear = user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
+        document.getElementById("memberSince").textContent = createdYear > 1970 ? createdYear : new Date().getFullYear();
+      } else {
+        currentAvatarBase64 = "";
+        setAvatar(storedName || "User", "");
+        document.getElementById("profileName").textContent = storedName || "—";
+        document.getElementById("email").value = storedEmail || "";
+        document.getElementById("phone").value = phone;
       }
-
-      const createdYear = user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
-      document.getElementById("memberSince").textContent = createdYear > 1970 ? createdYear : new Date().getFullYear();
-    } else {
-      setAvatar(storedName || "User", localStorage.getItem("avatarBase64"));
+    } catch (err) {
+      console.error("Error loading profile:", err);
+      currentAvatarBase64 = "";
+      setAvatar(storedName || "User", "");
       document.getElementById("profileName").textContent = storedName || "—";
       document.getElementById("email").value = storedEmail || "";
       document.getElementById("phone").value = phone;
     }
-  } catch (err) {
-    console.error("Error loading profile:", err);
-    setAvatar(storedName || "User", localStorage.getItem("avatarBase64"));
-    document.getElementById("profileName").textContent = storedName || "—";
-    document.getElementById("email").value = storedEmail || "";
-    document.getElementById("phone").value = phone;
   }
+
+  await loadProfile();
 
   document.getElementById("avatarEditBtn").addEventListener("click", () => {
     document.getElementById("avatarUploadInput").click();
@@ -449,17 +457,17 @@ window.addEventListener("DOMContentLoaded", async function() {
     const reader = new FileReader();
     reader.onload = function(event) {
       const base64 = event.target.result;
-      localStorage.setItem("avatarBase64", base64);
+      currentAvatarBase64 = base64;
       setAvatar(document.getElementById("fullName").value.trim() || storedName || "User", base64);
-      showToast("✅ Profile picture updated!");
+      showToast("✅ Profile picture selected. Click Save Personal Info to save permanently.");
     };
     reader.readAsDataURL(file);
   });
 
   document.getElementById("avatarRemoveBtn").addEventListener("click", function() {
-    localStorage.removeItem("avatarBase64");
+    currentAvatarBase64 = "";
     setAvatar(document.getElementById("fullName").value.trim() || storedName || "User", "");
-    showToast("✅ Profile picture removed!");
+    showToast("✅ Profile picture removed. Click Save Personal Info to save permanently.");
   });
 
   document.getElementById("savePersonalBtn").addEventListener("click", async function() {
@@ -481,14 +489,19 @@ window.addEventListener("DOMContentLoaded", async function() {
       const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newName, email: newEmail, bio })
+        body: JSON.stringify({
+          name: newName,
+          email: newEmail,
+          bio,
+          avatarBase64: currentAvatarBase64
+        })
       });
 
       if (res.ok) {
         localStorage.setItem("userName", newName);
         localStorage.setItem("userEmail", newEmail);
         document.getElementById("profileName").textContent = newName;
-        setAvatar(newName, localStorage.getItem("avatarBase64"));
+        setAvatar(newName, currentAvatarBase64);
         showToast("✅ Personal info saved successfully!");
       } else {
         const err = await res.json().catch(() => ({}));
@@ -519,7 +532,6 @@ window.addEventListener("DOMContentLoaded", async function() {
       });
 
       if (res.ok) {
-        localStorage.setItem("address", address);
         showToast("✅ Address saved successfully!");
       } else {
         const err = await res.json().catch(() => ({}));
@@ -601,7 +613,6 @@ window.addEventListener("DOMContentLoaded", async function() {
     localStorage.removeItem("userRole");
     localStorage.removeItem("userStatus");
     localStorage.removeItem("token");
-    localStorage.removeItem("address");
     window.location.href = "login.html";
   });
 });
