@@ -442,8 +442,7 @@
 <script src="js/worker_list.js"></script>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const role   = params.get("role") || "worker";
+  const role = localStorage.getItem("selectedServiceRole") || "worker";
   document.getElementById("roleSpan").textContent = role + "s";
 
   document.getElementById("searchInput").addEventListener("input", function () {
