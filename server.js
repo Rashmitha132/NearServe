@@ -15,7 +15,7 @@ const workerRoutes = require("./routes/workerRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-//const paymentRoutes = require("./routes/paymentRoutes");
+// const paymentRoutes = require("./routes/paymentRoutes");
 
 // keep model imports only if needed elsewhere now
 require("./models/Booking");
@@ -26,8 +26,6 @@ require("./models/Review");
 require("./models/chat");
 
 const app = express();
-
-connectDB();
 
 app.locals.ADMIN_TOKEN = "QS_ADMIN_" + Math.random().toString(36).slice(2);
 
@@ -56,15 +54,28 @@ app.use("/api/workers", workerRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/chat", chatRoutes);
-//app.use("/api/payment", paymentRoutes);
+// app.use("/api/payment", paymentRoutes);
 
 const hours = Number(process.env.PENDING_EXPIRY_HOURS || 24);
-autoExpirePendingBookings(hours);
-setInterval(() => autoExpirePendingBookings(hours), 60 * 60 * 1000);
 
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+async function startServer() {
+  try {
+    await connectDB();
+
+    autoExpirePendingBookings(hours);
+    setInterval(() => autoExpirePendingBookings(hours), 60 * 60 * 1000);
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup error:", error.message);
+    process.exit(1);
+  }
+}
+
+startServer();
