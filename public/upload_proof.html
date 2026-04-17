@@ -184,7 +184,7 @@
       <div class="fp-name" id="fileName">—</div>
       <div class="fp-size" id="fileSize">—</div>
     </div>
-    <button class="fp-remove" onclick="removeFile()">✕</button>
+    <button class="fp-remove" type="button" onclick="removeFile()">✕</button>
   </div>
 
   <div class="msg-box msg-error" id="errorMsg"></div>
@@ -237,13 +237,27 @@
   function clearMsgs() {
     document.getElementById("errorMsg").className = "msg-box msg-error";
     document.getElementById("successMsg").className = "msg-box msg-success";
+    document.getElementById("globalMsg").className = "msg-box";
+    document.getElementById("globalMsg").textContent = "";
+  }
+
+  function resetSubmitButton() {
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.style.display = "";
+    btn.innerHTML = `
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      Submit Aadhaar for Verification
+    `;
   }
 
   function removeFile() {
     document.getElementById("proofFile").value = "";
     document.getElementById("preview").classList.remove("show");
     document.getElementById("aadhaarBox").classList.remove("has-file");
-    document.getElementById("submitBtn").disabled = true;
+    resetSubmitButton();
     clearMsgs();
   }
 
@@ -265,11 +279,15 @@
     const box = document.getElementById("aadhaarBox");
     const btn = document.getElementById("submitBtn");
     const lbl = document.querySelector(".slbl");
+    const preview = document.getElementById("preview");
 
     box.style.display = "none";
+    preview.classList.remove("show");
     document.getElementById("proofFile").style.display = "none";
+    btn.style.display = "";
     btn.innerHTML = "⏳ Waiting for Admin Approval";
     btn.disabled = true;
+
     if (lbl) lbl.textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
   }
 
@@ -277,21 +295,49 @@
     const el = document.getElementById("globalMsg");
     const box = document.getElementById("aadhaarBox");
     const btn = document.getElementById("submitBtn");
+    const preview = document.getElementById("preview");
+    const lbl = document.querySelector(".slbl");
 
     el.textContent = "✅ Aadhaar approved! Redirecting to your dashboard...";
     el.className = "msg-box msg-success show";
+
     box.style.display = "none";
+    preview.classList.remove("show");
     btn.style.display = "none";
+
+    if (lbl) lbl.textContent = "✅ Aadhaar Approved";
   }
 
   function setRejectedUI(reason) {
     const el = document.getElementById("globalMsg");
     const box = document.getElementById("aadhaarBox");
     const btn = document.getElementById("submitBtn");
+    const fileInput = document.getElementById("proofFile");
+    const preview = document.getElementById("preview");
+    const lbl = document.querySelector(".slbl");
 
     el.textContent = "❌ Your Aadhaar was rejected: " + (reason || "No reason given. Please re-upload.");
     el.className = "msg-box msg-error show";
+
     box.style.display = "";
+    box.classList.remove("has-file");
+    preview.classList.remove("show");
+    fileInput.style.display = "none";
+    fileInput.value = "";
+    btn.style.display = "";
+    btn.disabled = true;
+    btn.innerHTML = "Re-upload Aadhaar for Verification";
+
+    if (lbl) lbl.textContent = "❌ Aadhaar Rejected — Upload Again";
+  }
+
+  function enableUploadAgain() {
+    const box = document.getElementById("aadhaarBox");
+    const fileInput = document.getElementById("proofFile");
+    const btn = document.getElementById("submitBtn");
+
+    box.style.display = "";
+    fileInput.style.display = "none";
     btn.style.display = "";
     btn.disabled = true;
   }
@@ -326,6 +372,12 @@
     document.getElementById("preview").classList.add("show");
     document.getElementById("aadhaarBox").classList.add("has-file");
     document.getElementById("submitBtn").disabled = false;
+    document.getElementById("submitBtn").innerHTML = `
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      Submit Aadhaar for Verification
+    `;
   });
 
   document.getElementById("submitBtn").addEventListener("click", async function () {
@@ -408,13 +460,12 @@
       const reviewStatus = (data.proofReview?.status || "").toLowerCase();
 
       if (reviewStatus === "rejected") {
+        enableUploadAgain();
         setRejectedUI(data.proofReview?.reason || "No reason given. Please re-upload.");
-      } else if (status === "proof_submitted") {
-        const el = document.getElementById("globalMsg");
-        el.textContent = "⏳ Aadhaar already submitted. Waiting for admin verification — please check back in 24–48 hours. You cannot re-upload until admin reviews.";
-        el.className = "msg-box msg-info show";
-        setWaitingUI();
-      } else if (
+        return;
+      }
+
+      if (
         reviewStatus === "approved" ||
         status === "probation" ||
         status === "full_access"
@@ -423,7 +474,18 @@
         setTimeout(() => {
           redirectToWorkerDashboard();
         }, 1500);
+        return;
       }
+
+      if (status === "proof_submitted") {
+        const el = document.getElementById("globalMsg");
+        el.textContent = "⏳ Aadhaar already submitted. Waiting for admin verification — please check back in 24–48 hours. You cannot re-upload until admin reviews.";
+        el.className = "msg-box msg-info show";
+        setWaitingUI();
+        return;
+      }
+
+      resetSubmitButton();
     } catch (err) {
       console.error("Error loading proof review message:", err);
     }
@@ -462,11 +524,13 @@
         setTimeout(() => {
           redirectToWorkerDashboard();
         }, 1500);
+        return;
       }
 
       if (reviewStatus === "rejected" && status === "pending_verification") {
         clearInterval(pollInterval);
-        window.location.reload();
+        enableUploadAgain();
+        setRejectedUI(data.proofReview?.reason || "No reason given. Please re-upload.");
       }
     } catch (err) {
       console.error("Polling error:", err);

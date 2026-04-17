@@ -3,6 +3,15 @@ const Job = require("../models/Job");
 const Review = require("../models/Review");
 const asyncHandler = require("../utils/asyncHandler");
 
+const normalizeProofReview = (proofReview = {}) => {
+  return {
+    status: proofReview?.status || "none",
+    reason: proofReview?.reason || "",
+    reviewedAt: proofReview?.reviewedAt || null,
+    reviewedBy: proofReview?.reviewedBy || "",
+  };
+};
+
 const getUserByPhone = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
 
@@ -15,27 +24,75 @@ const getUserByPhone = asyncHandler(async (req, res) => {
   }
 
   res.json({
-    role: user.role,
-    status: user.status,
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
+    role: user.role || "",
+    status: user.status || "",
+    name: user.name || "",
+    email: user.email || "",
+    phone: user.phone || "",
     proofFile: user.proofFile || "",
-    proofReview: user.proofReview || {},
+    proofReview: normalizeProofReview(user.proofReview),
+  });
+});
+
+const getProofReview = asyncHandler(async (req, res) => {
+  const phone = (req.params.phone || "").trim();
+
+  const user = await User.findOne({ phone }).select(
+    "role status name email phone proofFile proofReview"
+  );
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({
+    role: user.role || "",
+    status: user.status || "",
+    name: user.name || "",
+    email: user.email || "",
+    phone: user.phone || "",
+    proofFile: user.proofFile || "",
+    proofReview: normalizeProofReview(user.proofReview),
   });
 });
 
 const getMyJobs = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
-  const jobs = await Job.find({ assignedTo: phone }).sort({ createdAt: -1 });
-  res.json(jobs);
+
+  const jobs = await Job.find({ assignedTo: phone }).sort({ videoIndex: 1, createdAt: 1 });
+
+  res.json({
+    jobs: jobs.map((job) => ({
+      _id: job._id,
+      assignedTo: job.assignedTo || "",
+      jobType: job.jobType || "",
+      workerRole: job.workerRole || "",
+      videoIndex: job.videoIndex || null,
+      title: job.title || "",
+      jobTitle: job.jobTitle || "",
+      name: job.name || "",
+      description: job.description || "",
+      status: job.status || "pending",
+      videoProofPath: job.videoProofPath || "",
+      videoReview: {
+        status: job.videoReview?.status || "none",
+        reason: job.videoReview?.reason || "",
+        reviewedAt: job.videoReview?.reviewedAt || null,
+        reviewedBy: job.videoReview?.reviewedBy || "",
+      },
+      createdAt: job.createdAt || null,
+      updatedAt: job.updatedAt || null,
+    })),
+  });
 });
 
 const uploadProof = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
   const user = await User.findOne({ phone });
 
-  if (!user) return res.status(404).json({ error: "User not found" });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
 
   if (user.role === "customer") {
     return res.status(400).json({ error: "Customers do not upload proof" });
@@ -59,6 +116,8 @@ const uploadProof = asyncHandler(async (req, res) => {
   res.json({
     message: "Proof uploaded. Waiting for admin verification.",
     fileSavedAs: req.file.filename,
+    status: user.status,
+    proofReview: normalizeProofReview(user.proofReview),
   });
 });
 
@@ -67,7 +126,9 @@ const updateJob = asyncHandler(async (req, res) => {
   const status = (req.body.status || "").trim().toLowerCase();
 
   const job = await Job.findById(jobId);
-  if (!job) return res.status(404).json({ error: "Job not found" });
+  if (!job) {
+    return res.status(404).json({ error: "Job not found" });
+  }
 
   if (status === "submitted") {
     if (!req.file) {
@@ -84,13 +145,45 @@ const updateJob = asyncHandler(async (req, res) => {
     };
 
     await job.save();
-    return res.json({ message: "Job submitted for verification", job });
+
+    return res.json({
+      message: "Job submitted for verification",
+      job: {
+        _id: job._id,
+        assignedTo: job.assignedTo || "",
+        workerRole: job.workerRole || "",
+        videoIndex: job.videoIndex || null,
+        status: job.status || "",
+        videoProofPath: job.videoProofPath || "",
+        videoReview: {
+          status: job.videoReview?.status || "none",
+          reason: job.videoReview?.reason || "",
+          reviewedAt: job.videoReview?.reviewedAt || null,
+          reviewedBy: job.videoReview?.reviewedBy || "",
+        },
+      },
+    });
   }
 
   if (status === "rejected") {
     job.status = "rejected";
+    job.videoReview = {
+      status: "rejected",
+      reason: req.body.reason || "",
+      reviewedAt: new Date(),
+      reviewedBy: req.body.reviewedBy || "",
+    };
+
     await job.save();
-    return res.json({ message: "Job marked rejected", job });
+
+    return res.json({
+      message: "Job marked rejected",
+      job: {
+        _id: job._id,
+        status: job.status,
+        videoReview: job.videoReview,
+      },
+    });
   }
 
   return res.status(400).json({ error: "Invalid status change" });
@@ -98,7 +191,10 @@ const updateJob = asyncHandler(async (req, res) => {
 
 const getWorkers = asyncHandler(async (req, res) => {
   const role = (req.query.role || "").trim().toLowerCase();
-  if (!role) return res.status(400).json({ error: "Role is required" });
+
+  if (!role) {
+    return res.status(400).json({ error: "Role is required" });
+  }
 
   const workers = await User.find({
     role,
@@ -123,10 +219,10 @@ const getWorkers = asyncHandler(async (req, res) => {
   const result = workers.map((w) => {
     const s = map.get(String(w.phone));
     return {
-      name: w.name,
-      phone: w.phone,
-      email: w.email,
-      role: w.role,
+      name: w.name || "",
+      phone: w.phone || "",
+      email: w.email || "",
+      role: w.role || "",
       avgRating: s ? Number(s.avgRating.toFixed(2)) : 0,
       reviewsCount: s ? s.reviewsCount : 0,
     };
@@ -136,7 +232,7 @@ const getWorkers = asyncHandler(async (req, res) => {
 });
 
 const getWorkerProfile = asyncHandler(async (req, res) => {
-  const phone = req.params.phone.trim();
+  const phone = (req.params.phone || "").trim();
   const worker = await User.findOne({ phone });
 
   if (!worker) {
@@ -158,6 +254,7 @@ const getWorkerProfile = asyncHandler(async (req, res) => {
       .filter((r) => r.comment && String(r.comment).trim() !== "")
       .map(async (r) => {
         let customerName = r.customerName || "";
+
         if (!customerName && r.customerPhone) {
           const customer = await User.findOne({ phone: r.customerPhone });
           customerName = customer?.name || "Customer";
@@ -178,6 +275,9 @@ const getWorkerProfile = asyncHandler(async (req, res) => {
     role: worker.role || "",
     phone: worker.phone || "",
     email: worker.email || "",
+    status: worker.status || "",
+    proofFile: worker.proofFile || "",
+    proofReview: normalizeProofReview(worker.proofReview),
     avatarBase64: worker.avatarBase64 || "",
     bio: worker.bio || "",
     address: worker.address || "",
@@ -202,7 +302,9 @@ const createProbationJob = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({ phone });
-  if (!user) return res.status(404).json({ error: "User not found" });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
 
   let job = await Job.findOne({
     assignedTo: phone,
@@ -222,7 +324,17 @@ const createProbationJob = asyncHandler(async (req, res) => {
       await job.save();
     }
 
-    return res.json({ jobId: job._id, message: "Job slot ready" });
+    return res.json({
+      jobId: job._id,
+      message: "Job slot ready",
+      job: {
+        _id: job._id,
+        assignedTo: job.assignedTo || "",
+        workerRole: job.workerRole || "",
+        videoIndex: job.videoIndex || null,
+        status: job.status || "pending",
+      },
+    });
   }
 
   job = await Job.create({
@@ -230,6 +342,7 @@ const createProbationJob = asyncHandler(async (req, res) => {
     jobType: role,
     workerRole: role,
     videoIndex: Number(videoIndex),
+    title: `Video ${videoIndex}`,
     description: `Probation video ${videoIndex} — ${role}`,
     status: "pending",
     videoReview: {
@@ -240,11 +353,22 @@ const createProbationJob = asyncHandler(async (req, res) => {
     },
   });
 
-  res.json({ jobId: job._id, message: "Job slot created" });
+  res.json({
+    jobId: job._id,
+    message: "Job slot created",
+    job: {
+      _id: job._id,
+      assignedTo: job.assignedTo || "",
+      workerRole: job.workerRole || "",
+      videoIndex: job.videoIndex || null,
+      status: job.status || "pending",
+    },
+  });
 });
 
 module.exports = {
   getUserByPhone,
+  getProofReview,
   getMyJobs,
   uploadProof,
   updateJob,
