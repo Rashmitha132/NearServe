@@ -1,551 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Electrician Dashboard - NearServe</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  :root{--blue:#2563eb;--teal:#0d9488;--dark:#0f172a;--mid:#475569;--soft:#94a3b8;--bg:#f0f7ff;--border:#e2eaf4;}
-  html,body{height:100%;}
-  body{min-height:100vh;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:stretch;overflow-x:hidden;background:var(--bg);}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electrician Dashboard - NearServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --blue:#2563eb;
+      --teal:#0d9488;
+      --dark:#0f172a;
+      --soft:#94a3b8;
+      --bg:#eef6ff;
+      --border:#e2e8f0;
+    }
 
-  /* ══ LEFT PANEL ══ */
-  .left-panel{width:42%;min-height:100vh;background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%);position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:48px 44px;overflow:hidden;flex-shrink:0;}
-  .left-panel::before{content:'';position:absolute;width:450px;height:450px;border-radius:50%;background:rgba(255,255,255,0.05);top:-130px;right:-110px;}
-  .left-panel::after{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.04);bottom:-90px;left:-90px;}
-  .deco-ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,0.09);}
-  .r1{width:200px;height:200px;top:32%;right:-50px;}.r2{width:110px;height:110px;top:55%;right:44px;border-color:rgba(255,255,255,0.06);}.r3{width:75px;height:75px;top:18%;left:28px;border-color:rgba(255,255,255,0.07);}
-  .fi{position:absolute;width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,0.13);border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 24px rgba(0,0,0,0.18);animation:bob ease-in-out infinite alternate;}
-  .fi1{top:16%;left:10%;animation-duration:3.2s;}.fi2{top:36%;right:12%;animation-duration:2.8s;animation-delay:0.5s;}.fi3{top:56%;left:16%;animation-duration:3.6s;animation-delay:1s;}.fi4{top:72%;right:18%;animation-duration:2.5s;animation-delay:0.3s;}.fi5{top:25%;right:26%;animation-duration:3.9s;animation-delay:0.7s;}
-  @keyframes bob{from{transform:translateY(0) rotate(-3deg);}to{transform:translateY(-13px) rotate(3deg);}}
-  .l-logo{position:relative;z-index:2;display:flex;align-items:center;gap:12px;}
-  .l-logo-icon{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,0.16);border:1.5px solid rgba(255,255,255,0.28);display:flex;align-items:center;justify-content:center;}
-  .l-logo span{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;}
-  .l-main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:36px 0;}
-  .l-main h2{font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;line-height:1.22;margin-bottom:16px;text-shadow:0 2px 20px rgba(0,0,0,0.2);}
-  .l-main h2 em{font-style:normal;background:linear-gradient(90deg,#7dd3fc,#5eead4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-  .l-main p{color:rgba(255,255,255,0.68);font-size:0.93rem;line-height:1.75;max-width:290px;margin-bottom:28px;}
-  .l-steps{display:flex;flex-direction:column;gap:13px;margin-bottom:28px;}
-  .l-step{display:flex;align-items:flex-start;gap:11px;}
-  .l-step-num{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.28);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px;}
-  .l-step-text strong{display:block;font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:1px;}
-  .l-step-text span{font-size:0.73rem;color:rgba(255,255,255,0.55);line-height:1.4;}
-  .l-stats{position:relative;z-index:2;display:flex;gap:22px;align-items:center;}
-  .stat-num{font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:#fff;}
-  .stat-lbl{font-size:0.73rem;color:rgba(255,255,255,0.58);}
-  .sdiv{width:1px;background:rgba(255,255,255,0.2);height:36px;}
+    html,body{height:100%;}
+    body{
+      min-height:100vh;
+      font-family:'Plus Jakarta Sans',sans-serif;
+      display:flex;
+      background:var(--bg);
+      overflow-x:hidden;
+    }
 
-  /* ══ RIGHT PANEL ══ */
-  .right-panel{flex:1;min-height:100vh;background:#fff;display:flex;flex-direction:column;justify-content:flex-start;padding:48px 52px;overflow-y:auto;}
+    .left-panel{
+      width:42%;
+      min-height:100vh;
+      background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%);
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:48px 44px;
+      overflow:hidden;
+      flex-shrink:0;
+    }
 
-  /* ── TOP BAR ── */
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:1.5px solid var(--border);flex-wrap:wrap;gap:14px;}
-  .worker-info{display:flex;align-items:center;gap:12px;}
-  .worker-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0d9488);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.3);}
-  .worker-name{font-size:0.92rem;font-weight:700;color:var(--dark);}
-  .worker-role{font-size:0.73rem;color:var(--soft);}
-  .btn-logout{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1.5px solid #fee2e2;background:#fff5f5;color:#ef4444;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s;}
-  .btn-logout:hover{background:#fee2e2;}
+    .left-panel::before{
+      content:'';
+      position:absolute;
+      width:450px;
+      height:450px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.05);
+      top:-130px;
+      right:-110px;
+    }
 
-  /* ── HEADER ── */
-  .fhead{margin-bottom:24px;}
-  .fhead h1{font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--dark);margin-bottom:4px;}
-  .fhead p{color:var(--soft);font-size:0.85rem;}
+    .left-panel::after{
+      content:'';
+      position:absolute;
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.04);
+      bottom:-90px;
+      left:-90px;
+    }
 
-  /* ── STATUS BADGE ── */
-  .status-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:20px;font-size:0.8rem;font-weight:700;margin-bottom:22px;}
-  .sb-probation{background:#fef3c7;color:#d97706;border:1.5px solid #fde68a;}
-  .sb-waiting{background:#eff6ff;color:var(--blue);border:1.5px solid #bfdbfe;}
+    .deco-ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,0.09);}
+    .r1{width:200px;height:200px;top:32%;right:-50px;}
+    .r2{width:110px;height:110px;top:55%;right:44px;border-color:rgba(255,255,255,0.06);}
+    .r3{width:75px;height:75px;top:18%;left:28px;border-color:rgba(255,255,255,0.07);}
 
-  /* ── PROGRESS BAR ── */
-  .progress-wrap{background:#f1f5f9;border-radius:100px;height:8px;margin-bottom:8px;overflow:hidden;}
-  .progress-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,#1d4ed8,#0d9488);transition:width 0.5s ease;}
-  .progress-label{font-size:0.75rem;color:var(--soft);margin-bottom:20px;}
+    .fi{
+      position:absolute;
+      width:54px;
+      height:54px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.13);
+      border:1.5px solid rgba(255,255,255,0.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.18);
+      animation:bob ease-in-out infinite alternate;
+    }
+    .fi1{top:16%;left:10%;animation-duration:3.2s;}
+    .fi2{top:36%;right:12%;animation-duration:2.8s;animation-delay:.5s;}
+    .fi3{top:56%;left:16%;animation-duration:3.6s;animation-delay:1s;}
+    .fi4{top:72%;right:18%;animation-duration:2.5s;animation-delay:.3s;}
+    .fi5{top:24%;right:26%;animation-duration:3.9s;animation-delay:.7s;}
 
-  /* ── VIDEO CARDS ── */
-  .video-grid{display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
-  .video-card{background:#fafcff;border:1.5px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:box-shadow 0.2s;}
-  .video-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);}
-  .video-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2563eb,#0d9488);}
-  .video-card.uploaded{border-color:#bbf7d0;background:#f0fdf4;}
-  .video-card.uploaded::before{background:linear-gradient(90deg,#16a34a,#0d9488);}
-  .video-card.rejected{border-color:#fecaca;background:#fff5f5;}
-  .video-card.rejected::before{background:linear-gradient(90deg,#dc2626,#ef4444);}
-  .video-card.approved{border-color:#bbf7d0;background:#f0fdf4;}
-  .video-card.approved::before{background:linear-gradient(90deg,#16a34a,#22c55e);}
+    @keyframes bob{
+      from{transform:translateY(0) rotate(-3deg);}
+      to{transform:translateY(-13px) rotate(3deg);}
+    }
 
-  .vc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-  .vc-title{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;color:var(--dark);display:flex;align-items:center;gap:8px;}
-  .vc-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;}
-  .vcb-pending{background:#f1f5f9;color:var(--soft);}
-  .vcb-uploaded{background:#dcfce7;color:#16a34a;}
-  .vcb-waiting{background:#eff6ff;color:var(--blue);}
-  .vcb-approved{background:#dcfce7;color:#16a34a;}
-  .vcb-rejected{background:#fee2e2;color:#dc2626;}
+    .l-logo{
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
 
-  .vc-desc{font-size:0.8rem;color:var(--soft);margin-bottom:14px;line-height:1.5;}
+    .l-logo-icon{
+      width:46px;height:46px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.16);
+      border:1.5px solid rgba(255,255,255,0.28);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
 
-  .vc-preview{display:none;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;align-items:center;gap:10px;}
-  .vc-preview.show{display:flex;}
-  .vc-preview-name{font-size:0.82rem;font-weight:700;color:#0d9488;}
-  .vc-preview-size{font-size:0.72rem;color:var(--soft);}
-  .vc-remove{margin-left:auto;background:none;border:none;color:var(--soft);cursor:pointer;font-size:1rem;padding:4px;transition:color 0.2s;}
-  .vc-remove:hover{color:#ef4444;}
+    .l-logo span{
+      font-family:'Nunito',sans-serif;
+      font-size:1.3rem;
+      font-weight:900;
+      color:#fff;
+    }
 
-  .vc-rejection-reason{background:#fff5f5;border:1px solid #fecaca;border-radius:9px;padding:9px 13px;font-size:0.78rem;color:#dc2626;margin-bottom:12px;display:none;}
-  .vc-rejection-reason.show{display:block;}
+    .l-main{
+      position:relative;
+      z-index:2;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding:36px 0;
+    }
 
-  .btn-upload{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#1d4ed8,#0d9488);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 14px rgba(29,78,216,0.25);}
-  .btn-upload:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(29,78,216,0.32);}
-  .btn-upload:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+    .l-main h2{
+      font-family:'Nunito',sans-serif;
+      font-size:2.2rem;
+      font-weight:900;
+      color:#fff;
+      line-height:1.22;
+      margin-bottom:16px;
+    }
 
-  /* ── GLOBAL MSG ── */
-  .msg-box{padding:13px 16px;border-radius:12px;font-size:0.85rem;font-weight:600;margin-bottom:18px;display:none;line-height:1.5;}
-  .msg-box.show{display:block;}
-  .msg-error  {background:#fff5f5;border:1.5px solid #fecaca;color:#dc2626;}
-  .msg-success{background:#f0fdf4;border:1.5px solid #bbf7d0;color:#16a34a;}
-  .msg-info   {background:#eff6ff;border:1.5px solid #bfdbfe;color:var(--blue);}
-  .msg-warning{background:#fffbeb;border:1.5px solid #fde68a;color:#d97706;}
+    .l-main h2 em{
+      font-style:normal;
+      background:linear-gradient(90deg,#7dd3fc,#5eead4);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
 
-  /* ── SUBMIT ALL BUTTON ── */
-  .btn-submit-all{width:100%;padding:15px;border:none;border-radius:13px;background:linear-gradient(135deg,#1d4ed8 0%,#0d9488 100%);color:#fff;font-size:1rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 24px rgba(29,78,216,0.32);transition:transform 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;}
-  .btn-submit-all:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
-  .btn-submit-all:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(29,78,216,0.38);}
+    .l-main p{
+      color:rgba(255,255,255,0.68);
+      font-size:.93rem;
+      line-height:1.75;
+      max-width:320px;
+      margin-bottom:28px;
+    }
 
-  .hint-text{font-size:0.75rem;color:var(--soft);text-align:center;margin-top:14px;line-height:1.6;}
+    .l-steps{
+      display:flex;
+      flex-direction:column;
+      gap:13px;
+      margin-bottom:28px;
+    }
 
-  @media(max-width:780px){body{flex-direction:column;}.left-panel{width:100%;min-height:auto;padding:28px 24px;}.l-main h2{font-size:1.6rem;}.l-stats{display:none;}.fi3,.fi4,.fi5{display:none;}.right-panel{padding:28px 22px;}}
-</style>
+    .l-step{display:flex;align-items:flex-start;gap:11px;}
+    .l-step-num{
+      width:28px;height:28px;
+      border-radius:8px;
+      background:rgba(255,255,255,0.18);
+      border:1.5px solid rgba(255,255,255,0.28);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Nunito',sans-serif;
+      font-size:.75rem;font-weight:900;color:#fff;
+      flex-shrink:0;margin-top:1px;
+    }
+
+    .l-step-text strong{
+      display:block;
+      font-size:.82rem;
+      font-weight:700;
+      color:#fff;
+      margin-bottom:1px;
+    }
+
+    .l-step-text span{
+      font-size:.73rem;
+      color:rgba(255,255,255,0.55);
+      line-height:1.4;
+    }
+
+    .l-stats{
+      position:relative;
+      z-index:2;
+      display:flex;
+      gap:22px;
+      align-items:center;
+    }
+
+    .stat-num{
+      font-family:'Nunito',sans-serif;
+      font-size:1.55rem;
+      font-weight:900;
+      color:#fff;
+    }
+
+    .stat-lbl{
+      font-size:.73rem;
+      color:rgba(255,255,255,0.58);
+    }
+
+    .sdiv{
+      width:1px;
+      background:rgba(255,255,255,0.2);
+      height:36px;
+    }
+
+    .right-panel{
+      flex:1;
+      min-height:100vh;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      padding:48px 52px;
+      overflow-y:auto;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:28px;
+      padding-bottom:18px;
+      border-bottom:1.5px solid var(--border);
+      flex-wrap:wrap;
+      gap:14px;
+    }
+
+    .worker-info{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .worker-avatar{
+      width:44px;height:44px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#2563eb,#0d9488);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:'Nunito',sans-serif;
+      font-size:1.1rem;
+      font-weight:800;
+      color:#fff;
+      box-shadow:0 4px 12px rgba(37,99,235,0.3);
+    }
+
+    .worker-name{font-size:.92rem;font-weight:700;color:var(--dark);}
+    .worker-role{font-size:.73rem;color:var(--soft);}
+
+    .btn-logout{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 16px;
+      border-radius:10px;
+      border:1.5px solid #fee2e2;
+      background:#fff5f5;
+      color:#ef4444;
+      font-size:.8rem;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .fhead{margin-bottom:24px;}
+    .fhead h1{
+      font-family:'Nunito',sans-serif;
+      font-size:1.75rem;
+      font-weight:900;
+      color:var(--dark);
+      margin-bottom:4px;
+    }
+    .fhead p{
+      color:var(--soft);
+      font-size:.85rem;
+      line-height:1.6;
+      max-width:680px;
+    }
+
+    .msg-box{
+      padding:13px 16px;
+      border-radius:12px;
+      font-size:.85rem;
+      font-weight:600;
+      margin-bottom:18px;
+      display:none;
+      line-height:1.55;
+    }
+    .msg-box.show{display:block;}
+    .msg-success{background:#f0fdf4;border:1.5px solid #bbf7d0;color:#16a34a;}
+    .msg-error{background:#fff5f5;border:1.5px solid #fecaca;color:#dc2626;}
+    .msg-warning{background:#fffbeb;border:1.5px solid #fde68a;color:#d97706;}
+    .msg-info{background:#eff6ff;border:1.5px solid #bfdbfe;color:#2563eb;}
+
+    .video-grid{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      margin-bottom:22px;
+    }
+
+    .video-card{
+      background:#fafcff;
+      border:1.5px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .video-card::before{
+      content:'';
+      position:absolute;
+      top:0;left:0;right:0;
+      height:4px;
+      background:linear-gradient(90deg,#2563eb,#0d9488);
+    }
+
+    .video-card.approved{
+      background:#f0fdf4;
+      border-color:#bbf7d0;
+    }
+
+    .video-card.approved::before{
+      background:linear-gradient(90deg,#16a34a,#22c55e);
+    }
+
+    .video-card.rejected{
+      background:#fff5f5;
+      border-color:#fecaca;
+    }
+
+    .video-card.rejected::before{
+      background:linear-gradient(90deg,#dc2626,#ef4444);
+    }
+
+    .video-card.review{
+      background:#eff6ff;
+      border-color:#bfdbfe;
+    }
+
+    .video-card.review::before{
+      background:linear-gradient(90deg,#2563eb,#0d9488);
+    }
+
+    .vc-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+
+    .vc-title{
+      font-family:'Nunito',sans-serif;
+      font-size:1rem;
+      font-weight:900;
+      color:var(--dark);
+    }
+
+    .vc-badge{
+      padding:5px 11px;
+      border-radius:999px;
+      font-size:.72rem;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+    }
+
+    .badge-pending{background:#f1f5f9;color:#64748b;}
+    .badge-review{background:#dbeafe;color:#2563eb;}
+    .badge-approved{background:#dcfce7;color:#16a34a;}
+    .badge-rejected{background:#fee2e2;color:#dc2626;}
+
+    .vc-desc{
+      color:var(--soft);
+      font-size:.82rem;
+      line-height:1.6;
+      margin-bottom:14px;
+    }
+
+    .reject-reason{
+      display:none;
+      background:#fff;
+      border:1px solid #fecaca;
+      border-radius:10px;
+      padding:10px 12px;
+      color:#dc2626;
+      font-size:.8rem;
+      font-weight:600;
+      margin-bottom:14px;
+    }
+
+    .reject-reason.show{display:block;}
+
+    .file-preview{
+      display:none;
+      align-items:center;
+      gap:12px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px 14px;
+      margin-bottom:14px;
+    }
+
+    .file-preview.show{display:flex;}
+
+    .file-name{
+      font-size:.83rem;
+      font-weight:700;
+      color:#0d9488;
+      word-break:break-word;
+    }
+
+    .file-size{
+      font-size:.73rem;
+      color:var(--soft);
+    }
+
+    .file-remove{
+      margin-left:auto;
+      border:none;
+      background:none;
+      color:var(--soft);
+      cursor:pointer;
+      font-size:1rem;
+      padding:4px;
+    }
+
+    .file-remove:hover{color:#dc2626;}
+
+    .btn-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn-primary{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:11px 18px;
+      border:none;
+      border-radius:11px;
+      background:linear-gradient(135deg,#1d4ed8,#0d9488);
+      color:#fff;
+      font-size:.83rem;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn-primary:disabled{
+      opacity:.48;
+      cursor:not-allowed;
+    }
+
+    .helper-card{
+      background:#fff;
+      border:1.5px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+    }
+
+    .helper-title{
+      font-family:'Nunito',sans-serif;
+      font-size:1rem;
+      font-weight:900;
+      color:var(--dark);
+      margin-bottom:10px;
+    }
+
+    .helper-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      color:var(--soft);
+      font-size:.81rem;
+      line-height:1.6;
+    }
+
+    .helper-list div{
+      padding-left:18px;
+      position:relative;
+    }
+
+    .helper-list div::before{
+      content:'•';
+      position:absolute;
+      left:0;
+      top:0;
+      color:#0d9488;
+      font-weight:900;
+    }
+
+    @media(max-width:780px){
+      body{flex-direction:column;}
+      .left-panel{width:100%;min-height:auto;padding:28px 24px;}
+      .l-main h2{font-size:1.65rem;}
+      .l-stats{display:none;}
+      .fi3,.fi4,.fi5{display:none;}
+      .right-panel{padding:28px 22px;}
+    }
+  </style>
 </head>
 <body>
 
-<!-- ══ LEFT PANEL ══ -->
-<div class="left-panel">
-  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">⚡</div><div class="fi fi2">🎥</div><div class="fi fi3">🔧</div><div class="fi fi4">✅</div><div class="fi fi5">🛠️</div>
-  <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
-    </div>
-    <span>NearServe</span>
-  </div>
-  <div class="l-main">
-    <h2>Probation <em>Dashboard</em></h2>
-    <p>Upload 3 videos of yourself doing electrical work to prove your skills and get full access.</p>
-    <div class="l-steps">
-      <div class="l-step"><div class="l-step-num">1</div><div class="l-step-text"><strong>Upload 3 Work Videos</strong><span>Show wiring, installation, or repair work clearly.</span></div></div>
-      <div class="l-step"><div class="l-step-num">2</div><div class="l-step-text"><strong>Admin Reviews</strong><span>Our team verifies your work is genuine and relevant.</span></div></div>
-      <div class="l-step"><div class="l-step-num">3</div><div class="l-step-text"><strong>All 3 Approved</strong><span>All videos must be approved to get full access.</span></div></div>
-      <div class="l-step"><div class="l-step-num">4</div><div class="l-step-text"><strong>Full Access</strong><span>You appear in the worker list and can accept jobs!</span></div></div>
-    </div>
-  </div>
-  <div class="l-stats">
-    <div><div class="stat-num">🎥</div><div class="stat-lbl">3 Videos</div></div>
-    <div class="sdiv"></div>
-    <div><div class="stat-num">✅</div><div class="stat-lbl">All Must Pass</div></div>
-    <div class="sdiv"></div>
-    <div><div class="stat-num">⚡</div><div class="stat-lbl">Fast Review</div></div>
-  </div>
-</div>
+  <div class="left-panel">
+    <div class="deco-ring r1"></div>
+    <div class="deco-ring r2"></div>
+    <div class="deco-ring r3"></div>
 
-<!-- ══ RIGHT PANEL ══ -->
-<div class="right-panel">
+    <div class="fi fi1">🎥</div>
+    <div class="fi fi2">⚡</div>
+    <div class="fi fi3">✅</div>
+    <div class="fi fi4">📤</div>
+    <div class="fi fi5">🔌</div>
 
-  <div class="topbar">
-    <div class="worker-info">
-      <div class="worker-avatar" id="workerAvatar">E</div>
-      <div>
-        <div class="worker-name" id="workerName">Electrician</div>
-        <div class="worker-role">⚡ Electrician · Probation</div>
+    <div class="l-logo">
+      <div class="l-logo-icon">
+        <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
+          <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
+          <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/>
+          <circle cx="19" cy="16" r="2.8" fill="#14b8a6"/>
+          <circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
+          <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
+          <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
+          <circle cx="32" cy="26" r="1.7" fill="white"/>
+          <circle cx="37" cy="26" r="1.7" fill="white"/>
+          <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
+        </svg>
+      </div>
+      <span>NearServe</span>
+    </div>
+
+    <div class="l-main">
+      <h2>Probation <em>Video Review</em></h2>
+      <p>Upload 3 electrical work videos. If any specific video is rejected, only that one can be uploaded again. After all 3 are approved, you get full access.</p>
+
+      <div class="l-steps">
+        <div class="l-step">
+          <div class="l-step-num">1</div>
+          <div class="l-step-text">
+            <strong>Upload 3 Videos</strong>
+            <span>Submit clear videos showing your electrical work.</span>
+          </div>
+        </div>
+        <div class="l-step">
+          <div class="l-step-num">2</div>
+          <div class="l-step-text">
+            <strong>Admin Reviews</strong>
+            <span>Each video is checked separately by admin.</span>
+          </div>
+        </div>
+        <div class="l-step">
+          <div class="l-step-num">3</div>
+          <div class="l-step-text">
+            <strong>Rejected Video Reupload</strong>
+            <span>Only rejected videos can be uploaded again.</span>
+          </div>
+        </div>
+        <div class="l-step">
+          <div class="l-step-num">4</div>
+          <div class="l-step-text">
+            <strong>Full Access</strong>
+            <span>When all 3 are approved, you are redirected automatically.</span>
+          </div>
+        </div>
       </div>
     </div>
-    <button class="btn-logout" id="logoutBtn">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Logout
-    </button>
+
+    <div class="l-stats">
+      <div><div class="stat-num">3</div><div class="stat-lbl">Videos</div></div>
+      <div class="sdiv"></div>
+      <div><div class="stat-num">1</div><div class="stat-lbl">Reupload if rejected</div></div>
+      <div class="sdiv"></div>
+      <div><div class="stat-num">✅</div><div class="stat-lbl">All Approved</div></div>
+    </div>
   </div>
 
-  <div class="fhead">
-    <h1>🎥 Upload Work Videos</h1>
-    <p>Upload 3 videos showing you doing electrical work. All 3 must be approved by admin to get full access.</p>
-  </div>
-
-  <!-- Global message -->
-  <div class="msg-box" id="globalMsg"></div>
-
-  <!-- Progress -->
-  <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
-  <div class="progress-label" id="progressLabel">0 of 3 videos uploaded</div>
-
-  <!-- Video Cards -->
-  <div class="video-grid">
-
-    <!-- Video 1 -->
-    <div class="video-card" id="card1">
-      <div class="vc-top">
-        <div class="vc-title">🎥 Video 1</div>
-        <span class="vc-badge vcb-pending" id="badge1">Not uploaded</span>
+  <div class="right-panel">
+    <div class="topbar">
+      <div class="worker-info">
+        <div class="worker-avatar" id="workerAvatar">E</div>
+        <div>
+          <div class="worker-name" id="workerName">Electrician</div>
+          <div class="worker-role">⚡ Electrician · Probation Stage</div>
+        </div>
       </div>
-      <div class="vc-desc">Show a wiring or electrical installation work clearly. Make sure your face and the work area are visible. Max 50 MB.</div>
-      <div class="vc-rejection-reason" id="reason1"></div>
-      <div class="vc-preview" id="preview1">
-        <span style="font-size:1.4rem;">🎬</span>
-        <div><div class="vc-preview-name" id="name1">—</div><div class="vc-preview-size" id="size1">—</div></div>
-        <button class="vc-remove" onclick="removeVideo(1)">✕</button>
-      </div>
-      <input type="file" id="file1" accept="video/*" style="display:none" onchange="handleFile(1)">
-      <button class="btn-upload" id="btnUpload1" onclick="document.getElementById('file1').click()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Choose Video
+
+      <button class="btn-logout" id="logoutBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Logout
       </button>
     </div>
 
-    <!-- Video 2 -->
-    <div class="video-card" id="card2">
-      <div class="vc-top">
-        <div class="vc-title">🎥 Video 2</div>
-        <span class="vc-badge vcb-pending" id="badge2">Not uploaded</span>
-      </div>
-      <div class="vc-desc">Show a different electrical task — repair, switch installation, or circuit testing. Max 50 MB.</div>
-      <div class="vc-rejection-reason" id="reason2"></div>
-      <div class="vc-preview" id="preview2">
-        <span style="font-size:1.4rem;">🎬</span>
-        <div><div class="vc-preview-name" id="name2">—</div><div class="vc-preview-size" id="size2">—</div></div>
-        <button class="vc-remove" onclick="removeVideo(2)">✕</button>
-      </div>
-      <input type="file" id="file2" accept="video/*" style="display:none" onchange="handleFile(2)">
-      <button class="btn-upload" id="btnUpload2" onclick="document.getElementById('file2').click()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Choose Video
-      </button>
+    <div class="fhead">
+      <h1>🎥 Upload Work Videos</h1>
+      <p>Each video is reviewed separately. Re-upload is available only for rejected videos. After all 3 are approved, you will be redirected automatically.</p>
     </div>
 
-    <!-- Video 3 -->
-    <div class="video-card" id="card3">
-      <div class="vc-top">
-        <div class="vc-title">🎥 Video 3</div>
-        <span class="vc-badge vcb-pending" id="badge3">Not uploaded</span>
+    <div class="msg-box" id="globalMsg"></div>
+
+    <div class="video-grid">
+      <div class="video-card" id="card1">
+        <div class="vc-top">
+          <div class="vc-title">Video 1</div>
+          <div class="vc-badge badge-pending" id="badge1">Not uploaded</div>
+        </div>
+        <div class="vc-desc">Upload your first electrical work video.</div>
+        <div class="reject-reason" id="reason1"></div>
+        <div class="file-preview" id="preview1">
+          <span style="font-size:1.4rem;">🎬</span>
+          <div>
+            <div class="file-name" id="name1">—</div>
+            <div class="file-size" id="size1">—</div>
+          </div>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(1)">✕</button>
+        </div>
+        <input type="file" id="file1" accept="video/*" style="display:none">
+        <div class="btn-row">
+          <button class="btn-primary" id="btnChoose1" type="button" onclick="document.getElementById('file1').click()">Choose Video</button>
+          <button class="btn-primary" id="btnUpload1" type="button" onclick="submitVideo(1)" disabled>Submit Video 1</button>
+        </div>
       </div>
-      <div class="vc-desc">Show a third task — panel work, earthing, or any professional electrical service. Max 50 MB.</div>
-      <div class="vc-rejection-reason" id="reason3"></div>
-      <div class="vc-preview" id="preview3">
-        <span style="font-size:1.4rem;">🎬</span>
-        <div><div class="vc-preview-name" id="name3">—</div><div class="vc-preview-size" id="size3">—</div></div>
-        <button class="vc-remove" onclick="removeVideo(3)">✕</button>
+
+      <div class="video-card" id="card2">
+        <div class="vc-top">
+          <div class="vc-title">Video 2</div>
+          <div class="vc-badge badge-pending" id="badge2">Not uploaded</div>
+        </div>
+        <div class="vc-desc">Upload your second electrical work video.</div>
+        <div class="reject-reason" id="reason2"></div>
+        <div class="file-preview" id="preview2">
+          <span style="font-size:1.4rem;">🎬</span>
+          <div>
+            <div class="file-name" id="name2">—</div>
+            <div class="file-size" id="size2">—</div>
+          </div>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(2)">✕</button>
+        </div>
+        <input type="file" id="file2" accept="video/*" style="display:none">
+        <div class="btn-row">
+          <button class="btn-primary" id="btnChoose2" type="button" onclick="document.getElementById('file2').click()">Choose Video</button>
+          <button class="btn-primary" id="btnUpload2" type="button" onclick="submitVideo(2)" disabled>Submit Video 2</button>
+        </div>
       </div>
-      <input type="file" id="file3" accept="video/*" style="display:none" onchange="handleFile(3)">
-      <button class="btn-upload" id="btnUpload3" onclick="document.getElementById('file3').click()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Choose Video
-      </button>
+
+      <div class="video-card" id="card3">
+        <div class="vc-top">
+          <div class="vc-title">Video 3</div>
+          <div class="vc-badge badge-pending" id="badge3">Not uploaded</div>
+        </div>
+        <div class="vc-desc">Upload your third electrical work video.</div>
+        <div class="reject-reason" id="reason3"></div>
+        <div class="file-preview" id="preview3">
+          <span style="font-size:1.4rem;">🎬</span>
+          <div>
+            <div class="file-name" id="name3">—</div>
+            <div class="file-size" id="size3">—</div>
+          </div>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(3)">✕</button>
+        </div>
+        <input type="file" id="file3" accept="video/*" style="display:none">
+        <div class="btn-row">
+          <button class="btn-primary" id="btnChoose3" type="button" onclick="document.getElementById('file3').click()">Choose Video</button>
+          <button class="btn-primary" id="btnUpload3" type="button" onclick="submitVideo(3)" disabled>Submit Video 3</button>
+        </div>
+      </div>
     </div>
 
+    <div class="helper-card">
+      <div class="helper-title">How this works</div>
+      <div class="helper-list">
+        <div>If a video is under review, you cannot upload it again.</div>
+        <div>If a video is rejected, only that video gets re-upload option.</div>
+        <div>If all 3 videos are approved, you are redirected to electrician requests page.</div>
+      </div>
+    </div>
   </div>
-
-  <!-- Submit All -->
-  <button class="btn-submit-all" id="btnSubmitAll" disabled>
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    Submit All 3 Videos for Review
-  </button>
-  <div class="hint-text">All 3 videos must be uploaded before submitting.<br>Once submitted you cannot re-upload unless admin rejects a video.</div>
-
-</div>
 
 <script>
 const API_BASE = "/api";
-
-// ── GUARD ──
-(async function guardDashboard() {
-  const phone = (localStorage.getItem("phone") || "").trim();
-  const role  = (localStorage.getItem("role")  || "").trim().toLowerCase();
-  if (!phone || role !== "electrician") { window.location.replace("login.html"); return; }
-  try {
-    const res  = await fetch(`${API_BASE}/profile/${phone}`);
-    const data = await res.json();
-    if (!res.ok) { window.location.replace("login.html"); return; }
-    const status       = (data.status || "").toLowerCase();
-    const reviewStatus = (data.proofReview?.status || "").toLowerCase();
-    if (status === "pending_verification") { window.location.replace("upload_proof.html"); return; }
-    if (status === "proof_submitted")      { window.location.replace("upload_proof.html"); return; }
-    // ✅ DO NOT redirect full_access here — they need to upload 3 videos first
-    // Only redirect to requests page after all 3 videos approved (handled by loadExistingJobs)
-  } catch(err) { console.log("Guard error:", err); }
-})();
-
-const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
-const phone = (localStorage.getItem("phone") || "").trim();
-const name  = localStorage.getItem("name") || localStorage.getItem("userName") || "Electrician";
-
-// Set worker name in topbar
-document.getElementById("workerName").textContent   = name;
-document.getElementById("workerAvatar").textContent = name.charAt(0).toUpperCase();
-
-// Track selected files and submission state
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
-let submittedJobs   = {};   // jobIndex → { jobId, status, rejectReason }
-let alreadySubmitted = false;
+let submittedJobs = {};
+
+function getStoredPhone() {
+  return (localStorage.getItem("userPhone") || localStorage.getItem("phone") || "").trim();
+}
+
+function getStoredRole() {
+  return (localStorage.getItem("userRole") || localStorage.getItem("role") || "").trim().toLowerCase();
+}
+
+function getStoredName() {
+  return localStorage.getItem("userName") || localStorage.getItem("name") || "Electrician";
+}
+
+const phone = getStoredPhone();
+const role = getStoredRole();
+const workerName = getStoredName();
+
+document.getElementById("workerName").textContent = workerName;
+document.getElementById("workerAvatar").textContent = workerName.charAt(0).toUpperCase();
+
+function showGlobal(message, type = "info") {
+  const box = document.getElementById("globalMsg");
+  box.textContent = message;
+  box.className = "msg-box msg-" + type + " show";
+}
+
+function hideGlobal() {
+  const box = document.getElementById("globalMsg");
+  box.textContent = "";
+  box.className = "msg-box";
+}
 
 function formatSize(bytes) {
-  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + " KB";
-  return (bytes/(1024*1024)).toFixed(2) + " MB";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
 }
 
-function showGlobal(msg, type) {
-  const el = document.getElementById("globalMsg");
-  el.textContent = msg; el.className = "msg-box msg-" + type + " show";
+function resetPreview(i) {
+  selectedFiles[i] = null;
+  document.getElementById(`file${i}`).value = "";
+  document.getElementById(`preview${i}`).classList.remove("show");
+  document.getElementById(`name${i}`).textContent = "—";
+  document.getElementById(`size${i}`).textContent = "—";
+  document.getElementById(`btnUpload${i}`).disabled = true;
 }
 
-function updateProgress() {
-  const uploaded = Object.values(selectedFiles).filter(f => f !== null).length;
-  const pct = (uploaded / 3) * 100;
-  document.getElementById("progressBar").style.width  = pct + "%";
-  document.getElementById("progressLabel").textContent = uploaded + " of 3 videos selected";
-  document.getElementById("btnSubmitAll").disabled = (uploaded < 3) || alreadySubmitted;
+function removeSelectedFile(i) {
+  resetPreview(i);
 }
 
-function handleFile(idx) {
-  const input = document.getElementById("file" + idx);
-  const file  = input.files[0];
-  if (!file) return;
+function setCardState(i, type, badgeText, reason = "") {
+  const card = document.getElementById(`card${i}`);
+  const badge = document.getElementById(`badge${i}`);
+  const reasonEl = document.getElementById(`reason${i}`);
+  const chooseBtn = document.getElementById(`btnChoose${i}`);
+  const uploadBtn = document.getElementById(`btnUpload${i}`);
 
-  if (!file.type.startsWith("video/")) {
-    showGlobal("❌ Video " + idx + ": Only video files are allowed.", "error");
-    input.value = ""; return;
-  }
-  if (file.size > MAX_VIDEO_SIZE) {
-    showGlobal("❌ Video " + idx + ": File too large. Max 50 MB allowed.", "error");
-    input.value = ""; return;
-  }
+  card.className = "video-card";
+  badge.className = "vc-badge";
+  reasonEl.classList.remove("show");
+  reasonEl.textContent = "";
 
-  selectedFiles[idx] = file;
-  document.getElementById("name"    + idx).textContent = file.name;
-  document.getElementById("size"    + idx).textContent = formatSize(file.size);
-  document.getElementById("preview" + idx).classList.add("show");
-  document.getElementById("badge"   + idx).textContent = "✓ Selected";
-  document.getElementById("badge"   + idx).className   = "vc-badge vcb-uploaded";
-  document.getElementById("card"    + idx).className   = "video-card uploaded";
-  updateProgress();
-}
-
-function removeVideo(idx) {
-  if (alreadySubmitted && !isRejected(idx)) return; // can't remove if submitted & not rejected
-  selectedFiles[idx] = null;
-  document.getElementById("file"    + idx).value = "";
-  document.getElementById("preview" + idx).classList.remove("show");
-  document.getElementById("badge"   + idx).textContent = "Not uploaded";
-  document.getElementById("badge"   + idx).className   = "vc-badge vcb-pending";
-  document.getElementById("card"    + idx).className   = "video-card";
-  updateProgress();
-}
-
-function isRejected(idx) {
-  return submittedJobs[idx] && submittedJobs[idx].status === "rejected";
-}
-
-// ── SUBMIT ALL ──
-document.getElementById("btnSubmitAll").addEventListener("click", async function() {
-  if (!selectedFiles[1] || !selectedFiles[2] || !selectedFiles[3]) {
-    showGlobal("❌ Please select all 3 videos before submitting.", "error"); return;
-  }
-
-  const btn = this;
-  btn.disabled = true;
-  btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Uploading videos...`;
-
-  let allSuccess = true;
-
-  for (let i = 1; i <= 3; i++) {
-    // Skip already-approved videos
-    if (submittedJobs[i] && submittedJobs[i].status === "approved") continue;
-    // Skip if not rejected (already waiting)
-    if (submittedJobs[i] && submittedJobs[i].status === "submitted") continue;
-
-    btn.innerHTML = `⏳ Uploading video ${i} of 3...`;
-
-    try {
-      // First create a job entry, then upload video to it
-      const createRes = await fetch(`${API_BASE}/probation-job/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, role: "electrician", videoIndex: i })
-      });
-      const createData = await createRes.json();
-      if (!createRes.ok) { showGlobal("❌ Failed to create job " + i + ": " + (createData.error||""), "error"); allSuccess = false; break; }
-
-      const jobId    = createData.jobId;
-      const formData = new FormData();
-      formData.append("status",     "submitted");
-      formData.append("videoProof", selectedFiles[i]);
-
-      const uploadRes  = await fetch(`${API_BASE}/update-job/${jobId}`, { method:"POST", body:formData });
-      const uploadData = await uploadRes.json();
-      if (!uploadRes.ok) { showGlobal("❌ Failed to upload video " + i + ": " + (uploadData.error||""), "error"); allSuccess = false; break; }
-
-      submittedJobs[i] = { jobId, status:"submitted" };
-
-      // Update card UI
-      document.getElementById("badge" + i).textContent = "⏳ Under Review";
-      document.getElementById("badge" + i).className   = "vc-badge vcb-waiting";
-      document.getElementById("card"  + i).className   = "video-card";
-      document.getElementById("btnUpload" + i).disabled = true;
-      document.getElementById("preview" + i).querySelector(".vc-remove").style.display = "none";
-
-    } catch(err) {
-      showGlobal("❌ Server error uploading video " + i, "error");
-      allSuccess = false; break;
+  if (type === "approved") {
+    card.classList.add("approved");
+    badge.classList.add("badge-approved");
+    chooseBtn.style.display = "none";
+    uploadBtn.style.display = "none";
+    resetPreview(i);
+  } else if (type === "review") {
+    card.classList.add("review");
+    badge.classList.add("badge-review");
+    chooseBtn.style.display = "none";
+    uploadBtn.style.display = "none";
+    resetPreview(i);
+  } else if (type === "rejected") {
+    card.classList.add("rejected");
+    badge.classList.add("badge-rejected");
+    chooseBtn.style.display = "inline-flex";
+    uploadBtn.style.display = "inline-flex";
+    if (reason) {
+      reasonEl.textContent = "Reason: " + reason;
+      reasonEl.classList.add("show");
     }
-  }
-
-  if (allSuccess) {
-    alreadySubmitted = true;
-    showGlobal("✅ All 3 videos submitted! Waiting for admin to review all of them. You'll be redirected once all are approved.", "success");
-    btn.innerHTML = "⏳ Waiting for Admin Review";
-    btn.disabled  = true;
-    startPolling();
   } else {
-    btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Submit All 3 Videos for Review`;
-    btn.disabled = false;
+    badge.classList.add("badge-pending");
+    chooseBtn.style.display = "inline-flex";
+    uploadBtn.style.display = "inline-flex";
   }
-});
 
-// ── POLLING: check admin decisions ──
-function startPolling() {
-  const poll = setInterval(async () => {
-    try {
-      const res  = await fetch(`${API_BASE}/my-jobs/${phone}`);
-      const jobs = await res.json();
-      if (!Array.isArray(jobs)) return;
-
-      let allApproved  = true;
-      let anyRejected  = false;
-
-      // Map jobs by videoIndex
-      jobs.forEach(job => {
-        const idx = job.videoIndex;
-        if (!idx) return;
-        const jStatus = (job.status || "").toLowerCase();
-        submittedJobs[idx] = { jobId: job._id, status: jStatus, rejectReason: job.videoReview?.reason || "" };
-
-        if (jStatus === "completed") {
-          document.getElementById("badge" + idx).textContent = "✅ Approved";
-          document.getElementById("badge" + idx).className   = "vc-badge vcb-approved";
-          document.getElementById("card"  + idx).className   = "video-card approved";
-        } else if (jStatus === "rejected") {
-          anyRejected = true; allApproved = false;
-          document.getElementById("badge"  + idx).textContent = "❌ Rejected";
-          document.getElementById("badge"  + idx).className   = "vc-badge vcb-rejected";
-          document.getElementById("card"   + idx).className   = "video-card rejected";
-          const reasonEl = document.getElementById("reason" + idx);
-          reasonEl.textContent = "❌ Rejected: " + (job.videoReview?.reason || "Please re-upload this video.");
-          reasonEl.classList.add("show");
-          // Allow re-upload for rejected video
-          document.getElementById("btnUpload" + idx).disabled = false;
-          document.getElementById("preview"   + idx).querySelector(".vc-remove").style.display = "";
-        } else if (jStatus !== "completed") {
-          allApproved = false;
-        }
-      });
-
-      // All 3 approved → redirect
-      const approvedCount = jobs.filter(j => (j.status||"").toLowerCase() === "completed" && j.videoIndex).length;
-      if (approvedCount >= 3) {
-        clearInterval(poll);
-        showGlobal("🎉 All 3 videos approved! Redirecting to your dashboard...", "success");
-        setTimeout(() => window.location.replace("electrician_requests.html"), 2000);
-        return;
-      }
-
-      // Any rejected → allow re-submit
-      if (anyRejected) {
-        alreadySubmitted = false;
-        const btn = document.getElementById("btnSubmitAll");
-        btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Re-submit Rejected Videos`;
-        showGlobal("⚠️ Some videos were rejected. Please re-upload the rejected ones and resubmit.", "warning");
-        updateProgress();
-      }
-
-    } catch(err) { console.log("Poll error:", err); }
-  }, 10000);
+  badge.textContent = badgeText;
 }
 
-// ── LOAD EXISTING JOBS ON PAGE LOAD ──
-async function loadExistingJobs() {
-  try {
-    const res  = await fetch(`${API_BASE}/my-jobs/${phone}`);
-    const jobs = await res.json();
-    if (!Array.isArray(jobs) || jobs.length === 0) return;
+async function checkWorkerStatus() {
+  const res = await fetch(`${API_BASE}/profile/${phone}`);
+  const data = await res.json().catch(() => ({}));
 
-    let hasSubmitted = false;
-    let allApproved  = true;
+  if (!res.ok) {
+    throw new Error(data.error || "Failed to load profile");
+  }
+
+  const status = (data.status || "").toLowerCase();
+
+  if (status === "pending_verification" || status === "proof_submitted") {
+    window.location.replace("upload_proof.html");
+    return false;
+  }
+
+  if (status === "full_access") {
+    window.location.replace("electrician_requests.html");
+    return false;
+  }
+
+  return true;
+}
+
+async function loadDashboard() {
+  try {
+    hideGlobal();
+
+    if (!phone || role !== "electrician") {
+      window.location.replace("login.html");
+      return;
+    }
+
+    const ok = await checkWorkerStatus();
+    if (!ok) return;
+
+    const res = await fetch(`${API_BASE}/workers/my-jobs/${phone}`);
+    const data = await res.json().catch(() => ({}));
+    const jobs = Array.isArray(data.jobs) ? data.jobs : (Array.isArray(data) ? data : []);
+
+    submittedJobs = {};
+    for (let i = 1; i <= 3; i++) {
+      setCardState(i, "pending", "Not uploaded");
+    }
 
     jobs.forEach(job => {
-      const idx     = job.videoIndex;
-      if (!idx || idx > 3) return;
-      const jStatus = (job.status || "").toLowerCase();
-      submittedJobs[idx] = { jobId: job._id, status: jStatus, rejectReason: job.videoReview?.reason || "" };
-
-      if (jStatus === "submitted" || jStatus === "completed" || jStatus === "rejected") hasSubmitted = true;
-
-      if (jStatus === "submitted") {
-        document.getElementById("badge"     + idx).textContent = "⏳ Under Review";
-        document.getElementById("badge"     + idx).className   = "vc-badge vcb-waiting";
-        document.getElementById("btnUpload" + idx).disabled    = true;
-        allApproved = false;
-      } else if (jStatus === "completed") {
-        document.getElementById("badge" + idx).textContent = "✅ Approved";
-        document.getElementById("badge" + idx).className   = "vc-badge vcb-approved";
-        document.getElementById("card"  + idx).className   = "video-card approved";
-        document.getElementById("btnUpload" + idx).disabled = true;
-        selectedFiles[idx] = "already_uploaded"; // mark as done
-      } else if (jStatus === "rejected") {
-        document.getElementById("badge"  + idx).textContent = "❌ Rejected — Re-upload";
-        document.getElementById("badge"  + idx).className   = "vc-badge vcb-rejected";
-        document.getElementById("card"   + idx).className   = "video-card rejected";
-        const reasonEl = document.getElementById("reason" + idx);
-        reasonEl.textContent = "❌ " + (job.videoReview?.reason || "Please re-upload this video.");
-        reasonEl.classList.add("show");
-        allApproved = false;
+      if (Number(job.videoIndex) >= 1 && Number(job.videoIndex) <= 3) {
+        submittedJobs[Number(job.videoIndex)] = job;
       }
     });
 
-    const approvedCount = jobs.filter(j => (j.status||"").toLowerCase() === "completed" && j.videoIndex).length;
-    if (approvedCount >= 3) {
-      window.location.replace("electrician_requests.html"); return;
-    }
+    let approvedCount = 0;
 
-    if (hasSubmitted) {
-      alreadySubmitted = true;
-      const hasRejected = jobs.some(j => (j.status||"").toLowerCase() === "rejected");
-      if (!hasRejected) {
-        showGlobal("⏳ Videos submitted and under admin review. You'll be redirected once all 3 are approved.", "info");
-        document.getElementById("btnSubmitAll").innerHTML  = "⏳ Waiting for Admin Review";
-        document.getElementById("btnSubmitAll").disabled  = true;
-        startPolling();
+    for (let i = 1; i <= 3; i++) {
+      const job = submittedJobs[i];
+      if (!job) continue;
+
+      const status = (job.status || "").toLowerCase();
+      const reviewStatus = (job.videoReview?.status || "").toLowerCase();
+      const rejectReason = job.videoReview?.reason || "";
+
+      if (status === "completed" || reviewStatus === "approved") {
+        approvedCount++;
+        setCardState(i, "approved", "Approved");
+      } else if (status === "submitted") {
+        setCardState(i, "review", "Under Review");
+      } else if (status === "rejected" || reviewStatus === "rejected") {
+        setCardState(i, "rejected", "Rejected", rejectReason);
       } else {
-        alreadySubmitted = false;
-        showGlobal("⚠️ Some videos were rejected. Please re-upload them and resubmit.", "warning");
-        document.getElementById("btnSubmitAll").innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Re-submit Rejected Videos`;
-        startPolling();
+        setCardState(i, "pending", "Not uploaded");
       }
-      updateProgress();
     }
 
-  } catch(err) { console.log("Load jobs error:", err); }
+    if (approvedCount === 3) {
+      showGlobal("✅ All 3 videos approved. Redirecting...", "success");
+      setTimeout(() => {
+        window.location.replace("electrician_requests.html");
+      }, 1200);
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    showGlobal(err.message || "Failed to load dashboard", "error");
+  }
 }
 
-document.getElementById("logoutBtn").addEventListener("click", () => { localStorage.clear(); window.location.href = "login.html"; });
+for (let i = 1; i <= 3; i++) {
+  document.getElementById(`file${i}`).addEventListener("change", function () {
+    hideGlobal();
+    const file = this.files[0];
+    if (!file) return;
 
-loadExistingJobs();
-updateProgress();
+    if (!file.type.startsWith("video/")) {
+      showGlobal(`❌ Only video files are allowed for Video ${i}.`, "error");
+      this.value = "";
+      return;
+    }
+
+    if (file.size > MAX_VIDEO_SIZE) {
+      showGlobal(`❌ Video ${i} is too large. Maximum 50 MB allowed.`, "error");
+      this.value = "";
+      return;
+    }
+
+    selectedFiles[i] = file;
+    document.getElementById(`name${i}`).textContent = file.name;
+    document.getElementById(`size${i}`).textContent = formatSize(file.size);
+    document.getElementById(`preview${i}`).classList.add("show");
+    document.getElementById(`btnUpload${i}`).disabled = false;
+  });
+}
+
+async function submitVideo(index) {
+  try {
+    hideGlobal();
+
+    const file = selectedFiles[index];
+    if (!file) {
+      showGlobal(`❌ Choose Video ${index} first.`, "error");
+      return;
+    }
+
+    const createRes = await fetch(`${API_BASE}/workers/probation-job/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone,
+        role: "electrician",
+        videoIndex: index
+      })
+    });
+
+    const createData = await createRes.json().catch(() => ({}));
+
+    if (!createRes.ok) {
+      throw new Error(createData.error || createData.message || "Failed to prepare job");
+    }
+
+    const jobId = createData.jobId;
+
+    const formData = new FormData();
+    formData.append("status", "submitted");
+    formData.append("videoProof", file);
+
+    const uploadRes = await fetch(`${API_BASE}/workers/update-job/${jobId}`, {
+      method: "POST",
+      body: formData
+    });
+
+    const uploadData = await uploadRes.json().catch(() => ({}));
+
+    if (!uploadRes.ok) {
+      throw new Error(uploadData.error || uploadData.message || "Upload failed");
+    }
+
+    showGlobal(`✅ Video ${index} submitted successfully.`, "success");
+    resetPreview(index);
+    await loadDashboard();
+  } catch (err) {
+    console.error(err);
+    showGlobal(err.message || "Failed to submit video", "error");
+  }
+}
+
+document.getElementById("logoutBtn").addEventListener("click", function () {
+  localStorage.removeItem("userPhone");
+  localStorage.removeItem("phone");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("name");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("role");
+  window.location.href = "login.html";
+});
+
+window.addEventListener("DOMContentLoaded", loadDashboard);
+
+setInterval(async () => {
+  if (document.visibilityState === "visible") {
+    await loadDashboard();
+  }
+}, 8000);
 </script>
 </body>
 </html>

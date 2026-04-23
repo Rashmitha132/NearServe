@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carpenter Dashboard - NearServe</title>
+  <title>Electrician Dashboard - NearServe</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -519,10 +519,10 @@
     <div class="deco-ring r3"></div>
 
     <div class="fi fi1">🎥</div>
-    <div class="fi fi2">🪚</div>
+    <div class="fi fi2">⚡</div>
     <div class="fi fi3">✅</div>
     <div class="fi fi4">📤</div>
-    <div class="fi fi5">🛠️</div>
+    <div class="fi fi5">🔌</div>
 
     <div class="l-logo">
       <div class="l-logo-icon">
@@ -543,14 +543,14 @@
 
     <div class="l-main">
       <h2>Probation <em>Video Review</em></h2>
-      <p>Upload 3 carpentry work videos. If any specific video is rejected, only that one can be uploaded again. After all 3 are approved, you get full access.</p>
+      <p>Upload 3 electrical work videos. If any specific video is rejected, only that one can be uploaded again. After all 3 are approved, you get full access.</p>
 
       <div class="l-steps">
         <div class="l-step">
           <div class="l-step-num">1</div>
           <div class="l-step-text">
             <strong>Upload 3 Videos</strong>
-            <span>Submit clear videos showing your carpentry work.</span>
+            <span>Submit clear videos showing your electrical work.</span>
           </div>
         </div>
         <div class="l-step">
@@ -589,10 +589,10 @@
   <div class="right-panel">
     <div class="topbar">
       <div class="worker-info">
-        <div class="worker-avatar" id="workerAvatar">C</div>
+        <div class="worker-avatar" id="workerAvatar">E</div>
         <div>
-          <div class="worker-name" id="workerName">Carpenter</div>
-          <div class="worker-role">🪚 Carpenter · Probation Stage</div>
+          <div class="worker-name" id="workerName">Electrician</div>
+          <div class="worker-role">⚡ Electrician · Probation Stage</div>
         </div>
       </div>
 
@@ -619,7 +619,7 @@
           <div class="vc-title">Video 1</div>
           <div class="vc-badge badge-pending" id="badge1">Not uploaded</div>
         </div>
-        <div class="vc-desc">Upload your first carpentry work video.</div>
+        <div class="vc-desc">Upload your first electrical work video.</div>
         <div class="reject-reason" id="reason1"></div>
         <div class="file-preview" id="preview1">
           <span style="font-size:1.4rem;">🎬</span>
@@ -641,7 +641,7 @@
           <div class="vc-title">Video 2</div>
           <div class="vc-badge badge-pending" id="badge2">Not uploaded</div>
         </div>
-        <div class="vc-desc">Upload your second carpentry work video.</div>
+        <div class="vc-desc">Upload your second electrical work video.</div>
         <div class="reject-reason" id="reason2"></div>
         <div class="file-preview" id="preview2">
           <span style="font-size:1.4rem;">🎬</span>
@@ -663,7 +663,7 @@
           <div class="vc-title">Video 3</div>
           <div class="vc-badge badge-pending" id="badge3">Not uploaded</div>
         </div>
-        <div class="vc-desc">Upload your third carpentry work video.</div>
+        <div class="vc-desc">Upload your third electrical work video.</div>
         <div class="reject-reason" id="reason3"></div>
         <div class="file-preview" id="preview3">
           <span style="font-size:1.4rem;">🎬</span>
@@ -686,7 +686,7 @@
       <div class="helper-list">
         <div>If a video is under review, you cannot upload it again.</div>
         <div>If a video is rejected, only that video gets re-upload option.</div>
-        <div>If all 3 videos are approved, you are redirected to carpenter requests page.</div>
+        <div>If all 3 videos are approved, you are redirected to electrician requests page.</div>
       </div>
     </div>
   </div>
@@ -706,7 +706,7 @@ function getStoredRole() {
 }
 
 function getStoredName() {
-  return localStorage.getItem("userName") || localStorage.getItem("name") || "Carpenter";
+  return localStorage.getItem("userName") || localStorage.getItem("name") || "Electrician";
 }
 
 const phone = getStoredPhone();
@@ -804,7 +804,7 @@ async function checkWorkerStatus() {
   }
 
   if (status === "full_access") {
-    window.location.replace("carpenter_requests.html");
+    window.location.replace("electrician_requests.html");
     return false;
   }
 
@@ -815,7 +815,7 @@ async function loadDashboard() {
   try {
     hideGlobal();
 
-    if (!phone || role !== "carpenter") {
+    if (!phone || role !== "electrician") {
       window.location.replace("login.html");
       return;
     }
@@ -863,7 +863,7 @@ async function loadDashboard() {
     if (approvedCount === 3) {
       showGlobal("✅ All 3 videos approved. Redirecting...", "success");
       setTimeout(() => {
-        window.location.replace("carpenter_requests.html");
+        window.location.replace("electrician_requests.html");
       }, 1200);
       return;
     }
@@ -914,7 +914,7 @@ async function submitVideo(index) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         phone,
-        role: "carpenter",
+        role: "electrician",
         videoIndex: index
       })
     });
