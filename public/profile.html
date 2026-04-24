@@ -364,22 +364,41 @@ function showToast(msg, type) {
 
 window.addEventListener("DOMContentLoaded", async function() {
   const API_BASE = "/api";
-  const phone = (localStorage.getItem("userPhone") || "").trim();
-  const storedName = localStorage.getItem("userName") || "";
-  const storedEmail = localStorage.getItem("userEmail") || "";
 
-  if (!phone) {
+  const phone =
+    (localStorage.getItem("userPhone") ||
+     localStorage.getItem("phone") ||
+     "").trim();
+
+  const role =
+    (localStorage.getItem("userRole") ||
+     localStorage.getItem("role") ||
+     "").trim().toLowerCase();
+
+  const storedName =
+    localStorage.getItem("userName") ||
+    localStorage.getItem("name") ||
+    "";
+
+  const storedEmail =
+    localStorage.getItem("userEmail") ||
+    localStorage.getItem("email") ||
+    "";
+
+  if (!phone || role !== "customer") {
+    alert("Please login as customer");
     window.location.href = "login.html";
     return;
   }
 
+  const avatarKey = `avatarBase64_customer_${phone}`;
+
   const avatarImg = document.getElementById("avatarImg");
   const avatarFallback = document.getElementById("avatarFallback");
-  let currentAvatarBase64 = "";
 
   function setAvatar(nameText, imageSrc) {
-    const safeName = (nameText || "User").trim();
-    const firstLetter = safeName.charAt(0).toUpperCase() || "U";
+    const firstLetter = (nameText || "User").trim().charAt(0).toUpperCase() || "U";
+
     if (imageSrc) {
       avatarImg.src = imageSrc;
       avatarImg.classList.remove("hidden");
@@ -395,49 +414,57 @@ window.addEventListener("DOMContentLoaded", async function() {
   async function loadProfile() {
     try {
       const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`);
-      if (res.ok) {
-        const data = await res.json().catch(() => ({}));
-        const user = data.profile || data || {};
+      const data = await res.json().catch(() => ({}));
 
-        currentAvatarBase64 = user.avatarBase64 || "";
-        const currentName = user.name || storedName || "User";
-
-        setAvatar(currentName, currentAvatarBase64);
-
-        document.getElementById("profileName").textContent = user.name || "—";
-        document.getElementById("fullName").value = user.name || "";
-        document.getElementById("email").value = user.email || storedEmail || "";
-        document.getElementById("phone").value = user.phone || phone;
-        document.getElementById("bio").value = user.bio || "";
-        document.getElementById("address").value = user.address || "";
-        document.getElementById("city").value = user.city || "";
-        document.getElementById("state").value = user.state || "";
-        document.getElementById("pincode").value = user.pincode || "";
-        document.getElementById("country").value = user.country || "India";
-        document.getElementById("serviceLocation").value = user.serviceLocation || "";
-        document.getElementById("communicationPref").value = user.communicationPref || "email";
-        document.getElementById("preferredTime").value = user.preferredTime || "flexible";
-
-        const bookingsRes = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
-        if (bookingsRes.ok) {
-          const bookingsData = await bookingsRes.json().catch(() => ([]));
-          const bookings = Array.isArray(bookingsData) ? bookingsData : (bookingsData.bookings || []);
-          document.getElementById("totalBookings").textContent = Array.isArray(bookings) ? bookings.length : 0;
-        }
-
-        const createdYear = user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
-        document.getElementById("memberSince").textContent = createdYear > 1970 ? createdYear : new Date().getFullYear();
-      } else {
-        currentAvatarBase64 = "";
-        setAvatar(storedName || "User", "");
-        document.getElementById("profileName").textContent = storedName || "—";
-        document.getElementById("email").value = storedEmail || "";
-        document.getElementById("phone").value = phone;
+      if (!res.ok) {
+        throw new Error(data.error || "Profile load failed");
       }
+
+      const user = data.profile || data || {};
+
+      if ((user.role || "customer").toLowerCase() !== "customer") {
+        alert("This is not a customer profile");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const dbAvatar = user.avatarBase64 || "";
+      const avatarToUse = dbAvatar || localStorage.getItem(avatarKey) || "";
+      const currentName = user.name || storedName || "User";
+
+      if (dbAvatar) localStorage.setItem(avatarKey, dbAvatar);
+
+      setAvatar(currentName, avatarToUse);
+
+      document.getElementById("profileName").textContent = user.name || "—";
+      document.getElementById("fullName").value = user.name || "";
+      document.getElementById("email").value = user.email || storedEmail || "";
+      document.getElementById("phone").value = user.phone || phone;
+      document.getElementById("bio").value = user.bio || "";
+      document.getElementById("address").value = user.address || "";
+      document.getElementById("city").value = user.city || "";
+      document.getElementById("state").value = user.state || "";
+      document.getElementById("pincode").value = user.pincode || "";
+      document.getElementById("country").value = user.country || "India";
+      document.getElementById("serviceLocation").value = user.serviceLocation || "";
+      document.getElementById("communicationPref").value = user.communicationPref || "email";
+      document.getElementById("preferredTime").value = user.preferredTime || "flexible";
+
+      const bookingsRes = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
+      if (bookingsRes.ok) {
+        const bookingsData = await bookingsRes.json().catch(() => []);
+        const bookings = Array.isArray(bookingsData) ? bookingsData : (bookingsData.bookings || []);
+        document.getElementById("totalBookings").textContent = bookings.length;
+      } else {
+        document.getElementById("totalBookings").textContent = "0";
+      }
+
+      const createdYear = user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
+      document.getElementById("memberSince").textContent = createdYear > 1970 ? createdYear : new Date().getFullYear();
+
     } catch (err) {
       console.error("Error loading profile:", err);
-      currentAvatarBase64 = "";
-      setAvatar(storedName || "User", "");
+      setAvatar(storedName || "User", localStorage.getItem(avatarKey) || "");
       document.getElementById("profileName").textContent = storedName || "—";
       document.getElementById("email").value = storedEmail || "";
       document.getElementById("phone").value = phone;
@@ -454,20 +481,55 @@ window.addEventListener("DOMContentLoaded", async function() {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+      showToast("❌ Please choose an image file", "error");
+      return;
+    }
+
     const reader = new FileReader();
-    reader.onload = function(event) {
+    reader.onload = async function(event) {
       const base64 = event.target.result;
-      currentAvatarBase64 = base64;
+
+      localStorage.setItem(avatarKey, base64);
       setAvatar(document.getElementById("fullName").value.trim() || storedName || "User", base64);
-      showToast("✅ Profile picture selected. Click Save Personal Info to save permanently.");
+
+      try {
+        const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}/avatar`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ avatarBase64: base64 })
+        });
+
+        if (res.ok) {
+          showToast("✅ Profile picture updated!");
+        } else {
+          const err = await res.json().catch(() => ({}));
+          showToast("❌ " + (err.message || err.error || "Error saving profile picture"), "error");
+        }
+      } catch {
+        showToast("❌ Error saving profile picture", "error");
+      }
     };
+
     reader.readAsDataURL(file);
   });
 
-  document.getElementById("avatarRemoveBtn").addEventListener("click", function() {
-    currentAvatarBase64 = "";
+  document.getElementById("avatarRemoveBtn").addEventListener("click", async function() {
+    localStorage.removeItem(avatarKey);
     setAvatar(document.getElementById("fullName").value.trim() || storedName || "User", "");
-    showToast("✅ Profile picture removed. Click Save Personal Info to save permanently.");
+
+    try {
+      const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}/avatar`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatarBase64: "" })
+      });
+
+      if (res.ok) showToast("✅ Profile picture removed!");
+      else showToast("❌ Error removing profile picture", "error");
+    } catch {
+      showToast("❌ Error removing profile picture", "error");
+    }
   });
 
   document.getElementById("savePersonalBtn").addEventListener("click", async function() {
@@ -475,39 +537,31 @@ window.addEventListener("DOMContentLoaded", async function() {
     const newEmail = document.getElementById("email").value.trim();
     const bio = document.getElementById("bio").value.trim();
 
-    if (!newName) {
-      showToast("❌ Name cannot be empty", "error");
-      return;
-    }
-
+    if (!newName) return showToast("❌ Name cannot be empty", "error");
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-      showToast("❌ Enter a valid email", "error");
-      return;
+      return showToast("❌ Enter a valid email", "error");
     }
 
     try {
       const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: newName,
-          email: newEmail,
-          bio,
-          avatarBase64: currentAvatarBase64
-        })
+        body: JSON.stringify({ name: newName, email: newEmail, bio })
       });
 
       if (res.ok) {
         localStorage.setItem("userName", newName);
+        localStorage.setItem("name", newName);
         localStorage.setItem("userEmail", newEmail);
+        localStorage.setItem("email", newEmail);
         document.getElementById("profileName").textContent = newName;
-        setAvatar(newName, currentAvatarBase64);
+        setAvatar(newName, localStorage.getItem(avatarKey) || "");
         showToast("✅ Personal info saved successfully!");
       } else {
         const err = await res.json().catch(() => ({}));
         showToast("❌ " + (err.message || err.error || "Error saving"), "error");
       }
-    } catch (err) {
+    } catch {
       showToast("❌ Error saving profile", "error");
     }
   });
@@ -519,11 +573,6 @@ window.addEventListener("DOMContentLoaded", async function() {
     const pincode = document.getElementById("pincode").value.trim();
     const country = document.getElementById("country").value.trim();
 
-    if (!address || !city || !state || !pincode) {
-      showToast("❌ Please fill all address fields", "error");
-      return;
-    }
-
     try {
       const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}/address`, {
         method: "PUT",
@@ -531,13 +580,9 @@ window.addEventListener("DOMContentLoaded", async function() {
         body: JSON.stringify({ address, city, state, pincode, country })
       });
 
-      if (res.ok) {
-        showToast("✅ Address saved successfully!");
-      } else {
-        const err = await res.json().catch(() => ({}));
-        showToast("❌ " + (err.message || err.error || "Error saving"), "error");
-      }
-    } catch (err) {
+      if (res.ok) showToast("✅ Address saved successfully!");
+      else showToast("❌ Error saving address", "error");
+    } catch {
       showToast("❌ Error saving address", "error");
     }
   });
@@ -554,13 +599,9 @@ window.addEventListener("DOMContentLoaded", async function() {
         body: JSON.stringify({ serviceLocation, communicationPref, preferredTime })
       });
 
-      if (res.ok) {
-        showToast("✅ Preferences saved successfully!");
-      } else {
-        const err = await res.json().catch(() => ({}));
-        showToast("❌ " + (err.message || err.error || "Error saving"), "error");
-      }
-    } catch (err) {
+      if (res.ok) showToast("✅ Preferences saved successfully!");
+      else showToast("❌ Error saving preferences", "error");
+    } catch {
       showToast("❌ Error saving preferences", "error");
     }
   });
@@ -571,18 +612,15 @@ window.addEventListener("DOMContentLoaded", async function() {
     const confirmPassword = document.getElementById("confirmPassword").value;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      showToast("❌ All password fields are required", "error");
-      return;
+      return showToast("❌ All password fields are required", "error");
     }
 
     if (newPassword.length < 6) {
-      showToast("❌ Password must be at least 6 characters", "error");
-      return;
+      return showToast("❌ Password must be at least 6 characters", "error");
     }
 
     if (newPassword !== confirmPassword) {
-      showToast("❌ Passwords do not match", "error");
-      return;
+      return showToast("❌ Passwords do not match", "error");
     }
 
     try {
@@ -601,16 +639,20 @@ window.addEventListener("DOMContentLoaded", async function() {
         const err = await res.json().catch(() => ({}));
         showToast("❌ " + (err.message || err.error || "Error changing password"), "error");
       }
-    } catch (err) {
+    } catch {
       showToast("❌ Error changing password", "error");
     }
   });
 
   document.getElementById("logoutBtn").addEventListener("click", function() {
     localStorage.removeItem("userName");
+    localStorage.removeItem("name");
     localStorage.removeItem("userPhone");
+    localStorage.removeItem("phone");
     localStorage.removeItem("userEmail");
+    localStorage.removeItem("email");
     localStorage.removeItem("userRole");
+    localStorage.removeItem("role");
     localStorage.removeItem("userStatus");
     localStorage.removeItem("token");
     window.location.href = "login.html";

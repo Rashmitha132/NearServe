@@ -82,9 +82,22 @@
   const bookingId   = localStorage.getItem("chatBookingId") || "";
   const workerPhone = localStorage.getItem("chatWorkerPhone") || "";
   const workerRole  = localStorage.getItem("chatWorkerRole") || "";
-  const myPhone     = (localStorage.getItem("userPhone") || "").trim();
-  const myName      = localStorage.getItem("userName") || "User";
-  const myRole      = (localStorage.getItem("userRole") || "customer").toLowerCase();
+  const myPhone = (
+  localStorage.getItem("userPhone") ||
+  localStorage.getItem("phone") ||
+  ""
+).trim();
+
+const myName =
+  localStorage.getItem("userName") ||
+  localStorage.getItem("name") ||
+  "User";
+
+const myRole = (
+  localStorage.getItem("userRole") ||
+  localStorage.getItem("role") ||
+  "customer"
+).toLowerCase();
 
   const isWorker = ["carpenter","electrician","plumber"].includes(myRole);
 
@@ -98,9 +111,61 @@
     displaySub = workerPhone ? workerPhone + " · Online" : "Worker · Online";
   }
 
-  document.getElementById("workerName").textContent = displayName;
-  document.getElementById("workerAvatar").textContent = displayName.charAt(0).toUpperCase();
-  document.getElementById("workerSub").textContent = displaySub;
+const avatarEl = document.getElementById("workerAvatar");
+
+document.getElementById("workerName").textContent = displayName;
+document.getElementById("workerAvatar").textContent = displayName.charAt(0).toUpperCase();
+document.getElementById("workerSub").textContent = displaySub;
+
+async function loadChatHeaderProfile() {
+  try {
+    let targetPhone = "";
+    let targetRole = "";
+
+    if (isWorker) {
+      // Worker viewing customer
+      targetPhone = localStorage.getItem("chatCustomerPhone") || "";
+      targetRole = "customer";
+    } else {
+      // Customer viewing worker
+      targetPhone = workerPhone;
+      targetRole = workerRole;
+    }
+
+    if (!targetPhone) return;
+
+    const res = await fetch(`/api/profile/${encodeURIComponent(targetPhone)}`);
+    if (!res.ok) return;
+
+    const data = await res.json();
+    const profile = data.profile || data || {};
+
+    const name = profile.name || displayName;
+    const avatarBase64 = profile.avatarBase64 || "";
+
+    // Set name
+    document.getElementById("workerName").textContent = name;
+
+    // Set subtitle
+    if (isWorker) {
+      document.getElementById("workerSub").textContent = "Customer";
+    } else {
+      document.getElementById("workerSub").textContent =
+        (targetRole || "Worker") + " · Online";
+    }
+
+    // Set avatar
+    if (avatarBase64) {
+      avatarEl.innerHTML = `<img src="${avatarBase64}" 
+        style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+    } else {
+      avatarEl.textContent = name.charAt(0).toUpperCase();
+    }
+
+  } catch (err) {
+    console.log("Header profile error:", err);
+  }
+}
 
   if (!bookingId || !myPhone) {
     alert("Invalid chat session. Please try again.");
@@ -313,6 +378,7 @@
     localStorage.removeItem("chatWorkerRole");
     localStorage.removeItem("chatWorkerName");
     localStorage.removeItem("chatCustomerName");
+    localStorage.removeItem("chatCustomerPhone");
 
     if (myRole === "carpenter") {
       window.location.href = "carpenter_requests.html";
@@ -325,6 +391,7 @@
     }
   });
 
+  loadChatHeaderProfile();
   loadMessages();
   pollInterval = setInterval(loadMessages, 3000);
 

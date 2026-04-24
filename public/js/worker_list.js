@@ -30,6 +30,17 @@ function handleWorkerSelect(worker) {
   window.location.href = `worker_profile.html?phone=${encodeURIComponent(worker.phone)}&role=${encodeURIComponent(selectedRole)}`;
 }
 
+function buildAddress(worker) {
+  const parts = [
+    worker.address,
+    worker.city,
+    worker.state,
+    worker.pincode
+  ].filter(Boolean);
+
+  return parts.length ? parts.join(", ") : "Address not added";
+}
+
 function renderWorkers(workers) {
   list.innerHTML = "";
 
@@ -49,6 +60,11 @@ function renderWorkers(workers) {
     const roundedStars = Math.round(ratingNum);
     const stars = "★".repeat(roundedStars) + "☆".repeat(5 - roundedStars);
     const letter = w.name ? w.name.charAt(0).toUpperCase() : "W";
+    const addressText = buildAddress(w);
+
+    const avatarHTML = w.avatarBase64
+      ? `<img src="${w.avatarBase64}" alt="${w.name || "Worker"}" style="width:54px;height:54px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 4px 12px rgba(37,99,235,0.25);">`
+      : `${letter}`;
 
     const card = document.createElement("div");
     card.className = "worker-card";
@@ -56,10 +72,13 @@ function renderWorkers(workers) {
     card.dataset.name = w.name || "";
     card.dataset.rating = ratingNum;
     card.dataset.reviews = reviewsCount;
+    card.dataset.address = addressText.toLowerCase();
 
     card.innerHTML = `
       <div class="card-top">
-        <div class="w-avatar">${letter}</div>
+        <div class="w-avatar" style="${w.avatarBase64 ? "padding:0;overflow:hidden;background:none;box-shadow:none;" : ""}">
+          ${avatarHTML}
+        </div>
         <div>
           <div class="w-name">${w.name || "Worker"}</div>
           <div class="w-role">${selectedRole}</div>
@@ -81,14 +100,15 @@ function renderWorkers(workers) {
           </div>
           ${w.phone || "—"}
         </div>
+
         <div class="info-row">
-          <div class="info-icon ii-email">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="20" height="16" rx="3"/>
-              <polyline points="2,4 12,13 22,4"/>
+          <div class="info-icon" style="background:#fef3c7;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
             </svg>
           </div>
-          ${w.email || "—"}
+          ${addressText}
         </div>
       </div>
 
@@ -112,7 +132,10 @@ function renderWorkers(workers) {
 // Search
 document.getElementById("searchInput").addEventListener("input", function () {
   const q = this.value.toLowerCase();
-  const filtered = allWorkers.filter(w => (w.name || "").toLowerCase().includes(q));
+  const filtered = allWorkers.filter(w =>
+    (w.name || "").toLowerCase().includes(q) ||
+    buildAddress(w).toLowerCase().includes(q)
+  );
   renderWorkers(filtered);
 });
 
@@ -122,7 +145,10 @@ window.sortCards = function(by) {
   document.getElementById("sort" + by.charAt(0).toUpperCase() + by.slice(1))?.classList.add("active");
 
   const q = document.getElementById("searchInput").value.toLowerCase();
-  let sorted = allWorkers.filter(w => (w.name || "").toLowerCase().includes(q));
+  let sorted = allWorkers.filter(w =>
+    (w.name || "").toLowerCase().includes(q) ||
+    buildAddress(w).toLowerCase().includes(q)
+  );
 
   if (by === "name") {
     sorted.sort((a, b) => (a.name || "").localeCompare(b.name || ""));

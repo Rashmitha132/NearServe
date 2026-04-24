@@ -16,7 +16,7 @@ const getUserByPhone = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
 
   const user = await User.findOne({ phone }).select(
-    "role status name email phone proofFile proofReview"
+    "role status name email phone proofFile proofReview avatarBase64 bio address city state pincode country availability communicationPref preferredTime createdAt"
   );
 
   if (!user) {
@@ -31,6 +31,17 @@ const getUserByPhone = asyncHandler(async (req, res) => {
     phone: user.phone || "",
     proofFile: user.proofFile || "",
     proofReview: normalizeProofReview(user.proofReview),
+    avatarBase64: user.avatarBase64 || "",
+    bio: user.bio || "",
+    address: user.address || "",
+    city: user.city || "",
+    state: user.state || "",
+    pincode: user.pincode || "",
+    country: user.country || "India",
+    availability: user.availability || "available",
+    communicationPref: user.communicationPref || "email",
+    preferredTime: user.preferredTime || "flexible",
+    createdAt: user.createdAt || null,
   });
 });
 
@@ -199,7 +210,9 @@ const getWorkers = asyncHandler(async (req, res) => {
   const workers = await User.find({
     role,
     status: "full_access",
-  }).select("name phone email role");
+  }).select(
+    "name phone email role avatarBase64 bio address city state pincode country availability communicationPref preferredTime"
+  );
 
   const phones = workers.map((w) => String(w.phone));
 
@@ -223,7 +236,17 @@ const getWorkers = asyncHandler(async (req, res) => {
       phone: w.phone || "",
       email: w.email || "",
       role: w.role || "",
-      avgRating: s ? Number(s.avgRating.toFixed(2)) : 0,
+      avatarBase64: w.avatarBase64 || "",
+      bio: w.bio || "",
+      address: w.address || "",
+      city: w.city || "",
+      state: w.state || "",
+      pincode: w.pincode || "",
+      country: w.country || "India",
+      availability: w.availability || "available",
+      communicationPref: w.communicationPref || "email",
+      preferredTime: w.preferredTime || "flexible",
+      avgRating: s ? Number(s.avgRating.toFixed(1)) : 0,
       reviewsCount: s ? s.reviewsCount : 0,
     };
   });
@@ -233,7 +256,11 @@ const getWorkers = asyncHandler(async (req, res) => {
 
 const getWorkerProfile = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
-  const worker = await User.findOne({ phone });
+
+  const worker = await User.findOne({
+    phone,
+    role: { $in: ["electrician", "plumber", "carpenter"] },
+  }).select("-password");
 
   if (!worker) {
     return res.status(404).json({ error: "Worker not found" });
@@ -241,36 +268,35 @@ const getWorkerProfile = asyncHandler(async (req, res) => {
 
   const reviews = await Review.find({ workerPhone: phone }).sort({ createdAt: -1 });
 
-  let avgRating = 0;
   const reviewsCount = reviews.length;
+  let avgRating = 0;
 
-  if (reviews.length > 0) {
+  if (reviewsCount > 0) {
     const total = reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
-    avgRating = (total / reviews.length).toFixed(1);
+    avgRating = Number((total / reviewsCount).toFixed(1));
   }
 
   const reviewsList = await Promise.all(
-    reviews
-      .filter((r) => r.comment && String(r.comment).trim() !== "")
-      .map(async (r) => {
-        let customerName = r.customerName || "";
+    reviews.map(async (r) => {
+      let customerName = r.customerName || "";
 
-        if (!customerName && r.customerPhone) {
-          const customer = await User.findOne({ phone: r.customerPhone });
-          customerName = customer?.name || "Customer";
-        }
+      if (!customerName && r.customerPhone) {
+        const customer = await User.findOne({ phone: r.customerPhone }).select("name");
+        customerName = customer?.name || "Customer";
+      }
 
-        return {
-          rating: r.rating || 0,
-          comment: r.comment || "",
-          customerName,
-          customerPhone: r.customerPhone || "",
-          createdAt: r.createdAt || null,
-        };
-      })
+      return {
+        rating: r.rating || 0,
+        comment: r.comment || "",
+        customerName,
+        customerPhone: r.customerPhone || "",
+        createdAt: r.createdAt || null,
+      };
+    })
   );
 
   res.json({
+    _id: worker._id,
     name: worker.name || "",
     role: worker.role || "",
     phone: worker.phone || "",
@@ -278,16 +304,20 @@ const getWorkerProfile = asyncHandler(async (req, res) => {
     status: worker.status || "",
     proofFile: worker.proofFile || "",
     proofReview: normalizeProofReview(worker.proofReview),
+
     avatarBase64: worker.avatarBase64 || "",
     bio: worker.bio || "",
+
     address: worker.address || "",
     city: worker.city || "",
     state: worker.state || "",
     pincode: worker.pincode || "",
     country: worker.country || "India",
+
     availability: worker.availability || "available",
     communicationPref: worker.communicationPref || "email",
     preferredTime: worker.preferredTime || "flexible",
+
     avgRating,
     reviewsCount,
     reviewsList,

@@ -222,6 +222,10 @@
           <div class="info-icon ii-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
           <span id="timeDisplay">—</span>
         </div>
+        <div class="info-item" id="commItem" style="display:none;">
+          <div class="info-icon ii-email"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2"/></svg></div>
+          <span id="commDisplay">—</span>
+        </div>
       </div>
       <button class="call-btn" id="callBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -305,6 +309,12 @@ const timeMap = {
   flexible:  "⏰ Flexible Anytime"
 };
 
+const communicationMap = {
+  chat: "💬 Chat",
+  phone: "📞 Phone Call",
+  email: "📧 Email"
+};
+
 function availInfo(val) {
   if (val === "busy") return { cls:"avail-busy", text:"● Currently Busy" };
   if (val === "off")  return { cls:"avail-off", text:"● Not Taking Jobs" };
@@ -328,6 +338,8 @@ async function loadProfile() {
       letter.style.display = "none";
     } else {
       letter.textContent = (w.name || "W").charAt(0).toUpperCase();
+      photo.style.display = "none";
+      letter.style.display = "flex";
     }
 
     document.getElementById("workerNameDisplay").textContent = w.name || "Worker";
@@ -368,6 +380,11 @@ async function loadProfile() {
       document.getElementById("timeItem").style.display = "flex";
     }
 
+    if (w.communicationPref) {
+      document.getElementById("commDisplay").textContent = communicationMap[w.communicationPref] || w.communicationPref;
+      document.getElementById("commItem").style.display = "flex";
+    }
+
     const grid = document.getElementById("detailGrid");
     const roleLabel = (w.role || workerRole || "—");
     const rows = [
@@ -382,6 +399,7 @@ async function loadProfile() {
     if (w.bio) rows.push({ label:"💬 Bio", value: w.bio });
     if (addrParts.length) rows.push({ label:"📍 Location", value: addrParts.join(", ") });
     if (w.preferredTime) rows.push({ label:"🕐 Work Hours", value: timeMap[w.preferredTime] || w.preferredTime });
+    if (w.communicationPref) rows.push({ label:"📲 Contact Pref", value: communicationMap[w.communicationPref] || w.communicationPref });
 
     grid.innerHTML = rows.map(r => `
       <div class="detail-row">

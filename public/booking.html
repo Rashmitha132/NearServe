@@ -346,6 +346,10 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Keep your existing booking.html HTML + CSS exactly same -->
+
+<!-- Replace ONLY the bottom <script>...</script> section with this: -->
+
 <script>
 const API_BASE = "/api";
 
@@ -363,10 +367,9 @@ function updateSelectedWorkerText() {
   const el = document.getElementById("selectedWorkerText");
 
   if (workerPhone) {
-    const text = workerName
+    el.textContent = workerName
       ? `${workerName} (${workerRole || "worker"} · ${workerPhone})`
       : `${workerRole || "worker"} · ${workerPhone}`;
-    el.textContent = text;
     el.classList.add("on");
   } else {
     el.textContent = "No worker selected";
@@ -375,8 +378,15 @@ function updateSelectedWorkerText() {
 }
 
 window.addEventListener("DOMContentLoaded", async function () {
-  const pPhone = (localStorage.getItem("userPhone") || "").trim();
-  const pName = localStorage.getItem("userName") || "";
+  const pPhone =
+    (localStorage.getItem("userPhone") ||
+     localStorage.getItem("phone") ||
+     "").trim();
+
+  const pName =
+    localStorage.getItem("userName") ||
+    localStorage.getItem("name") ||
+    "";
 
   if (!pPhone) {
     window.location.href = "login.html";
@@ -401,6 +411,8 @@ window.addEventListener("DOMContentLoaded", async function () {
 
     const avatarBase64 = profile.avatarBase64 || "";
 
+    avatarContainer.innerHTML = "";
+
     if (avatarBase64) {
       const img = document.createElement("img");
       img.src = avatarBase64;
@@ -409,19 +421,25 @@ window.addEventListener("DOMContentLoaded", async function () {
       img.style.borderRadius = "50%";
       img.style.objectFit = "cover";
       img.style.boxShadow = "0 4px 12px rgba(37,99,235,0.3)";
-      avatarContainer.innerHTML = "";
       avatarContainer.appendChild(img);
     } else {
-      userAvatar.textContent = (fullName || "U").charAt(0).toUpperCase();
+      const div = document.createElement("div");
+      div.className = "uavatar";
+      div.id = "userAvatar";
+      div.textContent = (fullName || "U").charAt(0).toUpperCase();
+      avatarContainer.appendChild(div);
     }
 
-    document.getElementById("welcomeUser").textContent = "Welcome, " + (fullName || "Guest") + "!";
+    document.getElementById("welcomeUser").textContent =
+      "Welcome, " + (fullName || "Guest") + "!";
+
     custNameInput.value = fullName || "";
     addressInput.value = fullAddress || "";
   } catch (err) {
     console.error("Profile load error:", err);
     userAvatar.textContent = (pName || "U").charAt(0).toUpperCase();
-    document.getElementById("welcomeUser").textContent = "Welcome, " + (pName || "Guest") + "!";
+    document.getElementById("welcomeUser").textContent =
+      "Welcome, " + (pName || "Guest") + "!";
     custNameInput.value = pName || "";
     addressInput.value = "";
   }
@@ -477,15 +495,6 @@ window.addEventListener("DOMContentLoaded", async function () {
 
     if (!wPhone || wRole !== service) {
       showToast("⚠️ Please choose a worker for the selected service first!", "error");
-      const wrow = document.getElementById("workerRow");
-      wrow.style.animation = "none";
-      wrow.offsetHeight;
-      wrow.style.animation = "shake 0.5s ease";
-      document.getElementById("chooseWorkerBtn").style.boxShadow = "0 0 0 3px rgba(239,68,68,0.5)";
-      setTimeout(() => {
-        document.getElementById("chooseWorkerBtn").style.boxShadow = "";
-        wrow.style.animation = "";
-      }, 2000);
       return;
     }
 
@@ -536,8 +545,8 @@ window.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("bookingSuccessOverlay").style.display = "none";
         document.getElementById("bookingForm").reset();
         dateInput.min = new Date().toISOString().split("T")[0];
-        custNameInput.value = pName || "";
-        addressInput.value = "";
+        custNameInput.value = custName;
+        addressInput.value = address;
       };
 
       localStorage.removeItem("chosenWorkerPhone");
@@ -556,9 +565,13 @@ window.addEventListener("DOMContentLoaded", async function () {
 
   document.getElementById("logoutBtn").addEventListener("click", function () {
     localStorage.removeItem("userName");
+    localStorage.removeItem("name");
     localStorage.removeItem("userPhone");
+    localStorage.removeItem("phone");
     localStorage.removeItem("userEmail");
+    localStorage.removeItem("email");
     localStorage.removeItem("userRole");
+    localStorage.removeItem("role");
     localStorage.removeItem("userStatus");
     localStorage.removeItem("token");
     localStorage.removeItem("chosenWorkerPhone");

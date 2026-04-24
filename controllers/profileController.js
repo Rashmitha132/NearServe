@@ -4,6 +4,7 @@ const asyncHandler = require("../utils/asyncHandler");
 
 const getProfile = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
+
   const user = await User.findOne({ phone });
 
   if (!user) {
@@ -15,14 +16,18 @@ const getProfile = asyncHandler(async (req, res) => {
     email: user.email || "",
     phone: user.phone || "",
     role: user.role || "",
-    createdAt: user.createdAt,
+    status: user.status || "",
+    createdAt: user.createdAt || null,
+
     avatarBase64: user.avatarBase64 || "",
     bio: user.bio || "",
+
     address: user.address || "",
     city: user.city || "",
     state: user.state || "",
     pincode: user.pincode || "",
     country: user.country || "India",
+
     availability: user.availability || "available",
     communicationPref: user.communicationPref || "email",
     preferredTime: user.preferredTime || "flexible",
@@ -40,7 +45,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 
   if (email) {
     const existingUser = await User.findOne({
-      email: email.trim().toLowerCase(),
+      email: String(email).trim().toLowerCase(),
       phone: { $ne: phone },
     });
 
@@ -54,12 +59,14 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (name !== undefined) updateData.name = String(name).trim();
   if (email !== undefined) updateData.email = String(email).trim().toLowerCase();
   if (bio !== undefined) updateData.bio = String(bio).trim();
+
+  // keep support here too, even though avatar route is preferred
   if (avatarBase64 !== undefined) updateData.avatarBase64 = avatarBase64 || "";
 
   const user = await User.findOneAndUpdate(
     { phone },
-    updateData,
-    { new: true }
+    { $set: updateData },
+    { new: true, runValidators: true }
   );
 
   if (!user) {
@@ -83,8 +90,8 @@ const updateAvatar = asyncHandler(async (req, res) => {
 
   const user = await User.findOneAndUpdate(
     { phone },
-    { avatarBase64 },
-    { new: true }
+    { $set: { avatarBase64 } },
+    { new: true, runValidators: true }
   );
 
   if (!user) {
@@ -103,20 +110,18 @@ const updateAddress = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
   const { address, city, state, pincode, country } = req.body;
 
-  if (!address || !city || !state || !pincode) {
-    return res.status(400).json({ error: "All address fields are required" });
-  }
-
   const user = await User.findOneAndUpdate(
     { phone },
     {
-      address: String(address).trim(),
-      city: String(city).trim(),
-      state: String(state).trim(),
-      pincode: String(pincode).trim(),
-      country: country ? String(country).trim() : "India",
+      $set: {
+        address: address ? String(address).trim() : "",
+        city: city ? String(city).trim() : "",
+        state: state ? String(state).trim() : "",
+        pincode: pincode ? String(pincode).trim() : "",
+        country: country ? String(country).trim() : "India",
+      },
     },
-    { new: true }
+    { new: true, runValidators: true }
   );
 
   if (!user) {
@@ -153,8 +158,8 @@ const updatePreferences = asyncHandler(async (req, res) => {
 
   const user = await User.findOneAndUpdate(
     { phone },
-    updateData,
-    { new: true }
+    { $set: updateData },
+    { new: true, runValidators: true }
   );
 
   if (!user) {
@@ -164,9 +169,9 @@ const updatePreferences = asyncHandler(async (req, res) => {
   res.json({
     message: "Preferences saved successfully",
     user: {
-      availability: user.availability || "",
-      communicationPref: user.communicationPref || "",
-      preferredTime: user.preferredTime || "",
+      availability: user.availability || "available",
+      communicationPref: user.communicationPref || "email",
+      preferredTime: user.preferredTime || "flexible",
       serviceLocation: user.serviceLocation || "",
     },
   });
