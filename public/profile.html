@@ -2,368 +2,990 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile - NearServe</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --blue:#2563eb; --teal:#0d9488; --teal2:#14b8a6;
-    --dark:#0f172a; --mid:#475569; --soft:#94a3b8;
-    --border:#e2eaf4; --bg:#f0f7ff;
-    --success:#16a34a; --error:#dc2626;
+    --green: #43ad00;
+    --green-dark: #3c9700;
+    --green-mid: #7ccc00;
+    --cream: #f5f4ee;
+    --chip: #eefbd8;
+    --text: #050505;
+    --muted: #56615b;
+    --pink: #ec407a;
+    --purple: #4b2a84;
+    --border: #e2e5dc;
+    --error: #b91c1c;
+    --success: #43ad00;
   }
 
-  html, body { height: 100%; }
+  html, body { min-height: 100%; }
 
   body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--bg);
     min-height: 100vh;
+    font-family: "Plus Jakarta Sans", Arial, sans-serif;
     display: flex;
-    align-items: stretch;
+    background: #fff;
+    color: var(--text);
     overflow-x: hidden;
   }
 
+  a, button, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+  button, a { touch-action: manipulation; }
+
   .left-panel {
-    width: 380px; min-height: 100vh;
-    background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
-    position: fixed; top: 0; left: 0; bottom: 0;
-    display: flex; flex-direction: column;
-    justify-content: space-between;
-    padding: 44px 38px;
-    overflow: hidden; z-index: 10;
-    flex-shrink: 0;
+    width: 176px;
+    min-height: 100vh;
+    background: var(--green-dark);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0 0;
+    flex: 0 0 176px;
   }
-  .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
-  .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
 
-  .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.08); }
-  .r1{width:160px;height:160px;top:35%;right:-40px;}
-  .r2{width:90px;height:90px;top:58%;right:36px;border-color:rgba(255,255,255,0.05);}
-  .r3{width:60px;height:60px;top:15%;left:20px;border-color:rgba(255,255,255,0.06);}
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px 28px;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
 
-  .fi { position:absolute; width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(0,0,0,0.15); animation:bob ease-in-out infinite alternate; }
-  .fi1{top:15%;left:8%;animation-duration:3.2s;}
-  .fi2{top:38%;right:10%;animation-duration:2.8s;animation-delay:0.5s;}
-  .fi3{top:60%;left:14%;animation-duration:3.6s;animation-delay:1s;}
-  .fi4{top:75%;right:16%;animation-duration:2.5s;animation-delay:0.3s;}
-  @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-12px) rotate(3deg);} }
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: #7ccc00;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+  }
 
-  .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:11px; }
-  .l-logo-icon { width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
-  .l-logo span { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; }
+  .sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px 26px;
+    color: #fff;
+    text-decoration: none;
+  }
 
-  .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:28px 0; }
-  .l-main h2 { font-family:'Nunito',sans-serif; font-size:2.2rem; font-weight:900; color:#fff; line-height:1.25; margin-bottom:14px; }
-  .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .l-main p { color:rgba(255,255,255,0.65); font-size:0.92rem; line-height:1.75; margin-bottom:26px; }
+  .side-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #7ccc00;
+    display: grid;
+    place-items: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    overflow: hidden;
+  }
 
-  .l-steps { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
-  .l-step { display:flex; align-items:flex-start; gap:10px; }
-  .l-step-icon { width:32px; height:32px; border-radius:9px; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:1px; }
-  .l-step-text strong { display:block; font-size:0.88rem; font-weight:700; color:#fff; margin-bottom:2px; }
-  .l-step-text span { font-size:0.78rem; color:rgba(255,255,255,0.55); line-height:1.4; }
+  .side-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
-  .l-stats { position:relative; z-index:2; display:flex; gap:18px; align-items:center; }
-  .stat-num { font-family:'Nunito',sans-serif; font-size:1.55rem; font-weight:900; color:#fff; }
-  .stat-lbl { font-size:0.68rem; color:rgba(255,255,255,0.55); }
-  .sdiv { width:1px; background:rgba(255,255,255,0.2); height:32px; }
+  .side-name { font-size: 0.78rem; font-weight: 800; line-height: 1.15; }
+  .side-role { color: #91e5bb; font-size: 0.64rem; font-weight: 700; margin-top: 2px; }
+
+  .side-nav {
+    display: grid;
+    margin-top: 4px;
+  }
+
+  .side-nav a {
+    color: #effdf5;
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-left: 4px solid transparent;
+  }
+
+  .side-nav a.active {
+    background: rgba(255,255,255,0.12);
+    border-left-color: #3fd18d;
+    font-weight: 800;
+  }
 
   .right-panel {
-    margin-left: 380px;
-    flex: 1; min-height: 100vh;
-    padding: 40px 44px;
-    overflow-y: auto;
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    padding: 26px 34px 42px;
+    background: #fff;
   }
 
   .topbar {
-    display: flex; align-items: center;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    gap: 16px;
     margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1.5px solid var(--border);
-    flex-wrap: wrap; gap: 14px;
   }
-  .topbar-left { display:flex; align-items:center; gap:12px; }
-  .back-btn {
-    width: 40px; height: 40px; border-radius: 10px;
-    border: 1.5px solid var(--border); background: #fff;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; color: var(--mid);
-    transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+  .page-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.15rem;
+    font-weight: 800;
   }
-  .back-btn:hover { background: var(--border); transform: translateX(-2px); }
-  .page-title { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; color:var(--dark); }
 
   .logout-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 16px; border-radius: 10px;
-    border: 1.5px solid #fee2e2; background: #fff5f5;
-    color: #ef4444; font-size: 0.85rem; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
+    min-height: 32px;
+    border: 1px solid #f4c7c7;
+    background: #fff;
+    color: var(--error);
+    padding: 5px 12px;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
   }
-  .logout-btn:hover { background: #fee2e2; transform: translateY(-1px); }
 
-  .profile-grid {
+  .profile-shell {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 22px;
-    margin-bottom: 24px;
+    grid-template-columns: 260px 1fr;
+    gap: 56px;
+    align-items: start;
   }
 
   .profile-card {
-    background: #fff; border-radius: 18px;
-    padding: 24px; text-align: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    border: 1.5px solid var(--border);
-    position: relative; overflow: hidden;
-    align-self: start;
-  }
-  .profile-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0;
-    height: 4px; background: linear-gradient(90deg, #2563eb, #0d9488);
+    text-align: center;
+    padding-top: 34px;
   }
 
-  .avatar-wrapper { position:relative; width:100px; height:100px; margin:14px auto 14px; }
-  .avatar { width:100%; height:100%; border-radius:50%; }
-  .avatar-img { object-fit:cover; display:block; }
-  .avatar-fallback { background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:2.5rem; font-weight:900; color:#fff; box-shadow:0 6px 20px rgba(37,99,235,0.3); }
-  .hidden { display:none !important; }
+  .avatar-wrapper {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 12px;
+  }
 
-  .avatar-buttons { display:flex; gap:8px; justify-content:center; margin-top:10px; }
-  .avatar-edit-btn, .avatar-remove-btn { width:34px; height:34px; border-radius:50%; border:none; color:#fff; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
-  .avatar-edit-btn { background:var(--blue); }
-  .avatar-edit-btn:hover { background:#1d4ed8; transform:scale(1.1); }
-  .avatar-remove-btn { background:#ef4444; }
-  .avatar-remove-btn:hover { background:#dc2626; transform:scale(1.1); }
-  .avatar-upload-input { display:none; }
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
 
-  .profile-name { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:var(--dark); margin-bottom:3px; }
-  .profile-role { font-size:0.82rem; color:var(--soft); margin-bottom:14px; }
+  .avatar-img { object-fit: cover; display: block; }
 
-  .profile-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; padding-top:14px; border-top:1.5px solid var(--border); }
-  .stat-item { text-align:center; }
-  .stat-num-val { font-family:'Nunito',sans-serif; font-size:1.25rem; font-weight:900; color:var(--blue); }
-  .stat-label { font-size:0.68rem; color:var(--soft); margin-top:3px; font-weight:600; }
+  .avatar-fallback {
+    background: linear-gradient(135deg, #0f3d2e, #1b7a52);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
 
-  .form-sections { display:flex; flex-direction:column; gap:20px; }
+  .hidden { display: none !important; }
+
+  .avatar-buttons {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    display: flex;
+    gap: 4px;
+  }
+
+  .avatar-edit-btn,
+  .avatar-remove-btn {
+    width: 21px;
+    height: 21px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #145c3f;
+    color: #fff;
+    font-size: 0;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+
+  .avatar-edit-btn::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fff; display: block; }
+  .avatar-remove-btn { display: none; }
+  .avatar-wrapper.has-image .avatar-remove-btn {
+    display: grid;
+    background: var(--error);
+  }
+  .avatar-upload-input { display: none; }
+
+  .profile-name {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .profile-role {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 24px;
+  }
+
+  .profile-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-num-val {
+    font-size: 1.22rem;
+    font-weight: 500;
+    color: #000;
+  }
+
+  .stat-label {
+    margin-top: 3px;
+    font-size: 0.62rem;
+    color: #000;
+  }
+
+  .section-tabs {
+    display: grid;
+    gap: 4px;
+    text-align: left;
+  }
+
+  .tab-btn {
+    border: 0;
+    border-left: 4px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    padding: 9px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #000;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .tab-btn.active {
+    background: rgba(20, 92, 63, 0.12);
+    border-left-color: #145c3f;
+  }
+
+  .tab-icon {
+    width: 16px;
+    color: var(--purple);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+  }
+
+  .tab-text strong {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .tab-text span {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.56rem;
+    color: #000;
+    line-height: 1.2;
+  }
+
+  .form-sections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 72px;
+    row-gap: 32px;
+    align-items: start;
+    width: 100%;
+  }
 
   .form-section {
-    background: #fff; border-radius: 18px;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
     padding: 22px 24px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-    border: 1.5px solid var(--border);
-    position: relative; overflow: hidden;
-  }
-  .form-section::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0;
-    height: 4px; background: linear-gradient(90deg, #2563eb, #0d9488);
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .section-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-  .section-icon { font-size:1.1rem; }
-
-  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
-  .form-row.full { grid-template-columns:1fr; }
-  .form-group { display:flex; flex-direction:column; }
-
-  .form-label { font-size:0.72rem; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:7px; }
-
-  .form-input, .form-select, .form-textarea {
-    padding: 11px 14px; border: 1.5px solid var(--border);
-    border-radius: 11px; background: #fafcff;
-    color: var(--dark); font-family:'Plus Jakarta Sans',sans-serif;
-    font-size: 0.88rem; outline: none; transition: all 0.25s;
+  .form-section.highlighted {
+    background: #fff;
+    border: 2px solid #145c3f;
+    border-top: 4px solid #1b7a52;
+    box-shadow: 0 8px 24px rgba(20, 92, 63, 0.18);
   }
-  .form-input:focus, .form-select:focus, .form-textarea:focus {
-    border-color: #93c5fd; background: #fff;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 22px;
   }
-  .form-input:disabled { background:#f1f5f9; color:var(--soft); cursor:not-allowed; }
-  .form-textarea { resize:vertical; min-height:80px; font-family:'Plus Jakarta Sans',sans-serif; }
-  .form-select { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat:no-repeat; background-position:right 10px center; background-size:20px; padding-right:35px; }
 
-  .btn-group { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px; }
-  .btn-save { padding:12px; border:none; border-radius:11px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 14px rgba(29,78,216,0.28); }
-  .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(29,78,216,0.38); }
-  .btn-cancel { padding:12px; border:1.5px solid var(--border); border-radius:11px; background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
-  .btn-cancel:hover { background:var(--border); transform:translateY(-1px); }
+  .section-icon {
+    width: 14px;
+    color: var(--purple);
+    display: grid;
+    place-items: center;
+  }
 
-  .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:var(--dark); color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
-  .toast.show { transform:translateY(0); opacity:1; }
-  .toast.success { background:linear-gradient(135deg,var(--success),var(--teal)); }
-  .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 34px;
+    margin-bottom: 22px;
+  }
 
-  @media(max-width:960px) { .left-panel{display:none;} .right-panel{margin-left:0; padding:24px 18px;} }
-  @media(max-width:700px) { .profile-grid{grid-template-columns:1fr;} .form-row{grid-template-columns:1fr;} .btn-group{grid-template-columns:1fr;} }
+  .form-row.full { grid-template-columns: 1fr; }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #000;
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 500;
+    padding: 0;
+    min-height: 24px;
+  }
+
+  .form-input::placeholder,
+  .form-textarea::placeholder {
+    color: #667085;
+    opacity: 1;
+  }
+
+  .form-input:disabled {
+    color: #000;
+    opacity: 1;
+  }
+
+  .form-textarea {
+    min-height: 48px;
+    resize: vertical;
+  }
+
+  .form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3'%3e%3cpath d='m6 9 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 2px center;
+    background-size: 14px;
+    padding-right: 24px;
+  }
+
+  .btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 6px;
+  }
+
+  .btn-save {
+    min-height: 36px;
+    border: 0;
+    border-radius: 6px;
+    background: #145c3f;
+    color: #fff;
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(20, 92, 63, 0.16);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-save:hover {
+    background: #1b7a52;
+    box-shadow: 0 10px 22px rgba(20, 92, 63, 0.22);
+    transform: translateY(-1px);
+  }
+
+  .btn-cancel {
+    border: 0;
+    background: transparent;
+    color: #000;
+    font-family: inherit;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 100;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.25s;
+    background: var(--green-dark);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { background: var(--error); }
+  .toast.success { background: var(--success); }
+
+  @media (max-width: 1100px) {
+    .form-sections {
+      grid-template-columns: 1fr;
+      gap: 34px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    body {
+      display: block;
+      background: #fff;
+      padding: 8px 12px 76px;
+    }
+
+    .left-panel { display: none; }
+
+    .right-panel {
+      min-height: auto;
+      padding: 0;
+      background: var(--cream);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      min-height: 59px;
+      margin: 0 0 22px;
+      padding: 17px 12px 10px;
+      background: linear-gradient(135deg, #0f3d2e, #145c3f, #1b7a52);
+      color: #fff;
+      align-items: flex-start;
+    }
+
+    .page-title {
+      color: #fff;
+      font-size: 0.78rem;
+      gap: 7px;
+    }
+
+    .logout-btn {
+      min-height: 22px;
+      border: 1px solid rgba(20, 92, 63, 0.25);
+      border-radius: 6px;
+      background: #fff;
+      color: #145c3f;
+      padding: 5px 8px;
+      font-size: 0.48rem;
+    }
+
+    .profile-shell {
+      display: block;
+      padding: 0 10px 18px;
+    }
+
+    .profile-card {
+      text-align: left;
+      padding-top: 0;
+    }
+
+    .mobile-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 12px 16px;
+    }
+
+    .avatar-wrapper {
+      width: 48px;
+      height: 48px;
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    .avatar-fallback {
+      font-size: 0.86rem;
+    }
+
+    .avatar-buttons {
+      right: -2px;
+      bottom: -2px;
+    }
+
+    .avatar-edit-btn,
+    .avatar-remove-btn {
+      width: 17px;
+      height: 17px;
+      border-width: 2px;
+    }
+
+    .avatar-edit-btn::before {
+      width: 6px;
+      height: 6px;
+    }
+
+    .profile-name {
+      font-size: 0.64rem;
+      margin-bottom: 2px;
+    }
+
+    .profile-role {
+      font-size: 0.48rem;
+      margin-bottom: 0;
+    }
+
+    .profile-stats {
+      width: 210px;
+      margin: 0 auto 24px;
+      gap: 38px;
+      text-align: center;
+    }
+
+    .stat-num-val {
+      font-size: 0.82rem;
+    }
+
+    .stat-label {
+      font-size: 0.38rem;
+    }
+
+    .section-tabs {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      min-height: 40px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      padding: 5px;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: rgba(20, 92, 63, 0.12);
+      border-left-color: #145c3f;
+      color: #000;
+    }
+
+    .tab-icon {
+      width: auto;
+      color: currentColor;
+      font-size: 0.72rem;
+    }
+
+    .tab-text strong {
+      font-size: 0.48rem;
+    }
+
+    .tab-text span { display: none; }
+
+    .form-sections {
+      display: block;
+    }
+
+    .form-section {
+      display: none;
+      padding: 0 10px 4px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .form-section.highlighted {
+      border: 2px solid #145c3f;
+      border-top: 4px solid #1b7a52;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(20, 92, 63, 0.18);
+      padding: 14px 12px;
+    }
+
+    .section-title {
+      font-size: 0.58rem;
+      margin-bottom: 18px;
+      gap: 8px;
+    }
+
+    .section-icon {
+      width: 12px;
+    }
+
+    .form-row,
+    .form-row.full {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+      margin-bottom: 16px;
+    }
+
+    .form-row.full.mobile-two {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .form-label {
+      font-size: 0.42rem;
+      margin-bottom: 8px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      font-size: 0.46rem;
+      min-height: 17px;
+    }
+
+    .form-textarea {
+      min-height: 42px;
+    }
+
+    .btn-group {
+      margin-top: 36px;
+    }
+
+    .btn-save {
+      min-height: 28px;
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-size: 0.48rem;
+    }
+
+    .btn-cancel {
+      font-size: 0.44rem;
+    }
+
+    .toast {
+      left: 20px;
+      right: 20px;
+      bottom: 76px;
+      text-align: center;
+      font-size: 0.62rem;
+    }
+  }
 </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
-<body>
-
-<div class="left-panel">
-  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">👤</div><div class="fi fi2">✏️</div><div class="fi fi3">🔒</div><div class="fi fi4">⭐</div>
-
-  <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
+<body class="ns-shell-page page-bg">
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+    <span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role">Customer</div></div>
+  </div>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+    <a href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+    <a class="active" href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+    <a href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+    <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+    <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong></div>
     </div>
-    <span>NearServe</span>
+    <button class="ns-mobile-book" type="button" onclick="location.href='booking.html'">+ Book</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role">Customer</div></div>
+  </div>
+  <div class="ns-mobile-trust"><span>Verified Workers</span><span>Secure Booking</span><span>Quick & Easy</span></div>
+</header>
+
+<aside class="left-panel">
+  <div class="sidebar-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong>
   </div>
 
-  <div class="l-main">
-    <h2>My <em>Profile</em></h2>
-    <p>Manage your personal information, address, preferences and account security all in one place.</p>
-    <div class="l-steps">
-      <div class="l-step">
-        <div class="l-step-icon">👤</div>
-        <div class="l-step-text"><strong>Personal Info</strong><span>Update your name, email and bio.</span></div>
-      </div>
-      <div class="l-step">
-        <div class="l-step-icon">📍</div>
-        <div class="l-step-text"><strong>Address</strong><span>Save your location for faster bookings.</span></div>
-      </div>
-      <div class="l-step">
-        <div class="l-step-icon">⚙️</div>
-        <div class="l-step-text"><strong>Preferences</strong><span>Set your booking time and contact preferences.</span></div>
-      </div>
-      <div class="l-step">
-        <div class="l-step-icon">🔒</div>
-        <div class="l-step-text"><strong>Security</strong><span>Change your password anytime.</span></div>
-      </div>
+  <a href="profile.html" class="sidebar-user">
+    <div class="side-avatar" id="sideAvatar">U</div>
+    <div>
+      <div class="side-name" id="sideName">Customer</div>
+      <div class="side-role">Customer</div>
     </div>
-  </div>
+  </a>
 
-  <div class="l-stats">
-    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified</div></div>
-    <div class="sdiv"></div>
-    <div><div class="stat-num">🔒</div><div class="stat-lbl">Secure</div></div>
-    <div class="sdiv"></div>
-    <div><div class="stat-num">⚡</div><div class="stat-lbl">Fast</div></div>
-  </div>
-</div>
+  <nav class="side-nav" aria-label="Sidebar navigation">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="booking.html">Book a service</a>
+    <a href="mybooking.html">Booking history</a>
+    <a href="profile.html" class="active">My profile</a>
+    <a href="worker_list.html">My workers</a>
+  </nav>
+</aside>
 
-<div class="right-panel">
+<main class="right-panel">
+  <header class="topbar">
+    <div class="page-title"><span aria-hidden="true">👤</span> My Profile</div>
+    <button class="logout-btn" id="logoutBtn" type="button">↪ Logout</button>
+  </header>
 
-  <div class="topbar">
-    <div class="topbar-left">
-      <button class="back-btn" onclick="window.location.href='booking.html'">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <div class="page-title">👤 My Profile</div>
-    </div>
-    <button class="logout-btn" id="logoutBtn">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-      </svg>
-      Logout
-    </button>
-  </div>
-
-  <div class="profile-grid">
-
-    <div class="profile-card">
-      <div class="avatar-wrapper">
-        <img id="avatarImg" class="avatar avatar-img hidden" src="" alt="Profile Picture">
-        <div id="avatarFallback" class="avatar avatar-fallback">U</div>
+  <div class="profile-shell">
+    <section class="profile-card">
+      <div class="mobile-identity">
+        <div class="avatar-wrapper">
+          <img id="avatarImg" class="avatar avatar-img hidden" src="" alt="Profile Picture">
+          <div id="avatarFallback" class="avatar avatar-fallback">U</div>
+          <div class="avatar-buttons">
+            <button class="avatar-edit-btn" id="avatarEditBtn" type="button" title="Upload profile picture">Upload</button>
+            <button class="avatar-remove-btn" id="avatarRemoveBtn" type="button" title="Remove profile picture">Remove</button>
+            <input type="file" id="avatarUploadInput" class="avatar-upload-input" accept="image/*">
+          </div>
+        </div>
+        <div>
+          <div class="profile-name" id="profileName">-</div>
+          <div class="profile-role">Customer</div>
+        </div>
       </div>
-      <div class="avatar-buttons">
-        <button class="avatar-edit-btn" id="avatarEditBtn" title="Upload Profile Picture">📷</button>
-        <button class="avatar-remove-btn" id="avatarRemoveBtn" title="Remove Profile Picture">✕</button>
-        <input type="file" id="avatarUploadInput" class="avatar-upload-input" accept="image/*">
-      </div>
-      <div class="profile-name" id="profileName">—</div>
-      <div class="profile-role">Customer</div>
+
       <div class="profile-stats">
         <div class="stat-item">
-          <div class="stat-num-val" id="totalBookings">—</div>
-          <div class="stat-label">Total Bookings</div>
+          <div class="stat-num-val" id="totalBookings">-</div>
+          <div class="stat-label">Total bookings</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num-val" id="memberSince">—</div>
-          <div class="stat-label">Member Since</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-sections">
-
-      <div class="form-section">
-        <div class="section-title"><span class="section-icon">ℹ️</span> Personal Information</div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="fullName" placeholder="Your Full Name"></div></div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="email" placeholder="your@email.com"></div></div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Phone Number (Cannot be changed)</label><input type="text" class="form-input" id="phone" disabled></div></div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Bio / About You</label><textarea class="form-textarea" id="bio" placeholder="Tell us about yourself..."></textarea></div></div>
-        <div class="btn-group">
-          <button class="btn-save" id="savePersonalBtn">💾 Save Personal Info</button>
-          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+          <div class="stat-num-val" id="memberSince">-</div>
+          <div class="stat-label">Member since</div>
         </div>
       </div>
 
-      <div class="form-section">
-        <div class="section-title"><span class="section-icon">📍</span> Address & Location</div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Full Address</label><input type="text" class="form-input" id="address" placeholder="Street Address"></div></div>
+      <nav class="section-tabs" aria-label="Profile sections">
+        <button class="tab-btn active" type="button" data-target="personalSection">
+          <span class="tab-icon">👤</span>
+          <span class="tab-text"><strong>Personal</strong><span>Name, email, phone</span></span>
+        </button>
+        <button class="tab-btn" type="button" data-target="addressSection">
+          <span class="tab-icon">📍</span>
+          <span class="tab-text"><strong>Address</strong><span>Location & city</span></span>
+        </button>
+        <button class="tab-btn" type="button" data-target="preferencesSection">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-text"><strong>Prefs</strong><span>Notifications & bookings</span></span>
+        </button>
+        <button class="tab-btn" type="button" data-target="securitySection">
+          <span class="tab-icon">🔒</span>
+          <span class="tab-text"><strong>Security</strong><span>Change password</span></span>
+        </button>
+      </nav>
+    </section>
+
+    <section class="form-sections">
+      <div class="form-section active highlighted" id="personalSection">
+        <div class="section-title"><span class="section-icon">👤</span> Personal information</div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="city" placeholder="City"></div>
-          <div class="form-group"><label class="form-label">State</label><input type="text" class="form-input" id="state" placeholder="State"></div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="fullName" placeholder="Your full name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="email" placeholder="your@email.com">
+          </div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Pincode</label><input type="text" class="form-input" id="pincode" placeholder="Pincode"></div>
-          <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-input" id="country" placeholder="Country" value="India"></div>
+          <div class="form-group">
+            <label class="form-label">Phone (Cannot be changed)</label>
+            <input type="text" class="form-input" id="phone" disabled>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bio / About You</label>
+            <textarea class="form-textarea" id="bio" placeholder="Tell us about yourself..."></textarea>
+          </div>
         </div>
         <div class="btn-group">
-          <button class="btn-save" id="saveAddressBtn">💾 Save Address</button>
-          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+          <button class="btn-save" id="savePersonalBtn" type="button">💾 Save personal info</button>
+          <button class="btn-cancel" type="button" onclick="location.reload()">↻ Reset</button>
         </div>
       </div>
 
-      <div class="form-section">
-        <div class="section-title"><span class="section-icon">⚙️</span> Preferences & Settings</div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Service Location</label><select class="form-select" id="serviceLocation"><option value="">Select a Location</option><option value="home">🏠 Home</option><option value="office">🏢 Office</option><option value="shop">🏪 Shop</option><option value="other">📍 Other</option></select></div></div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Communication Preference</label><select class="form-select" id="communicationPref"><option value="email">📧 Email</option><option value="chat">💬 Chat</option><option value="phone">📞 Phone Call</option></select></div></div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Preferred Time for Bookings</label><select class="form-select" id="preferredTime"><option value="morning">🌅 Morning (6 AM - 12 PM)</option><option value="afternoon">☀️ Afternoon (12 PM - 5 PM)</option><option value="evening">🌆 Evening (5 PM - 10 PM)</option><option value="flexible">⏰ Flexible Anytime</option></select></div></div>
+      <div class="form-section" id="addressSection">
+        <div class="section-title"><span class="section-icon">📍</span> Address & location</div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Full Address</label>
+            <input type="text" class="form-input" id="address" placeholder="Street address">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" class="form-input" id="city" placeholder="City">
+          </div>
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <input type="text" class="form-input" id="state" placeholder="State">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Pincode</label>
+            <input type="text" class="form-input" id="pincode" placeholder="Pincode">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <input type="text" class="form-input" id="country" placeholder="Country" value="India">
+          </div>
+        </div>
         <div class="btn-group">
-          <button class="btn-save" id="savePreferencesBtn">💾 Save Preferences</button>
-          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+          <button class="btn-save" id="saveAddressBtn" type="button">💾 Save address</button>
+          <button class="btn-cancel" type="button" onclick="location.reload()">↻ Reset</button>
         </div>
       </div>
 
-      <div class="form-section">
-        <div class="section-title"><span class="section-icon">🔐</span> Security & Password</div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" id="currentPassword" placeholder="Enter current password"></div></div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="newPassword" placeholder="Enter new password (min 6 characters)"></div></div>
-        <div class="form-row full"><div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password"></div></div>
+      <div class="form-section" id="preferencesSection">
+        <div class="section-title"><span class="section-icon">⚙️</span> Preferences & settings</div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Service Location</label>
+            <select class="form-select" id="serviceLocation">
+              <option value="">Select a location</option>
+              <option value="home">Home</option>
+              <option value="office">Office</option>
+              <option value="shop">Shop</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Communication Preference</label>
+            <select class="form-select" id="communicationPref">
+              <option value="email">Email</option>
+              <option value="chat">Chat</option>
+              <option value="phone">Phone call</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Preferred Time for Bookings</label>
+            <select class="form-select" id="preferredTime">
+              <option value="morning">Morning (6 AM - 12 PM)</option>
+              <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+              <option value="evening">Evening (5 PM - 10 PM)</option>
+              <option value="flexible">Flexible Anytime</option>
+            </select>
+          </div>
+        </div>
         <div class="btn-group">
-          <button class="btn-save" id="savePasswordBtn">🔐 Change Password</button>
-          <button class="btn-cancel" onclick="document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value='';">↺ Clear</button>
+          <button class="btn-save" id="savePreferencesBtn" type="button">💾 Save preferences</button>
+          <button class="btn-cancel" type="button" onclick="location.reload()">↻ Reset</button>
         </div>
       </div>
 
-    </div>
+      <div class="form-section" id="securitySection">
+        <div class="section-title"><span class="section-icon">🔒</span> Security & password</div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">New Password (Min 6 Characters)</label>
+            <input type="password" class="form-input" id="newPassword" placeholder="Enter new password">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password">
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn-save" id="savePasswordBtn" type="button">🔑 Change password</button>
+          <button class="btn-cancel" type="button" onclick="document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value='';">↻ Clear</button>
+        </div>
+      </div>
+    </section>
   </div>
-</div>
+</main>
+
+<nav class="ns-bottom-nav" aria-label="Mobile primary navigation">
+  <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="booking.html"><i class="fa-solid fa-clipboard-list"></i><span>Book</span></a>
+  <a href="mybooking.html"><i class="fa-solid fa-table-list"></i><span>History</span></a>
+  <a class="active" aria-current="page" href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
 function showToast(msg, type) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + (type || "success") + " show";
-  setTimeout(() => { t.className = "toast"; }, 3500);
+  window.nearServeToast(msg, type || "error");
 }
 
 window.addEventListener("DOMContentLoaded", async function() {
-  const API_BASE = "/api";
+  const API_BASE =
+    window.location.protocol === "file:" ||
+    (window.location.port && window.location.port !== "5000")
+      ? "http://localhost:5000/api"
+      : "/api";
 
   const phone =
     (localStorage.getItem("userPhone") ||
@@ -386,7 +1008,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     "";
 
   if (!phone || role !== "customer") {
-    alert("Please login as customer");
+    showToast("Please login as customer");
     window.location.href = "login.html";
     return;
   }
@@ -395,6 +1017,18 @@ window.addEventListener("DOMContentLoaded", async function() {
 
   const avatarImg = document.getElementById("avatarImg");
   const avatarFallback = document.getElementById("avatarFallback");
+  const avatarWrapper = document.querySelector(".avatar-wrapper");
+  const sideAvatar = document.getElementById("sideAvatar");
+  const sideName = document.getElementById("sideName");
+
+  function syncDisplayName(nameText) {
+    const cleanName = nameText || "Customer";
+    document.getElementById("profileName").textContent = cleanName;
+    sideName.textContent = cleanName;
+    if (!sideAvatar.querySelector("img")) {
+      sideAvatar.textContent = cleanName.trim().charAt(0).toUpperCase() || "U";
+    }
+  }
 
   function setAvatar(nameText, imageSrc) {
     const firstLetter = (nameText || "User").trim().charAt(0).toUpperCase() || "U";
@@ -403,13 +1037,53 @@ window.addEventListener("DOMContentLoaded", async function() {
       avatarImg.src = imageSrc;
       avatarImg.classList.remove("hidden");
       avatarFallback.classList.add("hidden");
+      avatarWrapper.classList.add("has-image");
+      sideAvatar.innerHTML = `<img src="${imageSrc}" alt="">`;
     } else {
       avatarFallback.textContent = firstLetter;
       avatarFallback.classList.remove("hidden");
       avatarImg.classList.add("hidden");
       avatarImg.removeAttribute("src");
+      avatarWrapper.classList.remove("has-image");
+      sideAvatar.textContent = firstLetter;
     }
   }
+
+  function activateSection(targetId) {
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.target === targetId);
+    });
+    document.querySelectorAll(".form-section").forEach(section => {
+      section.classList.toggle("active", section.id === targetId);
+      section.classList.toggle("highlighted", section.id === targetId);
+    });
+  }
+
+  function resizeImageFile(file, maxSize = 640, quality = 0.82) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Could not read image"));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error("Could not load image"));
+        img.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => activateSection(btn.dataset.target));
+  });
 
   async function loadProfile() {
     try {
@@ -423,7 +1097,7 @@ window.addEventListener("DOMContentLoaded", async function() {
       const user = data.profile || data || {};
 
       if ((user.role || "customer").toLowerCase() !== "customer") {
-        alert("This is not a customer profile");
+        showToast("This is not a customer profile");
         window.location.href = "login.html";
         return;
       }
@@ -434,10 +1108,10 @@ window.addEventListener("DOMContentLoaded", async function() {
 
       if (dbAvatar) localStorage.setItem(avatarKey, dbAvatar);
 
+      syncDisplayName(currentName);
       setAvatar(currentName, avatarToUse);
 
-      document.getElementById("profileName").textContent = user.name || "—";
-      document.getElementById("fullName").value = user.name || "";
+      document.getElementById("fullName").value = currentName;
       document.getElementById("email").value = user.email || storedEmail || "";
       document.getElementById("phone").value = user.phone || phone;
       document.getElementById("bio").value = user.bio || "";
@@ -464,10 +1138,14 @@ window.addEventListener("DOMContentLoaded", async function() {
 
     } catch (err) {
       console.error("Error loading profile:", err);
-      setAvatar(storedName || "User", localStorage.getItem(avatarKey) || "");
-      document.getElementById("profileName").textContent = storedName || "—";
+      const fallbackName = storedName || "Customer";
+      syncDisplayName(fallbackName);
+      setAvatar(fallbackName, localStorage.getItem(avatarKey) || "");
       document.getElementById("email").value = storedEmail || "";
       document.getElementById("phone").value = phone;
+      document.getElementById("fullName").value = fallbackName;
+      document.getElementById("totalBookings").textContent = "0";
+      document.getElementById("memberSince").textContent = new Date().getFullYear();
     }
   }
 
@@ -477,21 +1155,21 @@ window.addEventListener("DOMContentLoaded", async function() {
     document.getElementById("avatarUploadInput").click();
   });
 
-  document.getElementById("avatarUploadInput").addEventListener("change", function(e) {
+  document.getElementById("avatarUploadInput").addEventListener("change", async function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      showToast("❌ Please choose an image file", "error");
+      showToast("Please choose an image file", "error");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = async function(event) {
-      const base64 = event.target.result;
+    try {
+      const base64 = await resizeImageFile(file);
+      const currentName = document.getElementById("fullName").value.trim() || storedName || "User";
 
       localStorage.setItem(avatarKey, base64);
-      setAvatar(document.getElementById("fullName").value.trim() || storedName || "User", base64);
+      setAvatar(currentName, base64);
 
       try {
         const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}/avatar`, {
@@ -501,17 +1179,21 @@ window.addEventListener("DOMContentLoaded", async function() {
         });
 
         if (res.ok) {
-          showToast("✅ Profile picture updated!");
+          showToast("Profile picture updated!", "success");
         } else {
           const err = await res.json().catch(() => ({}));
-          showToast("❌ " + (err.message || err.error || "Error saving profile picture"), "error");
+          localStorage.removeItem(avatarKey);
+          setAvatar(currentName, "");
+          showToast(err.message || err.error || "Error saving profile picture", "error");
         }
       } catch {
-        showToast("❌ Error saving profile picture", "error");
+        localStorage.removeItem(avatarKey);
+        setAvatar(currentName, "");
+        showToast("Error saving profile picture", "error");
       }
-    };
-
-    reader.readAsDataURL(file);
+    } catch {
+      showToast("Error reading profile picture", "error");
+    }
   });
 
   document.getElementById("avatarRemoveBtn").addEventListener("click", async function() {
@@ -525,10 +1207,13 @@ window.addEventListener("DOMContentLoaded", async function() {
         body: JSON.stringify({ avatarBase64: "" })
       });
 
-      if (res.ok) showToast("✅ Profile picture removed!");
-      else showToast("❌ Error removing profile picture", "error");
+      if (res.ok) showToast("Profile picture removed!", "success");
+      else {
+        const err = await res.json().catch(() => ({}));
+        showToast(err.message || err.error || "Error removing profile picture", "error");
+      }
     } catch {
-      showToast("❌ Error removing profile picture", "error");
+      showToast("Error removing profile picture", "error");
     }
   });
 
@@ -537,9 +1222,9 @@ window.addEventListener("DOMContentLoaded", async function() {
     const newEmail = document.getElementById("email").value.trim();
     const bio = document.getElementById("bio").value.trim();
 
-    if (!newName) return showToast("❌ Name cannot be empty", "error");
+    if (!newName) return showToast("Name cannot be empty", "error");
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-      return showToast("❌ Enter a valid email", "error");
+      return showToast("Enter a valid email", "error");
     }
 
     try {
@@ -554,15 +1239,15 @@ window.addEventListener("DOMContentLoaded", async function() {
         localStorage.setItem("name", newName);
         localStorage.setItem("userEmail", newEmail);
         localStorage.setItem("email", newEmail);
-        document.getElementById("profileName").textContent = newName;
+        syncDisplayName(newName);
         setAvatar(newName, localStorage.getItem(avatarKey) || "");
-        showToast("✅ Personal info saved successfully!");
+        showToast("Personal info saved successfully!", "success");
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast("❌ " + (err.message || err.error || "Error saving"), "error");
+        showToast(err.message || err.error || "Error saving", "error");
       }
     } catch {
-      showToast("❌ Error saving profile", "error");
+      showToast("Error saving profile", "error");
     }
   });
 
@@ -580,10 +1265,10 @@ window.addEventListener("DOMContentLoaded", async function() {
         body: JSON.stringify({ address, city, state, pincode, country })
       });
 
-      if (res.ok) showToast("✅ Address saved successfully!");
-      else showToast("❌ Error saving address", "error");
+      if (res.ok) showToast("Address saved successfully!", "success");
+      else showToast("Error saving address", "error");
     } catch {
-      showToast("❌ Error saving address", "error");
+      showToast("Error saving address", "error");
     }
   });
 
@@ -599,10 +1284,10 @@ window.addEventListener("DOMContentLoaded", async function() {
         body: JSON.stringify({ serviceLocation, communicationPref, preferredTime })
       });
 
-      if (res.ok) showToast("✅ Preferences saved successfully!");
-      else showToast("❌ Error saving preferences", "error");
+      if (res.ok) showToast("Preferences saved successfully!", "success");
+      else showToast("Error saving preferences", "error");
     } catch {
-      showToast("❌ Error saving preferences", "error");
+      showToast("Error saving preferences", "error");
     }
   });
 
@@ -612,15 +1297,15 @@ window.addEventListener("DOMContentLoaded", async function() {
     const confirmPassword = document.getElementById("confirmPassword").value;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      return showToast("❌ All password fields are required", "error");
+      return showToast("All password fields are required", "error");
     }
 
     if (newPassword.length < 6) {
-      return showToast("❌ Password must be at least 6 characters", "error");
+      return showToast("Password must be at least 6 characters", "error");
     }
 
     if (newPassword !== confirmPassword) {
-      return showToast("❌ Passwords do not match", "error");
+      return showToast("Passwords do not match", "error");
     }
 
     try {
@@ -634,13 +1319,13 @@ window.addEventListener("DOMContentLoaded", async function() {
         document.getElementById("currentPassword").value = "";
         document.getElementById("newPassword").value = "";
         document.getElementById("confirmPassword").value = "";
-        showToast("✅ Password changed successfully!");
+        showToast("Password changed successfully!", "success");
       } else {
         const err = await res.json().catch(() => ({}));
-        showToast("❌ " + (err.message || err.error || "Error changing password"), "error");
+        showToast(err.message || err.error || "Error changing password", "error");
       }
     } catch {
-      showToast("❌ Error changing password", "error");
+      showToast("Error changing password", "error");
     }
   });
 
@@ -659,5 +1344,6 @@ window.addEventListener("DOMContentLoaded", async function() {
   });
 });
 </script>
+  <script src="js/dashboard-shell.js"></script>
 </body>
 </html>

@@ -117,36 +117,42 @@ if (signupCanvas && signupCtx) {
 // Signup form
 // -----------------------------
 const signupForm = document.getElementById("signupForm");
-const signupBtn = document.getElementById("signupBtn");
+const signupBtn = signupForm ? signupForm.querySelector("#signupBtn") : null;
 
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const phone = document.getElementById("phone").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const role = document.getElementById("role").value;
+    const nameInput = signupForm.querySelector("#name");
+    const emailInput = signupForm.querySelector("#email");
+    const phoneInput = signupForm.querySelector("#phone");
+    const passwordInput = signupForm.querySelector("#password");
+    const roleInput = signupForm.querySelector("#role");
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
+    const phone = phoneInput.value.trim();
+    const password = passwordInput.value.trim();
+    const role = roleInput.value;
 
     if (!name || !email || !phone || !password || !role) {
-      alert("Please fill all fields.");
+      showToast("Please fill all fields.");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address.");
+      showToast("Please enter a valid email address.");
       return;
     }
 
     if (phone.length < 10) {
-      alert("Please enter a valid phone number.");
+      showToast("Please enter a valid phone number.");
       return;
     }
 
     if (password.length < 6) {
-      alert("Password must be at least 6 characters.");
+      showToast("Password must be at least 6 characters.");
       return;
     }
 
@@ -171,22 +177,22 @@ if (signupForm) {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error || "Signup failed");
+        showToast(data.error || "Signup failed");
         return;
       }
 
-      alert("Signup successful! Please login.");
+      showToast("Signup successful! Please login.", "success");
 
-      document.getElementById("name").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("phone").value = "";
-      document.getElementById("password").value = "";
-      document.getElementById("role").value = "";
+      nameInput.value = "";
+      emailInput.value = "";
+      phoneInput.value = "";
+      passwordInput.value = "";
+      roleInput.value = "";
 
       window.location.href = "login.html";
     } catch (error) {
       console.error("Signup error:", error);
-      alert("Server error during signup");
+      showToast("Server error during signup");
     } finally {
       signupBtn.disabled = false;
       signupBtn.textContent = "Sign Up";

@@ -46,11 +46,11 @@ if (form) {
                 // No need to set phone again
                 window.location.href = "confirmation.html";
             } else {
-                alert(data.error);
+                showToast(data.error);
             }
         } catch (err) {
             console.log(err);
-            alert("Error booking service");
+            showToast("Error booking service");
         }
     });
 }

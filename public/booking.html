@@ -31,6 +31,9 @@
     background: var(--bg);
   }
 
+  a, button, input, select { -webkit-tap-highlight-color: transparent; }
+  button, a { touch-action: manipulation; }
+
   .left-panel {
     width: 42%; min-height: 100vh;
     background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
@@ -185,33 +188,225 @@
   .bconf-close { flex:1; padding:13px; border-radius:12px; border:1.5px solid #e2eaf4; background:#fff; color:#64748b; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; }
   .bconf-close:hover { background:#f8faff; }
 
-  @media (max-width: 780px) {
-    body{flex-direction:column;}
-    .left-panel{width:100%;min-height:auto;padding:28px 24px;}
-    .l-main h2{font-size:1.6rem;}
-    .l-stats{display:none;}
-    .fi3,.fi4,.fi5{display:none;}
-    .right-panel{padding:28px 22px;}
+  @media (max-width: 980px) {
+    .left-panel{width:36%;padding:36px 30px;}
+    .l-main h2{font-size:2rem;}
+    .right-panel{padding:40px 34px;}
+  }
+
+  /* NearServe booking redesign */
+  body{background:#f2f3ee;color:#123628;}
+  .left-panel{width:220px;background:linear-gradient(135deg,#43ad00,#8bd400);display:flex;flex-direction:column;padding:28px 0 0;overflow:visible;}
+  .left-panel::before,.left-panel::after,.deco-ring,.fi,.l-logo,.l-main,.l-stats{display:none;}
+  .sidebar-brand{display:flex;align-items:center;gap:12px;padding:0 26px 26px;color:#fff;}
+  .brand-mark{width:34px;height:34px;border-radius:10px;background:#7ccc00;display:grid;place-items:center;}
+  .sidebar-brand strong{font-size:1.05rem;font-weight:900;}
+  .mobile-close{display:none;}
+  .sidebar-user{display:flex;align-items:center;gap:12px;padding:16px 26px;color:#fff;text-decoration:none;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);}
+  .side-avatar{width:34px;height:34px;border-radius:50%;background:#7ccc00;display:grid;place-items:center;font-weight:900;text-transform:uppercase;overflow:hidden;}
+  .side-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+  .side-greeting{display:none;}
+  .side-name{font-size:0.93rem;font-weight:900;line-height:1.1;}
+  .side-role{font-size:0.78rem;color:#98f0bf;font-weight:700;margin-top:2px;}
+  .mobile-trust{display:none;}
+  .side-nav{display:grid;padding:18px 0;}
+  .side-nav a{position:relative;color:#d8f6e6;text-decoration:none;font-weight:700;font-size:0.92rem;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .side-nav a.active{background:rgba(255,255,255,0.16);color:#fff;}
+  .side-foot{margin-top:auto;padding:24px 28px;color:#a9d6bd;font-size:0.75rem;line-height:1.65;border-top:1px solid rgba(255,255,255,0.08);}
+  .side-foot div::before{content:"• ";}
+
+  .right-panel{background:#f2f3ee;padding:26px 34px 40px;max-width:none;}
+  .ubar{display:flex;justify-content:flex-end;gap:10px;border:0;margin:0 0 18px;padding:0;}
+  .uinfo-section{display:none;}
+  .nav-link{background:#fff;border:1px solid #d9dfd6;color:#0f3d2e;border-radius:8px;padding:0 14px;}
+  .ubar-right .nav-link:first-child{display:none;}
+  .btn-out{background:#fff;border:1px solid #e1e5dd;border-radius:8px;color:#b91c1c;}
+  .ubar-right .nav-link,.ubar-right .btn-out,.ubar-right .btn-hist{width:210px;height:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:0 12px;margin:0;white-space:nowrap;}
+  .fhead{margin:8px 0 26px;display:flex;align-items:center;min-height:36px;}
+  .fhead h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.18rem;font-weight:900;color:#111827;}
+  .fhead p{display:none;}
+  .btn-hist{margin:0;background:#fff;border:1px solid #d9dfd6;color:#0f3d2e;border-radius:8px;}
+  .btn-hist:hover,.nav-link:hover{background:rgba(20,92,63,0.08);border-color:#1b7a52;color:#0f3d2e;}
+  .slbl{font-size:0.75rem;color:#9ca3af;letter-spacing:0;text-transform:uppercase;margin:16px 0 8px;}
+  .ig:has(#serviceSelect){position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+  .service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;}
+  .service-card{min-height:64px;border-radius:12px;border:1px solid #e7e9e2;background:#fff;color:#244135;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;cursor:pointer;}
+  .service-card.active{border:2px solid #1b7a52;background:rgba(20,92,63,0.10);color:#0f3d2e;box-shadow:inset 0 0 0 1px rgba(20,92,63,0.08);}
+  .service-card.disabled{display:none;color:#a6aaa5;background:#fbfbfa;cursor:not-allowed;}
+  .service-card::before{display:block;margin-bottom:5px;font-size:1rem;}
+  .service-card[data-service="carpenter"]::before{content:"🔨";}
+  .service-card[data-service="plumber"]::before{content:"🔧";}
+  .service-card[data-service="electrician"]::before{content:"⚡";}
+  .wrow{position:relative;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:stretch;background:#fff;border:1px solid #e7e9e2;border-radius:14px;padding:12px;margin-bottom:16px;}
+  .btn-pick{order:2;background:#fff;color:#43ad00;border:1px solid #d9dfd6;box-shadow:none;border-radius:8px;padding:8px 12px;}
+  .btn-pick svg{display:none;}
+  .btn-pick::after{content:"Change";}
+  .btn-pick{font-size:0;}
+  .btn-pick::after{font-size:0.78rem;font-weight:800;}
+  .wdisp{order:1;border:0;background:transparent;min-width:0;padding:0;justify-content:flex-start;gap:12px;}
+  .wdisp::before{content:"👷";width:42px;height:42px;border-radius:50%;background:#ddf7e9;display:grid;place-items:center;flex:0 0 auto;}
+  .wname{font-weight:900;color:#112d22;line-height:1.45;}
+  .wname.on{color:#112d22;}
+  .btn-clr{margin-left:auto;background:#fff;border:1px solid #d9dfd6;color:#43ad00;border-radius:8px;padding:8px 10px;}
+  .fdiv{display:none;}
+  #bookingForm{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:0;}
+  #bookingForm .ig{margin:0;}
+  .ig .ico{left:14px;width:30px;height:30px;border-radius:9px;}
+  .ig input,.ig select{height:54px;border:1px solid #e7e9e2;border-radius:12px;background:#fff;padding:20px 14px 8px 54px;font-size:0.9rem;}
+  .ig::after{position:absolute;left:54px;top:9px;font-size:0.63rem;font-weight:900;color:#8b938c;text-transform:uppercase;z-index:2;}
+  .ig:has(#custName)::after{content:"Name";}
+  .ig:has(#address)::after{content:"Address";}
+  .ig:has(#date)::after{content:"Date";}
+  .ig:has(#timeSlot)::after{content:"Time slot";}
+  .ig:has(#notes)::after{content:"Special notes";}
+  .ig:has(#date){grid-column:1;}
+  .optional-field{grid-column:2;}
+  .notes-field{grid-column:1 / -1;}
+  .btn-sub{grid-column:1 / -1;background:linear-gradient(135deg,#43ad00,#8bd400);border-radius:14px;box-shadow:none;min-height:58px;margin-top:0;overflow:visible;}
+  .btn-sub:hover{box-shadow:none;background:#3c9700;}
+  .btn-sub::before{content:"Verified workers · Secure payment · Easy cancel";position:absolute;top:calc(100% + 10px);left:0;right:0;color:#9ca3af;font-size:0.75rem;font-weight:500;}
+  .toast{bottom:24px;}
+
+  @media (max-width: 900px) {
+    html, body{height:auto;}
+    body{display:block;background:#f6f4ee;padding:10px 10px 78px;}
+    .left-panel{display:flex;width:100%;min-height:0;border-radius:0;background:linear-gradient(135deg,#43ad00,#8bd400);padding:14px 16px 18px;margin-bottom:14px;overflow:hidden;}
+    .left-panel::before{display:block;content:'';position:absolute;width:120px;height:120px;right:-35px;top:-28px;border-radius:50%;background:rgba(255,255,255,0.08);}
+    .sidebar-brand{padding:0 0 14px;position:relative;z-index:1;}
+    .brand-mark{width:20px;height:20px;border-radius:50%;background:#3c9700;}
+    .sidebar-brand strong{font-size:0.78rem;}
+    .mobile-close{display:grid;margin-left:auto;width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:#43ad00;font-weight:900;}
+    .sidebar-user{border:0;padding:0;color:#fff;position:relative;z-index:1;}
+    .side-avatar{width:0;height:0;overflow:hidden;}
+    .side-greeting{display:block;font-size:0.62rem;font-weight:700;color:#dbfff0;margin-bottom:3px;}
+    .side-name{font-size:0.92rem;}
+    .side-role{display:none;}
+    .mobile-trust{display:flex;gap:7px;margin-top:14px;position:relative;z-index:1;}
+    .mobile-trust span{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.25);border-radius:999px;color:#fff;padding:5px 9px;font-size:0.56rem;font-weight:900;white-space:nowrap;}
+    .side-nav,.side-foot{display:none;}
+    .right-panel{min-height:0;padding:0;background:transparent;overflow:visible;}
+    .ubar{display:flex;justify-content:flex-end;margin:0 0 12px;padding:0;background:transparent;}
+    .ubar-right{width:100%;justify-content:center;gap:6px;}
+    .ubar-right .nav-link,.ubar-right .btn-out,.ubar-right .btn-hist{width:calc((100% - 12px) / 3);height:30px;min-height:30px;padding:0 4px;font-size:0.56rem;white-space:nowrap;gap:4px;}
+    .ubar-right .nav-link svg,.ubar-right .btn-out svg,.ubar-right .btn-hist svg{width:11px;height:11px;flex:0 0 11px;}
+    .fhead{margin:0 0 12px;display:block;}
+    .fhead h1{font-size:0.95rem;}
+    .btn-hist{position:static;width:auto;justify-content:center;margin:0;background:#fff;color:#0f3d2e;border-radius:8px;}
+    .slbl{font-size:0.58rem;margin:14px 0 7px;}
+    .service-grid{display:flex;gap:7px;overflow-x:auto;margin:0 -10px 12px;padding:0 10px 2px;scrollbar-width:none;}
+    .service-card{min-width:86px;min-height:34px;border-radius:999px;font-size:0.64rem;padding:0 12px;}
+    .service-card.disabled{display:none;}
+    .service-card::before{display:inline;margin:0 5px 0 0;font-size:0.72rem;}
+    .wrow{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;padding:9px 10px;border-radius:8px;margin-bottom:13px;}
+    .wdisp{display:flex;align-items:center;grid-column:1;min-width:0;}
+    .wdisp::before{width:34px;height:34px;font-size:0.8rem;}
+    .wname{font-size:0.68rem;}
+    .btn-pick{position:static;grid-column:3;order:initial;margin:0;padding:0 8px;height:24px;border:1px solid #145c3f;background:#145c3f;color:#fff;border-radius:6px;}
+    .btn-pick::after{font-size:0.55rem;color:#fff;}
+    .btn-clr{display:inline-flex;grid-column:2;align-items:center;justify-content:center;height:24px;margin:0;padding:0 8px;border:1px solid rgba(20,92,63,0.25);background:rgba(20,92,63,0.08);color:#145c3f;border-radius:6px;font-size:0.55rem;font-weight:800;}
+    #bookingForm{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+    .ig input,.ig select{height:50px;border-radius:8px;padding:20px 10px 7px 43px;font-size:0.68rem;}
+    .ig .ico{left:9px;width:26px;height:26px;}
+    .ig::after{left:43px;top:8px;font-size:0.5rem;}
+    .ig:has(#custName),.ig:has(#address),.notes-field{grid-column:1 / -1;}
+    .btn-sub{min-height:42px;border-radius:9px;font-size:0.75rem;margin-top:2px;}
+    .btn-sub::before{top:calc(100% + 8px);font-size:0.54rem;}
+    .toast{left:14px;right:14px;bottom:78px;text-align:center;}
+    #bookingSuccessOverlay{padding:18px;}
+    .bconf-card{width:100%;max-width:420px;border-radius:20px;padding:32px 18px 20px;}
+    .bconf-btns{display:block;}
+    .bconf-view,.bconf-close{width:100%;min-height:46px;}
+    .bconf-view{margin-bottom:10px;}
   }
 </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
-<body>
+<body class="ns-shell-page page-bg">
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+    <span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role">Customer</div></div>
+  </div>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a class="active" href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+    <a href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+    <a href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+    <a href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+    <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+    <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong></div>
+    </div>
+    <button class="ns-mobile-book" type="button" onclick="location.href='booking.html'">+ Book</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role">Customer</div></div>
+  </div>
+  <div class="ns-mobile-trust"><span>Verified Workers</span><span>Secure Booking</span><span>Quick & Easy</span></div>
+</header>
 
 <div class="left-panel">
+  <div class="sidebar-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong>
+    <button class="mobile-close" type="button" aria-label="Close">x</button>
+  </div>
+
+  <a href="profile.html" class="sidebar-user">
+    <div class="side-avatar">X</div>
+    <div>
+      <div class="side-greeting">Good morning</div>
+      <div class="side-name" id="sidebarUserName">Loading...</div>
+      <div class="side-role">Customer</div>
+    </div>
+  </a>
+
+  <div class="mobile-trust">
+    <span>Verified Workers</span>
+    <span>Secure Booking</span>
+    <span>Quick & Easy</span>
+  </div>
+
+  <nav class="side-nav" aria-label="Sidebar navigation">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="booking.html" class="active">Book a service</a>
+    <a href="mybooking.html">Booking history</a>
+    <a href="profile.html">My profile</a>
+    <a href="worker_list.html" id="myWorkersLink">My workers</a>
+  </nav>
+
+  <div class="side-foot">
+    <div>Verified professionals</div>
+    <div>Secure payments</div>
+    <div>Easy cancellation</div>
+  </div>
   <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
   <div class="fi fi1">🔧</div><div class="fi fi2">⚡</div><div class="fi fi3">🪚</div><div class="fi fi4">⭐</div><div class="fi fi5">🛠️</div>
   <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
-    </div>
-    <span>NearServe</span>
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
   </div>
   <div class="l-main">
     <h2>Book a <em>Trusted</em><br>Professional</h2>
@@ -249,6 +444,10 @@
         </svg>
         Dashboard
       </a>
+      <button class="btn-hist" id="historyBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        View My Booking History
+      </button>
       <a href="profile.html" class="nav-link">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -269,11 +468,6 @@
     <p>Fill in the details below and we'll connect you with the right professional.</p>
   </div>
 
-  <button class="btn-hist" id="historyBtn">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    View My Booking History
-  </button>
-
   <div class="slbl">Select Service</div>
   <div class="ig">
     <div class="ico ic-b">
@@ -284,6 +478,15 @@
       <option value="plumber">🔧 Plumber</option>
       <option value="electrician">⚡ Electrician</option>
     </select>
+  </div>
+
+  <div class="service-grid" aria-label="Service options">
+    <button class="service-card active" type="button" data-service="carpenter"><span>Carpenter</span></button>
+    <button class="service-card" type="button" data-service="plumber"><span>Plumber</span></button>
+    <button class="service-card" type="button" data-service="electrician"><span>Electrical</span></button>
+    <button class="service-card disabled" type="button" disabled><span>Painter</span></button>
+    <button class="service-card disabled" type="button" disabled><span>Cleaning</span></button>
+    <button class="service-card disabled" type="button" disabled><span>AC service</span></button>
   </div>
 
   <div class="slbl">Preferred Worker</div>
@@ -317,6 +520,21 @@
       <input id="date" type="date" required>
     </div>
 
+    <div class="ig optional-field">
+      <div class="ico ic-b"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+      <select id="timeSlot">
+        <option value="">Select a time</option>
+        <option>Morning</option>
+        <option>Afternoon</option>
+        <option>Evening</option>
+      </select>
+    </div>
+
+    <div class="ig notes-field">
+      <div class="ico ic-p"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></div>
+      <input id="notes" type="text" placeholder="Any special requests?">
+    </div>
+
     <button type="submit" class="btn-sub" id="confirmBtn">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg>
       Confirm Booking
@@ -346,6 +564,13 @@
 
 <div class="toast" id="toast"></div>
 
+<nav class="ns-bottom-nav" aria-label="Mobile primary navigation">
+  <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a class="active" aria-current="page" href="booking.html"><i class="fa-solid fa-clipboard-list"></i><span>Book</span></a>
+  <a href="mybooking.html"><i class="fa-solid fa-table-list"></i><span>History</span></a>
+  <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</nav>
+
 <!-- Keep your existing booking.html HTML + CSS exactly same -->
 
 <!-- Replace ONLY the bottom <script>...</script> section with this: -->
@@ -354,10 +579,7 @@
 const API_BASE = "/api";
 
 function showToast(msg, type) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + (type || "success") + " show";
-  setTimeout(() => { t.className = "toast"; }, 3500);
+  window.nearServeToast(msg, type || "error");
 }
 
 function updateSelectedWorkerText() {
@@ -432,6 +654,15 @@ window.addEventListener("DOMContentLoaded", async function () {
 
     document.getElementById("welcomeUser").textContent =
       "Welcome, " + (fullName || "Guest") + "!";
+    const sidebarUserName = document.getElementById("sidebarUserName");
+    const sideAvatar = document.querySelector(".side-avatar");
+    if (sidebarUserName) sidebarUserName.textContent = fullName || "Guest";
+    if (avatarBase64) localStorage.setItem(`avatarBase64_customer_${pPhone}`, avatarBase64);
+    if (sideAvatar) {
+      sideAvatar.innerHTML = avatarBase64
+        ? `<img src="${avatarBase64}" alt="">`
+        : (fullName || "U").charAt(0).toUpperCase();
+    }
 
     custNameInput.value = fullName || "";
     addressInput.value = fullAddress || "";
@@ -440,6 +671,15 @@ window.addEventListener("DOMContentLoaded", async function () {
     userAvatar.textContent = (pName || "U").charAt(0).toUpperCase();
     document.getElementById("welcomeUser").textContent =
       "Welcome, " + (pName || "Guest") + "!";
+    const sidebarUserName = document.getElementById("sidebarUserName");
+    const sideAvatar = document.querySelector(".side-avatar");
+    const cachedAvatar = pPhone ? localStorage.getItem(`avatarBase64_customer_${pPhone}`) : "";
+    if (sidebarUserName) sidebarUserName.textContent = pName || "Guest";
+    if (sideAvatar) {
+      sideAvatar.innerHTML = cachedAvatar
+        ? `<img src="${cachedAvatar}" alt="">`
+        : (pName || "U").charAt(0).toUpperCase();
+    }
     custNameInput.value = pName || "";
     addressInput.value = "";
   }
@@ -451,10 +691,43 @@ window.addEventListener("DOMContentLoaded", async function () {
   if (presetService) {
     document.getElementById("serviceSelect").value = presetService;
   }
+  localStorage.setItem("selectedServiceRole", document.getElementById("serviceSelect").value);
+
+  function syncServiceCards() {
+    const selectedService = document.getElementById("serviceSelect").value;
+    document.querySelectorAll(".service-card[data-service]").forEach(card => {
+      card.classList.toggle("active", card.dataset.service === selectedService);
+    });
+  }
+
+  function syncServiceLinks() {
+    const selectedService = document.getElementById("serviceSelect").value;
+    const workersLink = document.getElementById("myWorkersLink");
+    if (workersLink) {
+      workersLink.href = `worker_list.html?role=${encodeURIComponent(selectedService)}`;
+    }
+  }
+
+  document.querySelectorAll(".service-card[data-service]").forEach(card => {
+    card.addEventListener("click", () => {
+      const serviceSelect = document.getElementById("serviceSelect");
+      serviceSelect.value = card.dataset.service;
+      serviceSelect.dispatchEvent(new Event("change"));
+      syncServiceCards();
+      localStorage.setItem("selectedServiceRole", card.dataset.service);
+      window.location.href = `worker_list.html?role=${encodeURIComponent(card.dataset.service)}`;
+    });
+  });
+
+  syncServiceCards();
+  syncServiceLinks();
 
   document.getElementById("serviceSelect").addEventListener("change", () => {
     const selectedService = document.getElementById("serviceSelect").value;
     const chosenRole = (localStorage.getItem("chosenWorkerRole") || "").toLowerCase();
+    syncServiceCards();
+    syncServiceLinks();
+    localStorage.setItem("selectedServiceRole", selectedService);
 
     if (chosenRole && chosenRole !== selectedService) {
       localStorage.removeItem("chosenWorkerPhone");
@@ -472,7 +745,11 @@ window.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("chooseWorkerBtn").addEventListener("click", () => {
     const service = document.getElementById("serviceSelect").value;
     localStorage.setItem("selectedServiceRole", service);
-    window.location.href = "worker_list.html";
+    window.location.href = `worker_list.html?role=${encodeURIComponent(service)}`;
+  });
+
+  document.getElementById("myWorkersLink")?.addEventListener("click", () => {
+    localStorage.setItem("selectedServiceRole", document.getElementById("serviceSelect").value);
   });
 
   document.getElementById("clearWorkerBtn").addEventListener("click", () => {
@@ -552,7 +829,7 @@ window.addEventListener("DOMContentLoaded", async function () {
       localStorage.removeItem("chosenWorkerPhone");
       localStorage.removeItem("chosenWorkerName");
       localStorage.removeItem("chosenWorkerRole");
-      localStorage.removeItem("selectedServiceRole");
+      localStorage.setItem("selectedServiceRole", service);
       updateSelectedWorkerText();
 
     } catch (err) {
@@ -582,5 +859,6 @@ window.addEventListener("DOMContentLoaded", async function () {
   });
 });
 </script>
+  <script src="js/dashboard-shell.js"></script>
 </body>
 </html>

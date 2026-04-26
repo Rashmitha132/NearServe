@@ -4,876 +4,295 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard - NearServe</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --blue:#2563eb;
-    --teal:#0d9488;
-    --dark:#0f172a;
-    --mid:#475569;
-    --soft:#94a3b8;
-    --bg:#f0f7ff;
-    --border:#e2eaf4;
-  }
-
-  html, body { height: 100%; }
-  body {
-    min-height: 100vh;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    display: flex;
-    align-items: stretch;
-    overflow-x: hidden;
-    background: var(--bg);
-  }
-
-  .left-panel {
-    width: 42%;
-    min-height: 100vh;
-    background: linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 48px 44px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .left-panel::before {
-    content:'';
-    position:absolute;
-    width:450px;
-    height:450px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.05);
-    top:-130px;
-    right:-110px;
-  }
-
-  .left-panel::after {
-    content:'';
-    position:absolute;
-    width:320px;
-    height:320px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.04);
-    bottom:-90px;
-    left:-90px;
-  }
-
-  .deco-ring {
-    position:absolute;
-    border-radius:50%;
-    border:2px solid rgba(255,255,255,0.09);
-  }
-
-  .r1 { width:200px; height:200px; top:32%; right:-50px; }
-  .r2 { width:110px; height:110px; top:55%; right:44px; border-color:rgba(255,255,255,0.06); }
-  .r3 { width:75px; height:75px; top:18%; left:28px; border-color:rgba(255,255,255,0.07); }
-
-  .fi {
-    position:absolute;
-    width:54px;
-    height:54px;
-    border-radius:16px;
-    background:rgba(255,255,255,0.13);
-    border:1.5px solid rgba(255,255,255,0.22);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:22px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.18);
-    animation:bob ease-in-out infinite alternate;
-  }
-
-  .fi1 { top:16%; left:10%; animation-duration:3.2s; }
-  .fi2 { top:36%; right:12%; animation-duration:2.8s; animation-delay:0.5s; }
-  .fi3 { top:56%; left:16%; animation-duration:3.6s; animation-delay:1s; }
-  .fi4 { top:72%; right:18%; animation-duration:2.5s; animation-delay:0.3s; }
-  .fi5 { top:25%; right:26%; animation-duration:3.9s; animation-delay:0.7s; }
-
-  @keyframes bob {
-    from { transform:translateY(0) rotate(-3deg); }
-    to   { transform:translateY(-13px) rotate(3deg); }
-  }
-
-  .l-logo {
-    position:relative;
-    z-index:2;
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-
-  .l-logo-icon {
-    width:46px;
-    height:46px;
-    border-radius:14px;
-    background:rgba(255,255,255,0.16);
-    border:1.5px solid rgba(255,255,255,0.28);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .l-logo span {
-    font-family:'Nunito',sans-serif;
-    font-size:1.3rem;
-    font-weight:900;
-    color:#fff;
-  }
-
-  .l-main {
-    position:relative;
-    z-index:2;
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    padding:36px 0;
-  }
-
-  .l-main h2 {
-    font-family:'Nunito',sans-serif;
-    font-size:2.35rem;
-    font-weight:900;
-    color:#fff;
-    line-height:1.22;
-    margin-bottom:16px;
-    text-shadow:0 2px 20px rgba(0,0,0,0.2);
-  }
-
-  .l-main h2 em {
-    font-style:normal;
-    background:linear-gradient(90deg,#7dd3fc,#5eead4);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-  }
-
-  .l-main p {
-    color:rgba(255,255,255,0.68);
-    font-size:0.93rem;
-    line-height:1.75;
-    max-width:290px;
-    margin-bottom:32px;
-  }
-
-  .pills {
-    display:flex;
-    flex-wrap:wrap;
-    gap:9px;
-  }
-
-  .pill {
-    display:flex;
-    align-items:center;
-    gap:7px;
-    padding:8px 15px;
-    border-radius:50px;
-    background:rgba(255,255,255,0.11);
-    border:1.5px solid rgba(255,255,255,0.2);
-    color:#fff;
-    font-size:0.8rem;
-    font-weight:600;
-    backdrop-filter:blur(5px);
-  }
-
-  .l-stats {
-    position:relative;
-    z-index:2;
-    display:flex;
-    gap:22px;
-    align-items:center;
-  }
-
-  .stat-num {
-    font-family:'Nunito',sans-serif;
-    font-size:1.55rem;
-    font-weight:900;
-    color:#fff;
-  }
-
-  .stat-lbl {
-    font-size:0.73rem;
-    color:rgba(255,255,255,0.58);
-  }
-
-  .sdiv {
-    width:1px;
-    background:rgba(255,255,255,0.2);
-    height:36px;
-  }
-
-  .right-panel {
-    flex:1;
-    min-height:100vh;
-    background:#fff;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    padding:48px 52px;
-    overflow-y:auto;
-  }
-
-  .ubar {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:34px;
-    padding-bottom:20px;
-    border-bottom:1.5px solid var(--border);
-    position:relative;
-    flex-wrap:wrap;
-    gap:16px;
-  }
-
-  .uinfo {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    cursor:pointer;
-    user-select:none;
-  }
-
-  .uavatar {
-    width:44px;
-    height:44px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#2563eb,#0d9488);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:'Nunito',sans-serif;
-    font-size:1.1rem;
-    font-weight:800;
-    color:#fff;
-    box-shadow:0 4px 12px rgba(37,99,235,0.3);
-    transition:transform 0.2s;
-  }
-
-  .uinfo:hover .uavatar { transform:scale(1.08); }
-
-  .uname {
-    font-size:0.92rem;
-    font-weight:700;
-    color:var(--dark);
-  }
-
-  .urole {
-    font-size:0.73rem;
-    color:var(--soft);
-  }
-
-  .ubar-right {
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-
-  .btn-nav {
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:8px 16px;
-    border-radius:10px;
-    border:1.5px solid #bfdbfe;
-    background:#eff6ff;
-    color:var(--blue);
-    font-family:'Plus Jakarta Sans',sans-serif;
-    font-size:0.8rem;
-    font-weight:600;
-    cursor:pointer;
-    transition:background 0.2s, transform 0.2s;
-  }
-
-  .btn-nav:hover {
-    background:#dbeafe;
-    transform:translateY(-1px);
-  }
-
-  .btn-logout {
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:8px 16px;
-    border-radius:10px;
-    border:1.5px solid #fee2e2;
-    background:#fff5f5;
-    color:#ef4444;
-    font-family:'Plus Jakarta Sans',sans-serif;
-    font-size:0.8rem;
-    font-weight:600;
-    cursor:pointer;
-    transition:background 0.2s, transform 0.2s;
-  }
-
-  .btn-logout:hover {
-    background:#fee2e2;
-    transform:translateY(-1px);
-  }
-
-  .dheader {
-    margin-bottom:32px;
-  }
-
-  .dheader h1 {
-    font-family:'Nunito',sans-serif;
-    font-size:1.8rem;
-    font-weight:900;
-    color:var(--dark);
-    margin-bottom:6px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-
-  .dheader h1 i {
-    color:var(--blue);
-    font-size:1.3rem;
-  }
-
-  .dheader p {
-    color:var(--soft);
-    font-size:0.85rem;
-  }
-
-  .stats-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
-    gap:16px;
-    margin-bottom:32px;
-  }
-
-  .stat-card {
-    background:#fff;
-    border:1.5px solid var(--border);
-    border-radius:16px;
-    padding:20px;
-    transition:box-shadow 0.2s;
-  }
-
-  .stat-card:hover {
-    box-shadow:0 8px 24px rgba(0,0,0,0.08);
-  }
-
-  .stat-card.bookings  { border-left:4px solid var(--blue); background:linear-gradient(135deg,#eff6ff 0%,#f0fdf4 100%); }
-  .stat-card.completed { border-left:4px solid #10b981; background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%); }
-  .stat-card.pending   { border-left:4px solid #f59e0b; background:linear-gradient(135deg,#fef9c3 0%,#fef3c7 100%); }
-  .stat-card.member    { border-left:4px solid #a78bfa; background:linear-gradient(135deg,#f3e8ff 0%,#e0e7ff 100%); }
-
-  .stat-icon {
-    font-size:2rem;
-    margin-bottom:8px;
-  }
-
-  .stat-value {
-    font-family:'Nunito',sans-serif;
-    font-size:1.8rem;
-    font-weight:900;
-    color:var(--dark);
-    margin-bottom:4px;
-  }
-
-  .stat-label {
-    font-size:0.85rem;
-    color:var(--soft);
-  }
-
-  .section {
-    margin-bottom:32px;
-  }
-
-  .section-title {
-    font-family:'Nunito',sans-serif;
-    font-size:1.2rem;
-    font-weight:900;
-    color:var(--dark);
-    margin-bottom:16px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-
-  .section-title i {
-    color:var(--blue);
-  }
-
-  .booking-list {
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-  }
-
-  .booking-item {
-    background:#fafcff;
-    border:1.5px solid var(--border);
-    border-radius:12px;
-    padding:16px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:12px;
-    transition:box-shadow 0.2s;
-  }
-
-  .booking-item:hover {
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-  }
-
-  .booking-item-left {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    flex:1;
-  }
-
-  .booking-icon {
-    width:40px;
-    height:40px;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-  }
-
-  .booking-icon.carpenter  { background:#fef3c7; }
-  .booking-icon.plumber    { background:#e0f2fe; }
-  .booking-icon.electrician{ background:#fefce8; }
-
-  .booking-detail {
-    display:flex;
-    flex-direction:column;
-    gap:2px;
-  }
-
-  .booking-detail h4 {
-    font-size:0.95rem;
-    font-weight:700;
-    color:var(--dark);
-  }
-
-  .booking-detail p {
-    font-size:0.8rem;
-    color:var(--soft);
-  }
-
-  .booking-status {
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:0.75rem;
-    font-weight:700;
-  }
-
-  .status-pending { background:#fef3c7; color:#d97706; }
-  .status-accepted { background:#d1fae5; color:#059669; }
-  .status-completed { background:#dbeafe; color:#1d4ed8; }
-  .status-rejected { background:#fee2e2; color:#dc2626; }
-
-  .btn-small {
-    padding:8px 14px;
-    border-radius:9px;
-    border:none;
-    cursor:pointer;
-    font-size:0.78rem;
-    font-weight:700;
-    transition:all 0.2s;
-  }
-
-  .btn-view {
-    background:#eff6ff;
-    color:var(--blue);
-    border:1.5px solid #bfdbfe;
-  }
-
-  .btn-view:hover {
-    background:#dbeafe;
-  }
-
-  .empty-state {
-    text-align:center;
-    padding:40px 20px;
-    color:var(--soft);
-  }
-
-  .empty-icon {
-    font-size:2.5rem;
-    margin-bottom:12px;
-  }
-
-  .empty-title {
-    font-family:'Nunito',sans-serif;
-    font-size:1rem;
-    font-weight:800;
-    color:var(--mid);
-    margin-bottom:6px;
-  }
-
-  .empty-text {
-    font-size:0.85rem;
-    margin-bottom:16px;
-  }
-
-  .btn-book {
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding:8px 16px;
-    border-radius:10px;
-    background:linear-gradient(135deg,#1d4ed8,#0d9488);
-    color:#fff;
-    border:none;
-    font-family:'Plus Jakarta Sans',sans-serif;
-    font-size:0.85rem;
-    font-weight:700;
-    cursor:pointer;
-    transition:transform 0.2s;
-  }
-
-  .btn-book:hover {
-    transform:translateY(-2px);
-  }
-
-  .toast {
-    position:fixed;
-    bottom:28px;
-    right:28px;
-    padding:12px 18px;
-    border-radius:12px;
-    background:#0f172a;
-    color:#fff;
-    font-size:0.85rem;
-    font-weight:600;
-    box-shadow:0 8px 28px rgba(0,0,0,0.25);
-    z-index:9999;
-    transform:translateY(80px);
-    opacity:0;
-    transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
-    pointer-events:none;
-  }
-
-  .toast.show {
-    transform:translateY(0);
-    opacity:1;
-  }
-
-  .toast.success { background:linear-gradient(135deg,#16a34a,#0d9488); }
-  .toast.error { background:linear-gradient(135deg,#dc2626,#ef4444); }
-
-  @media(max-width:780px) {
-    body { flex-direction:column; }
-    .left-panel { width:100%; min-height:auto; padding:28px 24px; }
-    .l-main h2 { font-size:1.6rem; }
-    .l-stats { display:none; }
-    .fi3, .fi4, .fi5 { display:none; }
-    .right-panel { padding:28px 22px; }
-    .stats-grid { grid-template-columns:repeat(2,1fr); }
-  }
-
-  @media(max-width:500px) {
-    .stats-grid { grid-template-columns:1fr; }
-    .booking-item { flex-direction:column; align-items:flex-start; }
-    .ubar { flex-direction:column; align-items:flex-start; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--green:#145c3f;--green-dark:#0f3d2e;--green-accent:#1b7a52;--green-soft:#eaf4ee;--paper:#f6f6f1;--ink:#07120d;--muted:#65716b;--line:#dcded4;--mint:#e8f2de;--pink:#f23d86;--blue:#2f80ed;--gold:#d48806}
+  body{min-height:100vh;background:var(--paper);font-family:Nunito,Arial,sans-serif;color:var(--ink);font-size:14px;overflow-x:hidden}
+  .app{display:flex;min-height:100vh;width:100%;overflow-x:hidden}
+  .sidebar{width:250px;background:radial-gradient(circle 150px at 16% 8%,rgba(154,219,176,.30) 0%,rgba(154,219,176,.16) 42%,transparent 68%),radial-gradient(circle 210px at 92% 18%,rgba(112,185,137,.34) 0%,rgba(112,185,137,.15) 48%,transparent 72%),radial-gradient(circle 190px at 22% 48%,rgba(31,122,82,.44) 0%,rgba(31,122,82,.22) 46%,transparent 72%),radial-gradient(circle 250px at 96% 66%,rgba(164,226,121,.22) 0%,rgba(164,226,121,.12) 44%,transparent 70%),radial-gradient(circle 230px at 20% 92%,rgba(10,64,43,.58) 0%,rgba(10,64,43,.28) 48%,transparent 76%),linear-gradient(145deg,#0f3d2e 0%,#145c3f 52%,#1b7a52 100%);color:#fff;position:fixed;inset:0 auto 0 0;padding:24px 18px 22px;z-index:30;display:flex;flex-direction:column;overflow:hidden;transition:transform .32s ease,box-shadow .32s ease;box-shadow:18px 0 38px rgba(8,41,29,.28),inset -1px 0 0 rgba(255,255,255,.14),inset 1px 0 0 rgba(255,255,255,.08)}
+  .sidebar::before{content:"";position:absolute;inset:-20% -45% auto auto;width:330px;height:330px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),rgba(255,255,255,.05) 46%,transparent 70%);filter:blur(.2px);pointer-events:none}
+  .sidebar::after{content:"";position:absolute;width:390px;height:210px;right:-126px;bottom:86px;background:radial-gradient(ellipse at 35% 45%,rgba(155,231,178,.14),transparent 56%),linear-gradient(135deg,rgba(255,255,255,.09),rgba(10,64,43,.2));transform:rotate(-18deg);border-radius:50%;pointer-events:none}
+  .brand{position:relative;z-index:1;display:flex;align-items:center;gap:12px;font-weight:900;font-size:17px;min-height:42px}
+  .brand-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.09));display:grid;place-items:center;color:#fff;border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 24px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.16)}
+  .sidebar-close{display:none;margin-left:auto;width:34px;height:34px;border:0;border-radius:10px;background:rgba(255,255,255,.14);color:#fff;font-size:16px;cursor:pointer}
+  .side-user{position:relative;z-index:1;margin:26px 0 24px;display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:rgba(255,255,255,.105);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 14px 30px rgba(6,35,24,.18),inset 0 1px 0 rgba(255,255,255,.12);cursor:pointer;transition:background .25s ease,transform .25s ease}
+  .side-user:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
+  .side-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.1));display:grid;place-items:center;font-weight:900;overflow:hidden;flex:0 0 44px;border:1px solid rgba(255,255,255,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
+  .side-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .side-name{font-weight:900;line-height:1}.side-role{font-size:12px;color:#c8f5d6;font-weight:800;margin-top:3px}
+  .nav{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;flex:1}
+  .nav a{height:44px;border-radius:13px;color:rgba(255,255,255,.84);text-decoration:none;display:flex;align-items:center;gap:13px;padding:0 14px;font-weight:800;letter-spacing:.01em;transition:background .3s ease,color .3s ease,transform .3s ease,box-shadow .3s ease}
+  .nav a:hover{background:rgba(255,255,255,.11);color:#fff;transform:translateX(5px) scale(1.015);box-shadow:0 10px 20px rgba(6,35,24,.1)}
+  .nav a.active{background:rgba(255,255,255,.16);color:#fff;font-weight:900;box-shadow:inset 4px 0 0 #9be7b2,0 10px 24px rgba(6,35,24,.12)}.nav i{width:17px;text-align:center}
+  .side-info{position:relative;z-index:1;margin-top:18px;padding:16px 14px;border-radius:16px;background:rgba(255,255,255,.095);border:1px solid rgba(255,255,255,.16);color:#eefcf1;font-size:12px;font-weight:800;line-height:1.75;box-shadow:0 14px 30px rgba(6,35,24,.16),inset 0 1px 0 rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .side-info div{display:flex;align-items:center;gap:8px}.side-info i{width:14px;text-align:center}
+  .sidebar-backdrop{display:none}
+  .mobile-head,.mobile-menu-btn{display:none}
+  .main{margin-left:250px;min-height:100vh;width:calc(100% - 250px);flex:1;padding:116px 24px 50px;background:var(--paper);overflow-x:hidden}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:34px}
+  .title h1{font-size:20px;font-weight:900;display:flex;align-items:center;gap:10px}.title i{color:var(--green-accent)}
+  .actions{display:flex;align-items:center;gap:8px}.btn{height:32px;padding:0 16px;border-radius:7px;border:1px solid var(--green);background:transparent;color:var(--green-dark);font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .2s ease,color .2s ease,border-color .2s ease}
+  .btn:hover{background:var(--green-soft);border-color:var(--green-accent)}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}.btn.primary:hover{background:var(--green-accent);border-color:var(--green-accent)}.btn.logout{color:#b91c1c;border-color:#efc2c2;background:#fff}
+  .btn.logout:hover{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:20px}
+  .stat{height:120px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 20px;border-top:3px solid var(--green);display:flex;flex-direction:column;justify-content:center}
+  .stat.total{border-top-color:#b38686}.stat.completed{border-top-color:#3ec781}.stat.pending{border-top-color:var(--gold)}.stat.member{border-top-color:var(--blue)}
+  .stat i{font-size:19px;margin-bottom:8px}.stat.total i{color:#b38686}.stat.completed i{color:#40c978}.stat.pending i{color:var(--gold)}.stat.member i{color:var(--blue)}
+  .stat-value{font-size:28px;font-weight:900;line-height:1}.stat-label{font-size:13px;color:var(--muted);margin-top:8px}
+  .section-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:900;margin:18px 0 10px}
+  .booking-list{display:flex;flex-direction:column;gap:9px}
+  .booking-item{min-height:64px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 16px;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center}
+  .booking-main{display:flex;align-items:center;gap:12px;min-width:0}
+  .booking-icon{width:36px;height:36px;border-radius:8px;background:#eaf2eb;display:grid;place-items:center;color:var(--pink);flex:0 0 36px}
+  .booking-title{font-weight:900;margin-bottom:3px}.booking-meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}.booking-meta i{color:var(--pink);margin-right:4px}
+  .status{height:22px;border-radius:999px;padding:0 12px;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:900;border:1px solid currentColor}
+  .status-pending{color:var(--gold);background:#fff7e6;border-color:var(--gold)}.status-accepted{color:#278644;background:#edf8e9;border-color:#278644}.status-completed{color:#0765a8;background:#e5f1ff;border-color:#0765a8}.status-rejected{color:#bd2934;background:#ffe8e9;border-color:#bd2934}.status-cancelled{color:#53616d;background:#eef1f2;border-color:#53616d}
+  .btn-small{height:28px;border-radius:6px;padding:0 14px;border:1px solid var(--green);background:transparent;font-family:inherit;font-weight:800;color:var(--green-dark);cursor:pointer;transition:background .2s ease,color .2s ease,border-color .2s ease}
+  .btn-small:hover{background:var(--green-soft);border-color:var(--green-accent)}
+  .empty-state{background:#fff;border:1px solid var(--line);border-radius:9px;padding:30px;text-align:center;color:var(--muted)}.empty-state strong{display:block;color:var(--ink);font-size:16px;margin-bottom:5px}.toast{position:fixed;right:22px;bottom:22px;background:#111;color:#fff;padding:10px 14px;border-radius:8px;opacity:0;transform:translateY(18px);transition:.25s;z-index:99}.toast.show{opacity:1;transform:translateY(0)}.toast.error{background:#b91c1c}
+  @media(max-width:760px){
+    html,body{height:auto;width:100%;max-width:100vw;overflow-x:hidden}
+    body{display:block;background:#f6f4ee;padding:10px 10px 78px;margin:0;overflow-x:hidden}
+    .app{display:block;min-height:0;width:100%;max-width:100vw;margin:0;background:transparent;position:relative;overflow-x:hidden}
+    .sidebar{display:flex;width:min(82vw,280px);max-width:100vw;transform:translateX(-110%);padding:18px 16px 20px;z-index:9500}
+    .sidebar.open{transform:translateX(0);box-shadow:22px 0 44px rgba(15,23,42,.25)}
+    .sidebar-close{display:grid;place-items:center}
+    .sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(5,20,10,.42);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:9400}
+    .sidebar-backdrop.show{opacity:1;pointer-events:auto}
+    .side-user{margin:22px 0 22px}.nav a{height:42px}.side-info{margin-top:14px}
+    .main{width:100%;max-width:100vw;margin-left:0;margin-right:0;padding:0;min-height:0;background:transparent;overflow-x:hidden}
+    .mobile-head{display:block;background:linear-gradient(135deg,var(--green-dark),var(--green),var(--green-accent));color:#fff;padding:14px 16px 18px;margin-bottom:14px;position:relative;overflow:hidden}
+    .mobile-head::after{content:"";position:absolute;width:120px;height:120px;right:-35px;top:-28px;border-radius:50%;background:rgba(255,255,255,.08)}
+    .mobile-head-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;margin-bottom:14px}
+    .mobile-brand-wrap{display:flex;align-items:center;gap:9px}
+    .mobile-menu-btn{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:9px;background:rgba(255,255,255,.18);color:#fff;font-size:.95rem}
+    .mobile-brand{display:flex;align-items:center;gap:9px;font-size:.78rem;font-weight:900}
+    .mobile-brand-icon{width:20px;height:20px;border-radius:50%;background:var(--green-dark);display:grid;place-items:center;font-size:.65rem}
+    .mobile-book{height:24px;border:0;border-radius:6px;background:var(--green-dark);color:#fff;font-size:.62rem;font-weight:900;padding:0 10px}
+    .mobile-user{display:flex;align-items:center;gap:9px;position:relative;z-index:1}
+    .mobile-avatar{width:34px;height:34px;border-radius:50%;background:var(--green-accent);display:grid;place-items:center;font-size:.72rem;font-weight:900;overflow:hidden}
+    .mobile-avatar img{width:100%;height:100%;object-fit:cover}
+    .mobile-kicker{display:block;font-size:.62rem;font-weight:700;color:#dbfff0;margin-bottom:2px}
+    .mobile-name{font-size:.92rem;font-weight:900;line-height:1}
+    .mobile-role{font-size:.68rem;color:#bdf2cd;margin-top:2px}
+    .mobile-trust{display:flex;gap:7px;margin-top:14px;position:relative;z-index:1;overflow-x:auto;scrollbar-width:none}
+    .mobile-trust span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;color:#fff;padding:5px 9px;font-size:.56rem;font-weight:900;white-space:nowrap}
+    .topbar{display:none}.overview{font-size:.58rem;text-transform:uppercase;letter-spacing:.4px;margin:12px 0 7px;color:#8b938c;font-weight:900}
+    .stats{width:100%;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}.stat{width:100%;min-width:0;max-width:100%;height:74px;border-radius:8px;padding:10px 12px;border-top-width:2px;background:#fff}.stat i{font-size:.78rem;margin-bottom:5px}.stat-value{font-size:1.35rem}.stat-label{font-size:.62rem;margin-top:3px}
+    .section-title{font-size:.82rem;margin:11px 0 8px}.booking-list{width:100%;max-width:100%;gap:8px;overflow-x:hidden}.booking-item{width:100%;max-width:100%;min-width:0;min-height:58px;border-radius:8px;padding:9px 10px;grid-template-columns:minmax(0,1fr) auto;gap:7px;background:#fff;overflow:hidden}.booking-main{gap:8px;min-width:0;overflow:hidden}.booking-main>div:last-child{min-width:0;max-width:100%;overflow:hidden}.booking-icon{width:34px;height:34px;border-radius:8px;font-size:.8rem;flex:0 0 34px}
+    .booking-title{font-size:.72rem;margin-bottom:2px;overflow-wrap:anywhere}.booking-meta{min-width:0;max-width:100%;font-size:.56rem;gap:6px;line-height:1.2;overflow-wrap:anywhere}.booking-meta span{min-width:0;max-width:100%;overflow-wrap:anywhere}.status{height:18px;padding:0 8px;font-size:.56rem;align-self:start;white-space:nowrap}.btn-small{height:19px;padding:0 8px;font-size:.56rem;grid-column:2;align-self:end;white-space:nowrap}
+    .ns-bottom-nav{left:12px!important;right:12px!important;width:calc(100% - 24px)!important;max-width:calc(100vw - 24px)!important}
+    .empty-state{padding:18px;font-size:.7rem;border-radius:8px;background:#fff}.toast{left:14px;right:14px;bottom:78px;text-align:center;font-size:.78rem}
   }
 </style>
+<link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
-
-<div class="left-panel">
-  <div class="deco-ring r1"></div>
-  <div class="deco-ring r2"></div>
-  <div class="deco-ring r3"></div>
-
-  <div class="fi fi1">🔧</div>
-  <div class="fi fi2">⚡</div>
-  <div class="fi fi3">🪚</div>
-  <div class="fi fi4">⭐</div>
-  <div class="fi fi5">🛠️</div>
-
-  <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/>
-        <circle cx="19" cy="16" r="2.8" fill="#14b8a6"/>
-        <circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/>
-        <circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+      <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <span>NearServe</span>
-  </div>
+    <div class="side-user" onclick="location.href='profile.html'" role="link" tabindex="0" aria-label="Open my profile">
+      <div class="side-avatar" id="sideAvatar">XY</div>
+      <div><div class="side-name" id="sideName">xyz</div><div class="side-role">Customer</div></div>
+    </div>
+    <nav class="nav">
+      <a class="active" href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+      <a href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+      <a href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+      <a href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+      <a href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+    </nav>
+    <div class="side-info">
+      <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+      <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+      <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+    </div>
+  </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-  <div class="l-main">
-    <h2>Your <em>Booking</em><br>Dashboard</h2>
-    <p>Track your service bookings, view upcoming appointments, and manage your profile all in one place.</p>
-    <div class="pills">
-      <div class="pill">📊 Real-time updates</div>
-      <div class="pill">⚡ Quick access</div>
-      <div class="pill">🔒 Secure</div>
+  <header class="mobile-head">
+    <div class="mobile-head-top">
+      <div class="mobile-brand-wrap">
+        <button class="mobile-menu-btn" id="sidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+        <div class="mobile-brand">
+          <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+          <strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong>
+        </div>
+      </div>
+      <button class="mobile-book" onclick="location.href='booking.html'">+ Book</button>
     </div>
-  </div>
+    <div class="mobile-user">
+      <div class="mobile-avatar" id="mobileAvatar">XY</div>
+      <div><div class="mobile-kicker">Good morning</div><div class="mobile-name" id="mobileName">Welcome, xyz!</div><div class="mobile-role">Customer</div></div>
+    </div>
+    <div class="mobile-trust">
+      <span>Verified Workers</span>
+      <span>Secure Booking</span>
+      <span>Quick & Easy</span>
+    </div>
+  </header>
 
-  <div class="l-stats">
-    <div>
-      <div class="stat-num">✅</div>
-      <div class="stat-lbl">Verified Workers</div>
+  <main class="main">
+    <div class="topbar">
+      <div class="title"><h1><i class="fa-solid fa-wave-square"></i>Dashboard</h1></div>
+      <div class="actions">
+        <a class="btn" href="profile.html">My Profile</a>
+        <a class="btn primary" href="booking.html">+ Book Service</a>
+        <button class="btn logout" id="logoutBtn">Logout</button>
+      </div>
     </div>
-    <div class="sdiv"></div>
-    <div>
-      <div class="stat-num">🔒</div>
-      <div class="stat-lbl">Secure Booking</div>
-    </div>
-    <div class="sdiv"></div>
-    <div>
-      <div class="stat-num">⚡</div>
-      <div class="stat-lbl">Quick & Easy</div>
-    </div>
-  </div>
+
+    <div class="overview">Overview</div>
+    <section class="stats">
+      <div class="stat total"><i class="fa-regular fa-clipboard"></i><div class="stat-value" id="statTotalBookings">0</div><div class="stat-label">Total Bookings</div></div>
+      <div class="stat completed"><i class="fa-solid fa-square-check"></i><div class="stat-value" id="statCompleted">0</div><div class="stat-label">Completed</div></div>
+      <div class="stat pending"><i class="fa-solid fa-hourglass-half"></i><div class="stat-value" id="statPending">0</div><div class="stat-label">Pending</div></div>
+      <div class="stat member"><i class="fa-solid fa-calendar-days"></i><div class="stat-value" id="statMember">2026</div><div class="stat-label">Member Since</div></div>
+    </section>
+
+    <section>
+      <div class="section-title"><i class="fa-solid fa-bars"></i> Upcoming Bookings</div>
+      <div class="booking-list" id="upcomingList"></div>
+    </section>
+  </main>
+
+  <nav class="ns-bottom-nav" aria-label="Mobile primary navigation">
+  <a class="active" aria-current="page" href="dashboard.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="booking.html"><i class="fa-solid fa-clipboard-list"></i><span>Book</span></a>
+  <a href="mybooking.html"><i class="fa-solid fa-table-list"></i><span>History</span></a>
+  <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</nav>
 </div>
-
-<div class="right-panel">
-  <div class="ubar">
-    <div class="uinfo" id="profileInfo">
-      <div class="uavatar" id="userAvatar">?</div>
-      <div>
-        <div class="uname" id="welcomeUser">Loading...</div>
-        <div class="urole">Customer</div>
-      </div>
-    </div>
-
-    <div class="ubar-right">
-      <button class="btn-nav" onclick="window.location.href='profile.html'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-        My Profile
-      </button>
-
-      <button class="btn-nav" onclick="window.location.href='booking.html'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        Book Service
-      </button>
-
-      <button class="btn-logout" id="logoutBtn">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-        Logout
-      </button>
-    </div>
-  </div>
-
-  <div class="dheader">
-    <h1><i class="fa-solid fa-chart-line"></i> Dashboard</h1>
-    <p>Track your bookings and manage your account</p>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card bookings">
-      <div class="stat-icon">📋</div>
-      <div class="stat-value" id="statTotalBookings">0</div>
-      <div class="stat-label">Total Bookings</div>
-    </div>
-    <div class="stat-card completed">
-      <div class="stat-icon">🏁</div>
-      <div class="stat-value" id="statCompleted">0</div>
-      <div class="stat-label">Completed</div>
-    </div>
-    <div class="stat-card pending">
-      <div class="stat-icon">⏳</div>
-      <div class="stat-value" id="statPending">0</div>
-      <div class="stat-label">Pending Bookings</div>
-    </div>
-    <div class="stat-card member">
-      <div class="stat-icon">📅</div>
-      <div class="stat-value" id="statMember">2026</div>
-      <div class="stat-label">Member Since</div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title"><i class="fa-solid fa-hourglass-start"></i> Upcoming Bookings</div>
-    <div class="booking-list" id="upcomingList">
-      <div class="empty-state">
-        <div class="empty-icon">📭</div>
-        <div class="empty-title">No upcoming bookings</div>
-        <div class="empty-text">You don't have any pending or accepted bookings right now.</div>
-        <button class="btn-book" onclick="window.location.href='booking.html'">
-          <i class="fa-solid fa-plus"></i> Book a Service
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title"><i class="fa-solid fa-history"></i> Recent Bookings</div>
-    <div class="booking-list" id="recentList">
-      <div class="empty-state">
-        <div class="empty-icon">📋</div>
-        <div class="empty-title">No recent bookings</div>
-        <div class="empty-text">Your booking history will appear here.</div>
-        <button class="btn-book" onclick="window.location.href='booking.html'">
-          <i class="fa-solid fa-plus"></i> Book a Service
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-const API_BASE = "/api";
+const API_BASE =
+  window.location.protocol === "file:" || (window.location.port && window.location.port !== "5000")
+    ? "http://localhost:5000/api"
+    : "/api";
 
-function showToast(msg, type) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + (type || "success") + " show";
-  setTimeout(() => {
-    t.className = "toast";
-  }, 3500);
+function showToast(msg, type = "error") {
+  window.nearServeToast(msg, type);
 }
 
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
+}
+function title(v) {
+  const s = String(v || "Service").toLowerCase();
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 function serviceIcon(service) {
-  const map = {
-    carpenter: "🪚",
-    plumber: "🔧",
-    electrician: "⚡"
-  };
-  return map[service] || "🛠️";
+  const key = String(service || "").toLowerCase();
+  if (key.includes("carpenter")) return "fa-hammer";
+  if (key.includes("plumber")) return "fa-wrench";
+  if (key.includes("electric")) return "fa-bolt";
+  return "fa-screwdriver-wrench";
+}
+function statusClass(status) {
+  return "status-" + (status || "pending").toLowerCase();
+}
+function statusLabel(status) {
+  const s = (status || "pending").toLowerCase();
+  const map = { pending:"Pending", accepted:"Accepted", completed:"Completed", rejected:"Rejected", cancelled:"Cancelled" };
+  return map[s] || title(s);
+}
+function statusIcon(status) {
+  const s = (status || "pending").toLowerCase();
+  return ({ pending:"fa-hourglass-half", accepted:"fa-check", completed:"fa-check", rejected:"fa-xmark", cancelled:"fa-ban" }[s] || "fa-circle-info");
 }
 
-function getStatusClass(status) {
-  const map = {
-    pending: "status-pending",
-    accepted: "status-accepted",
-    completed: "status-completed",
-    rejected: "status-rejected"
-  };
-  return map[status] || "status-pending";
-}
-
-function getStatusLabel(status) {
-  const map = {
-    pending: "⏳ Pending",
-    accepted: "✅ Accepted",
-    completed: "🏁 Completed",
-    rejected: "❌ Rejected"
-  };
-  return map[status] || status;
+function setAvatar(name, imageSrc) {
+  const initial = (name || "C").trim().slice(0, 2).toUpperCase() || "C";
+  const html = imageSrc ? `<img src="${imageSrc}" alt="${esc(name)}">` : initial;
+  document.getElementById("sideAvatar").innerHTML = html;
+  document.getElementById("mobileAvatar").innerHTML = html;
 }
 
 function buildBookingItem(booking) {
   const status = (booking.status || "pending").toLowerCase();
-  const service = (booking.service || "").toLowerCase();
-  const serviceLabel = service
-    ? service.charAt(0).toUpperCase() + service.slice(1)
-    : "Service";
-
-  return `
-    <div class="booking-item">
-      <div class="booking-item-left">
-        <div class="booking-icon ${service}">${serviceIcon(service)}</div>
-        <div class="booking-detail">
-          <h4>${serviceLabel}</h4>
-          <p>📍 ${booking.address || "—"} | 📅 ${booking.date || "—"}</p>
+  const service = booking.service || "Service";
+  return `<div class="booking-item">
+    <div class="booking-main">
+      <div class="booking-icon"><i class="fa-solid ${serviceIcon(service)}"></i></div>
+      <div>
+        <div class="booking-title">${esc(title(service))}</div>
+        <div class="booking-meta">
+          <span><i class="fa-solid fa-location-dot"></i>${esc(booking.address || "-")}</span>
+          <span><i class="fa-solid fa-calendar-days"></i>${esc(booking.date || "-")}</span>
         </div>
       </div>
-      <span class="booking-status ${getStatusClass(status)}">${getStatusLabel(status)}</span>
-      <button class="btn-small btn-view" onclick="window.location.href='mybooking.html'">View Details</button>
     </div>
-  `;
+    <span class="status ${statusClass(status)}"><i class="fa-solid ${statusIcon(status)}"></i>${statusLabel(status)}</span>
+    <button class="btn-small" onclick="location.href='mybooking.html'">View Details</button>
+  </div>`;
+}
+
+function emptyBookings() {
+  return `<div class="empty-state"><strong>No upcoming bookings</strong><span>You do not have pending or accepted bookings right now.</span></div>`;
 }
 
 async function loadDashboard() {
   const phone = (localStorage.getItem("userPhone") || "").trim();
-  const name = (localStorage.getItem("userName") || "").trim();
+  const storedName = (localStorage.getItem("userName") || "Customer").trim();
   const role = (localStorage.getItem("userRole") || "").trim();
-
   if (!phone || role !== "customer") {
     window.location.href = "login.html";
     return;
   }
 
-  document.getElementById("userAvatar").textContent = name ? name.charAt(0).toUpperCase() : "U";
-  document.getElementById("welcomeUser").textContent = name ? `Welcome, ${name}!` : "Welcome!";
+  const avatarKey = `avatarBase64_customer_${phone}`;
+  let displayName = storedName;
+  document.getElementById("sideName").textContent = displayName;
+  document.getElementById("mobileName").textContent = `Welcome, ${displayName}!`;
+  setAvatar(displayName, localStorage.getItem(avatarKey) || "");
+
+  let memberYear = new Date().getFullYear();
+  try {
+    const profileRes = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`);
+    if (profileRes.ok) {
+      const profile = await profileRes.json().catch(() => ({}));
+      displayName = profile.name || displayName;
+      if (profile.avatarBase64) localStorage.setItem(avatarKey, profile.avatarBase64);
+      if (profile.createdAt) memberYear = new Date(profile.createdAt).getFullYear();
+      document.getElementById("sideName").textContent = displayName;
+      document.getElementById("mobileName").textContent = `Welcome, ${displayName}!`;
+      setAvatar(displayName, profile.avatarBase64 || localStorage.getItem(avatarKey) || "");
+    }
+  } catch {}
 
   try {
     const res = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
     const data = await res.json().catch(() => ({}));
-
     const bookings = Array.isArray(data) ? data : (data.bookings || []);
-
-    if (!Array.isArray(bookings)) {
-      throw new Error("Invalid bookings response");
-    }
+    if (!Array.isArray(bookings)) throw new Error("Invalid bookings response");
 
     const total = bookings.length;
     const completed = bookings.filter(b => (b.status || "").toLowerCase() === "completed").length;
     const pending = bookings.filter(b => (b.status || "").toLowerCase() === "pending").length;
+    const upcoming = bookings.filter(b => ["pending", "accepted"].includes((b.status || "").toLowerCase()));
 
     document.getElementById("statTotalBookings").textContent = total;
     document.getElementById("statCompleted").textContent = completed;
     document.getElementById("statPending").textContent = pending;
-    document.getElementById("statMember").textContent = new Date().getFullYear();
-
-    const upcoming = bookings.filter(b =>
-      ["pending", "accepted"].includes((b.status || "").toLowerCase())
-    );
-
-    const recent = bookings.filter(b =>
-      ["completed", "rejected"].includes((b.status || "").toLowerCase())
-    ).slice(0, 5);
-
-    const emptyUpcoming = `
-      <div class="empty-state">
-        <div class="empty-icon">📭</div>
-        <div class="empty-title">No upcoming bookings</div>
-        <div class="empty-text">You don't have any pending or accepted bookings right now.</div>
-        <button class="btn-book" onclick="window.location.href='booking.html'">
-          <i class="fa-solid fa-plus"></i> Book a Service
-        </button>
-      </div>
-    `;
-
-    const emptyRecent = `
-      <div class="empty-state">
-        <div class="empty-icon">📋</div>
-        <div class="empty-title">No recent bookings</div>
-        <div class="empty-text">Your booking history will appear here.</div>
-        <button class="btn-book" onclick="window.location.href='booking.html'">
-          <i class="fa-solid fa-plus"></i> Book a Service
-        </button>
-      </div>
-    `;
-
-    document.getElementById("upcomingList").innerHTML =
-      upcoming.length ? upcoming.map(buildBookingItem).join("") : emptyUpcoming;
-
-    document.getElementById("recentList").innerHTML =
-      recent.length ? recent.map(buildBookingItem).join("") : emptyRecent;
-
+    document.getElementById("statMember").textContent = Number.isFinite(memberYear) ? memberYear : new Date().getFullYear();
+    document.getElementById("upcomingList").innerHTML = upcoming.length ? upcoming.map(buildBookingItem).join("") : emptyBookings();
   } catch (err) {
     console.error("Dashboard error:", err);
-    showToast("⚠️ Could not load dashboard", "error");
+    showToast("Could not load dashboard", "error");
   }
 }
 
@@ -885,6 +304,33 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.removeItem("userStatus");
   localStorage.removeItem("token");
   window.location.href = "login.html";
+});
+
+const sidebar = document.querySelector(".sidebar");
+const sidebarOpen = document.getElementById("sidebarOpen");
+const sidebarClose = document.getElementById("sidebarClose");
+const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+function setSidebarOpen(open) {
+  sidebar.classList.toggle("open", open);
+  sidebarBackdrop.classList.toggle("show", open);
+  document.body.style.overflow = open ? "hidden" : "";
+}
+
+sidebarOpen?.addEventListener("click", () => setSidebarOpen(true));
+sidebarClose?.addEventListener("click", () => setSidebarOpen(false));
+sidebarBackdrop?.addEventListener("click", () => setSidebarOpen(false));
+document.querySelectorAll(".sidebar .nav a").forEach(link => {
+  link.addEventListener("click", () => setSidebarOpen(false));
+});
+document.querySelector(".side-user")?.addEventListener("keydown", event => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    location.href = "profile.html";
+  }
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") setSidebarOpen(false);
 });
 
 window.addEventListener("DOMContentLoaded", loadDashboard);

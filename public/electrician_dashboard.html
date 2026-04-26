@@ -493,7 +493,7 @@
     }
 
     .helper-list div::before{
-      content:'•';
+      content:'â€¢';
       position:absolute;
       left:0;
       top:0;
@@ -510,35 +510,29 @@
       .right-panel{padding:28px 22px;}
     }
   </style>
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
 
   <div class="left-panel">
     <div class="deco-ring r1"></div>
     <div class="deco-ring r2"></div>
     <div class="deco-ring r3"></div>
 
-    <div class="fi fi1">🎥</div>
-    <div class="fi fi2">⚡</div>
-    <div class="fi fi3">✅</div>
-    <div class="fi fi4">📤</div>
-    <div class="fi fi5">🔌</div>
+    <div class="fi fi1">ðŸŽ¥</div>
+    <div class="fi fi2">âš¡</div>
+    <div class="fi fi3">âœ…</div>
+    <div class="fi fi4">ðŸ“¤</div>
+    <div class="fi fi5">ðŸ”Œ</div>
 
     <div class="l-logo">
-      <div class="l-logo-icon">
-        <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
-          <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-          <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/>
-          <circle cx="19" cy="16" r="2.8" fill="#14b8a6"/>
-          <circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-          <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-          <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-          <circle cx="32" cy="26" r="1.7" fill="white"/>
-          <circle cx="37" cy="26" r="1.7" fill="white"/>
-          <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-        </svg>
-      </div>
-      <span>NearServe</span>
+      <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span>NearServe</span>
     </div>
 
     <div class="l-main">
@@ -582,7 +576,7 @@
       <div class="sdiv"></div>
       <div><div class="stat-num">1</div><div class="stat-lbl">Reupload if rejected</div></div>
       <div class="sdiv"></div>
-      <div><div class="stat-num">✅</div><div class="stat-lbl">All Approved</div></div>
+      <div><div class="stat-num">âœ…</div><div class="stat-lbl">All Approved</div></div>
     </div>
   </div>
 
@@ -592,7 +586,7 @@
         <div class="worker-avatar" id="workerAvatar">E</div>
         <div>
           <div class="worker-name" id="workerName">Electrician</div>
-          <div class="worker-role">⚡ Electrician · Probation Stage</div>
+          <div class="worker-role">âš¡ Electrician Â· Probation Stage</div>
         </div>
       </div>
 
@@ -607,7 +601,7 @@
     </div>
 
     <div class="fhead">
-      <h1>🎥 Upload Work Videos</h1>
+      <h1>ðŸŽ¥ Upload Work Videos</h1>
       <p>Each video is reviewed separately. Re-upload is available only for rejected videos. After all 3 are approved, you will be redirected automatically.</p>
     </div>
 
@@ -622,12 +616,12 @@
         <div class="vc-desc">Upload your first electrical work video.</div>
         <div class="reject-reason" id="reason1"></div>
         <div class="file-preview" id="preview1">
-          <span style="font-size:1.4rem;">🎬</span>
+          <span style="font-size:1.4rem;">ðŸŽ¬</span>
           <div>
-            <div class="file-name" id="name1">—</div>
-            <div class="file-size" id="size1">—</div>
+            <div class="file-name" id="name1">â€”</div>
+            <div class="file-size" id="size1">â€”</div>
           </div>
-          <button class="file-remove" type="button" onclick="removeSelectedFile(1)">✕</button>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(1)">âœ•</button>
         </div>
         <input type="file" id="file1" accept="video/*" style="display:none">
         <div class="btn-row">
@@ -644,12 +638,12 @@
         <div class="vc-desc">Upload your second electrical work video.</div>
         <div class="reject-reason" id="reason2"></div>
         <div class="file-preview" id="preview2">
-          <span style="font-size:1.4rem;">🎬</span>
+          <span style="font-size:1.4rem;">ðŸŽ¬</span>
           <div>
-            <div class="file-name" id="name2">—</div>
-            <div class="file-size" id="size2">—</div>
+            <div class="file-name" id="name2">â€”</div>
+            <div class="file-size" id="size2">â€”</div>
           </div>
-          <button class="file-remove" type="button" onclick="removeSelectedFile(2)">✕</button>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(2)">âœ•</button>
         </div>
         <input type="file" id="file2" accept="video/*" style="display:none">
         <div class="btn-row">
@@ -666,12 +660,12 @@
         <div class="vc-desc">Upload your third electrical work video.</div>
         <div class="reject-reason" id="reason3"></div>
         <div class="file-preview" id="preview3">
-          <span style="font-size:1.4rem;">🎬</span>
+          <span style="font-size:1.4rem;">ðŸŽ¬</span>
           <div>
-            <div class="file-name" id="name3">—</div>
-            <div class="file-size" id="size3">—</div>
+            <div class="file-name" id="name3">â€”</div>
+            <div class="file-size" id="size3">â€”</div>
           </div>
-          <button class="file-remove" type="button" onclick="removeSelectedFile(3)">✕</button>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(3)">âœ•</button>
         </div>
         <input type="file" id="file3" accept="video/*" style="display:none">
         <div class="btn-row">
@@ -737,8 +731,8 @@ function resetPreview(i) {
   selectedFiles[i] = null;
   document.getElementById(`file${i}`).value = "";
   document.getElementById(`preview${i}`).classList.remove("show");
-  document.getElementById(`name${i}`).textContent = "—";
-  document.getElementById(`size${i}`).textContent = "—";
+  document.getElementById(`name${i}`).textContent = "â€”";
+  document.getElementById(`size${i}`).textContent = "â€”";
   document.getElementById(`btnUpload${i}`).disabled = true;
 }
 
@@ -861,7 +855,7 @@ async function loadDashboard() {
     }
 
     if (approvedCount === 3) {
-      showGlobal("✅ All 3 videos approved. Redirecting...", "success");
+      showGlobal("âœ… All 3 videos approved. Redirecting...", "success");
       setTimeout(() => {
         window.location.replace("electrician_requests.html");
       }, 1200);
@@ -880,13 +874,13 @@ for (let i = 1; i <= 3; i++) {
     if (!file) return;
 
     if (!file.type.startsWith("video/")) {
-      showGlobal(`❌ Only video files are allowed for Video ${i}.`, "error");
+      showGlobal(`âŒ Only video files are allowed for Video ${i}.`, "error");
       this.value = "";
       return;
     }
 
     if (file.size > MAX_VIDEO_SIZE) {
-      showGlobal(`❌ Video ${i} is too large. Maximum 50 MB allowed.`, "error");
+      showGlobal(`âŒ Video ${i} is too large. Maximum 50 MB allowed.`, "error");
       this.value = "";
       return;
     }
@@ -905,7 +899,7 @@ async function submitVideo(index) {
 
     const file = selectedFiles[index];
     if (!file) {
-      showGlobal(`❌ Choose Video ${index} first.`, "error");
+      showGlobal(`âŒ Choose Video ${index} first.`, "error");
       return;
     }
 
@@ -942,7 +936,7 @@ async function submitVideo(index) {
       throw new Error(uploadData.error || uploadData.message || "Upload failed");
     }
 
-    showGlobal(`✅ Video ${index} submitted successfully.`, "success");
+    showGlobal(`âœ… Video ${index} submitted successfully.`, "success");
     resetPreview(index);
     await loadDashboard();
   } catch (err) {

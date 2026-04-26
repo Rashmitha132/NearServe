@@ -34,7 +34,8 @@
     .right-panel{flex:1;min-height:100vh;background:#fff;display:flex;flex-direction:column;padding:48px 52px;overflow-y:auto;}
     .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:1.5px solid var(--border);flex-wrap:wrap;gap:14px;}
     .worker-info{display:flex;align-items:center;gap:12px;}
-    .worker-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0d9488);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.3);}
+    .worker-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1f6f4a,#14532d);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;box-shadow:0 4px 12px rgba(31,111,74,0.3);}
+    .avatar-circle{background:linear-gradient(135deg,#1f6f4a,#14532d)!important;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;}
     .worker-name-el{font-size:0.92rem;font-weight:700;color:var(--dark);}
     .worker-role-el{font-size:0.73rem;color:var(--soft);}
     .topbar-btns{display:flex;gap:10px;}
@@ -103,7 +104,7 @@
     .mbc-blue{background:linear-gradient(135deg,#1d4ed8,#0d9488);}
     .mbc-teal{background:linear-gradient(135deg,#0d9488,#14b8a6);}
     .modal-customer-info{background:#f8faff;border:1.5px solid var(--border);border-radius:13px;padding:13px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
-    .modal-customer-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0d9488);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:#fff;flex-shrink:0;overflow:hidden;}
+    .modal-customer-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1f6f4a,#14532d);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:#fff;flex-shrink:0;overflow:hidden;}
     .modal-customer-avatar img{width:44px;height:44px;border-radius:50%;object-fit:cover;}
     .modal-customer-name{font-weight:700;color:var(--dark);font-size:0.9rem;}
     .modal-customer-phone{font-size:0.8rem;color:var(--teal);font-weight:600;}
@@ -121,43 +122,77 @@
     .drum-dn{border-radius:0 0 10px 10px;border-top:none;}
     .drum-val{padding:12px 4px;background:#fff;border:1.5px solid var(--border);border-top:none;border-bottom:none;font-family:'Nunito',sans-serif;font-size:1.7rem;font-weight:900;color:var(--dark);text-align:center;user-select:none;}
     .drum-val.teal{color:var(--teal);}
+    .header-tagline{display:none;}
+    @media(max-width:768px){.header-tagline{display:block;font-size:10px;color:rgba(255,255,255,0.8);margin-top:2px;line-height:1.1;}}
     @media(max-width:780px){body{flex-direction:column;}.left-panel{width:100%;min-height:auto;padding:28px 24px;}.l-main h2{font-size:1.6rem;}.l-stats{display:none;}.fi3,.fi4,.fi5{display:none;}.right-panel{padding:28px 20px;}}
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
-<body>
+<body class="ns-shell-page page-bg">
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand sidebar-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img sidebar-logo">
+    <div>
+      <div class="sidebar-title">NearServe</div>
+      <div class="sidebar-tagline">Services Near You, Care You Deserve</div>
+    </div>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar avatar-circle" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role" data-ns-role>Electrician</div></div>
+  </div>
+  <nav class="ns-nav" id="roleNav" aria-label="Primary navigation">
+  </nav>
+  <div class="ns-side-info" id="roleSideInfo">
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand header-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img header-logo"><div><div class="header-title">NearServe</div><div class="header-tagline">Services Near You, Care You Deserve</div></div></div>
+    </div>
+    <button class="ns-mobile-book" id="mobileDashboardBtn" type="button" onclick="location.href='electrician_requests.html'">Dashboard</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar avatar-circle" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role" data-ns-role>Electrician</div></div>
+  </div>
+  <div class="ns-mobile-trust" id="roleMobileInfo"><span>Electrician dashboard</span><span>Requests</span><span>Profile</span></div>
+</header>
 
 <div class="left-panel">
   <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">⚡</div><div class="fi fi2">🔧</div><div class="fi fi3">🏠</div><div class="fi fi4">⭐</div><div class="fi fi5">📋</div>
+  <div class="fi fi1"></div><div class="fi fi2"></div><div class="fi fi3"></div><div class="fi fi4"></div><div class="fi fi5"></div>
   <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
-    </div>
-    <span>NearServe</span>
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span>NearServe</span>
   </div>
   <div class="l-main">
     <h2>Electrician <em>Requests</em></h2>
     <p>Customers who chose you will appear here. Accept, chat, call and complete jobs from this page.</p>
     <div class="l-pills">
-      <div class="l-pill">⚡ Accept Jobs</div>
-      <div class="l-pill">💬 Chat</div>
-      <div class="l-pill">📞 Call</div>
-      <div class="l-pill">✅ Complete</div>
+      <div class="l-pill"> Accept Jobs</div>
+      <div class="l-pill"> Chat</div>
+      <div class="l-pill"> Call</div>
+      <div class="l-pill"> Complete</div>
     </div>
   </div>
   <div class="l-stats">
-    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified</div></div>
+    <div><div class="stat-num"></div><div class="stat-lbl">Verified</div></div>
     <div class="sdiv"></div>
-    <div><div class="stat-num">⭐</div><div class="stat-lbl">Rated</div></div>
+    <div><div class="stat-num"></div><div class="stat-lbl">Rated</div></div>
     <div class="sdiv"></div>
-    <div><div class="stat-num">⚡</div><div class="stat-lbl">Fast</div></div>
+    <div><div class="stat-num"></div><div class="stat-lbl">Fast</div></div>
   </div>
 </div>
 
@@ -165,12 +200,12 @@
   <div class="topbar">
     <div class="worker-info" onclick="window.location.href='worker_myprofile.html'" style="cursor:pointer;" title="View My Profile">
       <div style="position:relative;width:44px;height:44px;flex-shrink:0;">
-        <div class="worker-avatar" id="workerAvatar">E</div>
-        <img id="workerAvatarImg" src="" alt="" style="display:none;width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 4px 12px rgba(37,99,235,0.3);position:absolute;top:0;left:0;">
+        <div class="worker-avatar avatar-circle" id="workerAvatar">E</div>
+        <img id="workerAvatarImg" src="" alt="" style="display:none;width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 4px 12px rgba(31,111,74,0.3);position:absolute;top:0;left:0;">
       </div>
       <div>
         <div class="worker-name-el" id="workerNameEl">Electrician</div>
-        <div class="worker-role-el">⚡ Electrician · Full Access</div>
+        <div class="worker-role-el"> Electrician  Full Access</div>
       </div>
     </div>
     <div class="topbar-btns">
@@ -181,57 +216,57 @@
   </div>
 
   <div class="fhead">
-    <h1>⚡ Customer Requests</h1>
+    <h1>Customer Requests</h1>
     <p>Customers who selected you for their booking will appear here.</p>
   </div>
 
   <div class="filter-tabs">
-    <button class="ftab active" data-filter="all">All</button>
-    <button class="ftab" data-filter="pending">⏳ Pending</button>
-    <button class="ftab" data-filter="accepted">✅ Accepted</button>
-    <button class="ftab" data-filter="completed">🏁 Completed</button>
-    <button class="ftab" data-filter="rejected">❌ Rejected</button>
+    <button class="ftab active" data-filter="all">&#128203; All</button>
+    <button class="ftab" data-filter="pending">&#9203; Pending</button>
+    <button class="ftab" data-filter="accepted">&#9989; Accepted</button>
+    <button class="ftab" data-filter="completed">&#127937; Completed</button>
+    <button class="ftab" data-filter="rejected">&#10060; Rejected</button>
   </div>
 
   <div class="req-list" id="requestList">
-    <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Loading requests...</div></div>
+    <div class="empty-state"><div class="empty-icon">&#128203;</div><div class="empty-title">Loading requests...</div></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="acceptModal">
   <div class="modal-box" style="width:460px;max-width:96vw;">
     <div class="modal-header">
-      <div class="modal-header-icon mhi-green">✅</div>
+      <div class="modal-header-icon mhi-green"><i class="fa-solid fa-check"></i></div>
       <div><h3>Accept Job</h3><p>Pick visit date, time &amp; message</p></div>
     </div>
     <div class="modal-body" style="max-height:75vh;overflow-y:auto;">
       <span class="modal-label">Visit Date *</span>
       <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-        <button class="date-preset-btn active" data-val="today" onclick="selectDate(this)">📅 Today</button>
-        <button class="date-preset-btn" data-val="tomorrow" onclick="selectDate(this)">📅 Tomorrow</button>
-        <button class="date-preset-btn" data-val="custom" onclick="selectDate(this)">🗓 Pick Date</button>
+        <button class="date-preset-btn active" data-val="today" onclick="selectDate(this)"> Today</button>
+        <button class="date-preset-btn" data-val="tomorrow" onclick="selectDate(this)"> Tomorrow</button>
+        <button class="date-preset-btn" data-val="custom" onclick="selectDate(this)"> Pick Date</button>
       </div>
       <input type="date" class="modal-input" id="acceptCustomDate" style="display:none;margin-bottom:10px;">
       <span class="modal-label" style="margin-top:14px;">Visit Time *</span>
       <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
         <div class="drum-col">
           <div class="drum-lbl">Hour</div>
-          <button class="drum-up" onclick="changeTime('hour',-1)">▲</button>
+          <button class="drum-up" onclick="changeTime('hour',-1)"></button>
           <div class="drum-val" id="hourDisplay">06</div>
-          <button class="drum-dn" onclick="changeTime('hour',1)">▼</button>
+          <button class="drum-dn" onclick="changeTime('hour',1)"></button>
         </div>
         <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:var(--dark);padding-top:30px;">:</div>
         <div class="drum-col">
           <div class="drum-lbl">Min</div>
-          <button class="drum-up" onclick="changeTime('min',-1)">▲</button>
+          <button class="drum-up" onclick="changeTime('min',-1)"></button>
           <div class="drum-val" id="minDisplay">00</div>
-          <button class="drum-dn" onclick="changeTime('min',1)">▼</button>
+          <button class="drum-dn" onclick="changeTime('min',1)"></button>
         </div>
         <div class="drum-col">
           <div class="drum-lbl">AM/PM</div>
-          <button class="drum-up" onclick="changeTime('ampm',-1)">▲</button>
+          <button class="drum-up" onclick="changeTime('ampm',-1)"></button>
           <div class="drum-val teal" id="ampmDisplay">AM</div>
-          <button class="drum-dn" onclick="changeTime('ampm',1)">▼</button>
+          <button class="drum-dn" onclick="changeTime('ampm',1)"></button>
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
@@ -244,17 +279,17 @@
       </div>
       <span class="modal-label">Message to Customer</span>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-        <button class="msg-preset-btn" onclick="setMsg(this,'I will call before arriving.')">📞 Will call before</button>
-        <button class="msg-preset-btn" onclick="setMsg(this,'Please keep the area accessible.')">🚪 Keep area clear</button>
-        <button class="msg-preset-btn" onclick="setMsg(this,'I may arrive 15 minutes early.')">⏰ Might be early</button>
-        <button class="msg-preset-btn" onclick="setMsg(this,'Please confirm your address before I arrive.')">📍 Confirm address</button>
-        <button class="msg-preset-btn" onclick="setMsg(this,'I will bring all necessary tools and equipment.')">🧰 Bringing tools</button>
-        <button class="msg-preset-btn" onclick="setMsg(this,'')">✏️ Custom</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'I will call before arriving.')"> Will call before</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'Please keep the area accessible.')"> Keep area clear</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'I may arrive 15 minutes early.')"> Might be early</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'Please confirm your address before I arrive.')"> Confirm address</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'I will bring all necessary tools and equipment.')"> Bringing tools</button>
+        <button class="msg-preset-btn" onclick="setMsg(this,'')"> Custom</button>
       </div>
       <textarea class="modal-textarea" id="acceptMessage" placeholder="Type a custom message or pick one above..." style="min-height:60px;"></textarea>
       <div class="modal-btns">
         <button class="modal-btn-cancel" onclick="closeModal('acceptModal')">Cancel</button>
-        <button class="modal-btn-confirm mbc-green" id="acceptConfirmBtn">✅ Confirm Accept</button>
+        <button class="modal-btn-confirm mbc-green" id="acceptConfirmBtn">Confirm Accept</button>
       </div>
     </div>
   </div>
@@ -263,7 +298,7 @@
 <div class="modal-overlay" id="rejectModal">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-header-icon mhi-red">❌</div>
+      <div class="modal-header-icon mhi-red"><i class="fa-solid fa-xmark"></i></div>
       <div><h3>Reject Job</h3><p>Provide a reason for the customer</p></div>
     </div>
     <div class="modal-body">
@@ -271,7 +306,7 @@
       <textarea class="modal-textarea" id="rejectReason" placeholder="e.g. Not available on this date, out of service area..."></textarea>
       <div class="modal-btns">
         <button class="modal-btn-cancel" onclick="closeModal('rejectModal')">Cancel</button>
-        <button class="modal-btn-confirm mbc-red" id="rejectConfirmBtn">❌ Confirm Reject</button>
+        <button class="modal-btn-confirm mbc-red" id="rejectConfirmBtn">Confirm Reject</button>
       </div>
     </div>
   </div>
@@ -280,21 +315,21 @@
 <div class="modal-overlay" id="completeModal">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-header-icon mhi-blue">🏁</div>
+      <div class="modal-header-icon mhi-blue"><i class="fa-solid fa-flag-checkered"></i></div>
       <div><h3>Mark as Completed</h3><p>Confirm job completion</p></div>
     </div>
     <div class="modal-body">
       <div class="modal-customer-info">
-        <div class="modal-customer-avatar" id="completeAvatar">C</div>
+        <div class="modal-customer-avatar avatar-circle" id="completeAvatar">C</div>
         <div>
           <div class="modal-customer-name" id="completeCustomerName">Customer</div>
-          <div class="modal-customer-phone" id="completeCustomerPhone">—</div>
+          <div class="modal-customer-phone" id="completeCustomerPhone"></div>
         </div>
       </div>
-      <div class="modal-note">🏁 Once marked complete, the customer can rate and review your service.</div>
+      <div class="modal-note">Note: Once marked complete, the customer can rate and review your service.</div>
       <div class="modal-btns">
         <button class="modal-btn-cancel" onclick="closeModal('completeModal')">Cancel</button>
-        <button class="modal-btn-confirm mbc-blue" id="completeConfirmBtn">🏁 Yes, Mark Complete</button>
+        <button class="modal-btn-confirm mbc-blue" id="completeConfirmBtn">Yes, Mark Complete</button>
       </div>
     </div>
   </div>
@@ -303,21 +338,21 @@
 <div class="modal-overlay" id="callModal">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-header-icon mhi-teal">📞</div>
+      <div class="modal-header-icon mhi-teal"><i class="fa-solid fa-phone"></i></div>
       <div><h3>Call Customer?</h3><p>You're about to call this customer</p></div>
     </div>
     <div class="modal-body">
       <div class="modal-customer-info">
-        <div class="modal-customer-avatar" id="callAvatar">C</div>
+        <div class="modal-customer-avatar avatar-circle" id="callAvatar">C</div>
         <div>
           <div class="modal-customer-name" id="callCustomerName">Customer</div>
-          <div class="modal-customer-phone" id="callCustomerPhone">—</div>
+          <div class="modal-customer-phone" id="callCustomerPhone"></div>
         </div>
       </div>
-      <div class="modal-note">📱 This will open your phone dialler. Standard call rates apply.</div>
+      <div class="modal-note">Note: This will open your phone dialler. Standard call rates apply.</div>
       <div class="modal-btns">
         <button class="modal-btn-cancel" onclick="closeModal('callModal')">Cancel</button>
-        <button class="modal-btn-confirm mbc-teal" id="callConfirmBtn">📞 Yes, Call Now</button>
+        <button class="modal-btn-confirm mbc-teal" id="callConfirmBtn">Yes, Call Now</button>
       </div>
     </div>
   </div>
@@ -327,12 +362,41 @@
   const API_BASE = "/api";
 
   const phone = (localStorage.getItem("phone") || localStorage.getItem("userPhone") || "").trim();
-  const role  = (localStorage.getItem("role") || localStorage.getItem("userRole") || "").trim().toLowerCase();
+  const role  = (localStorage.getItem("userRole") || "").trim().toLowerCase();
   const name  = localStorage.getItem("name") || localStorage.getItem("userName") || "Electrician";
 
   if (!phone || role !== "electrician") {
-    window.location.href = "login.html";
+    window.location.replace("login.html");
+    throw new Error("Electrician role required");
   }
+
+  function renderRoleSidebar() {
+    const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
+    const nav = document.getElementById("roleNav");
+    const info = document.getElementById("roleSideInfo");
+
+    document.querySelectorAll("[data-ns-role]").forEach(el => {
+      el.textContent = roleLabel;
+    });
+
+    if (nav) {
+      nav.innerHTML = `
+        <a class="active" href="electrician_requests.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+        <a href="worker_myprofile.html"><i class="fa-regular fa-user"></i>My Profile</a>
+        <a href="#" onclick="logout(); return false;"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+      `;
+    }
+
+    if (info) {
+      info.innerHTML = `
+        <div><i class="fa-solid fa-bolt"></i>Electrician workspace</div>
+        <div><i class="fa-solid fa-clipboard-list"></i>Service requests</div>
+        <div><i class="fa-regular fa-user"></i>Profile access</div>
+      `;
+    }
+  }
+
+  renderRoleSidebar();
 
   document.getElementById("workerNameEl").textContent = name;
   document.getElementById("workerAvatar").textContent = name.charAt(0).toUpperCase();
@@ -340,11 +404,42 @@
   const workerAvatarKey = `avatarBase64_${role}_${phone}`;
   const savedWorkerAvatar = localStorage.getItem(workerAvatarKey);
 
+  function normalizeAvatarSrc(value) {
+    if (!value) return "";
+    const src = String(value).trim();
+    if (!src) return "";
+    if (src.startsWith("data:image/") || src.startsWith("http://") || src.startsWith("https://")) {
+      return src;
+    }
+    return `data:image/png;base64,${src}`;
+  }
+
+  function setWorkerAvatar(imageValue, displayName) {
+    const imageSrc = normalizeAvatarSrc(imageValue);
+    const initial = (displayName || name || "E").trim().charAt(0).toUpperCase() || "E";
+
+    document.querySelectorAll("[data-ns-avatar]").forEach(el => {
+      el.innerHTML = imageSrc
+        ? `<img src="${imageSrc}" alt="${displayName || "Electrician"}">`
+        : initial;
+    });
+
+    const headerImg = document.getElementById("workerAvatarImg");
+    const headerFallback = document.getElementById("workerAvatar");
+    if (imageSrc) {
+      headerImg.src = imageSrc;
+      headerImg.style.display = "block";
+      headerFallback.style.display = "none";
+    } else {
+      headerImg.removeAttribute("src");
+      headerImg.style.display = "none";
+      headerFallback.style.display = "flex";
+      headerFallback.textContent = initial;
+    }
+  }
+
   if (savedWorkerAvatar) {
-    const img = document.getElementById("workerAvatarImg");
-    img.src = savedWorkerAvatar;
-    img.style.display = "block";
-    document.getElementById("workerAvatar").style.display = "none";
+    setWorkerAvatar(savedWorkerAvatar, name);
   }
 
   async function loadWorkerHeaderAvatar() {
@@ -355,21 +450,59 @@
 
       if (worker.avatarBase64) {
         localStorage.setItem(workerAvatarKey, worker.avatarBase64);
-        const img = document.getElementById("workerAvatarImg");
-        img.src = worker.avatarBase64;
-        img.style.display = "block";
-        document.getElementById("workerAvatar").style.display = "none";
+        setWorkerAvatar(worker.avatarBase64, name);
       }
     } catch (e) {}
   }
 
+  async function loadSidebarProfileAvatar() {
+    try {
+      const [profileResult, workerResult] = await Promise.allSettled([
+        fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`),
+        fetch(`${API_BASE}/workers/${encodeURIComponent(phone)}`)
+      ]);
+
+      let user = {};
+      let worker = {};
+
+      if (profileResult.status === "fulfilled" && profileResult.value.ok) {
+        user = await profileResult.value.json();
+        console.log("Electrician profile user:", user);
+      }
+
+      if (workerResult.status === "fulfilled" && workerResult.value.ok) {
+        worker = await workerResult.value.json();
+      }
+
+      const profileImage = user.avatarBase64 ||
+        user.profileImage ||
+        user.image ||
+        worker.avatarBase64 ||
+        localStorage.getItem(workerAvatarKey) ||
+        localStorage.getItem("avatarBase64") ||
+        "";
+      const displayName = user.name || name || "Electrician";
+
+      if (profileImage) {
+        localStorage.setItem(workerAvatarKey, normalizeAvatarSrc(profileImage));
+      }
+
+      setWorkerAvatar(profileImage, displayName);
+    } catch (e) {
+      console.error("Could not load electrician sidebar avatar", e);
+      setWorkerAvatar(localStorage.getItem(workerAvatarKey), name);
+    }
+  }
+
   loadWorkerHeaderAvatar();
+  window.addEventListener("load", loadSidebarProfileAvatar);
 
   let activeJobId = null;
-  let allJobs = [];
-  let currentFilter = "all";
+  let allBookings = [];
+  let allJobs = allBookings;
+  let selectedFilter = "all";
 
-  function safe(v){ return (!v || v === "") ? "—" : String(v); }
+  function safe(v){ return (!v || v === "") ? "Not available" : String(v); }
   function enc(v){ return encodeURIComponent(String(v ?? "")); }
   function dec(v){ return decodeURIComponent(String(v ?? "")); }
   function closeModal(id){ document.getElementById(id).classList.remove("open"); }
@@ -393,9 +526,9 @@
 
   function customerPref(job) {
     const pref = job.customerCommunicationPref || job.communicationPref || "";
-    if (pref === "chat") return "💬 Chat";
-    if (pref === "phone") return "📞 Phone Call";
-    if (pref === "email") return "📧 Email";
+    if (pref === "chat") return "Chat";
+    if (pref === "phone") return "Phone Call";
+    if (pref === "email") return "Email";
     return "Not added";
   }
 
@@ -408,14 +541,14 @@
       return `<img src="${avatar}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
     }
 
-    return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0d9488);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-family:'Nunito';">${letter}</div>`;
+    return `<div class="avatar-circle" style="width:${size}px;height:${size}px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-family:'Nunito';">${letter}</div>`;
   }
 
   function setModalCustomer(prefix, job) {
     const avatarEl = document.getElementById(prefix + "Avatar");
     avatarEl.innerHTML = customerAvatarHtml(job, 44);
     document.getElementById(prefix + "CustomerName").textContent = customerName(job);
-    document.getElementById(prefix + "CustomerPhone").textContent = "📞 " + safe(customerPhone(job));
+    document.getElementById(prefix + "CustomerPhone").textContent = safe(customerPhone(job));
   }
 
   document.querySelectorAll(".modal-overlay").forEach(m => {
@@ -428,21 +561,26 @@
     tab.addEventListener("click", function(){
       document.querySelectorAll(".ftab").forEach(t => t.classList.remove("active"));
       this.classList.add("active");
-      currentFilter = this.dataset.filter;
-      renderJobs();
+      selectedFilter = this.dataset.filter || "all";
+      renderBookings();
     });
   });
 
-  function statusBadge(status){
-    const s = (status || "pending").toLowerCase();
-    if(s === "accepted")  return `<span class="badge badge-accepted">✅ Accepted</span>`;
-    if(s === "rejected")  return `<span class="badge badge-rejected">❌ Rejected</span>`;
-    if(s === "completed") return `<span class="badge badge-completed">🏁 Completed</span>`;
-    return `<span class="badge badge-pending">⏳ Pending</span>`;
+  function normalizeBookingStatus(booking) {
+    const status = String(booking.status || booking.bookingStatus || booking.requestStatus || "pending").toLowerCase().trim();
+    return ["pending", "accepted", "completed", "rejected"].includes(status) ? status : "pending";
   }
 
-  function renderJob(job){
-    const st = (job.status || "pending").toLowerCase();
+  function statusBadge(status){
+    const s = String(status || "pending").toLowerCase().trim();
+    if(s === "accepted")  return `<span class="badge badge-accepted">&#9989; Accepted</span>`;
+    if(s === "rejected")  return `<span class="badge badge-rejected">&#10060; Rejected</span>`;
+    if(s === "completed") return `<span class="badge badge-completed">&#127937; Completed</span>`;
+    return `<span class="badge badge-pending">&#9203; Pending</span>`;
+  }
+
+  function renderBooking(job){
+    const st = normalizeBookingStatus(job);
 
     let extraInfo = "";
     if(st === "accepted") {
@@ -454,30 +592,34 @@
     }
 
     if(st === "completed") {
-      extraInfo = `<div class="req-extra"><strong>Completed At:</strong> ${job.completedAt ? new Date(job.completedAt).toLocaleString() : "—"}</div>`;
+      extraInfo = `<div class="req-extra"><strong>Completed At:</strong> ${job.completedAt ? new Date(job.completedAt).toLocaleString() : "Not available"}</div>`;
     }
 
     const cname = customerName(job);
     const cphone = customerPhone(job);
     const jobId = enc(job._id);
 
-    const chatBtn = `<button class="btn-chat" onclick="openChat('${jobId}','${enc(cname)}','${enc(cphone)}')">💬 Chat</button>`;
-    const callBtn = `<button class="btn-call" onclick="openCall('${jobId}')">📞 Call</button>`;
+    const chatBtn = `<button class="btn-chat" onclick="openChat('${jobId}','${enc(cname)}','${enc(cphone)}')">&#128172; Chat</button>`;
+    const callBtn = `<button class="btn-call" onclick="openCall('${jobId}')">&#128222; Call</button>`;
 
     let actions = "";
     if(st === "pending"){
       actions = `
-        <button class="btn-accept" onclick="openAccept('${jobId}')">✓ Accept</button>
-        <button class="btn-reject" onclick="openReject('${jobId}')">× Reject</button>
-        ${chatBtn}
-        ${callBtn}`;
+        <button class="btn-accept" onclick="openAccept('${jobId}')">&#9989; Accept</button>
+        <button class="btn-reject" onclick="openReject('${jobId}')">&#10060; Reject</button>
+        ${callBtn}
+        ${chatBtn}`;
     } else if(st === "accepted"){
       actions = `
-        <button class="btn-complete" onclick="openComplete('${jobId}')">✓ Mark Complete</button>
-        ${chatBtn}
-        ${callBtn}`;
-    } else {
+        <button class="btn-complete" onclick="openComplete('${jobId}')">&#127937; Complete</button>
+        ${callBtn}
+        ${chatBtn}`;
+    } else if(st === "completed"){
+      actions = `${callBtn}${chatBtn}`;
+    } else if(st === "rejected"){
       actions = chatBtn;
+    } else {
+      actions = `${callBtn}${chatBtn}`;
     }
 
     return `<div class="req-card ${st}">
@@ -491,15 +633,15 @@
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           ${statusBadge(st)}
-          <span class="req-date">📅 ${safe(job.date)}</span>
+          <span class="req-date">Date: ${safe(job.date)}</span>
         </div>
       </div>
 
       <div class="req-meta">
-        <div class="req-meta-item">📞 ${safe(cphone)}</div>
-        <div class="req-meta-item">📍 ${safe(customerAddress(job))}</div>
-        <div class="req-meta-item">📲 ${safe(customerPref(job))}</div>
-        <div class="req-meta-item">🔧 ${safe(job.service)}</div>
+        <div class="req-meta-item"> ${safe(cphone)}</div>
+        <div class="req-meta-item">Address: ${safe(customerAddress(job))}</div>
+        <div class="req-meta-item">Preference: ${safe(customerPref(job))}</div>
+        <div class="req-meta-item">Service: ${safe(job.service)}</div>
       </div>
 
       ${extraInfo}
@@ -507,27 +649,31 @@
     </div>`;
   }
 
-  function renderJobs(){
+  function renderBookings(){
     const list = document.getElementById("requestList");
-    const filtered = currentFilter === "all"
-      ? allJobs
-      : allJobs.filter(j => (j.status || "pending").toLowerCase() === currentFilter);
+    const filtered = selectedFilter === "all"
+      ? allBookings
+      : allBookings.filter(j => normalizeBookingStatus(j) === selectedFilter);
 
     if(filtered.length === 0){
       list.innerHTML = `<div class="empty-state">
-        <div class="empty-icon">${currentFilter === "all" ? "📭" : "🔍"}</div>
-        <div class="empty-title">${currentFilter === "all" ? "No requests yet" : "No " + currentFilter + " requests"}</div>
+        <div class="empty-icon">${selectedFilter === "all" ? "&#128203;" : "&#128269;"}</div>
+        <div class="empty-title">${selectedFilter === "all" ? "No requests yet" : "No " + selectedFilter + " requests"}</div>
         <div class="empty-text">Customers who choose you will appear here automatically.</div>
       </div>`;
       return;
     }
 
-    list.innerHTML = filtered.map(renderJob).join("");
+    list.innerHTML = filtered.map(renderBooking).join("");
+  }
+
+  function renderJobs(){
+    renderBookings();
   }
 
   async function fetchRequests(){
     const list = document.getElementById("requestList");
-    list.innerHTML = `<div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-title">Loading...</div></div>`;
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">&#9203;</div><div class="empty-title">Loading...</div></div>`;
 
     try {
       const res = await fetch(`${API_BASE}/bookings/chosen/electrician/${encodeURIComponent(phone)}`);
@@ -538,7 +684,7 @@
         String(j.chosenWorkerPhone || "") === String(phone)
       );
 
-      allJobs = await Promise.all(rawJobs.map(async (job) => {
+      allBookings = await Promise.all(rawJobs.map(async (job) => {
         const cPhone = job.customerPhone || job.phone;
 
         try {
@@ -564,10 +710,11 @@
         }
       }));
 
-      renderJobs();
+      allJobs = allBookings;
+      renderBookings();
     } catch(err){
       console.error(err);
-      list.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Error loading requests</div></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><div class="empty-title">Error loading requests</div></div>`;
     }
   }
 
@@ -649,7 +796,7 @@
     const msg = document.getElementById("acceptMessage").value.trim();
 
     if(!visitTime){
-      alert("Please select a visit date!");
+      showToast("Please select a visit date!");
       return;
     }
 
@@ -670,16 +817,17 @@
 
       const data = await res.json();
 
-      if(!res.ok) alert(data.error || "Accept failed");
+      if(!res.ok) showToast(data.error || "Accept failed");
       else {
         closeModal("acceptModal");
+        showToast("Booking accepted successfully", "success");
         fetchRequests();
       }
     } catch(e) {
-      alert("Server error");
+      showToast("Server error");
     }
 
-    this.textContent = "✅ Confirm Accept";
+    this.textContent = " Confirm Accept";
     this.disabled = false;
   });
 
@@ -714,22 +862,23 @@
 
       const data = await res.json();
 
-      if(!res.ok) alert(data.error || "Reject failed");
+      if(!res.ok) showToast(data.error || "Reject failed");
       else {
         closeModal("rejectModal");
+        showToast("Booking rejected successfully", "success");
         fetchRequests();
       }
     } catch(e) {
-      alert("Server error");
+      showToast("Server error");
     }
 
-    this.textContent = "❌ Confirm Reject";
+    this.textContent = " Confirm Reject";
     this.disabled = false;
   });
 
   function openComplete(jobId){
     activeJobId = dec(jobId);
-    const job = allJobs.find(j => String(j._id) === String(activeJobId));
+    const job = allBookings.find(j => String(j._id) === String(activeJobId));
     if (job) setModalCustomer("complete", job);
     document.getElementById("completeModal").classList.add("open");
   }
@@ -750,16 +899,17 @@
 
       const data = await res.json();
 
-      if(!res.ok) alert(data.error || "Complete failed");
+      if(!res.ok) showToast(data.error || "Complete failed");
       else {
         closeModal("completeModal");
+        showToast("Booking marked as completed successfully", "success");
         fetchRequests();
       }
     } catch(e) {
-      alert("Server error");
+      showToast("Server error");
     }
 
-    this.textContent = "🏁 Yes, Mark Complete";
+    this.textContent = " Yes, Mark Complete";
     this.disabled = false;
   });
 
@@ -779,23 +929,25 @@
 
   function openCall(jobId){
     jobId = dec(jobId);
-    const job = allJobs.find(j => String(j._id) === String(jobId));
+    const job = allBookings.find(j => String(j._id) === String(jobId));
 
-    if (!job) return;
-
-    const cPhone = customerPhone(job);
-
-    if(!cPhone || cPhone === "—"){
-      alert("Phone number not available.");
+    if (!job) {
+      showToast("Customer phone number not available");
       return;
     }
 
-    setModalCustomer("call", job);
-    document.getElementById("callModal").classList.add("open");
+    const cPhone = String(customerPhone(job) || "").trim();
+
+    if(!cPhone || cPhone === "Not available"){
+      showToast("Customer phone number not available");
+      return;
+    }
+
+    window.location.href = `tel:${cPhone}`;
   }
 
   document.getElementById("callConfirmBtn").addEventListener("click", function(){
-    const custPhone = document.getElementById("callCustomerPhone").textContent.replace("📞 ","").trim();
+    const custPhone = document.getElementById("callCustomerPhone").textContent.replace(" ","").trim();
     closeModal("callModal");
     window.location.href = "tel:" + custPhone;
   });
@@ -808,5 +960,6 @@
   fetchRequests();
   setInterval(fetchRequests, 30000);
 </script>
+  <script src="js/dashboard-shell.js"></script>
 </body>
 </html>

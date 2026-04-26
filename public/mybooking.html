@@ -3,560 +3,400 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Bookings - NearServe</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>My Booking History - NearServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --blue:#2563eb; --teal:#0d9488; --dark:#0f172a; --mid:#475569; --soft:#94a3b8; --border:#e2eaf4; }
-    html, body { height: 100%; }
-    body { min-height:100vh; font-family:'Plus Jakarta Sans',sans-serif; display:flex; background:#f0f7ff; }
-
-    .left-panel { width:300px; min-height:100vh; background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%); position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; justify-content:space-between; padding:40px 32px; overflow:hidden; z-index:10; }
-    .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
-    .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
-    .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.08); }
-    .r1{width:160px;height:160px;top:35%;right:-40px;} .r2{width:90px;height:90px;top:58%;right:36px;border-color:rgba(255,255,255,0.05);} .r3{width:60px;height:60px;top:15%;left:20px;border-color:rgba(255,255,255,0.06);}
-    .fi { position:absolute; width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(0,0,0,0.15); animation:bob ease-in-out infinite alternate; }
-    .fi1{top:15%;left:8%;animation-duration:3.2s;} .fi2{top:38%;right:10%;animation-duration:2.8s;animation-delay:0.5s;} .fi3{top:60%;left:14%;animation-duration:3.6s;animation-delay:1s;} .fi4{top:75%;right:16%;animation-duration:2.5s;animation-delay:0.3s;}
-    @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-12px) rotate(3deg);} }
-    .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:11px; }
-    .l-logo-icon { width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
-    .l-logo span { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; }
-    .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:22px 0; }
-    .l-main h2 { font-family:'Nunito',sans-serif; font-size:1.85rem; font-weight:900; color:#fff; line-height:1.25; margin-bottom:12px; }
-    .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    .l-main p { color:rgba(255,255,255,0.65); font-size:0.85rem; line-height:1.7; margin-bottom:24px; }
-    .l-steps { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
-    .l-step { display:flex; align-items:flex-start; gap:10px; }
-    .l-step-icon { width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:1px; }
-    .l-step-text strong { display:block; font-size:0.8rem; font-weight:700; color:#fff; margin-bottom:1px; }
-    .l-step-text span { font-size:0.71rem; color:rgba(255,255,255,0.55); line-height:1.4; }
-    .pills { display:flex; flex-wrap:wrap; gap:8px; }
-    .pill { padding:6px 13px; border-radius:50px; background:rgba(255,255,255,0.11); border:1.5px solid rgba(255,255,255,0.2); color:#fff; font-size:0.75rem; font-weight:600; }
-
-    .right-panel { margin-left:300px; flex:1; min-height:100vh; background:#fff; padding:40px 44px; overflow-y:auto; }
-
-    .topbar { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px; padding-bottom:20px; border-bottom:1.5px solid var(--border); flex-wrap:wrap; gap:14px; }
-    .title-wrap h1 { font-family:'Nunito',sans-serif; font-size:1.65rem; font-weight:900; color:var(--dark); margin-bottom:3px; display:flex; align-items:center; gap:10px; }
-    .title-wrap p { color:var(--soft); font-size:0.85rem; }
-    .title-wrap p span { color:var(--teal); font-weight:700; }
-    .top-buttons { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .top-btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border:none; border-radius:11px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:transform 0.2s; white-space:nowrap; }
-    .btn-booking { background:linear-gradient(135deg,#1d4ed8,#0d9488); box-shadow:0 4px 14px rgba(29,78,216,0.28); }
-    .btn-logout  { background:linear-gradient(135deg,#ef4444,#f87171); box-shadow:0 4px 14px rgba(239,68,68,0.28); }
-    .top-btn:hover { transform:translateY(-2px); }
-
-    .notif-wrap { position:relative; display:inline-flex; }
-    .notif-badge { position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; border-radius:50%; width:18px; height:18px; font-size:0.65rem; font-weight:800; display:none; align-items:center; justify-content:center; border:2px solid #fff; animation:pulse 1.5s ease-in-out infinite; }
-    .notif-badge.show { display:flex; }
-    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
-
-    .filter-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
-    .ftab { padding:7px 16px; border-radius:20px; border:1.5px solid var(--border); background:#fafcff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
-    .ftab:hover, .ftab.active { background:#eff6ff; border-color:#93c5fd; color:var(--blue); }
-    .ftab.active { font-weight:700; }
-
-    #cardsContainer { display:flex; flex-direction:column; gap:16px; }
-
-    .bcard {
-      background:#fff; border:1.5px solid var(--border); border-radius:18px;
-      overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.05);
-      transition:box-shadow 0.2s;
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--green:#43ad00;--green2:#8bd400;--mint:#eefbd8;--paper:#f7f7f3;--ink:#020617;--muted:#536070;--line:#dfe3d8;--pink:#ff3f86;--status:#0f766e;--status-hover:#115e59;--status-soft:#ccfbf1}
+    body{min-height:100vh;background:var(--paper);color:var(--ink);font-family:Nunito,Arial,sans-serif;font-size:14px}
+    .app{display:flex;min-height:100vh}
+    .sidebar{width:176px;background:var(--green);color:#fff;position:fixed;inset:0 auto 0 0;padding:76px 0 18px;z-index:20}
+    .brand{position:absolute;top:76px;left:16px;right:16px;display:flex;align-items:center;gap:10px;font-weight:900}
+    .brand-icon{width:32px;height:32px;border-radius:8px;background:#7ccc00;display:grid;place-items:center}
+    .side-user{margin:70px 16px 24px;display:flex;align-items:center;gap:10px}
+    .side-avatar{width:36px;height:36px;border-radius:50%;background:#7ccc00;display:grid;place-items:center;font-weight:900;overflow:hidden;flex:0 0 36px}
+    .side-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .side-name{font-weight:900;line-height:1}
+    .side-role{font-size:12px;color:#b8f7ce;font-weight:800}
+    .nav{display:flex;flex-direction:column}
+    .nav a{height:36px;padding:0 16px;color:#fff;text-decoration:none;display:flex;align-items:center;font-weight:800;border-left:4px solid transparent}
+    .nav a.active{background:rgba(255,255,255,.16);border-left-color:#8bd400}
+    .main{margin-left:176px;flex:1;padding:64px 32px 82px;background:#fff;min-height:100vh}
+    .top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:28px}
+    .title h1{font-size:18px;font-weight:800;line-height:1.1}
+    .title p{font-size:12px;color:#111;margin-top:3px}
+    .actions{display:flex;align-items:center;gap:12px}
+    .updates{background:transparent;border:0;font-weight:800;cursor:pointer;position:relative}
+    .badge{min-width:14px;height:14px;padding:0 4px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;display:none;align-items:center;justify-content:center;position:relative;top:-7px;margin-left:2px}
+    .badge.show{display:inline-flex}
+    .top-btn{height:32px;border:0;padding:0 16px;background:var(--green);color:#fff;font-weight:900;cursor:pointer}
+    .logout{background:#fff;color:#cc1f1f;border:1px solid #f0baba}
+    .filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+    .ftab{border:0;background:transparent;border-radius:999px;padding:7px 16px;font-weight:800;cursor:pointer;color:#111}
+    .ftab.active{background:var(--status);color:#fff}
+    .ftab[data-filter=pending]{background:#fff0d8;color:#9a5b00}
+    .ftab[data-filter=all].active{background:var(--status);color:#fff}
+    .ftab[data-filter=all].active:hover{background:var(--status-hover)}
+    .ftab[data-filter=accepted]{background:#e8f3dc;color:#286b1e}
+    .ftab[data-filter=completed]{background:#dfefff;color:#075da2}
+    .ftab[data-filter=rejected]{background:#ffe7e8;color:#b4232b}
+    .ftab[data-filter=cancelled]{background:transparent;color:#111}
+    #cardsContainer{display:flex;flex-direction:column;gap:22px}
+    .booking-card{position:relative;padding:16px 16px 18px;background:#fff;border:1.5px solid #dfe3d8;border-radius:10px;box-shadow:0 8px 22px rgba(18,63,42,.06)}
+    .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
+    .service{display:grid;grid-template-columns:34px auto;gap:10px;align-items:start}
+    .service-icon{font-size:16px;color:#9d7589;text-align:center;padding-top:4px}
+    .service-name{font-size:14px;font-weight:900}
+    .service-date{font-size:11px;color:#0f172a;margin-top:3px}
+    .status-pill{border-radius:999px;padding:4px 16px;font-size:12px;font-weight:800;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+    .pending{background:#fff0d8;color:#9a5b00}.accepted{background:#e8f3dc;color:#286b1e}.completed{background:#dfefff;color:#075da2}.rejected{background:#ffe7e8;color:#b4232b}.cancelled{background:#eceff1;color:#536070}
+    .tracker{display:grid;grid-template-columns:auto 1fr auto 1fr auto;align-items:start;margin:0 0 20px 2px;max-width:1110px}
+    .step{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;color:#111}
+    .dot{width:28px;height:28px;border-radius:50%;border:2px solid #111;background:#fff;display:grid;place-items:center;font-size:12px;font-weight:900}
+    .dot.on{background:var(--status);color:#fff;border-color:var(--status)}
+    .line{height:2px;background:var(--status);margin-top:14px}.line.off{background:#111}
+    .info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;margin-bottom:18px}
+    .label{font-size:11px;text-transform:uppercase;font-weight:900;margin-bottom:7px}
+    .value{font-size:12px;line-height:1.35}
+    .value i,.service-date i{color:var(--pink);margin-right:6px}
+    .card-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .action-btn{border:0;height:28px;padding:0 18px;border-radius:7px;background:#fff;color:#111;font-weight:800;cursor:pointer;font-family:inherit}
+    .btn-rebook{background:var(--mint);color:#386c17}
+    .btn-chat{background:var(--green);color:#fff}
+    .btn-cancel{background:#fff3f5;color:#c83b3b}
+    .btn-rate{background:#fff0d8;color:#9a5b00}
+    .reviewed{font-size:12px;font-weight:900;color:#075da2}
+    .empty-state{text-align:center;padding:50px 16px;color:var(--muted)}
+    .empty-state strong{display:block;color:#111;font-size:16px;margin-bottom:5px}
+    .modal-overlay,.receipt-overlay,.cancel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.46);display:none;align-items:center;justify-content:center;z-index:100}
+    .modal-overlay.open,.receipt-overlay.open,.cancel-overlay.open{display:flex}
+    .modal-box,.receipt-box,.cancel-box{width:min(420px,92vw);background:#fff;border-radius:12px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.24)}
+    .modal-close{float:right;border:0;background:#f2f2ed;width:28px;height:28px;border-radius:6px;cursor:pointer}
+    .modal-title,.cancel-title{font-size:18px;font-weight:900;margin-bottom:5px}
+    .modal-sub,.cancel-sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+    .star-row{display:flex;justify-content:center;gap:8px;margin:12px 0}
+    .star-btn{border:0;background:transparent;font-size:30px;color:#cbd5e1;cursor:pointer}
+    .star-btn.active{color:#f5a400}
+    textarea{width:100%;min-height:84px;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:inherit}
+    .modal-save,.receipt-print,.cancel-btn-yes{width:100%;height:38px;border:0;border-radius:7px;background:var(--green);color:#fff;font-weight:900;margin-top:12px;cursor:pointer}
+    .receipt-row,.receipt-total{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+    .receipt-total{border-bottom:0;font-weight:900}
+    .receipt-btns,.cancel-btns{display:flex;gap:10px;margin-top:14px}
+    .receipt-close-btn,.cancel-btn-no{flex:1;height:36px;border:1px solid var(--line);background:#fff;border-radius:7px;font-weight:800;cursor:pointer}
+    .toast{position:fixed;right:22px;bottom:22px;background:#111;color:#fff;padding:10px 14px;border-radius:8px;font-size:13px;opacity:0;transform:translateY(20px);transition:.25s;z-index:200}
+    .toast.show{opacity:1;transform:translateY(0)}.toast.success{background:#167044}.toast.error{background:#b91c1c}
+    @media(max-width:600px){
+      html,body{height:auto}
+      body{display:block;background:#f6f4ee;padding:10px 10px 78px}
+      .app{display:block;min-height:0;background:transparent;position:relative}.sidebar{display:none}
+      .mobile-shell{max-width:none;margin:0;background:transparent;border-radius:0;overflow:visible;min-height:0}
+      .mobile-head{display:flex;background:linear-gradient(135deg,#43ad00,#8bd400);color:#fff;align-items:center;justify-content:space-between;padding:14px 10px;margin-bottom:10px;min-height:58px}
+      .mobile-head h1{font-size:.95rem;font-weight:900}.mobile-head p{font-size:.58rem;color:#d6f3dd;margin-top:2px}
+      .mobile-head-actions{display:flex;align-items:center;gap:7px}.mobile-head .top-btn{height:28px;padding:0 11px;border-radius:6px;font-size:.62rem;background:#fff;color:var(--green)}
+      .main{margin:0;padding:0;background:transparent;min-height:auto}.desktop-top{display:none}.content{padding:0}
+      .filters{gap:5px;flex-wrap:nowrap;overflow:auto;margin:0 0 10px;scrollbar-width:none}.ftab{font-size:.66rem;padding:5px 9px;white-space:nowrap}
+      #cardsContainer{gap:12px}.booking-card{padding:12px 11px;border-radius:8px;box-shadow:none}
+      .card-head{margin-bottom:12px}.service{grid-template-columns:25px auto;gap:7px}.service-icon{font-size:.8rem}.service-name{font-size:.8rem}.service-date{font-size:.68rem}
+      .status-pill{font-size:.62rem;padding:4px 8px}.tracker{grid-template-columns:auto 1fr auto 1fr auto;margin-bottom:12px}.dot{width:18px;height:18px;font-size:.6rem;border-width:1.5px}.line{margin-top:9px}.step{font-size:.5rem}
+      .info-grid{grid-template-columns:1fr;gap:7px;margin-bottom:10px}.label{display:inline-block;width:74px;font-size:.58rem;margin-bottom:0}.value{display:inline;font-size:.62rem}
+      .card-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px}.action-btn{height:26px;border-radius:5px;font-size:.62rem;padding:0 8px}.btn-chat{grid-column:1 / -1}
+      .toast{left:14px;right:14px;bottom:78px;text-align:center}
     }
-    .bcard:hover { box-shadow:0 8px 28px rgba(0,0,0,0.09); }
-
-    .bcard.status-pending  { border-left:4px solid #f59e0b; }
-    .bcard.status-accepted { border-left:4px solid #10b981; }
-    .bcard.status-rejected { border-left:4px solid #ef4444; }
-    .bcard.status-completed{ border-left:4px solid #2563eb; }
-    .bcard.status-cancelled{ border-left:4px solid #94a3b8; }
-
-    .bcard-top { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 12px; flex-wrap:wrap; gap:10px; }
-    .bcard-service { display:flex; align-items:center; gap:10px; }
-    .bcard-service-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; }
-    .bcard-service-name { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:var(--dark); }
-    .bcard-service-date { font-size:0.75rem; color:var(--soft); margin-top:1px; }
-
-    .bcard-status-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; }
-    .sp-pending  { background:#fef3c7; color:#d97706; }
-    .sp-accepted { background:#d1fae5; color:#059669; }
-    .sp-rejected { background:#fee2e2; color:#dc2626; }
-    .sp-completed{ background:#dbeafe; color:#1d4ed8; }
-    .sp-cancelled{ background:#f1f5f9; color:#64748b; }
-
-    .status-tracker { padding:14px 20px; background:#f8faff; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
-    .tracker-steps { display:flex; align-items:center; gap:0; }
-    .tstep { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
-    .tstep-dot { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; z-index:1; transition:all 0.3s; }
-    .tstep-dot.done  { background:linear-gradient(135deg,#10b981,#0d9488); color:#fff; box-shadow:0 3px 10px rgba(16,185,129,0.4); }
-    .tstep-dot.active{ background:linear-gradient(135deg,#2563eb,#7c3aed); color:#fff; box-shadow:0 3px 10px rgba(37,99,235,0.4); animation:stepPulse 1.5s ease-in-out infinite; }
-    .tstep-dot.inactive{ background:#e2eaf4; color:#94a3b8; }
-    @keyframes stepPulse { 0%,100%{box-shadow:0 3px 10px rgba(37,99,235,0.4);} 50%{box-shadow:0 3px 18px rgba(37,99,235,0.7);} }
-    .tstep-label { font-size:0.65rem; font-weight:600; color:var(--soft); margin-top:5px; text-align:center; }
-    .tstep-label.done-lbl { color:#059669; }
-    .tstep-label.active-lbl { color:var(--blue); font-weight:700; }
-    .tstep-line { flex:1; height:3px; background:#e2eaf4; margin-top:-14px; position:relative; z-index:0; }
-    .tstep-line.done-line { background:linear-gradient(90deg,#10b981,#0d9488); }
-
-    .bcard-body { padding:14px 20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-    .binfo { display:flex; flex-direction:column; gap:2px; }
-    .binfo-label { font-size:0.68rem; color:var(--soft); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
-    .binfo-val { font-size:0.85rem; color:var(--dark); font-weight:600; }
-
-    .accepted-box { margin:0 20px 14px; padding:12px 16px; background:linear-gradient(135deg,#f0fdf4,#ecfdf5); border:1.5px solid #bbf7d0; border-radius:12px; }
-    .accepted-box-title { font-size:0.72rem; font-weight:700; color:#059669; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
-    .accepted-row { display:flex; align-items:flex-start; gap:8px; font-size:0.83rem; color:var(--dark); margin-bottom:4px; }
-    .accepted-row:last-child { margin-bottom:0; }
-    .accepted-row strong { color:#059669; min-width:90px; flex-shrink:0; }
-
-    .rejected-box { margin:0 20px 14px; padding:12px 16px; background:#fff5f5; border:1.5px solid #fecaca; border-radius:12px; }
-    .rejected-box-title { font-size:0.72rem; font-weight:700; color:#dc2626; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
-    .rejected-reason { font-size:0.83rem; color:#7f1d1d; }
-
-    .bcard-footer { padding:12px 20px; border-top:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; background:#fafcff; }
-    .bcard-footer-left { display:flex; gap:8px; flex-wrap:wrap; }
-
-    .action-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:9px; border:none; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.78rem; font-weight:700; transition:all 0.2s; }
-    .btn-rebook  { background:#eff6ff; color:var(--blue); border:1.5px solid #bfdbfe; }
-    .btn-rebook:hover { background:#dbeafe; }
-    .btn-receipt { background:#f0fdf4; color:#16a34a; border:1.5px solid #bbf7d0; }
-    .btn-receipt:hover { background:#dcfce7; }
-    .btn-chat    { background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff; box-shadow:0 3px 10px rgba(124,58,237,0.3); }
-    .btn-chat:hover { transform:translateY(-1px); box-shadow:0 5px 14px rgba(124,58,237,0.4); }
-    .btn-rate    { background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; box-shadow:0 3px 10px rgba(245,158,11,0.3); }
-    .btn-rate:hover { transform:translateY(-1px); }
-    .btn-cancel  { background:#fff5f5; color:#ef4444; border:1.5px solid #fecaca; }
-    .btn-cancel:hover { background:#fee2e2; }
-    .rated-tag { display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:9px; background:#e0f2fe; color:#0369a1; font-size:0.78rem; font-weight:700; }
-
-    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
-    .modal-overlay.open { display:flex; }
-    .modal-box { background:#fff; border-radius:22px; padding:30px; width:380px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.2); position:relative; animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
-    @keyframes dropIn { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
-    .modal-close { position:absolute; top:14px; right:14px; background:#f1f5f9; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-size:0.9rem; color:var(--mid); display:flex; align-items:center; justify-content:center; }
-    .modal-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; color:var(--dark); margin-bottom:4px; }
-    .modal-sub { font-size:0.82rem; color:var(--soft); margin-bottom:18px; }
-    .star-row { display:flex; gap:8px; justify-content:center; margin-bottom:18px; }
-    .star-btn { font-size:2rem; background:none; border:none; cursor:pointer; transition:transform 0.15s; color:#d1d5db; }
-    .star-btn.active, .star-btn:hover { color:#f59e0b; transform:scale(1.2); }
-    .modal-textarea { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:11px; background:#fafcff; color:var(--dark); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; outline:none; resize:vertical; min-height:80px; transition:all 0.25s; }
-    .modal-textarea:focus { border-color:#93c5fd; box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
-    .modal-save { width:100%; padding:12px; border:none; border-radius:11px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.9rem; font-weight:700; cursor:pointer; margin-top:12px; transition:transform 0.2s; }
-    .modal-save:hover { transform:translateY(-2px); }
-
-    .receipt-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:300; display:none; align-items:center; justify-content:center; }
-    .receipt-overlay.open { display:flex; }
-    .receipt-box { background:#fff; border-radius:20px; width:420px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 30px 80px rgba(0,0,0,0.25); animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
-    .receipt-header { background:linear-gradient(135deg,#1d4ed8,#0d9488); padding:24px 28px; text-align:center; }
-    .receipt-header h3 { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; margin-bottom:3px; }
-    .receipt-header p { color:rgba(255,255,255,0.75); font-size:0.8rem; }
-    .receipt-body { padding:22px 28px; }
-    .receipt-logo { text-align:center; margin-bottom:18px; }
-    .receipt-logo span { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; color:var(--dark); }
-    .receipt-id { text-align:center; font-size:0.75rem; color:var(--soft); margin-bottom:18px; }
-    .receipt-divider { height:1px; background:var(--border); margin:14px 0; }
-    .receipt-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:0.85rem; }
-    .receipt-row .rlbl { color:var(--soft); }
-    .receipt-row .rval { font-weight:700; color:var(--dark); }
-    .receipt-total { background:linear-gradient(135deg,#eff6ff,#f0fdf4); border-radius:10px; padding:12px 16px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; }
-    .receipt-total .rlbl { font-weight:700; color:var(--dark); }
-    .receipt-total .rval { font-weight:900; font-size:1.1rem; color:var(--blue); }
-    .receipt-status-badge { text-align:center; margin:12px 0; }
-    .receipt-btns { display:flex; gap:8px; padding:0 28px 22px; }
-    .receipt-print { flex:1; padding:11px; border:none; border-radius:11px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:transform 0.2s; }
-    .receipt-print:hover { transform:translateY(-2px); }
-    .receipt-close-btn { flex:1; padding:11px; border-radius:11px; border:1.5px solid var(--border); background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; }
-
-    .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:#0f172a; color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
-    .toast.show { transform:translateY(0); opacity:1; }
-    .toast.success { background:linear-gradient(135deg,#16a34a,#0d9488); }
-    .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
-
-    .cancel-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(6px); z-index:400; display:none; align-items:center; justify-content:center; }
-    .cancel-overlay.open { display:flex; }
-    .cancel-box { background:#fff; border-radius:22px; padding:32px 28px 24px; width:360px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.22); position:relative; animation:dropIn 0.25s cubic-bezier(0.16,1,0.3,1) both; text-align:center; }
-    .cancel-icon-wrap { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#fee2e2,#fecaca); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.8rem; }
-    .cancel-title { font-family:'Nunito',sans-serif; font-size:1.15rem; font-weight:900; color:var(--dark); margin-bottom:6px; }
-    .cancel-sub { font-size:0.83rem; color:var(--soft); margin-bottom:22px; line-height:1.6; }
-    .cancel-btns { display:flex; gap:10px; }
-    .cancel-btn-no  { flex:1; padding:12px; border-radius:11px; border:1.5px solid var(--border); background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:background 0.2s; }
-    .cancel-btn-no:hover { background:#f1f5f9; }
-    .cancel-btn-yes { flex:1; padding:12px; border-radius:11px; border:none; background:linear-gradient(135deg,#ef4444,#f87171); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(239,68,68,0.3); transition:transform 0.2s; }
-    .cancel-btn-yes:hover { transform:translateY(-1px); }
-
-    .empty-state { text-align:center; padding:60px 20px; color:var(--soft); }
-    .empty-icon { font-size:3rem; margin-bottom:12px; }
-    .empty-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; color:var(--mid); }
-
-    .book-btn { border:none; border-radius:12px; padding:12px 18px; font-size:14px; font-weight:700; cursor:pointer; color:white; display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:0.2s ease; background:linear-gradient(135deg,#2563eb,#7c3aed); margin-top:20px; }
-    .book-btn:hover { transform:translateY(-2px); }
-
-    @media(max-width:860px) { .left-panel{display:none;} .right-panel{margin-left:0;padding:24px 18px;} .bcard-body{grid-template-columns:1fr 1fr;} }
-    @media(max-width:500px) { .bcard-body{grid-template-columns:1fr;} }
   </style>
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
-<body>
-
-<div class="left-panel">
-  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">📋</div><div class="fi fi2">⭐</div><div class="fi fi3">🔧</div><div class="fi fi4">✅</div>
-  <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
-    </div>
-    <span>NearServe</span>
+<body class="ns-shell-page page-bg">
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+    <span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
   </div>
-  <div class="l-main">
-    <h2>My <em>Booking</em><br>History</h2>
-    <p>Track all your service bookings, check their status, and rate completed jobs.</p>
-    <div class="l-steps">
-      <div class="l-step"><div class="l-step-icon">📌</div><div class="l-step-text"><strong>Track Status</strong><span>See if your booking is pending, accepted, or completed.</span></div></div>
-      <div class="l-step"><div class="l-step-icon">⭐</div><div class="l-step-text"><strong>Rate Workers</strong><span>Leave a rating for completed jobs to help others.</span></div></div>
-      <div class="l-step"><div class="l-step-icon">🔄</div><div class="l-step-text"><strong>Book Again</strong><span>Need another service? Book a new one anytime.</span></div></div>
-    </div>
-    <div class="pills">
-      <div class="pill">✅ Verified</div><div class="pill">⭐ Rated</div><div class="pill">🔒 Trusted</div><div class="pill">⚡ Fast</div>
-    </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role">Customer</div></div>
   </div>
-</div>
-
-<div class="right-panel">
-
-  <div class="topbar">
-    <div class="title-wrap">
-      <h1><i class="fa-solid fa-clock-rotate-left" style="color:#2563eb;font-size:1.3rem;"></i> My Booking History</h1>
-      <p id="welcomeMsg" style="margin-top:4px;"></p>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+    <a class="active" href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+    <a href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+    <a href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+    <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+    <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong></div>
     </div>
-    <div class="top-buttons">
-      <div class="notif-wrap">
-        <button class="top-btn" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 4px 14px rgba(124,58,237,0.28);" id="notifBtn">
-          <i class="fa-solid fa-bell"></i> Updates
-        </button>
-        <span class="notif-badge" id="notifBadge">0</span>
+    <button class="ns-mobile-book" type="button" onclick="location.href='booking.html'">+ Book</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role">Customer</div></div>
+  </div>
+  <div class="ns-mobile-trust"><span>Verified Workers</span><span>Secure Booking</span><span>Quick & Easy</span></div>
+</header>
+  <div class="app mobile-shell">
+    <aside class="sidebar">
+      <div class="brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span></div>
+      <div class="side-user">
+        <div class="side-avatar" id="sideAvatar">X</div>
+        <div><div class="side-name" id="sideName">xyz</div><div class="side-role">Customer</div></div>
       </div>
-      <button class="top-btn btn-booking" onclick="window.location.href='booking.html'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Book a Service
-      </button>
-      <button class="top-btn btn-logout" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
+      <nav class="nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="booking.html">Book a service</a>
+        <a class="active" href="mybooking.html">Booking history</a>
+        <a href="profile.html">My profile</a>
+        <a href="worker_list.html">My workers</a>
+      </nav>
+    </aside>
+
+    <header class="mobile-head">
+      <div><h1><i class="fa-solid fa-clock-rotate-left"></i> Booking History</h1><p id="mobileWelcome">Welcome, xyz! Here are your bookings.</p></div>
+      <div class="mobile-head-actions">
+        <button class="updates" id="mobileNotifBtn"><i class="fa-solid fa-bell"></i><span class="badge" id="mobileNotifBadge">0</span></button>
+        <button class="top-btn" onclick="location.href='booking.html'">+ Book</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="top desktop-top">
+        <div class="title">
+          <h1><i class="fa-solid fa-clock-rotate-left"></i> My Booking History</h1>
+          <p id="welcomeMsg">Welcome! Here are your bookings.</p>
+        </div>
+        <div class="actions">
+          <button class="updates" id="notifBtn"><i class="fa-solid fa-bell"></i> Updates <span class="badge" id="notifBadge">0</span></button>
+          <button class="top-btn" onclick="location.href='booking.html'">+ Book a service</button>
+          <button class="top-btn logout" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="filters">
+          <button class="ftab active" data-filter="all">All</button>
+          <button class="ftab" data-filter="pending"><i class="fa-solid fa-hourglass-half"></i> Pending</button>
+          <button class="ftab" data-filter="accepted"><i class="fa-solid fa-check"></i> Accepted</button>
+          <button class="ftab" data-filter="completed"><i class="fa-solid fa-check"></i> Completed</button>
+          <button class="ftab" data-filter="rejected"><i class="fa-solid fa-xmark"></i> Rejected</button>
+          <button class="ftab" data-filter="cancelled"><i class="fa-solid fa-ban"></i> Cancelled</button>
+        </div>
+        <div id="cardsContainer"><div class="empty-state"><strong>Loading your bookings...</strong></div></div>
+      </div>
+    </main>
+
+    <nav class="ns-bottom-nav" aria-label="Mobile primary navigation">
+  <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="booking.html"><i class="fa-solid fa-clipboard-list"></i><span>Book</span></a>
+  <a class="active" aria-current="page" href="mybooking.html"><i class="fa-solid fa-table-list"></i><span>History</span></a>
+  <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</nav>
+  </div>
+
+  <div class="modal-overlay" id="ratingModal">
+    <div class="modal-box">
+      <button class="modal-close" id="ratingModalClose">x</button>
+      <div class="modal-title">Rate your worker</div>
+      <div class="modal-sub" id="ratingModalSub">How was the service?</div>
+      <div class="star-row" id="starRow">
+        <button class="star-btn" data-val="1">★</button><button class="star-btn" data-val="2">★</button><button class="star-btn" data-val="3">★</button><button class="star-btn" data-val="4">★</button><button class="star-btn" data-val="5">★</button>
+      </div>
+      <textarea id="ratingComment" placeholder="Share your feedback"></textarea>
+      <button class="modal-save" id="ratingSubmitBtn">Submit rating</button>
     </div>
   </div>
 
-  <div class="filter-tabs">
-    <button class="ftab active" data-filter="all">All</button>
-    <button class="ftab" data-filter="pending">⏳ Pending</button>
-    <button class="ftab" data-filter="accepted">✅ Accepted</button>
-    <button class="ftab" data-filter="completed">🏁 Completed</button>
-    <button class="ftab" data-filter="rejected">❌ Rejected</button>
-    <button class="ftab" data-filter="cancelled">🚫 Cancelled</button>
-  </div>
-
-  <div id="cardsContainer">
-    <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Loading your bookings...</div></div>
-  </div>
-
-  <button class="book-btn" onclick="window.location.href='booking.html'">
-    <i class="fa-solid fa-plus"></i> Book Another Service
-  </button>
-
-</div>
-
-<div class="modal-overlay" id="ratingModal">
-  <div class="modal-box">
-    <button class="modal-close" id="ratingModalClose">✕</button>
-    <div class="modal-title">⭐ Rate this Worker</div>
-    <div class="modal-sub" id="ratingModalSub">How was your experience?</div>
-    <div class="star-row" id="starRow">
-      <button class="star-btn" data-val="1">★</button>
-      <button class="star-btn" data-val="2">★</button>
-      <button class="star-btn" data-val="3">★</button>
-      <button class="star-btn" data-val="4">★</button>
-      <button class="star-btn" data-val="5">★</button>
-    </div>
-    <textarea class="modal-textarea" id="ratingComment" placeholder="Write your feedback (optional)..."></textarea>
-    <button class="modal-save" id="ratingSubmitBtn">Submit Rating</button>
-  </div>
-</div>
-
-<div class="receipt-overlay" id="receiptModal">
-  <div class="receipt-box">
-    <div class="receipt-header">
-      <h3>🧾 Booking Receipt</h3>
-      <p>QuickServe — Service Booking</p>
-    </div>
-    <div class="receipt-body">
-      <div class="receipt-logo"><span>⚡ QuickServe</span></div>
-      <div class="receipt-id" id="receiptId">Booking ID: —</div>
-      <div class="receipt-divider"></div>
-      <div class="receipt-row"><span class="rlbl">Service</span><span class="rval" id="rService">—</span></div>
-      <div class="receipt-row"><span class="rlbl">Worker</span><span class="rval" id="rWorker">—</span></div>
-      <div class="receipt-row"><span class="rlbl">Address</span><span class="rval" id="rAddress">—</span></div>
-      <div class="receipt-row"><span class="rlbl">Date</span><span class="rval" id="rDate">—</span></div>
-      <div class="receipt-row"><span class="rlbl">Status</span><span class="rval" id="rStatus">—</span></div>
-      <div class="receipt-divider"></div>
-      <div class="receipt-total"><span class="rlbl">Booking Fee Paid</span><span class="rval">₹29</span></div>
-      <div class="receipt-status-badge" id="rStatusBadge"></div>
-    </div>
-    <div class="receipt-btns">
-      <button class="receipt-print" id="receiptPrintBtn">🖨️ Print / Save PDF</button>
-      <button class="receipt-close-btn" id="receiptCloseBtn">Close</button>
+  <div class="receipt-overlay" id="receiptModal">
+    <div class="receipt-box">
+      <h3>NearServe Receipt</h3>
+      <p id="receiptId">Booking ID: -</p>
+      <div class="receipt-row"><span>Service</span><strong id="rService">-</strong></div>
+      <div class="receipt-row"><span>Worker</span><strong id="rWorker">-</strong></div>
+      <div class="receipt-row"><span>Address</span><strong id="rAddress">-</strong></div>
+      <div class="receipt-row"><span>Date</span><strong id="rDate">-</strong></div>
+      <div class="receipt-row"><span>Status</span><strong id="rStatus">-</strong></div>
+      <div class="receipt-total"><span>Booking Fee Paid</span><span>Rs. 29</span></div>
+      <div id="rStatusBadge" style="text-align:center;margin-top:12px"></div>
+      <div class="receipt-btns"><button class="receipt-print" id="receiptPrintBtn">Print / Save PDF</button><button class="receipt-close-btn" id="receiptCloseBtn">Close</button></div>
     </div>
   </div>
-</div>
 
-<div class="cancel-overlay" id="cancelModal">
-  <div class="cancel-box">
-    <div class="cancel-icon-wrap">❌</div>
-    <div class="cancel-title">Cancel Booking?</div>
-    <div class="cancel-sub">Are you sure you want to cancel this booking?<br>This action cannot be undone.</div>
-    <div class="cancel-btns">
-      <button class="cancel-btn-no" id="cancelModalNo">Keep Booking</button>
-      <button class="cancel-btn-yes" id="cancelModalYes">Yes, Cancel</button>
+  <div class="cancel-overlay" id="cancelModal">
+    <div class="cancel-box">
+      <div class="cancel-title">Cancel Booking?</div>
+      <div class="cancel-sub">Are you sure you want to cancel this booking? This action cannot be undone.</div>
+      <div class="cancel-btns"><button class="cancel-btn-no" id="cancelModalNo">Keep Booking</button><button class="cancel-btn-yes" id="cancelModalYes">Yes, Cancel</button></div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-<script>
-const API_BASE = "/api";
+  <script>
+const API_BASE =
+  window.location.protocol === "file:" || (window.location.port && window.location.port !== "5000")
+    ? "http://localhost:5000/api"
+    : "/api";
 
-function showToast(msg, type) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + (type || "success") + " show";
-  setTimeout(() => { t.className = "toast"; }, 3500);
-}
-
-const phone = (localStorage.getItem("userPhone") || "").trim();
-const uname = localStorage.getItem("userName") || "";
-
-if (!phone) {
-  window.location.href = "login.html";
-}
-
-const welcomeMsg = document.getElementById("welcomeMsg");
-if (uname && welcomeMsg) {
-  welcomeMsg.innerHTML = `Welcome, <span>${uname}</span>! Here are your bookings:`;
-}
-
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("userName");
-  localStorage.removeItem("userPhone");
-  localStorage.removeItem("userEmail");
-  localStorage.removeItem("userRole");
-  localStorage.removeItem("userStatus");
-  localStorage.removeItem("token");
-  window.location.href = "login.html";
-});
+const phone = localStorage.getItem("userPhone") || localStorage.getItem("phone") || "";
+const uname = localStorage.getItem("userName") || localStorage.getItem("name") || "Customer";
+if (!phone) window.location.href = "login.html";
 
 let allBookings = [];
 let currentFilter = "all";
-let selectedRating = 0;
 let currentRatingBookingId = null;
-let lastStatuses = JSON.parse(localStorage.getItem("qs_lastStatuses") || "{}");
-let newUpdatesCount = 0;
+let selectedRating = 0;
 let cancelBookingId = null;
+let newUpdatesCount = 0;
+let lastStatuses = JSON.parse(localStorage.getItem("qs_lastStatuses") || "{}");
+let workerNamesByPhone = {};
 
-function serviceIcon(s) {
-  if (s === "carpenter") return { icon: "🪚", bg: "#fef3c7" };
-  if (s === "plumber") return { icon: "🔧", bg: "#e0f2fe" };
-  if (s === "electrician") return { icon: "⚡", bg: "#fefce8" };
-  return { icon: "🛠️", bg: "#f1f5f9" };
+const sideAvatar = document.getElementById("sideAvatar");
+const sideName = document.getElementById("sideName");
+sideName.textContent = uname;
+document.getElementById("welcomeMsg").textContent = `Welcome, ${uname}! Here are your bookings.`;
+document.getElementById("mobileWelcome").textContent = `Welcome, ${uname}! Here are your bookings.`;
+
+function setSidebarAvatar(name, imageSrc) {
+  const initial = (name || "C").trim().charAt(0).toUpperCase() || "C";
+  sideAvatar.innerHTML = imageSrc ? `<img src="${imageSrc}" alt="${name || "Customer"}">` : initial;
 }
 
-function statusPill(s) {
+setSidebarAvatar(uname, localStorage.getItem(`avatarBase64_customer_${phone}`));
+fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`)
+  .then(r => r.ok ? r.json() : null)
+  .then(profile => {
+    if (!profile) return;
+    const name = profile.name || uname;
+    const avatar = profile.avatarBase64 || "";
+    sideName.textContent = name;
+    if (avatar) localStorage.setItem(`avatarBase64_customer_${phone}`, avatar);
+    setSidebarAvatar(name, avatar || localStorage.getItem(`avatarBase64_customer_${phone}`));
+  })
+  .catch(() => {});
+
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
+}
+function jsArg(v) { return JSON.stringify(String(v ?? "")); }
+function title(v) { const s = String(v || "Service"); return s.charAt(0).toUpperCase() + s.slice(1); }
+function niceDate(v) {
+  if (!v) return "-";
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) return esc(v);
+  return d.toLocaleDateString("en-CA").replaceAll("-", " - ");
+}
+function showToast(msg, type = "error") {
+  window.nearServeToast(msg, type);
+}
+
+function statusPill(status) {
   const map = {
-    pending: ["sp-pending", "⏳ Pending"],
-    accepted: ["sp-accepted", "✅ Accepted"],
-    rejected: ["sp-rejected", "❌ Rejected"],
-    completed: ["sp-completed", "🏁 Completed"],
-    cancelled: ["sp-cancelled", "🚫 Cancelled"]
+    pending: ["fa-hourglass-half", "Pending"],
+    accepted: ["fa-check", "Accepted"],
+    completed: ["fa-check", "Completed"],
+    rejected: ["fa-xmark", "Rejected"],
+    cancelled: ["fa-ban", "Cancelled"]
   };
-  const [cls, lbl] = map[s] || ["sp-pending", "⏳ Pending"];
-  return `<span class="bcard-status-pill ${cls}">${lbl}</span>`;
+  const item = map[status] || ["fa-circle-info", title(status)];
+  return `<span class="status-pill ${status}"><i class="fa-solid ${item[0]}"></i>${item[1]}</span>`;
 }
 
-function buildTracker(status) {
-  const steps = ["Booked", "Accepted", "Completed"];
-  const idx = status === "pending" ? 0 : status === "accepted" ? 1 : status === "completed" ? 2 : -1;
+function workerDisplayName(b, workerPhone, workerRole) {
+  const savedName = b.chosenWorkerName || b.workerName || b.assignedWorkerName || "";
+  const lookedUpName = workerNamesByPhone[workerPhone] || "";
+  const name = savedName || lookedUpName;
+  if (name) return workerPhone ? `${name} - ${workerPhone}` : name;
+  return workerPhone ? `${title(workerRole)} - ${workerPhone}` : "-";
+}
 
-  if (status === "rejected") {
-    return `<div class="status-tracker">
-      <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#dc2626;font-weight:700;">
-        <span style="font-size:1.1rem;">❌</span> Booking was rejected by the worker
-      </div>
-    </div>`;
+function tracker(status) {
+  const progress = status === "completed" ? 3 : status === "accepted" ? 2 : 1;
+  return `<div class="tracker">
+    <div class="step"><div class="dot on">1</div><span>Booked</span></div>
+    <div class="line ${progress >= 2 ? "" : "off"}"></div>
+    <div class="step"><div class="dot ${progress >= 2 ? "on" : ""}">2</div><span>Accepted</span></div>
+    <div class="line ${progress >= 3 ? "" : "off"}"></div>
+    <div class="step"><div class="dot ${progress >= 3 ? "on" : ""}">3</div><span>Completed</span></div>
+  </div>`;
+}
+
+function buildActions(b, status, workerPhone, workerRole, workerText) {
+  const actions = [
+    `<button class="action-btn btn-rebook" onclick='reBook(${jsArg(b.service)}, ${jsArg(workerPhone)}, ${jsArg(workerRole)}, ${jsArg(workerText.split(" - ")[0] || "")})'><i class="fa-solid fa-rotate-left"></i> Re-book</button>`,
+    `<button class="action-btn" onclick='showReceipt(${jsArg(b._id)})'><i class="fa-solid fa-receipt"></i> Receipt</button>`
+  ];
+  if (workerPhone && workerPhone !== "-") {
+    actions.push(`<button class="action-btn btn-chat" onclick='openChat(${jsArg(b._id)}, ${jsArg(workerPhone)}, ${jsArg(workerRole)})'><i class="fa-solid fa-comment"></i> Chat worker</button>`);
   }
-
-  if (status === "cancelled") {
-    return `<div class="status-tracker">
-      <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;font-weight:700;">
-        <span style="font-size:1.1rem;">🚫</span> This booking was cancelled by you
-      </div>
-    </div>`;
+  if (status === "completed" && !b.reviewed) {
+    actions.push(`<button class="action-btn btn-rate" onclick='openRating(${jsArg(b._id)}, ${jsArg(workerText)})'><i class="fa-solid fa-star"></i> Rate worker</button>`);
   }
-
-  let html = `<div class="status-tracker"><div class="tracker-steps">`;
-  steps.forEach((step, i) => {
-    const isDone = i < idx || (idx === 2 && i <= 2);
-    const isActive = i === idx;
-    const dotClass = isDone ? "done" : isActive ? "active" : "inactive";
-    const lblClass = isDone ? "done-lbl" : isActive ? "active-lbl" : "";
-    const icon = isDone ? "✓" : isActive ? (i === 0 ? "📋" : i === 1 ? "👷" : "🏁") : (i + 1);
-
-    if (i > 0) {
-      html += `<div class="tstep-line ${i <= idx ? 'done-line' : ''}"></div>`;
-    }
-
-    html += `<div class="tstep">
-      <div class="tstep-dot ${dotClass}">${icon}</div>
-      <div class="tstep-label ${lblClass}">${step}</div>
-    </div>`;
-  });
-  html += `</div></div>`;
-  return html;
+  if (status === "pending" || status === "accepted") {
+    actions.push(`<button class="action-btn btn-cancel" onclick='cancelBooking(${jsArg(b._id)})'><i class="fa-solid fa-xmark"></i> Cancel</button>`);
+  }
+  if (b.reviewed) actions.push(`<span class="reviewed"><i class="fa-solid fa-star"></i> Reviewed</span>`);
+  return actions.join("");
 }
 
 function buildCard(b) {
   const status = (b.status || "pending").toLowerCase();
-  const svc = serviceIcon((b.service || "").toLowerCase());
-  const wText = b.chosenWorkerRole && b.chosenWorkerPhone
-    ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}`
-    : "—";
-
-  let actions = `
-    <button class="action-btn btn-rebook" onclick="reBook('${b.service || ""}','${b.chosenWorkerPhone || ""}','${b.chosenWorkerRole || ""}')">
-      🔄 Re-book
-    </button>
-    <button class="action-btn btn-receipt" onclick="showReceipt('${b._id}')">
-      🧾 Receipt
-    </button>
-  `;
-
-  const workerPhone = String(b.chosenWorkerPhone || "").trim();
-  const workerRole = b.chosenWorkerRole || (b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "Worker");
-
-  if (["pending", "accepted", "completed", "rejected"].includes(status)) {
-    const chatPhone = workerPhone || "support";
-    actions += `
-      <button class="action-btn btn-chat" onclick="openChat('${b._id}','${chatPhone}','${workerRole}')">
-        💬 Chat Worker
-      </button>
-    `;
-  }
-
-  if (status === "completed" && !b.reviewed) {
-    actions += `
-      <button class="action-btn btn-rate" onclick="openRating('${b._id}','${wText}')">
-        ⭐ Rate Worker
-      </button>
-    `;
-  }
-
-  if (status === "pending") {
-    actions += `
-      <button class="action-btn btn-cancel" onclick="cancelBooking('${b._id}')">
-        ✕ Cancel
-      </button>
-    `;
-  }
-
-  if (status === "cancelled") {
-    actions = `
-      <button class="action-btn btn-rebook" onclick="reBook('${b.service || ""}','${b.chosenWorkerPhone || ""}','${b.chosenWorkerRole || ""}')">
-        🔄 Re-book
-      </button>
-    `;
-  }
-
-  const ratedTag = b.reviewed ? `<span class="rated-tag">⭐ Reviewed</span>` : "";
-
-  let extraBox = "";
-  if ((status === "accepted" || status === "completed") && (b.visitTime || b.workerMessage)) {
-    extraBox = `<div class="accepted-box">
-      <div class="accepted-box-title">✅ Worker Response</div>
-      ${b.visitTime ? `<div class="accepted-row"><strong>Arrival Time:</strong>${b.visitTime}</div>` : ""}
-      ${b.workerMessage ? `<div class="accepted-row"><strong>Message:</strong>${b.workerMessage}</div>` : ""}
-    </div>`;
-  }
-
-  if (status === "rejected" && b.rejectReason) {
-    extraBox = `<div class="rejected-box">
-      <div class="rejected-box-title">❌ Rejection Reason</div>
-      <div class="rejected-reason">${b.rejectReason}</div>
-    </div>`;
-  }
-
-  const serviceName = b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "Service";
-
-  return `
-  <div class="bcard status-${status}" data-id="${b._id}">
-    <div class="bcard-top">
-      <div class="bcard-service">
-        <div class="bcard-service-icon" style="background:${svc.bg};">${svc.icon}</div>
+  const workerPhone = b.chosenWorkerPhone || b.workerPhone || "";
+  const workerRole = b.chosenWorkerRole || b.workerRole || b.service || "Worker";
+  const workerText = workerDisplayName(b, workerPhone, workerRole);
+  return `<article class="booking-card">
+    <div class="card-head">
+      <div class="service">
+        <div class="service-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
         <div>
-          <div class="bcard-service-name">${serviceName}</div>
-          <div class="bcard-service-date">📅 ${b.date || "—"}</div>
+          <div class="service-name">${esc(title(b.service))}</div>
+          <div class="service-date"><i class="fa-solid fa-calendar-days"></i>${esc(niceDate(b.date))}</div>
         </div>
       </div>
       ${statusPill(status)}
     </div>
-
-    ${buildTracker(status)}
-
-    <div class="bcard-body">
-      <div class="binfo"><div class="binfo-label">Worker</div><div class="binfo-val">👷 ${wText}</div></div>
-      <div class="binfo"><div class="binfo-label">Address</div><div class="binfo-val">📍 ${b.address || "—"}</div></div>
-      <div class="binfo"><div class="binfo-label">Booked On</div><div class="binfo-val">🗓️ ${b.createdAt ? new Date(b.createdAt).toLocaleDateString() : "—"}</div></div>
+    ${tracker(status)}
+    <div class="info-grid">
+      <div><div class="label">Worker</div><div class="value"><i class="fa-solid fa-user-helmet-safety"></i>${esc(workerText)}</div></div>
+      <div><div class="label">Address</div><div class="value"><i class="fa-solid fa-location-dot"></i>${esc(b.address || "-")}</div></div>
+      <div><div class="label">Booked On</div><div class="value"><i class="fa-solid fa-calendar-days"></i>${esc(niceDate(b.createdAt))}</div></div>
     </div>
-
-    ${extraBox}
-
-    <div class="bcard-footer">
-      <div class="bcard-footer-left">${actions}</div>
-      ${ratedTag}
-    </div>
-  </div>`;
+    <div class="card-actions">${buildActions(b, status, workerPhone, workerRole, workerText)}</div>
+  </article>`;
 }
 
 function renderCards() {
   const container = document.getElementById("cardsContainer");
-  const filtered = currentFilter === "all"
-    ? allBookings
-    : allBookings.filter(b => (b.status || "pending").toLowerCase() === currentFilter);
-
+  const filtered = currentFilter === "all" ? allBookings : allBookings.filter(b => (b.status || "pending").toLowerCase() === currentFilter);
   if (!filtered.length) {
-    container.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">${currentFilter === "all" ? "📋" : "🔍"}</div>
-      <div class="empty-title">${currentFilter === "all" ? "No bookings yet" : "No " + currentFilter + " bookings"}</div>
-      <p style="font-size:0.85rem;color:var(--soft);margin-top:6px;">Book a service to get started!</p>
-    </div>`;
+    container.innerHTML = `<div class="empty-state"><strong>${currentFilter === "all" ? "No bookings yet" : "No " + currentFilter + " bookings"}</strong><span>Book a service to get started.</span></div>`;
     return;
   }
-
-  container.innerHTML = filtered.map(b => buildCard(b)).join("");
+  container.innerHTML = filtered.map(buildCard).join("");
 }
 
-async function fetchBookings(silent) {
+async function fetchBookings(silent = false) {
   try {
     const res = await fetch(`${API_BASE}/bookings/my/${encodeURIComponent(phone)}`);
     const data = await res.json().catch(() => ({}));
     const bookings = Array.isArray(data) ? data : (data.bookings || []);
-
     if (!Array.isArray(bookings)) return;
-
     if (silent) {
       bookings.forEach(b => {
         const prev = lastStatuses[b._id];
@@ -564,39 +404,55 @@ async function fetchBookings(silent) {
         if (prev && prev !== curr) newUpdatesCount++;
         lastStatuses[b._id] = curr;
       });
-      localStorage.setItem("qs_lastStatuses", JSON.stringify(lastStatuses));
-      if (newUpdatesCount > 0) {
-        const badge = document.getElementById("notifBadge");
-        badge.textContent = newUpdatesCount;
-        badge.classList.add("show");
-      }
+      updateBadge();
     } else {
-      bookings.forEach(b => {
-        if (!lastStatuses[b._id]) {
-          lastStatuses[b._id] = (b.status || "pending").toLowerCase();
-        }
-      });
-      localStorage.setItem("qs_lastStatuses", JSON.stringify(lastStatuses));
+      bookings.forEach(b => { if (!lastStatuses[b._id]) lastStatuses[b._id] = (b.status || "pending").toLowerCase(); });
     }
-
+    localStorage.setItem("qs_lastStatuses", JSON.stringify(lastStatuses));
+    await hydrateWorkerNames(bookings);
     allBookings = bookings;
     renderCards();
   } catch (err) {
-    console.error("Error fetching bookings:", err);
-    showToast("❌ Could not load bookings", "error");
+    console.error(err);
+    showToast("Could not load bookings", "error");
   }
 }
 
-fetchBookings(false);
-setInterval(() => fetchBookings(true), 30000);
+async function hydrateWorkerNames(bookings) {
+  const phones = [...new Set(bookings.map(b => b.chosenWorkerPhone || b.workerPhone || "").filter(Boolean))];
+  const missing = phones.filter(p => !workerNamesByPhone[p]);
+  if (!missing.length) return;
+  await Promise.all(missing.map(async p => {
+    try {
+      const res = await fetch(`${API_BASE}/workers/${encodeURIComponent(p)}`);
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.name) workerNamesByPhone[p] = data.name;
+    } catch(e) {}
+  }));
+}
 
-document.getElementById("notifBtn").addEventListener("click", () => {
+function updateBadge() {
+  ["notifBadge", "mobileNotifBadge"].forEach(id => {
+    const badge = document.getElementById(id);
+    badge.textContent = newUpdatesCount;
+    badge.classList.toggle("show", newUpdatesCount > 0);
+  });
+}
+
+function clearUpdates() {
   newUpdatesCount = 0;
-  const badge = document.getElementById("notifBadge");
-  badge.textContent = "0";
-  badge.classList.remove("show");
-  showToast("✅ All updates seen!", "success");
+  updateBadge();
+  showToast("All updates seen", "success");
   fetchBookings(false);
+}
+
+document.getElementById("notifBtn").addEventListener("click", clearUpdates);
+document.getElementById("mobileNotifBtn").addEventListener("click", clearUpdates);
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("userPhone");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userRole");
+  window.location.href = "login.html";
 });
 
 document.querySelectorAll(".ftab").forEach(tab => {
@@ -608,10 +464,11 @@ document.querySelectorAll(".ftab").forEach(tab => {
   });
 });
 
-function reBook(service, workerPhone, workerRole) {
+function reBook(service, workerPhone, workerRole, workerName = "") {
   localStorage.setItem("selectedServiceRole", service || "");
   localStorage.setItem("chosenWorkerPhone", workerPhone || "");
   localStorage.setItem("chosenWorkerRole", workerRole || "");
+  localStorage.setItem("chosenWorkerName", workerName || workerNamesByPhone[workerPhone] || "");
   window.location.href = "booking.html";
 }
 
@@ -624,39 +481,26 @@ document.getElementById("cancelModalNo").addEventListener("click", () => {
   document.getElementById("cancelModal").classList.remove("open");
   cancelBookingId = null;
 });
-
-document.getElementById("cancelModal").addEventListener("click", function(e) {
-  if (e.target === this) {
-    this.classList.remove("open");
-    cancelBookingId = null;
-  }
+document.getElementById("cancelModal").addEventListener("click", e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove("open");
 });
-
 document.getElementById("cancelModalYes").addEventListener("click", async function() {
   if (!cancelBookingId) return;
-
   this.textContent = "Cancelling...";
   this.disabled = true;
-
   try {
-    const res = await fetch(`${API_BASE}/bookings/${cancelBookingId}/cancel`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" }
-    });
+    const res = await fetch(`${API_BASE}/bookings/${cancelBookingId}/cancel`, { method:"PUT", headers:{ "Content-Type":"application/json" } });
     const data = await res.json().catch(() => ({}));
-
     document.getElementById("cancelModal").classList.remove("open");
-
     if (res.ok) {
-      showToast("✅ Booking cancelled successfully");
+      showToast("Booking cancelled successfully", "success");
       fetchBookings(false);
     } else {
-      showToast("❌ " + (data.message || data.error || "Could not cancel"), "error");
+      showToast(data.message || data.error || "Could not cancel", "error");
     }
-  } catch (e) {
-    showToast("❌ Server error", "error");
+  } catch(e) {
+    showToast("Server error", "error");
   }
-
   this.textContent = "Yes, Cancel";
   this.disabled = false;
   cancelBookingId = null;
@@ -665,33 +509,18 @@ document.getElementById("cancelModalYes").addEventListener("click", async functi
 function showReceipt(id) {
   const b = allBookings.find(x => x._id === id);
   if (!b) return;
-
-  document.getElementById("receiptId").textContent = "Booking ID: " + b._id;
-  document.getElementById("rService").textContent = b.service ? b.service.charAt(0).toUpperCase() + b.service.slice(1) : "—";
-  document.getElementById("rWorker").textContent = b.chosenWorkerPhone ? `${b.chosenWorkerRole} · ${b.chosenWorkerPhone}` : "—";
-  document.getElementById("rAddress").textContent = b.address || "—";
-  document.getElementById("rDate").textContent = b.date || "—";
-  document.getElementById("rStatus").textContent = (b.status || "pending").toUpperCase();
-
   const status = (b.status || "pending").toLowerCase();
-  const badgeMap = { pending:"⏳ Pending", accepted:"✅ Accepted", completed:"🏁 Completed", rejected:"❌ Rejected", cancelled:"🚫 Cancelled" };
-  const badgeBg  = status==='completed'?'#dbeafe':status==='accepted'?'#d1fae5':status==='rejected'?'#fee2e2':status==='cancelled'?'#f1f5f9':'#fef3c7';
-  const badgeClr = status==='completed'?'#1d4ed8':status==='accepted'?'#059669':status==='rejected'?'#dc2626':status==='cancelled'?'#64748b':'#d97706';
-
-  document.getElementById("rStatusBadge").innerHTML =
-    `<span style="display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.82rem;background:${badgeBg};color:${badgeClr};">${badgeMap[status] || status}</span>`;
-
+  document.getElementById("receiptId").textContent = "Booking ID: " + b._id;
+  document.getElementById("rService").textContent = title(b.service);
+  document.getElementById("rWorker").textContent = workerDisplayName(b, b.chosenWorkerPhone || b.workerPhone || "", b.chosenWorkerRole || b.workerRole || b.service || "Worker");
+  document.getElementById("rAddress").textContent = b.address || "-";
+  document.getElementById("rDate").textContent = b.date || "-";
+  document.getElementById("rStatus").textContent = status.toUpperCase();
+  document.getElementById("rStatusBadge").innerHTML = statusPill(status);
   document.getElementById("receiptModal").classList.add("open");
 }
-
-document.getElementById("receiptCloseBtn").addEventListener("click", () => {
-  document.getElementById("receiptModal").classList.remove("open");
-});
-
-document.getElementById("receiptModal").addEventListener("click", function(e) {
-  if (e.target === this) this.classList.remove("open");
-});
-
+document.getElementById("receiptCloseBtn").addEventListener("click", () => document.getElementById("receiptModal").classList.remove("open"));
+document.getElementById("receiptModal").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove("open"); });
 document.getElementById("receiptPrintBtn").addEventListener("click", () => window.print());
 
 function openRating(bookingId, workerText) {
@@ -702,71 +531,51 @@ function openRating(bookingId, workerText) {
   document.querySelectorAll(".star-btn").forEach(s => s.classList.remove("active"));
   document.getElementById("ratingModal").classList.add("open");
 }
-
-document.getElementById("ratingModalClose").addEventListener("click", () => {
-  document.getElementById("ratingModal").classList.remove("open");
-});
-
-document.getElementById("ratingModal").addEventListener("click", function(e) {
-  if (e.target === this) this.classList.remove("open");
-});
-
+document.getElementById("ratingModalClose").addEventListener("click", () => document.getElementById("ratingModal").classList.remove("open"));
+document.getElementById("ratingModal").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove("open"); });
 document.querySelectorAll(".star-btn").forEach(btn => {
   btn.addEventListener("click", function() {
-    selectedRating = parseInt(this.dataset.val);
-    document.querySelectorAll(".star-btn").forEach((s, i) => {
-      s.classList.toggle("active", i < selectedRating);
-    });
+    selectedRating = Number(this.dataset.val);
+    document.querySelectorAll(".star-btn").forEach((s, i) => s.classList.toggle("active", i < selectedRating));
   });
 });
-
 document.getElementById("ratingSubmitBtn").addEventListener("click", async function() {
   if (!selectedRating) {
-    showToast("❌ Please select a star rating", "error");
+    showToast("Please select a star rating", "error");
     return;
   }
-
-  const comment = document.getElementById("ratingComment").value.trim();
-
   try {
     const res = await fetch(`${API_BASE}/reviews`, {
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        bookingId: currentRatingBookingId,
-        customerPhone: phone,
-        rating: selectedRating,
-        comment
-      })
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ bookingId: currentRatingBookingId, customerPhone: phone, rating: selectedRating, comment: document.getElementById("ratingComment").value.trim() })
     });
-
     const data = await res.json().catch(() => ({}));
-
     if (res.ok) {
       document.getElementById("ratingModal").classList.remove("open");
-      showToast("⭐ Rating submitted! Thank you.");
+      showToast("Rating submitted. Thank you.", "success");
       fetchBookings(false);
     } else {
-      showToast("❌ " + (data.message || data.error || "Failed to submit"), "error");
+      showToast(data.message || data.error || "Failed to submit", "error");
     }
   } catch(e) {
-    showToast("❌ Server error", "error");
+    showToast("Server error", "error");
   }
 });
 
 function openChat(bookingId, workerPhone, workerRoleName) {
-  const customerName = localStorage.getItem("userName") || "Customer";
   const workerRole = workerRoleName || "Worker";
-  const workerName = workerRole + " · " + workerPhone;
-
   localStorage.setItem("chatBookingId", bookingId);
   localStorage.setItem("chatWorkerPhone", workerPhone);
-  localStorage.setItem("chatWorkerName", workerName);
+  localStorage.setItem("chatWorkerName", workerRole + " - " + workerPhone);
   localStorage.setItem("chatWorkerRole", workerRole);
-  localStorage.setItem("chatCustomerName", customerName);
+  localStorage.setItem("chatCustomerName", localStorage.getItem("userName") || "Customer");
   window.location.href = "worker_chat.html";
 }
-</script>
 
+fetchBookings(false);
+setInterval(() => fetchBookings(true), 30000);
+  </script>
+  <script src="js/dashboard-shell.js"></script>
 </body>
 </html>

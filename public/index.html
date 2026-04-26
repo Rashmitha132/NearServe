@@ -1,518 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NearServe — Home Services at Your Doorstep</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NearServe - Services Near You, Care You Deserve</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--blue:#1d4ed8;--blue2:#3b82f6;--teal:#0d9488;--teal2:#14b8a6;--dark:#020617;--dark2:#0f172a;--mid:#334155;--soft:#64748b;--muted:#94a3b8;--border:rgba(255,255,255,0.08);--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --green:#167247;
+      --green-dark:#0b3f2a;
+      --green-mid:#1f7a50;
+      --green-light:#eef8f1;
+      --green-line:#cfe8d7;
+      --text:#073225;
+      --muted:#5d756b;
+      --white:#fff;
+    }
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--dark);color:#fff;overflow-x:hidden}
-    body::before{content:'';position:fixed;inset:0;z-index:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");pointer-events:none}
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:70px;background:rgba(2,6,23,0.75);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background 0.3s}
-    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-    .nav-logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1d4ed8,#0d9488);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(29,78,216,0.4)}
-    .nav-logo span{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff}
-    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
-    .nav-links a{color:var(--muted);font-size:0.88rem;font-weight:500;text-decoration:none;transition:color 0.2s}
-    .nav-links a:hover{color:#fff}
-    .nav-actions{display:flex;align-items:center;gap:12px}
-    .btn-ghost{padding:8px 20px;border-radius:9px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#fff;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.2s}
-    .btn-ghost:hover{background:rgba(255,255,255,0.07)}
-    .btn-primary{padding:9px 22px;border-radius:9px;border:none;background:linear-gradient(135deg,#1d4ed8,#0d9488);color:#fff;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(29,78,216,0.35);transition:all 0.2s}
-    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(29,78,216,0.45)}
-    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:100px 60px 60px}
-    .hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(29,78,216,0.18) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 30%,rgba(13,148,136,0.15) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 60% 80%,rgba(59,130,246,0.1) 0%,transparent 60%),var(--dark2)}
-    .hero-grid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 0%,transparent 100%)}
-    .hero-content{position:relative;z-index:2;max-width:1100px;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center}
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;background:rgba(29,78,216,0.15);border:1px solid rgba(29,78,216,0.35);color:#93c5fd;font-size:0.8rem;font-weight:600;margin-bottom:28px;animation:fadeDown 0.6s ease both}
-    .badge-dot{width:7px;height:7px;border-radius:50%;background:#3b82f6;box-shadow:0 0 8px #3b82f6;animation:pulse 2s infinite}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.8)}}
-    .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,6vw,5rem);font-weight:800;line-height:1.08;letter-spacing:-1.5px;margin-bottom:24px;animation:fadeDown 0.6s 0.1s ease both}
-    .hero h1 .grad{background:linear-gradient(90deg,#60a5fa,#34d399,#60a5fa);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shine 4s linear infinite}
-    @keyframes shine{to{background-position:200% center}}
-    .hero p{font-size:1.15rem;line-height:1.75;color:var(--muted);max-width:560px;margin-bottom:40px;animation:fadeDown 0.6s 0.2s ease both}
-    .hero-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeDown 0.6s 0.3s ease both}
-    .cta-main{display:flex;align-items:center;gap:9px;padding:15px 32px;border-radius:13px;border:none;background:linear-gradient(135deg,#1d4ed8 0%,#0d9488 100%);color:#fff;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 6px 28px rgba(29,78,216,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;transition:all 0.25s;text-decoration:none}
-    .cta-main:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(29,78,216,0.5)}
-    .cta-sec{display:flex;align-items:center;gap:9px;padding:15px 32px;border-radius:13px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:#fff;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:500;cursor:pointer;transition:all 0.25s;text-decoration:none;backdrop-filter:blur(8px)}
-    .cta-sec:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2)}
-    .hero-floaters{position:absolute;inset:0;z-index:1;pointer-events:none}
-    .floater{position:absolute;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:14px 18px;backdrop-filter:blur(10px);font-size:0.78rem;color:rgba(255,255,255,0.7);animation:floatUp ease-in-out infinite alternate;display:flex;align-items:center;gap:8px}
-    .floater-icon{font-size:1.3rem}
-    .floater-title{font-weight:600;font-size:0.8rem;color:#fff}
-    .floater-sub{color:var(--muted);font-size:0.72rem}
-    .fl1{top:20%;left:4%;animation-duration:4s;animation-delay:0s}
-    .fl2{top:55%;left:3%;animation-duration:3.5s;animation-delay:0.8s}
-    .fl3{top:20%;right:4%;animation-duration:3.8s;animation-delay:0.3s}
-    .fl4{top:60%;right:3%;animation-duration:4.2s;animation-delay:1.1s}
-    @keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-14px)}}
-    @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-    .trust-strip{padding:28px 60px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;background:rgba(255,255,255,0.015)}
-    .trust-lbl{font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px}
-    .trust-items{display:flex;gap:36px;align-items:center;flex-wrap:wrap;justify-content:center}
-    .trust-item{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:0.88rem;font-weight:500}
-    .trust-item span{font-size:1.3rem}
-    section{position:relative;z-index:1}
-    .section-pad{padding:100px 60px}
-    .section-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:50px;background:rgba(13,148,136,0.12);border:1px solid rgba(13,148,136,0.3);color:#34d399;font-size:0.75rem;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:16px}
-    .section-title{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:800;line-height:1.15;letter-spacing:-0.8px;margin-bottom:14px}
-    .section-sub{color:var(--muted);font-size:1rem;line-height:1.7;max-width:480px}
-    .steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;margin-top:60px;border-radius:20px;overflow:hidden;border:1px solid var(--border)}
-    .step{background:rgba(255,255,255,0.025);padding:36px 30px;position:relative;transition:background 0.3s}
-    .step:hover{background:rgba(255,255,255,0.05)}
-    .step+.step{border-left:1px solid var(--border)}
-    .step-num{font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;color:rgba(255,255,255,0.05);line-height:1;margin-bottom:18px}
-    .step-icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:1.5rem}
-    .si-blue{background:rgba(29,78,216,0.2);border:1px solid rgba(59,130,246,0.3)}
-    .si-teal{background:rgba(13,148,136,0.2);border:1px solid rgba(20,184,166,0.3)}
-    .si-green{background:rgba(16,185,129,0.2);border:1px solid rgba(52,211,153,0.3)}
-    .si-amber{background:rgba(245,158,11,0.2);border:1px solid rgba(251,191,36,0.3)}
-    .step h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:10px;color:#fff}
-    .step p{color:var(--muted);font-size:0.87rem;line-height:1.7}
-    .demo-section{background:linear-gradient(160deg,#0a1628 0%,#0f172a 50%,#0a1f1e 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-    .demo-inner{max-width:1100px;margin:0 auto;display:flex;gap:64px;align-items:center;flex-wrap:wrap}
-    .demo-text{flex:1;min-width:280px}
-    .demo-text h2{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;line-height:1.18;letter-spacing:-0.8px;margin-bottom:16px}
-    .demo-text h2 em{font-style:normal;color:#34d399}
-    .demo-text p{color:var(--muted);font-size:0.95rem;line-height:1.75;margin-bottom:28px}
-    .demo-bullets{display:flex;flex-direction:column;gap:14px}
-    .demo-bullet{display:flex;align-items:flex-start;gap:12px;font-size:0.9rem;color:rgba(255,255,255,0.75)}
-    .bullet-icon{width:28px;height:28px;border-radius:8px;background:rgba(13,148,136,0.2);border:1px solid rgba(20,184,166,0.3);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;margin-top:1px}
-    .demo-video-wrap{flex:1.2;min-width:300px}
-    .video-container{position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.05) inset;aspect-ratio:16/9;background:linear-gradient(135deg,#0f172a 0%,#1a1a2e 50%,#0d1117 100%);cursor:pointer}
-    .video-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f2040 0%,#0a1628 40%,#0a1f1e 100%)}
-    .video-screen-mockup{width:85%;height:65%;border-radius:10px;background:linear-gradient(135deg,#1d4ed8 0%,#0d9488 100%);opacity:0.25;position:absolute}
-    .play-btn{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#0d9488);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 14px rgba(29,78,216,0.12),0 8px 30px rgba(29,78,216,0.4);transition:all 0.3s;position:relative;z-index:2;border:none;cursor:pointer}
-    .play-btn:hover{transform:scale(1.1);box-shadow:0 0 0 20px rgba(29,78,216,0.1),0 12px 40px rgba(29,78,216,0.5)}
-    .play-btn svg{margin-left:4px}
-    .video-label{position:absolute;z-index:2;bottom:20px;left:50%;transform:translateX(-50%);font-size:0.8rem;color:rgba(255,255,255,0.5);white-space:nowrap}
-    .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:56px}
-    .feature-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;padding:28px;transition:all 0.3s;position:relative;overflow:hidden}
-    .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);opacity:0;transition:opacity 0.3s}
-    .feature-card:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.15);transform:translateY(-3px)}
-    .feature-card:hover::before{opacity:1}
-    .feat-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:18px}
-    .feature-card h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:10px}
-    .feature-card p{color:var(--muted);font-size:0.85rem;line-height:1.7}
-    .services-bg{background:linear-gradient(160deg,#0a1628 0%,#0f172a 100%);border-top:1px solid var(--border)}
-    .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:50px}
-    .service-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:16px;padding:28px 20px;text-align:center;transition:all 0.3s;cursor:pointer}
-    .service-card:hover{background:rgba(29,78,216,0.1);border-color:rgba(59,130,246,0.4);transform:translateY(-4px)}
-    .service-card:hover .sc-icon{transform:scale(1.15) rotate(-5deg)}
-    .sc-icon{font-size:2.4rem;margin-bottom:12px;display:block;transition:transform 0.3s}
-    .sc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:4px}
-    .sc-count{font-size:0.75rem;color:var(--muted)}
-    .cta-section{padding:100px 60px;text-align:center;background:linear-gradient(160deg,#0a1628 0%,#0d1520 100%);border-top:1px solid var(--border);position:relative;overflow:hidden}
-    .cta-section::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(29,78,216,0.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
-    .cta-section h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;position:relative;z-index:1}
-    .cta-section p{color:var(--muted);font-size:1rem;margin-bottom:36px;position:relative;z-index:1}
-    .cta-section .hero-cta{justify-content:center;position:relative;z-index:1}
-    footer{padding:48px 60px 32px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:32px}
-    .footer-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:32px}
-    .footer-brand{max-width:280px}
-    .footer-brand .nav-logo{margin-bottom:14px}
-    .footer-brand p{color:var(--muted);font-size:0.85rem;line-height:1.7}
-    .footer-links{display:flex;gap:60px;flex-wrap:wrap}
-    .footer-col h4{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:16px}
-    .footer-col a{display:block;color:var(--muted);font-size:0.83rem;text-decoration:none;margin-bottom:10px;transition:color 0.2s}
-    .footer-col a:hover{color:#fff}
-    .footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:24px;border-top:1px solid var(--border)}
-    .footer-bottom p{color:var(--muted);font-size:0.78rem}
-    .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
-    .reveal.visible{opacity:1;transform:translateY(0)}
-    @media(max-width:768px){nav{padding:0 20px}.nav-links{display:none}.hero{padding:90px 20px 50px}.fl1,.fl2,.fl3,.fl4{display:none}.section-pad{padding:60px 20px}.trust-strip{padding:20px;gap:16px}.demo-inner{flex-direction:column}.cta-section{padding:60px 20px}footer{padding:36px 20px 24px}.footer-links{gap:32px}.step+.step{border-left:none;border-top:1px solid var(--border)}.steps-grid{grid-template-columns:1fr}}
+    body{font-family:"Plus Jakarta Sans",sans-serif;color:var(--text);background:#fff;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    .page{min-height:100vh;background:#fff}
+
+    .nav{
+      position:sticky;top:0;z-index:30;height:74px;padding:0 clamp(24px,3.5vw,48px);
+      display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.94);
+      border-bottom:1px solid #dbeadf;backdrop-filter:blur(14px)
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900}
+    .brand-mark{width:36px;height:36px;border-radius:9px;background:var(--green);display:grid;place-items:center;box-shadow:0 10px 22px rgba(22,114,71,.2)}
+    .brand-mark img{width:25px;height:25px;border-radius:7px;object-fit:cover;background:#fff}
+    .brand-name{font-family:"Nunito",sans-serif;font-size:1.32rem;font-weight:900;color:var(--green-dark)}
+    .brand-name span{color:#45b739}
+    .nav-links{display:flex;align-items:center;gap:32px;font-size:.92rem;font-weight:700;color:#557165}
+    .nav-links a:hover{color:var(--green)}
+    .nav-cta{padding:12px 22px;border-radius:8px;background:var(--green);color:#fff;font-weight:800;box-shadow:0 10px 22px rgba(22,114,71,.18)}
+
+    .hero{
+      position:relative;min-height:560px;padding:90px clamp(24px,3.5vw,48px) 76px;overflow:hidden;
+      background:
+        radial-gradient(circle at 82% 10%,rgba(100,207,103,.18),transparent 34%),
+        radial-gradient(circle at 72% 68%,rgba(31,122,80,.09),transparent 38%),
+        linear-gradient(180deg,#f7fcf8 0%,#eef8f1 100%)
+    }
+    .hero::before{content:"";position:absolute;right:-140px;top:120px;width:380px;height:380px;border-radius:50%;background:rgba(31,122,80,.08)}
+    .hero::after{content:"";position:absolute;left:-170px;bottom:-170px;width:360px;height:360px;border-radius:50%;background:rgba(31,122,80,.07)}
+    .hero-inner{position:relative;z-index:1;max-width:1255px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,480px);gap:76px;align-items:center}
+    .hero-copy{max-width:590px}
+    .badge{
+      display:inline-flex;align-items:center;gap:10px;padding:8px 15px;border-radius:999px;
+      background:#edf9e9;border:1px solid #bfe4b6;color:#08713e;font-size:.78rem;font-weight:900;
+      letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px
+    }
+    .badge-dot{width:5px;height:5px;border-radius:50%;background:#67c44d}
+    .hero h1{font-family:"Playfair Display",serif;font-size:clamp(3rem,5vw,4.9rem);line-height:1.03;font-weight:800;color:#0b3f2a;margin-bottom:22px;letter-spacing:-.04em}
+    .hero p{max-width:560px;font-size:1.1rem;line-height:1.8;color:#547064;margin-bottom:34px}
+    .hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:0 25px;border-radius:8px;font-weight:900;border:1px solid transparent;transition:.22s ease}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:var(--green);color:#fff;box-shadow:0 16px 34px rgba(22,114,71,.2)}
+    .btn-secondary{background:#fff;color:var(--green-dark);border-color:var(--green);box-shadow:0 10px 24px rgba(22,114,71,.08)}
+    .hero-visual{justify-self:end;width:100%;max-width:430px}
+    .logo-panel{
+      background:rgba(255,255,255,.92);border:1px solid #d9eadf;border-radius:26px;padding:30px;
+      box-shadow:0 28px 80px rgba(12,70,46,.16)
+    }
+    .logo-panel img{display:block;width:100%;height:auto;border-radius:18px}
+
+    section{padding:86px clamp(24px,3.5vw,48px)}
+    .section-head{max-width:680px;margin:0 auto 54px;text-align:center}
+    .section-kicker{display:block;margin-bottom:16px;color:#007040;font-size:.78rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .section-head h2{font-family:"Playfair Display",serif;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1;color:#073225;margin-bottom:16px}
+    .section-head p{color:#5d756b;font-size:1.02rem;line-height:1.75}
+    .grid{max-width:1255px;margin:0 auto;display:grid;gap:22px}
+    .services-grid{grid-template-columns:repeat(3,1fr)}
+    .card{
+      min-height:210px;background:#f1faf4;border:1px solid #cfe8d7;border-radius:16px;padding:28px 24px;
+      transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease
+    }
+    .card:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(12,70,46,.12);border-color:#a9d9ba}
+    .icon{width:48px;height:48px;border-radius:13px;background:#fff;display:grid;place-items:center;font-size:1.45rem;margin-bottom:18px}
+    .card h3{font-size:1.05rem;margin-bottom:10px;font-weight:900;color:#073225}
+    .card p{color:#557165;line-height:1.65;font-size:.94rem}
+    .card-link{display:inline-block;margin-top:18px;color:#006d3f;font-weight:900;font-size:.84rem}
+
+    .how{background:#eef8f1}
+    .steps{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:28px;align-items:start;text-align:center}
+    .step-num{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#fff;font-family:"Playfair Display",serif;font-size:1.2rem;font-weight:800;margin:0 auto 18px}
+    .step h3{font-size:1.05rem;font-weight:900;margin-bottom:12px}
+    .step p{color:#5d756b;line-height:1.75;font-size:.94rem}
+    .step-arrow{color:#c0dfcb;font-size:1.5rem;padding-top:14px}
+
+    .trust-grid{grid-template-columns:repeat(3,1fr)}
+    .trust .card{background:#fff}
+
+    .cta{padding:86px clamp(24px,3.5vw,48px);background:linear-gradient(135deg,#0b3f2a,#176b43);color:#fff;text-align:center}
+    .cta h2{font-family:"Playfair Display",serif;font-size:clamp(2.3rem,4vw,3.4rem);margin-bottom:16px}
+    .cta p{color:rgba(255,255,255,.82);font-size:1.05rem;margin-bottom:28px}
+    .cta .btn-primary{background:#fff;color:var(--green-dark);box-shadow:none}
+
+    footer{background:#083822;color:#fff;padding:40px clamp(24px,3.5vw,48px)}
+    .footer-inner{max-width:1255px;margin:0 auto;display:grid;grid-template-columns:1.4fr repeat(2,1fr);gap:34px}
+    .footer-logo{font-family:"Nunito",sans-serif;font-size:1.35rem;font-weight:900;margin-bottom:12px}
+    .footer-logo span{color:#45b739}
+    .footer p,.footer-col a{color:rgba(255,255,255,.72);font-size:.9rem;line-height:1.8}
+    .footer-col h4{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.58);margin-bottom:12px}
+    .footer-col a{display:block}
+
+    @media(max-width:900px){
+      .nav-links{display:none}
+      .hero-inner{grid-template-columns:1fr;gap:36px;text-align:center}
+      .hero-copy{margin:0 auto}
+      .hero p{margin-left:auto;margin-right:auto}
+      .hero-actions{justify-content:center}
+      .hero-visual{justify-self:center}
+      .services-grid,.trust-grid{grid-template-columns:1fr}
+      .steps{grid-template-columns:1fr;gap:30px}
+      .step-arrow{display:none}
+      .footer-inner{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:768px){
+      .nav{height:64px;padding:0 16px}
+      .brand-mark{width:34px;height:34px}
+      .brand-mark img{width:24px;height:24px}
+      .brand-name{font-size:1rem}
+      .nav-cta{padding:9px 13px;font-size:.78rem}
+      .hero{min-height:auto;padding:42px 18px 46px;text-align:center}
+      .hero-inner{gap:22px}
+      .badge{font-size:.67rem;margin-bottom:16px}
+      .hero h1{font-size:30px;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+      .hero p{font-size:15px;line-height:1.6;margin-bottom:22px}
+      .hero-actions{flex-direction:column;gap:12px}
+      .hero-actions .btn{width:100%;min-height:46px}
+      .hero-visual{max-width:220px;order:-1}
+      .logo-panel{padding:12px;border-radius:20px}
+      .logo-panel img{border-radius:14px}
+      section{padding:58px 18px}
+      .section-head{margin-bottom:32px}
+      .card{padding:22px;min-height:auto}
+      .cta{padding:58px 18px}
+      .footer-inner{grid-template-columns:1fr}
+    }
   </style>
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
-
-<nav>
-  <a class="nav-logo" href="#">
-    <div class="nav-logo-icon">
-      <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#60a5fa"/>
-        <circle cx="19" cy="16" r="2.8" fill="#34d399"/>
-        <circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/>
-        <circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
-    </div>
-    <span>NearServe</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#demo">Demo</a></li>
-  </ul>
-  <div class="nav-actions">
-    <button class="btn-ghost" onclick="window.location.href='login.html'">Log In</button>
-    <button class="btn-primary" onclick="window.location.href='signup.html'">Get Started →</button>
-  </div>
-</nav>
-
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-
-  <div class="hero-floaters">
-    <div class="floater fl1">
-      <span class="floater-icon">✅</span>
-      <div>
-        <div class="floater-title">Booking Confirmed</div>
-        <div class="floater-sub">Plumber · Today 3:00 PM</div>
-      </div>
-    </div>
-    <div class="floater fl2">
-      <span class="floater-icon">⭐</span>
-      <div>
-        <div class="floater-title">New Review</div>
-        <div class="floater-sub">"Excellent work, highly recommend!"</div>
-      </div>
-    </div>
-    <div class="floater fl3">
-      <span class="floater-icon">🔧</span>
-      <div>
-        <div class="floater-title">Verified Professionals</div>
-        <div class="floater-sub">Every worker is approved</div>
-      </div>
-    </div>
-    <div class="floater fl4">
-      <span class="floater-icon">⚡</span>
-      <div>
-        <div class="floater-title">Quick Booking</div>
-        <div class="floater-sub">Done in under 2 minutes</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="hero-content">
-    <div class="hero-badge">
-      <div class="badge-dot"></div>
-      Now live — Book your first service today
-    </div>
-
-    <h1>
-      Home Services,<br>
-      <span class="grad">Done Right.</span>
-    </h1>
-
-    <p>Connect with verified plumbers, electricians and carpenters. See real ratings, pick the right professional, and book in minutes.</p>
-
-    <div class="hero-cta">
-      <a class="cta-main" href="signup.html">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <line x1="19" y1="8" x2="19" y2="14"/>
-          <line x1="22" y1="11" x2="16" y2="11"/>
-        </svg>
-        Create Free Account
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+  <div class="page">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="./assets/nearserve-logo.png" alt="NearServe logo"></span>
+        <span class="brand-name">Near<span>Serve</span></span>
       </a>
-      <a class="cta-sec" href="#demo">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="5 3 19 12 5 21 5 3"/>
-        </svg>
-        Watch Demo
-      </a>
-    </div>
-  </div>
-</section>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#how">How it works</a>
+        <a href="#trust">Why NearServe</a>
+      </div>
+      <a class="nav-cta" href="login.html">Book Now</a>
+    </nav>
 
-<div class="trust-strip">
-  <span class="trust-lbl">Available for</span>
-  <div class="trust-items">
-    <div class="trust-item"><span>🔧</span> Plumbing</div>
-    <div class="trust-item"><span>⚡</span> Electrical Work</div>
-    <div class="trust-item"><span>🪚</span> Carpentry</div>
-    <div class="trust-item"><span>✅</span> 100% Verified</div>
-    <div class="trust-item"><span>🔒</span> Secure Booking</div>
-    <div class="trust-item"><span>📅</span> Instant Scheduling</div>
-  </div>
-</div>
-
-<section id="how" class="section-pad" style="max-width:1100px;margin:0 auto;">
-  <div class="reveal">
-    <div class="section-tag">⚡ Simple Process</div>
-    <h2 class="section-title">Book a Pro in<br>Under 2 Minutes</h2>
-    <p class="section-sub">No phone calls, no waiting. Just pick your service, choose a worker, and you're done.</p>
-  </div>
-  <div class="steps-grid reveal">
-    <div class="step">
-      <div class="step-num">01</div>
-      <div class="step-icon-wrap si-blue">🔍</div>
-      <h3>Choose Your Service</h3>
-      <p>Select from plumbing, electrical or carpentry — whatever your home needs right now.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <div class="step-icon-wrap si-teal">👷</div>
-      <h3>Pick a Professional</h3>
-      <p>Browse verified workers with real ratings, reviews and contact details. Find your perfect match.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <div class="step-icon-wrap si-green">📅</div>
-      <h3>Schedule It</h3>
-      <p>Choose a future date that works for you. No past dates allowed — clear and simple.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">04</div>
-      <div class="step-icon-wrap si-amber">⭐</div>
-      <h3>Review & Repeat</h3>
-      <p>After the job is done, rate your experience. Your honest reviews help others choose well.</p>
-    </div>
-  </div>
-</section>
-
-<section id="demo" class="demo-section section-pad">
-  <div class="demo-inner reveal">
-    <div class="demo-text">
-      <div class="section-tag">🎬 See It Live</div>
-      <h2>Watch How<br><em>NearServe</em> Works</h2>
-      <p>See the full booking flow — from signing up to getting your service done — in just a few minutes.</p>
-      <div class="demo-bullets">
-        <div class="demo-bullet">
-          <div class="bullet-icon">✅</div>
-          <div>Sign up as a customer or service worker in seconds</div>
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="badge"><span class="badge-dot"></span> Trusted home services in minutes</div>
+          <h1>Services Near You, Care You Deserve</h1>
+          <p>Book trusted electricians, plumbers, and carpenters in minutes.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="login.html">Book a Service</a>
+            <a class="btn btn-secondary" href="login.html">Become a Worker</a>
+          </div>
         </div>
-        <div class="demo-bullet">
-          <div class="bullet-icon">🔍</div>
-          <div>Browse and filter verified workers by service type</div>
-        </div>
-        <div class="demo-bullet">
-          <div class="bullet-icon">📅</div>
-          <div>Book instantly with date selection and address</div>
-        </div>
-        <div class="demo-bullet">
-          <div class="bullet-icon">📲</div>
-          <div>Track your booking status in real-time</div>
+        <div class="hero-visual">
+          <div class="logo-panel">
+            <img src="./assets/nearserve-logo.png" alt="NearServe brand logo">
+          </div>
         </div>
       </div>
-    </div>
-    <div class="demo-video-wrap">
-      <div class="video-container" id="videoContainer">
-        <div class="video-placeholder">
-          <div class="video-screen-mockup"></div>
-          <button class="play-btn" onclick="playDemo()">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
-              <polygon points="5 3 19 12 5 21 5 3"/>
-            </svg>
-          </button>
-          <div class="video-label">Click to watch demo · 2 min</div>
+    </header>
+
+    <section id="services">
+      <div class="section-head">
+        <span class="section-kicker">What we offer</span>
+        <h2>All Services, One Platform</h2>
+        <p>Find the right worker for everyday home service needs without unnecessary steps.</p>
+      </div>
+      <div class="grid services-grid">
+        <article class="card">
+          <div class="icon">&#9889;</div>
+          <h3>Electrician</h3>
+          <p>Wiring, repairs, installations, fans, lights, switches, and more.</p>
+          <a class="card-link" href="login.html">Book now</a>
+        </article>
+        <article class="card">
+          <div class="icon">&#128295;</div>
+          <h3>Plumber</h3>
+          <p>Pipe leaks, taps, bathroom fittings, drainage issues, and quick fixes.</p>
+          <a class="card-link" href="login.html">Book now</a>
+        </article>
+        <article class="card">
+          <div class="icon">&#129717;</div>
+          <h3>Carpenter</h3>
+          <p>Doors, shelves, fittings, small repairs, and everyday woodwork jobs.</p>
+          <a class="card-link" href="login.html">Book now</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="how" class="how">
+      <div class="section-head">
+        <span class="section-kicker">Simple process</span>
+        <h2>Get Help in 3 Easy Steps</h2>
+        <p>Choose what you need, send a request, and manage the job from NearServe.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Choose Your Service</h3>
+          <p>Select electrician, plumber, or carpenter based on your home service need.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Book a Worker</h3>
+          <p>Send the booking request and track the status from your account.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Get Work Done</h3>
+          <p>Chat, call, and complete the service workflow with less friction.</p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section id="features" class="section-pad" style="max-width:1100px;margin:0 auto;">
-  <div class="reveal" style="text-align:center;">
-    <div class="section-tag" style="margin:0 auto 16px;">🛠️ Built For You</div>
-    <h2 class="section-title">Everything You Need,<br>Nothing You Don't</h2>
-  </div>
-  <div class="features-grid reveal">
-    <div class="feature-card">
-      <div class="feat-icon" style="background:rgba(29,78,216,0.15);border:1px solid rgba(59,130,246,0.25);">🔐</div>
-      <h3>Secure Accounts</h3>
-      <p>Password protected accounts with bcrypt encryption. Your data stays private and safe.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon" style="background:rgba(13,148,136,0.15);border:1px solid rgba(20,184,166,0.25);">⭐</div>
-      <h3>Real Ratings</h3>
-      <p>Honest reviews from verified customers. No fake ratings — every star is earned honestly.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon" style="background:rgba(245,158,11,0.15);border:1px solid rgba(251,191,36,0.25);">📲</div>
-      <h3>Live Booking Status</h3>
-      <p>Track your bookings from pending to completed. Workers update job status in real-time.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon" style="background:rgba(124,58,237,0.15);border:1px solid rgba(167,139,250,0.25);">👷</div>
-      <h3>Verified Workers</h3>
-      <p>Every worker is reviewed and approved before appearing on the platform. Zero unknowns.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon" style="background:rgba(239,68,68,0.15);border:1px solid rgba(252,165,165,0.25);">📁</div>
-      <h3>Work Proof Upload</h3>
-      <p>Workers upload proof of completed jobs. You can review evidence before leaving a rating.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon" style="background:rgba(16,185,129,0.15);border:1px solid rgba(52,211,153,0.25);">🔍</div>
-      <h3>Search & Sort Workers</h3>
-      <p>Filter by name, sort by top rating or most reviews — find your best match in seconds.</p>
-    </div>
-  </div>
-</section>
-
-<section id="services" class="services-bg section-pad">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div class="reveal" style="text-align:center;">
-      <div class="section-tag" style="margin:0 auto 16px;">🏠 What We Offer</div>
-      <h2 class="section-title">Services Available<br>Right Now</h2>
-    </div>
-    <div class="services-grid reveal">
-      <div class="service-card">
-        <span class="sc-icon">🔧</span>
-        <div class="sc-name">Plumbing</div>
-        <div class="sc-count">Leaks, pipes, faucets & more</div>
+    <section id="trust" class="trust">
+      <div class="section-head">
+        <span class="section-kicker">Why NearServe</span>
+        <h2>Designed for Local Home Services</h2>
+        <p>A clean booking experience for customers and a focused workspace for workers.</p>
       </div>
-      <div class="service-card">
-        <span class="sc-icon">⚡</span>
-        <div class="sc-name">Electrical</div>
-        <div class="sc-count">Wiring, panels, fixtures</div>
+      <div class="grid trust-grid">
+        <article class="card">
+          <div class="icon">&#128737;</div>
+          <h3>Role-based workers</h3>
+          <p>Electricians, plumbers, and carpenters use dedicated request dashboards.</p>
+        </article>
+        <article class="card">
+          <div class="icon">&#128172;</div>
+          <h3>Built-in communication</h3>
+          <p>Customers and workers can use chat and call actions during the request flow.</p>
+        </article>
+        <article class="card">
+          <div class="icon">&#8634;</div>
+          <h3>Manageable bookings</h3>
+          <p>Booking status updates help keep pending, accepted, completed, and rejected jobs clear.</p>
+        </article>
       </div>
-      <div class="service-card">
-        <span class="sc-icon">🪚</span>
-        <div class="sc-name">Carpentry</div>
-        <div class="sc-count">Furniture, doors, custom work</div>
-      </div>
-      <div class="service-card" style="background:rgba(29,78,216,0.08);border-color:rgba(59,130,246,0.2);cursor:default;">
-        <span class="sc-icon">➕</span>
-        <div class="sc-name">More Coming</div>
-        <div class="sc-count">New services added regularly</div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section class="section-pad" style="max-width:1100px;margin:0 auto;">
-  <div class="reveal" style="text-align:center;">
-    <div class="section-tag" style="margin:0 auto 16px;">⭐ Reviews</div>
-    <h2 class="section-title">Be Our First Reviewer</h2>
-    <p style="color:var(--muted);font-size:1rem;line-height:1.75;max-width:500px;margin:0 auto 56px;">
-      We're just getting started — and that makes <em style="font-style:normal;color:#60a5fa;">you</em> special. Early users shape the platform. Try NearServe, share your honest experience, and help others find trusted professionals.
-    </p>
-  </div>
+    <section class="cta">
+      <h2>Ready to Get Started?</h2>
+      <p>Book a service or join NearServe as a worker.</p>
+      <a class="btn btn-primary" href="login.html">Book a Service Now →</a>
+    </section>
 
-  <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;">
-
-    <div style="background:rgba(255,255,255,0.025);border:1.5px dashed rgba(255,255,255,0.12);border-radius:18px;padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:200px;">
-      <div style="width:52px;height:52px;border-radius:50%;background:rgba(59,130,246,0.1);border:1.5px dashed rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;">👤</div>
-      <div style="color:rgba(255,255,255,0.2);font-size:1.4rem;letter-spacing:3px;">★★★★★</div>
-      <div style="color:rgba(255,255,255,0.25);font-size:0.82rem;line-height:1.6;font-style:italic;">Your review could be here.<br>Be the first to try it!</div>
-      <a href="signup.html" style="padding:8px 20px;border-radius:9px;background:rgba(29,78,216,0.2);border:1px solid rgba(59,130,246,0.3);color:#93c5fd;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(29,78,216,0.35)'" onmouseout="this.style.background='rgba(29,78,216,0.2)'">Sign up & review →</a>
-    </div>
-
-    <div style="background:linear-gradient(135deg,rgba(29,78,216,0.15),rgba(13,148,136,0.15));border:1px solid rgba(59,130,246,0.2);border-radius:18px;padding:36px 28px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;position:relative;overflow:hidden;">
-      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(59,130,246,0.08),transparent 70%);pointer-events:none;"></div>
-      <div style="font-size:2.8rem;position:relative;z-index:1;">🌟</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#fff;position:relative;z-index:1;">You Could Be First</div>
-      <p style="color:var(--muted);font-size:0.85rem;line-height:1.7;max-width:240px;position:relative;z-index:1;">Try our platform for free. Book a service, rate your experience, and your review goes live on this page.</p>
-      <div style="display:flex;flex-direction:column;gap:8px;width:100%;position:relative;z-index:1;">
-        <a href="signup.html" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:11px;border:none;background:linear-gradient(135deg,#1d4ed8,#0d9488);color:#fff;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(29,78,216,0.35);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-          Create Free Account
-        </a>
-        <p style="font-size:0.72rem;color:rgba(255,255,255,0.3);">No credit card needed · Takes 30 seconds</p>
-      </div>
-    </div>
-
-    <div style="background:rgba(255,255,255,0.025);border:1.5px dashed rgba(255,255,255,0.12);border-radius:18px;padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:200px;">
-      <div style="width:52px;height:52px;border-radius:50%;background:rgba(13,148,136,0.1);border:1.5px dashed rgba(20,184,166,0.3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;">👷</div>
-      <div style="color:rgba(255,255,255,0.2);font-size:1.4rem;letter-spacing:3px;">★★★★★</div>
-      <div style="color:rgba(255,255,255,0.25);font-size:0.82rem;line-height:1.6;font-style:italic;">Worker or customer —<br>your voice matters here.</div>
-      <a href="signup.html" style="padding:8px 20px;border-radius:9px;background:rgba(13,148,136,0.2);border:1px solid rgba(20,184,166,0.3);color:#5eead4;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.35)'" onmouseout="this.style.background='rgba(13,148,136,0.2)'">Join & share →</a>
-    </div>
-
-  </div>
-</section>
-
-<section class="cta-section">
-  <div class="section-tag" style="margin:0 auto 20px;display:inline-flex;">🚀 Join Today — It's Free</div>
-  <h2>Ready to Book Your<br><span class="grad">First Service?</span></h2>
-  <p>Create your free account and connect with a trusted professional in minutes.</p>
-  <div class="hero-cta">
-    <a class="cta-main" href="signup.html">Create Free Account →</a>
-    <a class="cta-sec" href="login.html">Already have an account? Log In</a>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      <a class="nav-logo" href="#">
-        <div class="nav-logo-icon">
-          <svg width="20" height="20" viewBox="0 0 48 48" fill="none">
-            <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-            <circle cx="12" cy="16" r="2.8" fill="#60a5fa"/>
-            <circle cx="19" cy="16" r="2.8" fill="#34d399"/>
-            <circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-            <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-            <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-            <circle cx="32" cy="26" r="1.7" fill="white"/>
-            <circle cx="37" cy="26" r="1.7" fill="white"/>
-            <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-          </svg>
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Near<span>Serve</span></div>
+          <p>Services Near You, Care You Deserve.</p>
         </div>
-        <span>NearServe</span>
-      </a>
-      <p>Connecting homeowners with trusted local professionals — fast, transparent, and reliable.</p>
-    </div>
-    <div class="footer-links">
-      <div class="footer-col">
-        <h4>Platform</h4>
-        <a href="signup.html">Sign Up Free</a>
-        <a href="login.html">Log In</a>
-        <a href="#how">How It Works</a>
-        <a href="#demo">Watch Demo</a>
-      </div>
-      <div class="footer-col">
-        <h4>Services</h4>
-        <a href="#">Plumbing</a>
-        <a href="#">Electrical</a>
-        <a href="#">Carpentry</a>
-      </div>
-      <div class="footer-col">
-        <h4>For Workers</h4>
-        <a href="signup.html">Join as Worker</a>
-        <a href="#">Worker Dashboard</a>
-        <a href="#">Upload Work Proof</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2026 NearServe. All rights reserved.</p>
-    <p>Built with ❤️ for homeowners everywhere.</p>
-  </div>
-</footer>
-
-<script>
-  function playDemo() {
-    const container = document.getElementById("videoContainer");
-    container.innerHTML = `
-      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-           background:#0a0a1a;flex-direction:column;gap:16px;padding:28px;text-align:center;">
-        <div style="font-size:3rem;">🎬</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;">Add Your Demo Video</div>
-        <div style="color:#64748b;font-size:0.82rem;line-height:1.65;max-width:290px;">
-          In the <code style="color:#34d399;">playDemo()</code> function, replace this with:<br><br>
-          <code style="color:#60a5fa;font-size:0.76rem;">&lt;iframe src="https://youtube.com/embed/VIDEO_ID?autoplay=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen&gt;&lt;/iframe&gt;</code>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <a href="#services">Electrician</a>
+          <a href="#services">Plumber</a>
+          <a href="#services">Carpenter</a>
         </div>
-      </div>`;
-  }
-
-  const reveals = document.querySelectorAll(".reveal");
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add("visible"), i * 80);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  reveals.forEach(el => observer.observe(el));
-
-  window.addEventListener("scroll", () => {
-    const nav = document.querySelector("nav");
-    nav.style.background = window.scrollY > 40 ? "rgba(2,6,23,0.95)" : "rgba(2,6,23,0.75)";
-  });
-</script>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=cloudrashmithas132@gmail.com&su=NearServe%20Help%20Center%20Request" target="_blank" rel="noopener noreferrer" class="footer-link">Help Center</a>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=cloudrashmithas132@gmail.com&su=Contact%20NearServe" target="_blank" rel="noopener noreferrer" class="footer-link">Contact Us</a>
+        </div>
+      </div>
+    </footer>
+  </div>
 </body>
 </html>

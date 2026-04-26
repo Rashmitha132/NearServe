@@ -91,8 +91,55 @@
       transform: translateY(-2px);
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
-<body>
+<body class="ns-shell-page ns-confirm-page">
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+    <span>NearServe</span>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role">Customer</div></div>
+  </div>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a class="active" href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+    <a href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+    <a href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+    <a href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+    <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+    <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong>NearServe</strong></div>
+    </div>
+    <button class="ns-mobile-book" type="button" onclick="location.href='booking.html'">+ Book</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role">Customer</div></div>
+  </div>
+  <div class="ns-mobile-trust"><span>Verified Workers</span><span>Secure Booking</span><span>Quick & Easy</span></div>
+</header>
   <div class="card">
     <div class="icon">✅</div>
     <h1>Booking Confirmed!</h1>
@@ -103,5 +150,6 @@
       <button class="secondary-btn" onclick="window.location.href='booking.html'">Book Another Service</button>
     </div>
   </div>
+  <script src="js/dashboard-shell.js"></script>
 </body>
 </html>

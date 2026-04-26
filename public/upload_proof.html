@@ -89,25 +89,22 @@
 
     @media(max-width:780px) { body{flex-direction:column;} .left-panel{width:100%;min-height:auto;padding:28px 24px;} .l-main h2{font-size:1.6rem;} .l-stats{display:none;} .fi3,.fi4,.fi5{display:none;} .right-panel{padding:28px 22px;} }
   </style>
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
 
 <div class="left-panel">
   <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">🪪</div><div class="fi fi2">🔐</div><div class="fi fi3">✅</div><div class="fi fi4">⚡</div><div class="fi fi5">🛡️</div>
+  <div class="fi fi1">ðŸªª</div><div class="fi fi2">ðŸ”</div><div class="fi fi3">âœ…</div><div class="fi fi4">âš¡</div><div class="fi fi5">ðŸ›¡ï¸</div>
 
   <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
-    </div>
-    <span>NearServe</span>
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span>NearServe</span>
   </div>
 
   <div class="l-main">
@@ -120,7 +117,7 @@
       </div>
       <div class="l-step">
         <div class="l-step-num">2</div>
-        <div class="l-step-text"><strong>Admin Review</strong><span>Our team verifies your Aadhaar within 24–48 hours.</span></div>
+        <div class="l-step-text"><strong>Admin Review</strong><span>Our team verifies your Aadhaar within 24â€“48 hours.</span></div>
       </div>
       <div class="l-step">
         <div class="l-step-num">3</div>
@@ -128,17 +125,17 @@
       </div>
       <div class="l-step">
         <div class="l-step-num">4</div>
-        <div class="l-step-text"><strong>Full Access</strong><span>Admin approves → you appear in the worker list!</span></div>
+        <div class="l-step-text"><strong>Full Access</strong><span>Admin approves â†’ you appear in the worker list!</span></div>
       </div>
     </div>
   </div>
 
   <div class="l-stats">
-    <div><div class="stat-num">🔒</div><div class="stat-lbl">Secure</div></div>
+    <div><div class="stat-num">ðŸ”’</div><div class="stat-lbl">Secure</div></div>
     <div class="sdiv"></div>
-    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified</div></div>
+    <div><div class="stat-num">âœ…</div><div class="stat-lbl">Verified</div></div>
     <div class="sdiv"></div>
-    <div><div class="stat-num">⚡</div><div class="stat-lbl">Fast Review</div></div>
+    <div><div class="stat-num">âš¡</div><div class="stat-lbl">Fast Review</div></div>
   </div>
 </div>
 
@@ -146,7 +143,7 @@
 
   <div class="fhead" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;">
     <div>
-      <h1>🪪 Aadhaar Verification</h1>
+      <h1>ðŸªª Aadhaar Verification</h1>
       <p>Upload both sides of your Aadhaar card as a single PDF to get verified.</p>
     </div>
     <button id="logoutBtn" style="display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;border:1.5px solid #fee2e2;background:#fff5f5;color:#ef4444;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s;white-space:nowrap;flex-shrink:0;">
@@ -160,7 +157,7 @@
   <div class="msg-box" id="globalMsg"></div>
 
   <div class="info-box">
-    <div class="info-box-title">📖 How to create a single PDF with both sides</div>
+    <div class="info-box-title">ðŸ“– How to create a single PDF with both sides</div>
     <div class="info-steps">
       <div class="info-step"><span>1.</span> Scan or photograph the front of your Aadhaar</div>
       <div class="info-step"><span>2.</span> Scan or photograph the back of your Aadhaar</div>
@@ -169,22 +166,22 @@
     </div>
   </div>
 
-  <div class="slbl">Aadhaar Card (Both Sides — Single PDF)</div>
+  <div class="slbl">Aadhaar Card (Both Sides â€” Single PDF)</div>
 
   <div class="upload-box" id="aadhaarBox" onclick="document.getElementById('proofFile').click()">
-    <div class="upload-box-icon">🪪</div>
+    <div class="upload-box-icon">ðŸªª</div>
     <div class="upload-box-title">Click to upload Aadhaar PDF</div>
-    <div class="upload-box-sub">Front + Back combined as one PDF · Max size 2 MB</div>
+    <div class="upload-box-sub">Front + Back combined as one PDF Â· Max size 2 MB</div>
   </div>
   <input type="file" id="proofFile" name="proof" accept="application/pdf" style="display:none">
 
   <div class="file-preview" id="preview">
-    <span class="fp-icon">📄</span>
+    <span class="fp-icon">ðŸ“„</span>
     <div>
-      <div class="fp-name" id="fileName">—</div>
-      <div class="fp-size" id="fileSize">—</div>
+      <div class="fp-name" id="fileName">â€”</div>
+      <div class="fp-size" id="fileSize">â€”</div>
     </div>
-    <button class="fp-remove" type="button" onclick="removeFile()">✕</button>
+    <button class="fp-remove" type="button" onclick="removeFile()">âœ•</button>
   </div>
 
   <div class="msg-box msg-error" id="errorMsg"></div>
@@ -285,10 +282,10 @@
     preview.classList.remove("show");
     document.getElementById("proofFile").style.display = "none";
     btn.style.display = "";
-    btn.innerHTML = "⏳ Waiting for Admin Approval";
+    btn.innerHTML = "â³ Waiting for Admin Approval";
     btn.disabled = true;
 
-    if (lbl) lbl.textContent = "📋 Aadhaar Submitted — Awaiting Admin Review";
+    if (lbl) lbl.textContent = "ðŸ“‹ Aadhaar Submitted â€” Awaiting Admin Review";
   }
 
   function setApprovedUI() {
@@ -298,14 +295,14 @@
     const preview = document.getElementById("preview");
     const lbl = document.querySelector(".slbl");
 
-    el.textContent = "✅ Aadhaar approved! Redirecting to your dashboard...";
+    el.textContent = "âœ… Aadhaar approved! Redirecting to your dashboard...";
     el.className = "msg-box msg-success show";
 
     box.style.display = "none";
     preview.classList.remove("show");
     btn.style.display = "none";
 
-    if (lbl) lbl.textContent = "✅ Aadhaar Approved";
+    if (lbl) lbl.textContent = "âœ… Aadhaar Approved";
   }
 
   function setRejectedUI(reason) {
@@ -316,7 +313,7 @@
     const preview = document.getElementById("preview");
     const lbl = document.querySelector(".slbl");
 
-    el.textContent = "❌ Your Aadhaar was rejected: " + (reason || "No reason given. Please re-upload.");
+    el.textContent = "âŒ Your Aadhaar was rejected: " + (reason || "No reason given. Please re-upload.");
     el.className = "msg-box msg-error show";
 
     box.style.display = "";
@@ -328,7 +325,7 @@
     btn.disabled = true;
     btn.innerHTML = "Re-upload Aadhaar for Verification";
 
-    if (lbl) lbl.textContent = "❌ Aadhaar Rejected — Upload Again";
+    if (lbl) lbl.textContent = "âŒ Aadhaar Rejected â€” Upload Again";
   }
 
   function enableUploadAgain() {
@@ -355,14 +352,14 @@
 
     if (!isPdf) {
       this.value = "";
-      showError("❌ Only PDF files are allowed.");
+      showError("âŒ Only PDF files are allowed.");
       document.getElementById("submitBtn").disabled = true;
       return;
     }
 
     if (file.size > MAX_SIZE) {
       this.value = "";
-      showError("❌ File too large. Maximum allowed size is 2 MB.");
+      showError("âŒ File too large. Maximum allowed size is 2 MB.");
       document.getElementById("submitBtn").disabled = true;
       return;
     }
@@ -385,12 +382,12 @@
     const file = document.getElementById("proofFile").files[0];
 
     if (!phone) {
-      showError("❌ Phone not found. Please login again.");
+      showError("âŒ Phone not found. Please login again.");
       return;
     }
 
     if (!file) {
-      showError("❌ Please select your Aadhaar PDF first.");
+      showError("âŒ Please select your Aadhaar PDF first.");
       return;
     }
 
@@ -419,7 +416,7 @@
       try { data = JSON.parse(text); } catch {}
 
       if (!res.ok) {
-        showError("❌ " + (data.error || data.message || "Upload failed. Please try again."));
+        showError("âŒ " + (data.error || data.message || "Upload failed. Please try again."));
         btn.disabled = false;
         btn.innerHTML = `
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -430,10 +427,10 @@
         return;
       }
 
-      showSuccess("✅ Aadhaar submitted successfully! Please wait for admin verification (24–48 hours). You'll get access once approved.");
+      showSuccess("âœ… Aadhaar submitted successfully! Please wait for admin verification (24â€“48 hours). You'll get access once approved.");
       setWaitingUI();
     } catch (err) {
-      showError("❌ Server not responding. Please try again.");
+      showError("âŒ Server not responding. Please try again.");
       btn.disabled = false;
       btn.innerHTML = `
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -479,7 +476,7 @@
 
       if (status === "proof_submitted") {
         const el = document.getElementById("globalMsg");
-        el.textContent = "⏳ Aadhaar already submitted. Waiting for admin verification — please check back in 24–48 hours. You cannot re-upload until admin reviews.";
+        el.textContent = "â³ Aadhaar already submitted. Waiting for admin verification â€” please check back in 24â€“48 hours. You cannot re-upload until admin reviews.";
         el.className = "msg-box msg-info show";
         setWaitingUI();
         return;

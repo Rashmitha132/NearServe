@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verification History — NearServe</title>
+  <title>Verification History â€” NearServe</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* ── TOKENS (identical to dashboard) ────────────── */
+    /* â”€â”€ TOKENS (identical to dashboard) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     :root {
       --bg:          #0d0f14;
       --surface:     #13161d;
@@ -58,7 +58,7 @@
 
     .shell { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* ── TOP NAV ─────────────────────────────────────── */
+    /* â”€â”€ TOP NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .topnav {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 32px; height: 68px;
@@ -96,10 +96,10 @@
     .nav-btn-danger { background: transparent; color: var(--red); border-color: var(--border); }
     .nav-btn-danger:hover { background: var(--red-dim); border-color: var(--red); }
 
-    /* ── MAIN ────────────────────────────────────────── */
+    /* â”€â”€ MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     main { flex: 1; padding: 36px 32px; max-width: 1400px; width: 100%; margin: 0 auto; }
 
-    /* ── PAGE HEADER ─────────────────────────────────── */
+    /* â”€â”€ PAGE HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .page-header { margin-bottom: 28px; animation: fadeUp .45s ease both; }
     .page-header h1 {
       font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
@@ -107,7 +107,7 @@
     }
     .page-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
 
-    /* ── FILTER BAR ──────────────────────────────────── */
+    /* â”€â”€ FILTER BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .filter-bar {
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
       margin-bottom: 20px;
@@ -147,7 +147,7 @@
     }
     .record-count span { color: var(--text); font-weight: 600; }
 
-    /* ── TABLE CARD ──────────────────────────────────── */
+    /* â”€â”€ TABLE CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .table-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -222,7 +222,7 @@
     .td-reason { max-width: 260px; white-space: normal; font-size: 12.5px; color: var(--text-muted); }
     .td-reason.na { color: var(--border-hi); font-style: italic; }
 
-    /* ── EMPTY / LOADING ─────────────────────────────── */
+    /* â”€â”€ EMPTY / LOADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .state-row td {
       padding: 48px 20px; text-align: center;
     }
@@ -238,7 +238,7 @@
       animation: spin .7s linear infinite;
     }
 
-    /* ── TABLE FOOTER ────────────────────────────────── */
+    /* â”€â”€ TABLE FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .table-footer {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 18px;
@@ -247,7 +247,7 @@
       font-size: 12.5px; color: var(--text-muted);
     }
 
-    /* ── KEYFRAMES ───────────────────────────────────── */
+    /* â”€â”€ KEYFRAMES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -256,7 +256,7 @@
       to { transform: rotate(360deg); }
     }
 
-    /* ── SCROLLBAR ───────────────────────────────────── */
+    /* â”€â”€ SCROLLBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 20px; }
@@ -269,15 +269,22 @@
       .record-count { margin-left: 0; }
     }
   </style>
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
 
 <div class="shell">
 
   <!-- TOP NAV -->
   <nav class="topnav">
     <a class="brand" href="admin_dashboard.html">
-      <div class="brand-icon"><i class="fa-solid fa-location-dot"></i></div>
+      <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
       <span class="brand-name">Near<span>Serve</span></span>
       <span class="badge-admin">Admin</span>
     </a>
@@ -305,7 +312,7 @@
     <div class="filter-bar" id="filterBar" style="display:none;">
       <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Search phone, role, reason…">
+        <input type="text" id="searchInput" placeholder="Search phone, role, reasonâ€¦">
       </div>
 
       <div class="filter-group">
@@ -348,7 +355,7 @@
               <td colspan="6">
                 <div class="state-inner">
                   <div class="spinner"></div>
-                  <p>Loading history…</p>
+                  <p>Loading historyâ€¦</p>
                 </div>
               </td>
             </tr>
@@ -356,7 +363,7 @@
         </table>
       </div>
       <div class="table-footer" id="tableFooter" style="display:none;">
-        <span id="footerText">–</span>
+        <span id="footerText">â€“</span>
         <span style="color:var(--accent);font-weight:600;">NearServe Admin</span>
       </div>
     </div>
@@ -365,7 +372,7 @@
 </div>
 
 <script>
-/* ── AUTH ──────────────────────────────────────────── */
+/* â”€â”€ AUTH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const API_BASE = "/api";
 const token    = localStorage.getItem("adminToken");
 if (!token) window.location.href = "admin_login.html";
@@ -375,13 +382,13 @@ document.getElementById("adminLogout").addEventListener("click", () => {
   window.location.href = "admin_login.html";
 });
 
-/* ── HELPERS ───────────────────────────────────────── */
+/* â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function fmtDate(iso) {
   try {
     const d = new Date(iso);
     return d.toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })
-      + " · " + d.toLocaleTimeString("en-IN", { hour:"2-digit", minute:"2-digit" });
-  } catch { return iso || "–"; }
+      + " Â· " + d.toLocaleTimeString("en-IN", { hour:"2-digit", minute:"2-digit" });
+  } catch { return iso || "â€“"; }
 }
 
 async function api(url, options = {}) {
@@ -396,7 +403,7 @@ async function api(url, options = {}) {
   return data;
 }
 
-/* ── STATE ─────────────────────────────────────────── */
+/* â”€â”€ STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let allLogs = [];
 
 function renderRows(logs) {
@@ -431,11 +438,11 @@ function renderRows(logs) {
             <i class="fa-solid ${typeIcon}"></i> ${typeLabel}
           </span>
         </td>
-        <td class="td-phone">${l.workerPhone || "–"}</td>
+        <td class="td-phone">${l.workerPhone || "â€“"}</td>
         <td>
           <span class="role-chip">
             <i class="fa-solid fa-screwdriver-wrench" style="font-size:9px;"></i>
-            ${l.workerRole || "–"}
+            ${l.workerRole || "â€“"}
           </span>
         </td>
         <td>
@@ -444,12 +451,12 @@ function renderRows(logs) {
             ${isApproved ? "Approved" : "Rejected"}
           </span>
         </td>
-        <td class="td-reason ${!l.reason ? "na" : ""}">${l.reason || "–"}</td>
+        <td class="td-reason ${!l.reason ? "na" : ""}">${l.reason || "â€“"}</td>
       </tr>`;
   }).join("");
 
   document.getElementById("countNum").textContent = logs.length;
-  document.getElementById("footerText").textContent = `${logs.length} record${logs.length !== 1 ? "s" : ""} · Last updated ${new Date().toLocaleTimeString()}`;
+  document.getElementById("footerText").textContent = `${logs.length} record${logs.length !== 1 ? "s" : ""} Â· Last updated ${new Date().toLocaleTimeString()}`;
 }
 
 function applyFilters() {
@@ -467,7 +474,7 @@ function applyFilters() {
   renderRows(filtered);
 }
 
-/* ── LOAD ──────────────────────────────────────────── */
+/* â”€â”€ LOAD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 async function loadHistory() {
   try {
     const data = await api("/admin/history");

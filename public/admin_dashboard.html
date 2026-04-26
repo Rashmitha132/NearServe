@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard — NearServe</title>
+  <title>Admin Dashboard â€” NearServe</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* ── TOKENS ──────────────────────────────────────── */
+    /* â”€â”€ TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     :root {
       --bg:          #0d0f14;
       --surface:     #13161d;
@@ -35,7 +35,7 @@
       --shadow-card: 0 8px 40px rgba(0,0,0,.6);
     }
 
-    /* ── RESET ───────────────────────────────────────── */
+    /* â”€â”€ RESET â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
@@ -48,7 +48,7 @@
       overflow-x: hidden;
     }
 
-    /* ── BACKGROUND TEXTURE ──────────────────────────── */
+    /* â”€â”€ BACKGROUND TEXTURE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -59,14 +59,14 @@
       z-index: 0;
     }
 
-    /* ── LAYOUT ──────────────────────────────────────── */
+    /* â”€â”€ LAYOUT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .shell {
       position: relative; z-index: 1;
       display: flex; flex-direction: column;
       min-height: 100vh;
     }
 
-    /* ── TOP NAV ─────────────────────────────────────── */
+    /* â”€â”€ TOP NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .topnav {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 32px;
@@ -152,7 +152,7 @@
       border-color: var(--red);
     }
 
-    /* ── MAIN ────────────────────────────────────────── */
+    /* â”€â”€ MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     main {
       flex: 1;
       padding: 36px 32px;
@@ -161,7 +161,7 @@
       margin: 0 auto;
     }
 
-    /* ── PAGE HEADER ─────────────────────────────────── */
+    /* â”€â”€ PAGE HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .page-header {
       margin-bottom: 32px;
       animation: fadeUp .5s ease both;
@@ -178,7 +178,7 @@
       color: var(--text-muted); font-size: 14px; margin-top: 4px;
     }
 
-    /* ── STAT STRIP ──────────────────────────────────── */
+    /* â”€â”€ STAT STRIP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .stat-strip {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -221,7 +221,7 @@
     }
     .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
 
-    /* ── PANEL GRID ──────────────────────────────────── */
+    /* â”€â”€ PANEL GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .panel-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -233,7 +233,7 @@
       .panel-grid { grid-template-columns: 1fr; }
     }
 
-    /* ── VERIFY PANEL ────────────────────────────────── */
+    /* â”€â”€ VERIFY PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .verify-panel {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -275,10 +275,10 @@
       max-height: 520px;
     }
 
-    /* ── VERIFY LIST ─────────────────────────────────── */
+    /* â”€â”€ VERIFY LIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .verify-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
 
-    /* ── ITEM CARD ───────────────────────────────────── */
+    /* â”€â”€ ITEM CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .item {
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -382,7 +382,7 @@
       box-shadow: 0 0 12px rgba(239,68,68,.2);
     }
 
-    /* ── VIDEO PREVIEW ───────────────────────────────── */
+    /* â”€â”€ VIDEO PREVIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .video-wrap {
       margin-top: 10px;
       border-radius: var(--radius-sm);
@@ -401,7 +401,7 @@
     }
     .video-link:hover { text-decoration: underline; }
 
-    /* ── EMPTY STATE ─────────────────────────────────── */
+    /* â”€â”€ EMPTY STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .empty-state {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; padding: 40px 20px; gap: 10px;
@@ -410,12 +410,12 @@
     .empty-state i { font-size: 30px; opacity: .35; }
     .empty-state p { font-size: 13.5px; }
 
-    /* ── DIVIDER ─────────────────────────────────────── */
+    /* â”€â”€ DIVIDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .divider {
       height: 1px; background: var(--border); margin: 0 24px;
     }
 
-    /* ── TOAST ───────────────────────────────────────── */
+    /* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     #toast {
       position: fixed; bottom: 28px; right: 28px; z-index: 9999;
       display: flex; flex-direction: column; gap: 10px;
@@ -437,7 +437,7 @@
     .toast-msg.success i { color: var(--green); }
     .toast-msg.error   i { color: var(--red); }
 
-    /* ── MODAL (reject reason) ───────────────────────── */
+    /* â”€â”€ MODAL (reject reason) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 1000;
       background: rgba(0,0,0,.75);
@@ -477,7 +477,7 @@
 
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
 
-    /* ── KEYFRAMES ───────────────────────────────────── */
+    /* â”€â”€ KEYFRAMES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -490,27 +490,34 @@
       to   { opacity: 1; transform: translateX(0); }
     }
 
-    /* ── SCROLLBAR ───────────────────────────────────── */
+    /* â”€â”€ SCROLLBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 20px; }
 
-    /* ── RESPONSIVE NAV ──────────────────────────────── */
+    /* â”€â”€ RESPONSIVE NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     @media (max-width: 600px) {
       .topnav { padding: 0 16px; }
       main    { padding: 24px 16px; }
       .badge-admin { display: none; }
     }
   </style>
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
 
 <div class="shell">
 
-  <!-- ── TOP NAV ─────────────────────────────────────── -->
+  <!-- â”€â”€ TOP NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <nav class="topnav">
     <a class="brand" href="#">
-      <div class="brand-icon"><i class="fa-solid fa-location-dot"></i></div>
+      <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
       <span class="brand-name">Near<span>Serve</span></span>
       <span class="badge-admin">Admin</span>
     </a>
@@ -528,7 +535,7 @@
     </div>
   </nav>
 
-  <!-- ── MAIN ──────────────────────────────────────────── -->
+  <!-- â”€â”€ MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <main>
 
     <!-- Page Title -->
@@ -542,14 +549,14 @@
       <div class="stat-card">
         <div class="stat-icon orange"><i class="fa-solid fa-file-pdf"></i></div>
         <div class="stat-info">
-          <div class="stat-num" id="statPending">–</div>
+          <div class="stat-num" id="statPending">â€“</div>
           <div class="stat-label">Pending Proofs</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon teal"><i class="fa-solid fa-video"></i></div>
         <div class="stat-info">
-          <div class="stat-num" id="statVideos">–</div>
+          <div class="stat-num" id="statVideos">â€“</div>
           <div class="stat-label">Pending Videos</div>
         </div>
       </div>
@@ -604,15 +611,15 @@
   </main>
 </div>
 
-<!-- ── TOAST CONTAINER ──────────────────────────────── -->
+<!-- â”€â”€ TOAST CONTAINER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="toast"></div>
 
-<!-- ── REJECT MODAL ─────────────────────────────────── -->
+<!-- â”€â”€ REJECT MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="modal-overlay hidden" id="rejectModal">
   <div class="modal-box">
     <h3><i class="fa-solid fa-circle-xmark" style="color:var(--red);margin-right:8px;"></i>Reject Submission</h3>
     <p id="rejectModalLabel">Please provide a reason for rejection. This will be sent to the worker.</p>
-    <textarea class="modal-textarea" id="rejectReason" placeholder="Enter reason…"></textarea>
+    <textarea class="modal-textarea" id="rejectReason" placeholder="Enter reasonâ€¦"></textarea>
     <div class="modal-actions">
       <button class="nav-btn nav-btn-ghost" id="rejectCancel">Cancel</button>
       <button class="btn btn-danger" id="rejectConfirm" style="padding:8px 18px;">
@@ -623,17 +630,12 @@
 </div>
 
 <script>
-/* ── TOAST ────────────────────────────────────────────── */
-function showToast(msg, type = "success") {
-  const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
-  const el = document.createElement("div");
-  el.className = `toast-msg ${type}`;
-  el.innerHTML = `<i class="fa-solid ${icon}"></i> ${msg}`;
-  document.getElementById("toast").appendChild(el);
-  setTimeout(() => el.remove(), 3600);
+/* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+function showToast(msg, type = "error") {
+  window.nearServeToast(msg, type);
 }
 
-/* ── MODAL (replaces native prompt) ───────────────────── */
+/* â”€â”€ MODAL (replaces native prompt) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let _rejectResolve = null;
 
 function askRejectReason(label) {
@@ -662,7 +664,7 @@ document.getElementById("rejectConfirm").addEventListener("click", () => {
   if (_rejectResolve) _rejectResolve(reason);
 });
 
-/* ── COUNTERS ────────────────────────────────────────── */
+/* â”€â”€ COUNTERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let sessionApproved = 0;
 let sessionRejected = 0;
 
@@ -674,7 +676,7 @@ function updateStats(pending, videos) {
 }
 </script>
 
-<!-- ── MAIN DASHBOARD LOGIC ─────────────────────────── -->
+<!-- â”€â”€ MAIN DASHBOARD LOGIC â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <script>
 const API_BASE = "/api";
 const token = localStorage.getItem("adminToken");
@@ -732,7 +734,7 @@ function statusClass(s) {
   return "pending";
 }
 
-/* ── A) Workers ─────────────────────────────────────── */
+/* â”€â”€ A) Workers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 async function loadWorkers() {
   workerList.innerHTML = "";
   const data    = await api("/admin/workers");
@@ -810,7 +812,7 @@ async function loadWorkers() {
   return workers.length;
 }
 
-/* ── B) Jobs ────────────────────────────────────────── */
+/* â”€â”€ B) Jobs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 async function loadJobs() {
   jobList.innerHTML = "";
   const data = await api("/admin/submitted-jobs");
@@ -830,7 +832,7 @@ async function loadJobs() {
     li.className = "item";
     const videoUrl  = toUploadsUrl(j.videoProofPath);
     const videoType = guessVideoType(videoUrl);
-    const jobTitle  = j.description || `Video proof — ${j.jobType} job`;
+    const jobTitle  = j.description || `Video proof â€” ${j.jobType} job`;
     const sc = statusClass(j.status);
 
     li.innerHTML = `
@@ -898,7 +900,7 @@ async function loadJobs() {
   return jobs.length;
 }
 
-/* ── Load All ───────────────────────────────────────── */
+/* â”€â”€ Load All â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 async function loadAll() {
   try {
     const [wCount, jCount] = await Promise.all([loadWorkers(), loadJobs()]);

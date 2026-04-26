@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile - NearServe Worker</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -27,170 +28,175 @@
   }
 
   .left-panel {
-    width: 380px; min-height: 100vh;
-    background: linear-gradient(160deg, #0f4c81 0%, #1565c0 30%, #0d7a70 70%, #0d9488 100%);
+    width: 200px; min-height: 100vh;
+    background: #123f29;
     position: fixed; top: 0; left: 0; bottom: 0;
     display: flex; flex-direction: column;
     justify-content: space-between;
-    padding: 44px 38px;
+    padding: 16px 12px;
     overflow: hidden; z-index: 10;
     flex-shrink: 0;
+    color: #fff;
   }
-  .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
-  .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
-
-  .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.08); }
-  .r1{width:160px;height:160px;top:35%;right:-40px;}
-  .r2{width:90px;height:90px;top:58%;right:36px;border-color:rgba(255,255,255,0.05);}
-  .r3{width:60px;height:60px;top:15%;left:20px;border-color:rgba(255,255,255,0.06);}
-
-  .fi { position:absolute; width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(0,0,0,0.15); animation:bob ease-in-out infinite alternate; }
-  .fi1{top:15%;left:8%;animation-duration:3.2s;}
-  .fi2{top:38%;right:10%;animation-duration:2.8s;animation-delay:0.5s;}
-  .fi3{top:60%;left:14%;animation-duration:3.6s;animation-delay:1s;}
-  .fi4{top:75%;right:16%;animation-duration:2.5s;animation-delay:0.3s;}
-  @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-12px) rotate(3deg);} }
-
-  .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:11px; }
-  .l-logo-icon { width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
-  .l-logo span { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; }
-
-  .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:28px 0; }
-  .l-main h2 { font-family:'Nunito',sans-serif; font-size:2.2rem; font-weight:900; color:#fff; line-height:1.25; margin-bottom:14px; }
-  .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .l-main p { color:rgba(255,255,255,0.65); font-size:0.92rem; line-height:1.75; margin-bottom:26px; }
-
-  .l-steps { display:flex; flex-direction:column; gap:11px; margin-bottom:22px; }
-  .l-step { display:flex; align-items:flex-start; gap:10px; }
-  .l-step-icon { width:32px; height:32px; border-radius:9px; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:1px; }
-  .l-step-text strong { display:block; font-size:0.88rem; font-weight:700; color:#fff; margin-bottom:2px; }
-  .l-step-text span { font-size:0.78rem; color:rgba(255,255,255,0.55); line-height:1.4; }
-
-  .l-stats { position:relative; z-index:2; display:flex; gap:18px; align-items:center; }
-  .stat-num { font-family:'Nunito',sans-serif; font-size:1.55rem; font-weight:900; color:#fff; }
-  .stat-lbl { font-size:0.68rem; color:rgba(255,255,255,0.55); }
-  .sdiv { width:1px; background:rgba(255,255,255,0.2); height:32px; }
+  .side-top, .side-bottom { display:flex; flex-direction:column; gap:18px; }
+  .side-brand { display:flex; align-items:center; gap:9px; font-family:'Nunito',sans-serif; font-weight:900; font-size:0.9rem; }
+  .side-brand-mark, .side-avatar { display:flex; align-items:center; justify-content:center; border-radius:50%; background:linear-gradient(135deg,#1f6f4a,#14532d); color:#fff; font-family:'Nunito',sans-serif; font-weight:900; }
+  .side-brand-mark { width:28px; height:28px; font-size:0.82rem; }
+  .side-user { display:flex; align-items:center; gap:10px; padding:8px 10px; background:rgba(255,255,255,0.12); border-radius:8px; }
+  .side-avatar { width:44px; height:44px; font-size:1rem; flex-shrink:0; overflow:hidden; }
+  .side-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  .side-name { font-size:0.78rem; font-weight:800; line-height:1.2; }
+  .side-role { font-size:0.7rem; color:#c9ded2; margin-top:2px; }
+  .side-nav { display:flex; flex-direction:column; gap:10px; }
+  .side-nav a { display:flex; align-items:center; gap:7px; padding:10px 12px; border-radius:7px; color:#fff; text-decoration:none; font-size:0.78rem; font-weight:800; transition:background 0.2s; }
+  .side-nav a:hover, .side-nav a.active { background:#2d7652; }
+  .side-info { background:rgba(255,255,255,0.1); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:7px; color:#d9eadf; font-size:0.68rem; line-height:1.35; }
+  .left-panel > .deco-ring,
+  .left-panel > .fi,
+  .left-panel > .l-logo,
+  .left-panel > .l-main,
+  .left-panel > .l-stats { display:none; }
 
   .right-panel {
-    margin-left: 380px;
+    margin-left: 200px;
     flex: 1; min-height: 100vh;
-    padding: 40px 44px;
+    padding: 14px 14px 14px;
     overflow-y: auto;
   }
 
   .topbar {
     display: flex; align-items: center;
     justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:0;
+    margin-bottom: 14px;
+    padding: 10px 14px;
     border-bottom: 1.5px solid var(--border);
     flex-wrap: wrap; gap: 14px;
   }
   .topbar-left { display:flex; align-items:center; gap:12px; }
   .back-btn {
-    width: 40px; height: 40px; border-radius: 10px;
+    width: 28px; height: 28px; border-radius: 5px;
     border: 1.5px solid var(--border); background: #fff;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     font-size: 1rem; color: var(--mid);
     transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .back-btn:hover { background: var(--border); transform: translateX(-2px); }
-  .page-title { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; color:var(--dark); }
+  .page-title { font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:900; color:#111827; }
 
   .logout-btn {
     display: flex; align-items: center; gap: 6px;
-    padding: 10px 16px; border-radius: 10px;
+    padding: 6px 10px; border-radius: 5px;
     border: 1.5px solid #fee2e2; background: #fff5f5;
-    color: #ef4444; font-size: 0.85rem; font-weight: 600;
+    color: #ef4444; font-size: 0.72rem; font-weight: 700;
     cursor: pointer; transition: all 0.2s;
   }
   .logout-btn:hover { background: #fee2e2; transform: translateY(-1px); }
 
+  .profile-layout,
   .profile-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 22px;
+    grid-template-columns: 260px minmax(0, 1fr);
+    column-gap: 40px;
+    gap: 20px 40px;
     margin-bottom: 24px;
     align-items: start;
   }
-  .left-col { display:flex; flex-direction:column; gap:18px; }
+  .left-profile-column,
+  .left-col {
+    width: 260px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
 
   .profile-card {
-    background: #fff; border-radius: 18px;
-    padding: 24px; text-align: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    border: 1.5px solid var(--border);
+    background: #fff; border-radius: 8px;
+    padding: 14px; text-align: center;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
     position: relative; overflow: hidden;
     align-self: start;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .profile-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0;
-    height: 4px; background: linear-gradient(90deg, #2563eb, #0d9488);
-  }
+  .profile-card::before { display:none; }
 
-  .avatar-wrapper { position:relative; width:100px; height:100px; margin:14px auto 14px; }
+  .avatar-wrapper { position:relative; width:58px; height:58px; margin:0 auto 10px; }
   .avatar { width:100%; height:100%; border-radius:50%; }
   .avatar-img { object-fit:cover; display:block; }
-  .avatar-fallback { background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:2.5rem; font-weight:900; color:#fff; box-shadow:0 6px 20px rgba(37,99,235,0.3); }
+  .avatar-fallback { background:linear-gradient(135deg,#1f6f4a,#14532d); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.45rem; font-weight:900; color:#fff; box-shadow:none; }
   .hidden { display:none !important; }
 
-  .avatar-buttons { display:flex; gap:8px; justify-content:center; margin-top:10px; }
-  .avatar-edit-btn, .avatar-remove-btn { width:34px; height:34px; border-radius:50%; border:none; color:#fff; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
-  .avatar-edit-btn { background:var(--blue); }
-  .avatar-edit-btn:hover { background:#1d4ed8; transform:scale(1.1); }
-  .avatar-remove-btn { background:#ef4444; }
-  .avatar-remove-btn:hover { background:#dc2626; transform:scale(1.1); }
+  .avatar-buttons { display:flex; gap:8px; justify-content:center; margin-top:7px; }
+  .avatar-edit-btn, .avatar-remove-btn { width:24px; height:24px; border-radius:50%; border:none; color:#1f2937; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:none; }
+  .avatar-edit-btn { background:#dbeafe; }
+  .avatar-edit-btn:hover { background:#bfdbfe; transform:scale(1.05); }
+  .avatar-remove-btn { background:#fce7f3; }
+  .avatar-remove-btn:hover { background:#fbcfe8; transform:scale(1.05); }
   .avatar-upload-input { display:none; }
 
-  .profile-name { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:var(--dark); margin-bottom:3px; }
-  .profile-role { font-size:0.82rem; color:var(--soft); margin-bottom:14px; }
+  .profile-name { font-family:'Nunito',sans-serif; font-size:0.86rem; font-weight:900; color:#111827; margin-bottom:3px; }
+  .profile-role { font-size:0.72rem; color:#6b7280; margin-bottom:10px; }
 
-  .profile-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; padding-top:14px; border-top:1.5px solid var(--border); }
+  .profile-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; padding-top:10px; border-top:1px solid #e5e7eb; }
   .stat-item { text-align:center; }
-  .stat-num-val { font-family:'Nunito',sans-serif; font-size:1.25rem; font-weight:900; color:var(--blue); }
-  .stat-label { font-size:0.68rem; color:var(--soft); margin-top:3px; font-weight:600; }
+  .stat-num-val { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; color:#166534; }
+  .stat-label { font-size:0.58rem; color:#6b7280; margin-top:2px; font-weight:600; }
 
-  .form-sections { display:flex; flex-direction:column; gap:20px; }
+  .forms-grid,
+  .form-sections {
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
+    gap:20px;
+    align-items:start;
+    width:100%;
+  }
 
   .form-section {
-    background: #fff; border-radius: 18px;
-    padding: 22px 24px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-    border: 1.5px solid var(--border);
+    background: #fff; border-radius: 8px;
+    padding: 16px 14px 14px;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
     position: relative; overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
   }
+  .personal-info { grid-column:auto; }
   .form-section::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0;
-    height: 4px; background: linear-gradient(90deg, #2563eb, #0d9488);
+    height: 3px; background: #166534;
   }
 
-  .section-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-  .section-icon { font-size:1.1rem; }
+  .section-title { font-family:'Nunito',sans-serif; font-size:0.82rem; font-weight:900; color:#111827; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .section-icon { font-size:0.82rem; }
 
-  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:7px; }
   .form-row.full { grid-template-columns:1fr; }
   .form-group { display:flex; flex-direction:column; }
 
-  .form-label { font-size:0.72rem; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:7px; }
+  .form-label { font-size:0.62rem; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:0; margin-bottom:3px; }
 
   .form-input, .form-select, .form-textarea {
-    padding: 11px 14px; border: 1.5px solid var(--border);
-    border-radius: 11px; background: #fafcff;
+    padding: 6px 9px; border: 1px solid #d1d5db;
+    border-radius: 5px; background: #fff;
     color: var(--dark); font-family:'Plus Jakarta Sans',sans-serif;
-    font-size: 0.88rem; outline: none; transition: all 0.25s;
+    font-size: 0.72rem; outline: none; transition: all 0.25s;
   }
   .form-input:focus, .form-select:focus, .form-textarea:focus {
     border-color: #93c5fd; background: #fff;
     box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
   }
   .form-input:disabled { background:#f1f5f9; color:var(--soft); cursor:not-allowed; }
-  .form-textarea { resize:vertical; min-height:80px; font-family:'Plus Jakarta Sans',sans-serif; }
+  .form-textarea { resize:vertical; min-height:46px; font-family:'Plus Jakarta Sans',sans-serif; }
   .form-select { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat:no-repeat; background-position:right 10px center; background-size:20px; padding-right:35px; }
 
-  .btn-group { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px; }
-  .btn-save { padding:12px; border:none; border-radius:11px; background:linear-gradient(135deg,#1d4ed8,#0d9488); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 14px rgba(29,78,216,0.28); }
-  .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(29,78,216,0.38); }
-  .btn-cancel { padding:12px; border:1.5px solid var(--border); border-radius:11px; background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+  .btn-group { display:grid; grid-template-columns:1.4fr 0.75fr; gap:6px; margin-top:6px; }
+  .btn-save { padding:8px; border:none; border-radius:5px; background:#16703f; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.72rem; font-weight:800; cursor:pointer; transition:all 0.2s; box-shadow:none; }
+  .btn-save:hover { transform:translateY(-1px); box-shadow:none; background:#145f37; }
+  .btn-cancel { padding:8px; border:1px solid #d1d5db; border-radius:5px; background:#fff; color:#374151; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.72rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
   .btn-cancel:hover { background:var(--border); transform:translateY(-1px); }
 
   .toast { position:fixed; bottom:28px; right:28px; padding:12px 18px; border-radius:12px; background:var(--dark); color:#fff; font-size:0.85rem; font-weight:600; box-shadow:0 8px 28px rgba(0,0,0,0.25); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.35s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
@@ -198,8 +204,9 @@
   .toast.success { background:linear-gradient(135deg,var(--success),var(--teal)); }
   .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
 
-  .mini-reviews-card { background:#fff; border-radius:18px; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.06); border:1.5px solid var(--border); position:relative; overflow:hidden; }
-  .mini-reviews-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#f59e0b,#d97706); }
+  .reviews-card,
+  .mini-reviews-card { background:#fff; border-radius:8px; padding:14px; box-shadow:none; border:1px solid #e5e7eb; position:relative; overflow:hidden; min-height:332px; width:100%; box-sizing:border-box; }
+  .mini-reviews-card::before { display:none; }
   .mini-rating-top { display:flex; align-items:center; gap:14px; margin-bottom:16px; padding-bottom:14px; border-bottom:1.5px solid var(--border); }
   .mini-rating-num { font-family:'Nunito',sans-serif; font-size:2.8rem; font-weight:900; color:#d97706; line-height:1; }
   .mini-rating-right { flex:1; }
@@ -210,7 +217,21 @@
   .mini-review-item:last-child { border-bottom:none; padding-bottom:0; }
   .mini-review-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
   .mini-review-user { display:flex; align-items:center; gap:7px; }
-  .mini-avatar { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:0.75rem; font-weight:900; color:#fff; flex-shrink:0; }
+  .review-avatar,
+  .mini-avatar {
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#1f6f4a,#14532d);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Nunito',sans-serif;
+    font-size:0.75rem;
+    font-weight:bold;
+    flex-shrink:0;
+  }
   .mini-name { font-size:0.8rem; font-weight:700; color:var(--dark); }
   .mini-date { font-size:0.68rem; color:var(--soft); }
   .mini-stars-small { display:flex; gap:1px; }
@@ -219,63 +240,314 @@
   .mini-no-reviews { text-align:center; padding:20px 10px; }
   .mini-no-icon { font-size:2rem; margin-bottom:8px; }
   .mini-no-text { font-size:0.82rem; color:var(--soft); font-weight:600; }
-  .mini-section-title { font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:900; color:var(--dark); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+  .mini-section-title { font-family:'Nunito',sans-serif; font-size:0.78rem; font-weight:900; color:#111827; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
   .mini-section-title span { font-size:0.7rem; color:var(--soft); font-weight:600; }
 
-  @media(max-width:960px) { .left-panel{display:none;} .right-panel{margin-left:0; padding:24px 18px;} }
-  @media(max-width:700px) { .profile-grid{grid-template-columns:1fr;} .form-row{grid-template-columns:1fr;} .btn-group{grid-template-columns:1fr;} }
+  @media(max-width:960px) { .left-panel{display:none;} .right-panel{margin-left:0; padding:14px;} .profile-grid{grid-template-columns:220px minmax(0,1fr);} }
+  @media(max-width:768px) { .profile-layout,.profile-grid{grid-template-columns:1fr;column-gap:0;gap:12px;} .left-profile-column,.left-col{width:100%;} .forms-grid,.form-sections{display:flex;flex-direction:column;} .personal-info{grid-column:auto;} .form-row{grid-template-columns:1fr;} .btn-group{grid-template-columns:1fr;} }
+  .left-panel { display:none !important; }
+  .right-panel { margin-left:250px; }
 </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <style>
+    .mobile-profile-header{display:none}
+    .ns-sidebar-backdrop{display:none}
+    @media (max-width:768px){
+      html,body{width:100%;min-height:100%;overflow-x:hidden}
+      body{display:block;background:#fff;padding:0}
+      .ns-sidebar{width:min(82vw,280px);transform:translateX(-110%);z-index:9500}
+      .ns-sidebar.open{transform:translateX(0);box-shadow:22px 0 44px rgba(15,23,42,.25)}
+      .ns-sidebar-close{display:grid;place-items:center}
+      .ns-sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(5,20,10,.42);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:9400}
+      .ns-sidebar-backdrop.show{opacity:1;pointer-events:auto}
+      .right-panel{margin-left:0;padding:0 0 18px;min-height:100vh;background:#eef1f2}
+      .topbar{display:none}
+      .mobile-profile-header{display:flex;flex-direction:column;align-items:center;position:relative;background:#123f29;color:#fff;padding:58px 16px 18px;margin:14px 16px 0;border-radius:14px 14px 0 0;min-height:255px}
+      .mobile-profile-header{
+        background:linear-gradient(135deg,#0f3d2e,#1f6f4a);
+        border-radius:16px;
+        overflow:hidden;
+      }
+      .mobile-profile-header::before{
+        content:"";
+        position:absolute;
+        top:-60px;
+        right:-60px;
+        width:180px;
+        height:180px;
+        background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);
+        border-radius:50%;
+        pointer-events:none;
+      }
+      .mobile-profile-header::after{
+        content:"";
+        position:absolute;
+        bottom:-80px;
+        left:-80px;
+        width:220px;
+        height:220px;
+        background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);
+        border-radius:50%;
+        pointer-events:none;
+      }
+      .mobile-profile-header > *{position:relative;z-index:1}
+      .mobile-menu-btn{position:absolute;top:13px;left:13px;width:26px;height:26px;border:0;background:transparent;color:#fff;font-size:1.1rem;display:grid;place-items:center}
+      .mobile-logout-btn{position:absolute;top:11px;right:14px;border:1px solid #ffb2a8;background:transparent;color:#fff;border-radius:5px;padding:5px 9px;font-size:.66rem;font-weight:800;line-height:1}
+      .mobile-brand{position:absolute;top:12px;left:43px;display:flex;align-items:center;gap:8px;max-width:calc(100% - 130px)}
+      .mobile-logo{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:0 0 32px}
+      .mobile-brand-name{font-family:'Nunito',sans-serif;font-weight:700;color:#fff;font-size:.82rem;line-height:1}
+      .mobile-tagline{font-size:10px;color:rgba(255,255,255,.8);line-height:1.1;margin-top:3px;white-space:normal}
+      .mobile-avatar-area{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:10px}
+      .mobile-avatar{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#1f6f4a,#14532d);border:3px solid rgba(255,255,255,.30);font-family:'Nunito',sans-serif;font-size:1.45rem;font-weight:900;overflow:hidden;margin-bottom:0;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+      .mobile-avatar img{width:100%;height:100%;object-fit:cover}
+      .mobile-name{font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:900;line-height:1.1;margin-top:6px}
+      .mobile-role{font-size:.72rem;color:#cce7d5;margin-top:6px}
+      .mobile-role::before{content:"";display:inline-block;width:6px;height:10px;background:#f97316;clip-path:polygon(45% 0,100% 0,62% 42%,100% 42%,30% 100%,48% 53%,0 53%);margin-right:6px;vertical-align:-1px}
+      .mobile-avatar-actions{position:static;transform:none;display:flex;justify-content:center;gap:8px;z-index:2}
+      .mobile-avatar-actions button{width:32px;height:32px;border:0;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);display:grid;place-items:center;font-size:.78rem;color:#111827}
+      .mobile-avatar-actions .edit{background:#fff;color:#2563eb}
+      .mobile-avatar-actions .remove{background:#fff;color:#ef4444}
+      .mobile-stats{display:flex;justify-content:center;gap:34px;margin-top:14px;text-align:center}
+      .mobile-stat-value{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:#5fe29c;line-height:1}
+      .mobile-stat-label{font-size:.58rem;color:#dcefe4;margin-top:2px}
+      .profile-grid{display:flex;flex-direction:column;gap:12px;margin:0 16px 16px}
+      .left-col{display:flex;flex-direction:column;gap:12px}
+      .profile-card{display:none}
+      .mini-reviews-card,.form-section{width:100%;margin:0;padding:16px;border-radius:9px;background:#fff;border:1px solid #e0e4e1;box-shadow:0 7px 18px rgba(15,23,42,.07)}
+      .mini-reviews-card{min-height:auto;margin-top:12px}
+      .mini-section-title{font-size:.82rem;margin-bottom:18px}
+      .mini-review-count,.mini-no-text{font-size:.72rem}
+      .form-sections{display:flex;flex-direction:column;gap:12px}
+      .form-row,.form-row.full{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+      .form-input,.form-select,.form-textarea{width:100%;font-size:.78rem;padding:8px 10px;border-radius:6px}
+      .form-textarea{min-height:72px}
+      .btn-group{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+      .btn-save,.btn-cancel{width:100%;padding:10px;border-radius:7px;font-size:.78rem}
+      .section-title{font-size:.86rem;margin-bottom:12px}
+    }
+    @media (max-width:768px){
+      html,body{
+        width:100%!important;
+        max-width:100%!important;
+        overflow-x:hidden!important;
+      }
+      body{
+        display:block!important;
+        margin:0!important;
+        padding:0!important;
+        background:#eef1f2!important;
+      }
+      .ns-sidebar{
+        position:fixed!important;
+        inset:0 auto 0 0!important;
+        width:min(82vw,280px)!important;
+        transform:translateX(-110%)!important;
+        display:flex!important;
+        margin:0!important;
+        z-index:9500!important;
+      }
+      .ns-sidebar.open{
+        transform:translateX(0)!important;
+      }
+      .ns-sidebar-backdrop{
+        display:block!important;
+      }
+      .mobile-profile-header{
+        display:flex!important;
+        width:auto!important;
+      }
+      .right-panel{
+        width:100%!important;
+        max-width:100%!important;
+        margin-left:0!important;
+        padding:12px!important;
+        background:#eef1f2!important;
+        overflow-x:hidden!important;
+      }
+      .topbar{
+        display:none!important;
+      }
+      .profile-grid{
+        width:100%!important;
+        max-width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        grid-template-columns:1fr!important;
+        gap:12px!important;
+        margin:0!important;
+      }
+      .left-col{
+        width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:12px!important;
+      }
+      .profile-card{
+        display:none!important;
+      }
+      .form-sections{
+        width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        grid-template-columns:1fr!important;
+        gap:12px!important;
+      }
+      .mini-reviews-card,
+      .form-section{
+        width:100%!important;
+        max-width:100%!important;
+        margin:0!important;
+        padding:16px!important;
+        border-radius:10px!important;
+        box-shadow:0 7px 18px rgba(15,23,42,.07)!important;
+      }
+      .form-row,
+      .form-row.full{
+        width:100%!important;
+        display:grid!important;
+        grid-template-columns:1fr!important;
+      }
+      .form-input,
+      .form-select,
+      .form-textarea{
+        width:100%!important;
+        max-width:100%!important;
+      }
+      .btn-group{
+        width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:9px!important;
+      }
+      .btn-save,
+      .btn-cancel{
+        width:100%!important;
+      }
+      .mobile-avatar-area{
+        display:flex!important;
+        flex-direction:column!important;
+        align-items:center!important;
+        gap:8px!important;
+        margin-bottom:10px!important;
+      }
+      .mobile-avatar-actions{
+        position:static!important;
+        transform:none!important;
+        display:flex!important;
+        justify-content:center!important;
+        gap:8px!important;
+      }
+      .mobile-avatar-actions button{
+        width:32px!important;
+        height:32px!important;
+        border-radius:50%!important;
+        background:#fff!important;
+        border:none!important;
+        box-shadow:0 2px 6px rgba(0,0,0,.2)!important;
+      }
+    }
+  </style>
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
-<body>
+<body class="page-bg">
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand sidebar-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img sidebar-logo">
+    <div>
+      <div class="sidebar-title">NearServe</div>
+      <div class="sidebar-tagline">Services Near You, Care You Deserve</div>
+    </div>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar review-avatar" data-ns-avatar>W</div>
+    <div>
+      <div class="ns-side-name" data-ns-name>Worker</div>
+      <div class="ns-side-role" data-ns-role>Worker</div>
+    </div>
+  </div>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="#" id="nsDashboardLink"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a class="active" href="worker_myprofile.html"><i class="fa-regular fa-user"></i>My Profile</a>
+    <a href="#" id="nsLogoutLink"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-bolt"></i><span id="nsWorkspaceText">Worker workspace</span></div>
+    <div><i class="fa-solid fa-clipboard-list"></i>Service requests</div>
+    <div><i class="fa-regular fa-user"></i>Profile access</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+
+<header class="mobile-profile-header">
+  <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+  <div class="mobile-brand">
+    <img src="./assets/nearserve-logo.png" class="mobile-logo" alt="NearServe Logo">
+    <div>
+      <div class="mobile-brand-name">NearServe</div>
+      <div class="mobile-tagline">Services Near You, Care You Deserve</div>
+    </div>
+  </div>
+  <button class="mobile-logout-btn" id="mobileLogoutBtn" type="button">Logout</button>
+  <div class="mobile-avatar-area">
+    <div class="mobile-avatar" id="mobileProfileAvatar">W</div>
+    <div class="mobile-avatar-actions">
+      <button class="edit" id="mobileAvatarEditBtn" type="button" title="Upload Profile Picture"><i class="fa-solid fa-camera"></i></button>
+      <button class="remove" id="mobileAvatarRemoveBtn" type="button" title="Remove Profile Picture"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </div>
+  <div class="mobile-name" id="mobileProfileName">Worker</div>
+  <div class="mobile-role" id="mobileProfileRole">Electrician</div>
+  <div class="mobile-stats">
+    <div>
+      <div class="mobile-stat-value" id="mobileCompletedJobs">-</div>
+      <div class="mobile-stat-label">Jobs Done</div>
+    </div>
+    <div>
+      <div class="mobile-stat-value" id="mobileMemberSince">-</div>
+      <div class="mobile-stat-label">Member Since</div>
+    </div>
+  </div>
+</header>
 
 <div class="left-panel">
-  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">👤</div><div class="fi fi2">✏️</div><div class="fi fi3">🔒</div><div class="fi fi4">⭐</div>
-
-  <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
+  <div class="side-top">
+    <div class="side-brand">
+      <div class="side-brand-mark">N</div>
+      <span>NearServe</span>
     </div>
-    <span>NearServe</span>
+
+    <div class="side-user">
+      <div class="side-avatar" id="sideAvatar">W</div>
+      <div>
+        <div class="side-name" id="sideName">Worker</div>
+        <div class="side-role" id="sideRole">Worker</div>
+      </div>
+    </div>
+
+    <nav class="side-nav" aria-label="Worker navigation">
+      <a href="#" id="sideDashboardLink">Dashboard</a>
+      <a href="worker_myprofile.html" class="active">My Profile</a>
+      <a href="#" id="sideLogoutLink">Logout</a>
+    </nav>
   </div>
 
-  <div class="l-main">
-    <h2>My <em>Profile</em></h2>
-    <p>Manage your personal information, address, preferences and account security all in one place.</p>
-    <div class="l-steps">
-      <div class="l-step">
-        <div class="l-step-icon">👤</div>
-        <div class="l-step-text"><strong>Personal Info</strong><span>Update your name, email and bio.</span></div>
-      </div>
-      <div class="l-step">
-        <div class="l-step-icon">📍</div>
-        <div class="l-step-text"><strong>Address</strong><span>Save your service location.</span></div>
-      </div>
-      <div class="l-step">
-        <div class="l-step-icon">⚙️</div>
-        <div class="l-step-text"><strong>Preferences</strong><span>Set your availability and contact preferences.</span></div>
-      </div>
-      <div class="l-step">
-        <div class="l-step-icon">🔒</div>
-        <div class="l-step-text"><strong>Security</strong><span>Change your password anytime.</span></div>
-      </div>
+  <div class="side-bottom">
+    <div class="side-info">
+      <div id="sideWorkspace">Worker workspace</div>
+      <div>Service requests</div>
+      <div>Profile access</div>
     </div>
   </div>
 
-  <div class="l-stats">
-    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified</div></div>
-    <div class="sdiv"></div>
-    <div><div class="stat-num">⭐</div><div class="stat-lbl">Rated</div></div>
-    <div class="sdiv"></div>
-    <div><div class="stat-num">⚡</div><div class="stat-lbl">Fast</div></div>
-  </div>
 </div>
 
 <div class="right-panel">
@@ -285,7 +557,7 @@
       <button class="back-btn" id="backBtn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div class="page-title">👤 My Profile</div>
+      <div class="page-title">My Profile</div>
     </div>
     <button class="logout-btn" id="logoutBtn">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -295,37 +567,37 @@
     </button>
   </div>
 
-  <div class="profile-grid">
+  <div class="profile-grid profile-layout">
 
-    <div class="left-col">
+    <div class="left-col left-profile-column">
       <div class="profile-card">
         <div class="avatar-wrapper">
           <img id="avatarImg" class="avatar avatar-img hidden" src="" alt="Profile Picture">
           <div id="avatarFallback" class="avatar avatar-fallback">W</div>
         </div>
         <div class="avatar-buttons">
-          <button class="avatar-edit-btn" id="avatarEditBtn" title="Upload Profile Picture">📷</button>
-          <button class="avatar-remove-btn" id="avatarRemoveBtn" title="Remove Profile Picture">✕</button>
+          <button class="avatar-edit-btn" id="avatarEditBtn" title="Upload Profile Picture"><i class="fa-solid fa-camera"></i></button>
+          <button class="avatar-remove-btn" id="avatarRemoveBtn" title="Remove Profile Picture"><i class="fa-solid fa-xmark"></i></button>
           <input type="file" id="avatarUploadInput" class="avatar-upload-input" accept="image/*">
         </div>
-        <div class="profile-name" id="profileName">—</div>
+        <div class="profile-name" id="profileName">-</div>
         <div class="profile-role" id="profileRole">Worker</div>
         <div class="profile-stats">
           <div class="stat-item">
-            <div class="stat-num-val" id="completedJobs">—</div>
+            <div class="stat-num-val" id="completedJobs">-</div>
             <div class="stat-label">Jobs Completed</div>
           </div>
           <div class="stat-item">
-            <div class="stat-num-val" id="memberSince">—</div>
+            <div class="stat-num-val" id="memberSince">-</div>
             <div class="stat-label">Member Since</div>
           </div>
         </div>
       </div>
 
-      <div class="mini-reviews-card" id="miniReviewsCard">
+      <div class="mini-reviews-card reviews-card" id="miniReviewsCard">
         <div class="mini-section-title">
-          ⭐ Customer Reviews
-          <span id="miniReviewLive">● Live</span>
+          <span><i class="fa-solid fa-star"></i> Customer Reviews</span>
+          <span id="miniReviewLive">Live</span>
         </div>
         <div id="miniRatingTop" class="mini-rating-top" style="display:none;">
           <div class="mini-rating-num" id="miniAvgNum">0.0</div>
@@ -336,30 +608,30 @@
         </div>
         <div id="miniReviewsList">
           <div class="mini-no-reviews">
-            <div class="mini-no-icon">⏳</div>
+            <div class="mini-no-icon"><i class="fa-regular fa-clock"></i></div>
             <div class="mini-no-text">Loading...</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="form-sections">
+    <div class="form-sections forms-grid">
 
-      <div class="form-section">
-        <div class="section-title"><span class="section-icon">ℹ️</span> Personal Information</div>
+      <div class="form-section personal-info">
+        <div class="section-title"><span class="section-icon"><i class="fa-regular fa-circle-user"></i></span> Personal Information</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="fullName" placeholder="Your Full Name"></div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="email" placeholder="your@email.com"></div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Phone Number (Cannot be changed)</label><input type="text" class="form-input" id="phone" disabled></div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Role (Cannot be changed)</label><input type="text" class="form-input" id="roleDisplay" disabled></div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Bio / About You</label><textarea class="form-textarea" id="bio" placeholder="Tell customers about your experience and skills..."></textarea></div></div>
         <div class="btn-group">
-          <button class="btn-save" id="savePersonalBtn">💾 Save Personal Info</button>
-          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+          <button class="btn-save" id="savePersonalBtn"><i class="fa-solid fa-floppy-disk"></i> Save Personal Info</button>
+          <button class="btn-cancel" onclick="location.reload()">Reset</button>
         </div>
       </div>
 
       <div class="form-section">
-        <div class="section-title"><span class="section-icon">📍</span> Address & Location</div>
+        <div class="section-title"><span class="section-icon"><i class="fa-solid fa-location-dot"></i></span> Address & Location</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Full Address</label><input type="text" class="form-input" id="address" placeholder="Street Address"></div></div>
         <div class="form-row">
           <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="city" placeholder="City"></div>
@@ -370,49 +642,49 @@
           <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-input" id="country" placeholder="Country" value="India"></div>
         </div>
         <div class="btn-group">
-          <button class="btn-save" id="saveAddressBtn">💾 Save Address</button>
-          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+          <button class="btn-save" id="saveAddressBtn"><i class="fa-solid fa-floppy-disk"></i> Save Address</button>
+          <button class="btn-cancel" onclick="location.reload()">Reset</button>
         </div>
       </div>
 
       <div class="form-section">
-        <div class="section-title"><span class="section-icon">⚙️</span> Preferences & Settings</div>
+        <div class="section-title"><span class="section-icon"><i class="fa-solid fa-gear"></i></span> Preferences & Settings</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Availability</label>
           <select class="form-select" id="availability">
-            <option value="available">✅ Available for Jobs</option>
-            <option value="busy">🔴 Currently Busy</option>
-            <option value="off">⛔ Not Taking Jobs</option>
+            <option value="available">Available for Jobs</option>
+            <option value="busy">Currently Busy</option>
+            <option value="off">Not Taking Jobs</option>
           </select>
         </div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Communication Preference</label>
           <select class="form-select" id="communicationPref">
-            <option value="chat">💬 Chat</option>
-            <option value="phone">📞 Phone Call</option>
-            <option value="email">📧 Email</option>
+            <option value="chat">Chat</option>
+            <option value="phone">Phone Call</option>
+            <option value="email">Email</option>
           </select>
         </div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Preferred Working Hours</label>
           <select class="form-select" id="preferredTime">
-            <option value="morning">🌅 Morning (6 AM - 12 PM)</option>
-            <option value="afternoon">☀️ Afternoon (12 PM - 5 PM)</option>
-            <option value="evening">🌆 Evening (5 PM - 10 PM)</option>
-            <option value="flexible">⏰ Flexible Anytime</option>
+            <option value="morning">Morning (6 AM - 12 PM)</option>
+            <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+            <option value="evening">Evening (5 PM - 10 PM)</option>
+            <option value="flexible">Flexible Anytime</option>
           </select>
         </div></div>
         <div class="btn-group">
-          <button class="btn-save" id="savePreferencesBtn">💾 Save Preferences</button>
-          <button class="btn-cancel" onclick="location.reload()">↺ Reset</button>
+          <button class="btn-save" id="savePreferencesBtn"><i class="fa-solid fa-floppy-disk"></i> Save Preferences</button>
+          <button class="btn-cancel" onclick="location.reload()">Reset</button>
         </div>
       </div>
 
       <div class="form-section">
-        <div class="section-title"><span class="section-icon">🔐</span> Security & Password</div>
+        <div class="section-title"><span class="section-icon"><i class="fa-solid fa-lock"></i></span> Security & Password</div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" id="currentPassword" placeholder="Enter current password"></div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="newPassword" placeholder="Enter new password (min 6 characters)"></div></div>
         <div class="form-row full"><div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password"></div></div>
         <div class="btn-group">
-          <button class="btn-save" id="savePasswordBtn">🔐 Change Password</button>
-          <button class="btn-cancel" onclick="document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value='';">↺ Clear</button>
+          <button class="btn-save" id="savePasswordBtn"><i class="fa-solid fa-key"></i> Change Password</button>
+          <button class="btn-cancel" onclick="document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value='';">Clear</button>
         </div>
       </div>
 
@@ -427,16 +699,13 @@
 const API_BASE = "/api";
 
 function showToast(msg, type) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + (type || "success") + " show";
-  setTimeout(() => { t.className = "toast"; }, 3500);
+  window.nearServeToast(msg, type || "error");
 }
 
 function getRoleEmoji(role) {
-  if (role === "carpenter")   return "🪚 Carpenter";
-  if (role === "electrician") return "⚡ Electrician";
-  if (role === "plumber")     return "🔧 Plumber";
+  if (role === "carpenter")   return "Carpenter";
+  if (role === "electrician") return "Electrician";
+  if (role === "plumber")     return "Plumber";
   return role ? role.charAt(0).toUpperCase() + role.slice(1) : "Worker";
 }
 
@@ -448,8 +717,8 @@ function getDashboardUrl(role) {
 }
 
 window.addEventListener("DOMContentLoaded", async function() {
-  const phone      = (localStorage.getItem("phone") || "").trim();
-  const role       = (localStorage.getItem("role")  || "").trim().toLowerCase();
+  const phone      = (localStorage.getItem("phone") || localStorage.getItem("userPhone") || "").trim();
+  const role       = (localStorage.getItem("userRole") || localStorage.getItem("role")  || "").trim().toLowerCase();
   const storedName = localStorage.getItem("name") || localStorage.getItem("userName") || "";
 
   if (!phone || !role || role === "customer") {
@@ -460,24 +729,79 @@ window.addEventListener("DOMContentLoaded", async function() {
   document.getElementById("backBtn").addEventListener("click", () => {
     window.location.href = getDashboardUrl(role);
   });
+  document.getElementById("sideDashboardLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = getDashboardUrl(role);
+  });
+  document.getElementById("nsDashboardLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = getDashboardUrl(role);
+  });
+  document.getElementById("sideLogoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.clear();
+    window.location.href = "login.html";
+  });
+  document.getElementById("nsLogoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.clear();
+    window.location.href = "login.html";
+  });
+  const nsSidebar = document.getElementById("nsSidebar");
+  const nsSidebarBackdrop = document.getElementById("nsSidebarBackdrop");
+  function openMobileMenu() {
+    nsSidebar.classList.add("open");
+    nsSidebarBackdrop.classList.add("show");
+  }
+  function closeMobileMenu() {
+    nsSidebar.classList.remove("open");
+    nsSidebarBackdrop.classList.remove("show");
+  }
+  document.getElementById("mobileMenuBtn").addEventListener("click", openMobileMenu);
+  document.getElementById("nsSidebarClose").addEventListener("click", closeMobileMenu);
+  nsSidebarBackdrop.addEventListener("click", closeMobileMenu);
+  document.querySelectorAll(".ns-nav a").forEach(link => link.addEventListener("click", closeMobileMenu));
+  document.getElementById("mobileLogoutBtn").addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "login.html";
+  });
 
   document.getElementById("profileRole").textContent = getRoleEmoji(role);
   document.getElementById("roleDisplay").value = getRoleEmoji(role);
+  document.getElementById("sideRole").textContent = getRoleEmoji(role);
+  document.getElementById("sideWorkspace").textContent = getRoleEmoji(role) + " workspace";
+  document.getElementById("mobileProfileRole").textContent = getRoleEmoji(role);
+  document.querySelectorAll("[data-ns-role]").forEach(el => {
+    el.textContent = getRoleEmoji(role);
+  });
+  document.getElementById("nsWorkspaceText").textContent = getRoleEmoji(role) + " workspace";
 
   const avatarImg      = document.getElementById("avatarImg");
   const avatarFallback = document.getElementById("avatarFallback");
 
   function setAvatar(nameText, imageSrc) {
     const firstLetter = (nameText || "W").trim().charAt(0).toUpperCase() || "W";
+    const sideAvatar = document.getElementById("sideAvatar");
+    const mobileAvatar = document.getElementById("mobileProfileAvatar");
     if (imageSrc) {
       avatarImg.src = imageSrc;
       avatarImg.classList.remove("hidden");
       avatarFallback.classList.add("hidden");
+      sideAvatar.innerHTML = `<img src="${imageSrc}" alt="${nameText || "Worker"}">`;
+      mobileAvatar.innerHTML = `<img src="${imageSrc}" alt="${nameText || "Worker"}">`;
+      document.querySelectorAll("[data-ns-avatar]").forEach(el => {
+        el.innerHTML = `<img src="${imageSrc}" alt="${nameText || "Worker"}">`;
+      });
     } else {
       avatarFallback.textContent = firstLetter;
       avatarFallback.classList.remove("hidden");
       avatarImg.classList.add("hidden");
       avatarImg.removeAttribute("src");
+      sideAvatar.textContent = firstLetter;
+      mobileAvatar.textContent = firstLetter;
+      document.querySelectorAll("[data-ns-avatar]").forEach(el => {
+        el.textContent = firstLetter;
+      });
     }
   }
 
@@ -502,7 +826,12 @@ window.addEventListener("DOMContentLoaded", async function() {
       if (dbAvatar) localStorage.setItem("avatarBase64", dbAvatar);
       setAvatar(currentName, avatarToUse);
 
-      document.getElementById("profileName").textContent = user.name || "—";
+      document.getElementById("profileName").textContent = user.name || "-";
+      document.getElementById("sideName").textContent = user.name || storedName || "Worker";
+      document.getElementById("mobileProfileName").textContent = user.name || storedName || "Worker";
+      document.querySelectorAll("[data-ns-name]").forEach(el => {
+        el.textContent = user.name || storedName || "Worker";
+      });
       document.getElementById("fullName").value = user.name || "";
       document.getElementById("email").value = user.email || "";
       document.getElementById("phone").value = user.phone || "";
@@ -525,15 +854,20 @@ window.addEventListener("DOMContentLoaded", async function() {
             ? jobs.filter(j => (j.status || "").toLowerCase() === "completed").length
             : 0;
           document.getElementById("completedJobs").textContent = completed;
+          document.getElementById("mobileCompletedJobs").textContent = completed;
         } else {
           document.getElementById("completedJobs").textContent = "0";
+          document.getElementById("mobileCompletedJobs").textContent = "0";
         }
       } catch (e) {
         document.getElementById("completedJobs").textContent = "0";
+        document.getElementById("mobileCompletedJobs").textContent = "0";
       }
 
       const createdYear = new Date(user.createdAt).getFullYear();
-      document.getElementById("memberSince").textContent = createdYear > 1970 ? createdYear : new Date().getFullYear();
+      const memberSince = createdYear > 1970 ? createdYear : new Date().getFullYear();
+      document.getElementById("memberSince").textContent = memberSince;
+      document.getElementById("mobileMemberSince").textContent = memberSince;
     } else {
       setAvatar(storedName || "Worker", localStorage.getItem("avatarBase64") || "");
     }
@@ -545,13 +879,19 @@ window.addEventListener("DOMContentLoaded", async function() {
   document.getElementById("avatarEditBtn").addEventListener("click", () => {
     document.getElementById("avatarUploadInput").click();
   });
+  document.getElementById("mobileAvatarEditBtn").addEventListener("click", () => {
+    document.getElementById("avatarUploadInput").click();
+  });
+  document.getElementById("mobileAvatarRemoveBtn").addEventListener("click", () => {
+    document.getElementById("avatarRemoveBtn").click();
+  });
 
   document.getElementById("avatarUploadInput").addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      showToast("❌ Please choose an image file", "error");
+      showToast("Please choose an image file", "error");
       return;
     }
 
@@ -569,13 +909,13 @@ window.addEventListener("DOMContentLoaded", async function() {
         });
 
         if (res.ok) {
-          showToast("✅ Profile picture updated!");
+          showToast("Profile picture updated!", "success");
         } else {
           const err = await res.json().catch(() => ({}));
-          showToast("❌ " + (err.error || "Error saving profile picture"), "error");
+          showToast(err.error || "Error saving profile picture", "error");
         }
       } catch (e) {
-        showToast("❌ Error saving profile picture", "error");
+        showToast("Error saving profile picture", "error");
       }
     };
     reader.readAsDataURL(file);
@@ -594,15 +934,15 @@ window.addEventListener("DOMContentLoaded", async function() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        showToast("❌ " + (err.error || "Error removing profile picture"), "error");
+        showToast(err.error || "Error removing profile picture", "error");
         return;
       }
     } catch (e) {
-      showToast("❌ Error removing profile picture", "error");
+      showToast("Error removing profile picture", "error");
       return;
     }
 
-    showToast("✅ Profile picture removed!");
+    showToast("Profile picture removed!", "success");
   });
 
   document.getElementById("savePersonalBtn").addEventListener("click", async function() {
@@ -611,12 +951,12 @@ window.addEventListener("DOMContentLoaded", async function() {
     const bio      = document.getElementById("bio").value.trim();
 
     if (!newName) {
-      showToast("❌ Name cannot be empty", "error");
+      showToast("Name cannot be empty", "error");
       return;
     }
 
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-      showToast("❌ Enter a valid email", "error");
+      showToast("Enter a valid email", "error");
       return;
     }
 
@@ -632,14 +972,19 @@ window.addEventListener("DOMContentLoaded", async function() {
         localStorage.setItem("userName", newName);
         localStorage.setItem("email", newEmail);
         document.getElementById("profileName").textContent = newName;
+        document.getElementById("sideName").textContent = newName;
+        document.getElementById("mobileProfileName").textContent = newName;
+        document.querySelectorAll("[data-ns-name]").forEach(el => {
+          el.textContent = newName;
+        });
         setAvatar(newName, localStorage.getItem("avatarBase64"));
-        showToast("✅ Personal info saved successfully!");
+        showToast("Personal info saved successfully!", "success");
       } else {
         const err = await res.json();
-        showToast("❌ " + (err.error || "Error saving"), "error");
+        showToast(err.error || "Error saving", "error");
       }
     } catch (err) {
-      showToast("❌ Error saving profile", "error");
+      showToast("Error saving profile", "error");
     }
   });
 
@@ -658,13 +1003,13 @@ window.addEventListener("DOMContentLoaded", async function() {
       });
 
       if (res.ok) {
-        showToast("✅ Address saved successfully!");
+        showToast("Address saved successfully!", "success");
       } else {
         const err = await res.json();
-        showToast("❌ " + (err.error || "Error saving"), "error");
+        showToast(err.error || "Error saving", "error");
       }
     } catch (err) {
-      showToast("❌ Error saving address", "error");
+      showToast("Error saving address", "error");
     }
   });
 
@@ -681,13 +1026,13 @@ window.addEventListener("DOMContentLoaded", async function() {
       });
 
       if (res.ok) {
-        showToast("✅ Preferences saved successfully!");
+        showToast("Preferences saved successfully!", "success");
       } else {
         const err = await res.json();
-        showToast("❌ " + (err.error || "Error saving"), "error");
+        showToast(err.error || "Error saving", "error");
       }
     } catch (err) {
-      showToast("❌ Error saving preferences", "error");
+      showToast("Error saving preferences", "error");
     }
   });
 
@@ -697,15 +1042,15 @@ window.addEventListener("DOMContentLoaded", async function() {
     const confirm = document.getElementById("confirmPassword").value;
 
     if (!current || !newPass || !confirm) {
-      showToast("❌ All password fields are required", "error");
+      showToast("All password fields are required", "error");
       return;
     }
     if (newPass.length < 6) {
-      showToast("❌ Password must be at least 6 characters", "error");
+      showToast("Password must be at least 6 characters", "error");
       return;
     }
     if (newPass !== confirm) {
-      showToast("❌ Passwords do not match", "error");
+      showToast("Passwords do not match", "error");
       return;
     }
 
@@ -720,13 +1065,13 @@ window.addEventListener("DOMContentLoaded", async function() {
         document.getElementById("currentPassword").value = "";
         document.getElementById("newPassword").value = "";
         document.getElementById("confirmPassword").value = "";
-        showToast("✅ Password changed successfully!");
+        showToast("Password changed successfully!", "success");
       } else {
         const err = await res.json();
-        showToast("❌ " + (err.error || "Error changing password"), "error");
+        showToast(err.error || "Error changing password", "error");
       }
     } catch (err) {
-      showToast("❌ Error changing password", "error");
+      showToast("Error changing password", "error");
     }
   });
 
@@ -748,7 +1093,7 @@ window.addEventListener("DOMContentLoaded", async function() {
 
       if (count === 0) {
         list.innerHTML = `<div class="mini-no-reviews">
-          <div class="mini-no-icon">💬</div>
+          <div class="mini-no-icon"><i class="fa-regular fa-comment-dots"></i></div>
           <div class="mini-no-text">No reviews yet</div>
           <p style="font-size:0.75rem;color:var(--soft);margin-top:4px;">Complete jobs to get reviews!</p>
         </div>`;
@@ -758,17 +1103,17 @@ window.addEventListener("DOMContentLoaded", async function() {
       document.getElementById("miniAvgNum").textContent = avgRating.toFixed(1);
       document.getElementById("miniReviewCount").textContent = count + " review" + (count !== 1 ? "s" : "");
       const starsHtml = [1,2,3,4,5].map(i => {
-        if (i <= Math.floor(avgRating)) return '<span style="color:#f59e0b;">★</span>';
-        if (i - avgRating < 1 && i - avgRating > 0) return '<span style="color:#fcd34d;">★</span>';
-        return '<span style="color:#e5e7eb;">★</span>';
+        if (i <= Math.floor(avgRating)) return '<span style="color:#f59e0b;">*</span>';
+        if (i - avgRating < 1 && i - avgRating > 0) return '<span style="color:#fcd34d;">*</span>';
+        return '<span style="color:#e5e7eb;">*</span>';
       }).join("");
       document.getElementById("miniStars").innerHTML = starsHtml;
       document.getElementById("miniRatingTop").style.display = "flex";
 
       if (reviews.length === 0) {
         list.innerHTML = `<div class="mini-no-reviews">
-          <div class="mini-no-icon">⭐</div>
-          <div class="mini-no-text">${count} rating(s) — no comments yet</div>
+          <div class="mini-no-icon"><i class="fa-solid fa-star"></i></div>
+          <div class="mini-no-text">${count} rating(s) - no comments yet</div>
         </div>`;
         return;
       }
@@ -778,7 +1123,7 @@ window.addEventListener("DOMContentLoaded", async function() {
         const cName   = r.customerName || r.customerPhone || "Customer";
         const initial = cName.charAt(0).toUpperCase();
         const stars   = [1,2,3,4,5].map(i =>
-          `<span style="color:${i <= r.rating ? '#f59e0b' : '#e5e7eb'};">★</span>`
+          `<span style="color:${i <= r.rating ? '#f59e0b' : '#e5e7eb'};">*</span>`
         ).join("");
         const date = r.createdAt
           ? new Date(r.createdAt).toLocaleDateString("en-IN", {day:"numeric", month:"short", year:"numeric"})
@@ -786,7 +1131,7 @@ window.addEventListener("DOMContentLoaded", async function() {
         return `<div class="mini-review-item">
           <div class="mini-review-header">
             <div class="mini-review-user">
-              <div class="mini-avatar">${initial}</div>
+              <div class="mini-avatar review-avatar">${initial}</div>
               <div>
                 <div class="mini-name">${cName}</div>
                 <div class="mini-date">${date}</div>
@@ -800,7 +1145,7 @@ window.addEventListener("DOMContentLoaded", async function() {
     } catch(err) {
       console.error("Reviews error:", err);
       list.innerHTML = `<div class="mini-no-reviews">
-        <div class="mini-no-icon">⚠️</div>
+        <div class="mini-no-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <div class="mini-no-text">Could not load reviews</div>
       </div>`;
     }

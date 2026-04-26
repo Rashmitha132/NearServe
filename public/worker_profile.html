@@ -4,269 +4,1054 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Worker Profile - NearServe</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --blue:#2563eb; --teal:#0d9488; --dark:#0f172a; --mid:#475569; --soft:#94a3b8; --border:#e2eaf4; }
-    html, body { height: 100%; }
-    body { min-height:100vh; font-family:'Plus Jakarta Sans',sans-serif; display:flex; background:#f0f7ff; }
 
-    .left-panel { width:300px; min-height:100vh; background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%); position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; justify-content:space-between; padding:40px 32px; overflow:hidden; z-index:10; }
-    .left-panel::before { content:''; position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,0.05); top:-100px; right:-100px; }
-    .left-panel::after  { content:''; position:absolute; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); bottom:-60px; left:-60px; }
-    .deco-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,0.08); }
-    .r1{width:160px;height:160px;top:35%;right:-40px;} .r2{width:90px;height:90px;top:58%;right:36px;} .r3{width:60px;height:60px;top:15%;left:20px;}
-    .fi { position:absolute; width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(0,0,0,0.15); animation:bob ease-in-out infinite alternate; }
-    .fi1{top:15%;left:8%;animation-duration:3.2s;} .fi2{top:38%;right:10%;animation-duration:2.8s;animation-delay:0.5s;} .fi3{top:60%;left:14%;animation-duration:3.6s;animation-delay:1s;} .fi4{top:75%;right:16%;animation-duration:2.5s;animation-delay:0.3s;}
-    @keyframes bob { from{transform:translateY(0) rotate(-3deg);} to{transform:translateY(-12px) rotate(3deg);} }
-    .l-logo { position:relative; z-index:2; display:flex; align-items:center; gap:11px; }
-    .l-logo-icon { width:42px; height:42px; border-radius:13px; background:rgba(255,255,255,0.16); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; }
-    .l-logo span { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; }
-    .l-main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center; padding:22px 0; }
-    .l-main h2 { font-family:'Nunito',sans-serif; font-size:1.85rem; font-weight:900; color:#fff; line-height:1.25; margin-bottom:12px; }
-    .l-main h2 em { font-style:normal; background:linear-gradient(90deg,#7dd3fc,#5eead4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    .l-main p { color:rgba(255,255,255,0.65); font-size:0.85rem; line-height:1.7; margin-bottom:24px; }
-    .l-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:22px; }
-    .l-step { display:flex; align-items:flex-start; gap:11px; }
-    .l-step-num { width:26px; height:26px; border-radius:8px; background:rgba(255,255,255,0.18); border:1.5px solid rgba(255,255,255,0.28); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:0.75rem; font-weight:900; color:#fff; flex-shrink:0; margin-top:1px; }
-    .l-step-text strong { display:block; font-size:0.8rem; font-weight:700; color:#fff; margin-bottom:1px; }
-    .l-step-text span { font-size:0.72rem; color:rgba(255,255,255,0.55); line-height:1.4; }
-    .pills { display:flex; flex-wrap:wrap; gap:8px; }
-    .pill { padding:6px 13px; border-radius:50px; background:rgba(255,255,255,0.11); border:1.5px solid rgba(255,255,255,0.2); color:#fff; font-size:0.75rem; font-weight:600; }
+    :root {
+      --green: #145c3f;
+      --green-dark: #0f3d2e;
+      --green-mid: #1b7a52;
+      --chip: rgba(20, 92, 63, 0.12);
+      --cream: #f7f5ed;
+      --text: #050505;
+      --muted: #4b5563;
+      --pink: #ec407a;
+      --gold: #f5a400;
+      --purple: #4b2a84;
+    }
 
-    .right-panel { margin-left:300px; flex:1; min-height:100vh; background:#fff; padding:40px 44px; overflow-y:auto; }
-    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; padding-bottom:20px; border-bottom:1.5px solid var(--border); flex-wrap:wrap; gap:14px; }
-    .title-wrap h1 { font-family:'Nunito',sans-serif; font-size:1.65rem; font-weight:900; color:var(--dark); margin-bottom:3px; }
-    .title-wrap p { color:var(--soft); font-size:0.85rem; }
-    .title-wrap p span { color:var(--teal); font-weight:700; text-transform:capitalize; }
-    .top-buttons { display:flex; gap:10px; flex-wrap:wrap; }
-    .top-btn { display:flex; align-items:center; gap:7px; padding:10px 20px; border:none; border-radius:11px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:transform 0.2s; white-space:nowrap; }
-    .btn-list    { background:linear-gradient(135deg,#1d4ed8,#0d9488); box-shadow:0 4px 14px rgba(29,78,216,0.28); }
-    .btn-booking { background:linear-gradient(135deg,#d97706,#f59e0b); box-shadow:0 4px 14px rgba(217,119,6,0.28); }
-    .top-btn:hover { transform:translateY(-2px); }
+    html, body { min-height: 100%; }
 
-    .profile-layout { display:grid; grid-template-columns:285px 1fr; gap:22px; }
+    body {
+      min-height: 100vh;
+      font-family: "Plus Jakarta Sans", Arial, sans-serif;
+      display: flex;
+      background: #fff;
+      color: var(--text);
+      overflow-x: hidden;
+    }
 
-    .left-card { background:#fff; border:1.5px solid var(--border); border-radius:20px; padding:26px 20px 20px; box-shadow:0 4px 20px rgba(0,0,0,0.06); position:relative; overflow:hidden; align-self:start; }
-    .left-card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background:linear-gradient(90deg,#2563eb,#0d9488); }
+    a, button { -webkit-tap-highlight-color: transparent; }
+    button, a { touch-action: manipulation; }
 
-    .avatar-wrap { width:90px; height:90px; margin:8px auto 13px; position:relative; }
-    .avatar-photo { width:90px; height:90px; border-radius:50%; object-fit:cover; display:none; box-shadow:0 6px 20px rgba(37,99,235,0.28); border:3px solid #e2eaf4; }
-    .avatar-letter { width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:2.1rem; font-weight:900; color:#fff; box-shadow:0 6px 20px rgba(37,99,235,0.28); }
+    .left-panel {
+      width: 176px;
+      min-height: 100vh;
+      background: var(--green-dark);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0 0;
+      flex: 0 0 176px;
+    }
 
-    .worker-name { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:var(--dark); text-align:center; margin-bottom:3px; }
-    .worker-role { text-align:center; color:var(--teal); font-size:0.78rem; font-weight:700; text-transform:capitalize; margin-bottom:10px; }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px 36px;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
 
-    .avail-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:0.72rem; font-weight:700; }
-    .avail-available { background:#dcfce7; color:#16a34a; }
-    .avail-busy      { background:#fee2e2; color:#dc2626; }
-    .avail-off       { background:#f1f5f9; color:#64748b; }
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #1b7a52;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
 
-    .rating-box { text-align:center; margin:12px 0 10px; }
-    .stars { color:#fbbf24; font-size:1.1rem; letter-spacing:2px; margin-bottom:3px; }
-    .rating-text { font-size:0.75rem; color:var(--mid); font-weight:600; }
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px 28px;
+      color: #fff;
+      text-decoration: none;
+    }
 
-    .bio-box { background:#f8fafc; border:1.5px solid var(--border); border-radius:10px; padding:9px 12px; margin:10px 0; font-size:0.78rem; color:var(--mid); line-height:1.6; font-style:italic; }
+    .side-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f3d2e, #1b7a52);
+      display: grid;
+      place-items: center;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
 
-    .mini-info { display:grid; gap:7px; margin:12px 0; }
-    .info-item { background:#f8fafc; border:1.5px solid var(--border); border-radius:10px; padding:8px 11px; font-size:0.78rem; color:var(--mid); display:flex; align-items:flex-start; gap:8px; }
-    .info-icon { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
-    .ii-phone{background:#eff6ff;} .ii-email{background:#f0fdf4;} .ii-loc{background:#fef3c7;} .ii-time{background:#ede9fe;}
+    .side-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-    .call-btn { width:100%; padding:11px; border:none; border-radius:11px; background:linear-gradient(135deg,#0d9488,#14b8a6); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.84rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(13,148,136,0.26); transition:transform 0.2s; display:flex; align-items:center; justify-content:center; gap:7px; margin-top:4px; }
-    .call-btn:hover { transform:translateY(-2px); }
+    .side-name { font-size: 0.78rem; font-weight: 800; line-height: 1.15; }
+    .side-role { color: #91e5bb; font-size: 0.64rem; font-weight: 700; margin-top: 2px; }
 
-    .right-col { display:flex; flex-direction:column; gap:18px; }
-    .section-card { background:#fff; border:1.5px solid var(--border); border-radius:20px; padding:22px 24px; box-shadow:0 4px 16px rgba(0,0,0,0.05); position:relative; overflow:hidden; }
-    .section-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#2563eb,#0d9488); }
-    .section-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; color:var(--dark); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-    .st-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
-    .sti-blue{background:#eff6ff;} .sti-green{background:#f0fdf4;}
-    .detail-grid { display:grid; gap:8px; }
-    .detail-row { display:flex; align-items:flex-start; gap:10px; background:#f8fafc; border:1.5px solid var(--border); border-radius:10px; padding:10px 13px; font-size:0.82rem; }
-    .detail-label { font-weight:700; color:var(--dark); min-width:90px; flex-shrink:0; }
-    .detail-value { color:var(--mid); line-height:1.5; }
-    .feedback-list { display:grid; gap:10px; }
-    .feedback-card { background:#f8fafc; border:1.5px solid var(--border); border-radius:13px; padding:13px 15px; }
-    .feedback-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; flex-wrap:wrap; gap:5px; }
-    .feedback-name { font-weight:700; color:var(--dark); font-size:0.84rem; }
-    .feedback-date { font-size:0.7rem; color:var(--soft); }
-    .feedback-stars { color:#fbbf24; font-size:0.82rem; letter-spacing:1px; }
-    .feedback-text { color:var(--mid); font-size:0.81rem; line-height:1.6; font-style:italic; }
-    .confirm-btn { width:100%; padding:13px; border:none; border-radius:12px; background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.92rem; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(34,197,94,0.26); transition:transform 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
-    .confirm-btn:hover { transform:translateY(-2px); }
-    .loading-wrap { display:flex; align-items:center; gap:10px; color:var(--soft); font-size:0.86rem; padding:16px 0; }
-    .spinner { width:18px; height:18px; border-radius:50%; border:3px solid #e2eaf4; border-top-color:var(--blue); animation:spin 0.7s linear infinite; }
-    @keyframes spin { to{transform:rotate(360deg);} }
+    .side-nav {
+      display: grid;
+      margin-top: 6px;
+    }
 
-    .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); z-index:999; display:none; align-items:center; justify-content:center; }
-    .modal-overlay.open { display:flex; }
-    .modal-box { background:#fff; border-radius:24px; width:360px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.22); overflow:hidden; animation:popUp 0.28s cubic-bezier(0.16,1,0.3,1) both; }
-    @keyframes popUp { from{opacity:0;transform:scale(0.92) translateY(16px);} to{opacity:1;transform:scale(1) translateY(0);} }
-    .modal-header { background:linear-gradient(135deg,#0d9488,#14b8a6); padding:24px 28px 20px; text-align:center; }
-    .modal-header-icon { width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.35); display:flex; align-items:center; justify-content:center; font-size:1.6rem; margin:0 auto 12px; }
-    .modal-header h3 { font-family:'Nunito',sans-serif; font-size:1.15rem; font-weight:900; color:#fff; margin-bottom:3px; }
-    .modal-header p { font-size:0.8rem; color:rgba(255,255,255,0.78); }
-    .modal-body { padding:20px 24px; }
-    .modal-worker-info { background:#f8faff; border:1.5px solid var(--border); border-radius:13px; padding:13px 16px; margin-bottom:18px; display:flex; align-items:center; gap:13px; }
-    .modal-worker-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#0d9488); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; color:#fff; flex-shrink:0; }
-    .modal-worker-name  { font-weight:700; color:var(--dark); font-size:0.9rem; margin-bottom:2px; }
-    .modal-worker-phone { font-size:0.8rem; color:var(--teal); font-weight:600; }
-    .modal-note { display:flex; align-items:center; gap:8px; background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:10px 13px; font-size:0.77rem; color:#92400e; margin-bottom:18px; }
-    .modal-btns { display:flex; gap:10px; }
-    .modal-btn-cancel { flex:1; padding:12px; border-radius:11px; border:1.5px solid var(--border); background:#fff; color:var(--mid); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; }
-    .modal-btn-cancel:hover { background:#f1f5f9; }
-    .modal-btn-call { flex:1; padding:12px; border-radius:11px; border:none; background:linear-gradient(135deg,#0d9488,#14b8a6); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
-    .modal-btn-call:hover { transform:translateY(-1px); }
+    .side-nav a {
+      color: #effdf5;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-left: 4px solid transparent;
+    }
 
-    .success-modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); z-index:999; display:none; align-items:center; justify-content:center; }
-    .success-modal-overlay.open { display:flex; }
-    .success-modal-box { background:#fff; border-radius:24px; width:380px; max-width:95vw; box-shadow:0 30px 80px rgba(0,0,0,0.22); overflow:hidden; animation:popUp 0.28s cubic-bezier(0.16,1,0.3,1) both; }
-    .success-modal-header { background:linear-gradient(135deg,#16a34a,#22c55e); padding:26px 28px 22px; text-align:center; }
-    .success-check-wrap { width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin:0 auto 12px; }
-    .success-modal-header h3 { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; margin-bottom:4px; }
-    .success-modal-header p { font-size:0.8rem; color:rgba(255,255,255,0.82); }
-    .success-modal-body { padding:22px 24px; }
-    .success-worker-card { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1.5px solid #bbf7d0; border-radius:13px; padding:14px 16px; display:flex; align-items:center; gap:13px; margin-bottom:16px; }
-    .success-worker-avatar { width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,#16a34a,#22c55e); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; color:#fff; flex-shrink:0; }
-    .success-worker-name { font-weight:800; color:#14532d; font-size:0.95rem; margin-bottom:2px; font-family:'Nunito',sans-serif; }
-    .success-worker-role { font-size:0.78rem; color:#16a34a; font-weight:600; text-transform:capitalize; }
-    .success-note { display:flex; align-items:flex-start; gap:8px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:10px 13px; font-size:0.78rem; color:#1e40af; margin-bottom:18px; line-height:1.5; }
-    .success-modal-btn { width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg,#16a34a,#22c55e); color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.92rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
-    .success-modal-btn:hover { transform:translateY(-2px); }
+    .side-nav a.active {
+      background: rgba(255,255,255,0.12);
+      border-left-color: #3fd18d;
+      font-weight: 800;
+    }
 
-    @media(max-width:860px) { .left-panel{display:none;} .right-panel{margin-left:0;padding:24px 18px;} .profile-layout{grid-template-columns:1fr;} }
+    .right-panel {
+      flex: 1;
+      min-width: 0;
+      min-height: 100vh;
+      padding: 18px 18px 28px 22px;
+      background: #fff;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 42px;
+    }
+
+    .title-wrap h1 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      line-height: 1.2;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .title-icon { font-size: 1rem; }
+
+    .title-wrap p {
+      font-size: 0.72rem;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .title-wrap p span {
+      color: #145c3f;
+      text-transform: capitalize;
+    }
+
+    .top-buttons {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .top-btn {
+      border: 0;
+      background: transparent;
+      color: #000;
+      min-height: 27px;
+      padding: 6px 0;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-booking {
+      background: #fff;
+      color: #145c3f;
+      border: 1px solid #145c3f;
+      padding: 7px 14px;
+    }
+
+    .btn-booking:hover {
+      background: rgba(20, 92, 63, 0.08);
+    }
+
+    .btn-list {
+      background: #145c3f;
+      color: #fff;
+      border: 1px solid #145c3f;
+      border-radius: 7px;
+      padding: 7px 14px;
+    }
+
+    .btn-list:hover {
+      background: #1b7a52;
+      border-color: #1b7a52;
+    }
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 190px minmax(360px, 1fr);
+      gap: 44px;
+      align-items: start;
+      max-width: 1160px;
+    }
+
+    .left-card {
+      padding: 0 14px;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .avatar-wrap {
+      width: 68px;
+      height: 68px;
+      margin: 18px auto 10px;
+    }
+
+    .avatar-photo,
+    .avatar-letter {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      display: none;
+    }
+
+    .avatar-photo { object-fit: cover; }
+
+    .avatar-letter {
+      background: linear-gradient(135deg, #0f3d2e, #1b7a52);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.28rem;
+      font-weight: 500;
+    }
+
+    .worker-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .worker-role {
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-transform: capitalize;
+      margin-bottom: 9px;
+    }
+
+    .avail-badge,
+    .detail-chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--chip);
+      color: #145c3f;
+      padding: 3px 10px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .avail-busy { background: #fee2e2; color: #b91c1c; }
+    .avail-off { background: #eceff3; color: #475569; }
+
+    .rating-box {
+      margin: 12px 0 12px;
+    }
+
+    .stars {
+      color: #d1d5db;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stars.has-rating { color: var(--gold); }
+
+    .rating-text {
+      font-size: 0.6rem;
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .bio-box {
+      display: none;
+      margin: 12px 0;
+      font-size: 0.64rem;
+      line-height: 1.5;
+      font-style: italic;
+      text-align: left;
+    }
+
+    .mini-info {
+      display: grid;
+      gap: 18px 24px;
+      margin: 18px 0 20px;
+      text-align: left;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.68rem;
+      line-height: 1.35;
+      min-width: 0;
+    }
+
+    .info-icon,
+    .detail-icon {
+      color: var(--pink);
+      width: 12px;
+      flex: 0 0 12px;
+      display: grid;
+      place-items: center;
+      margin-top: 1px;
+    }
+
+    .info-item span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .call-btn,
+    .confirm-btn {
+      width: 100%;
+      min-height: 35px;
+      border: 0;
+      border-radius: 0;
+      background: #145c3f;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .call-btn:hover {
+      background: #1b7a52;
+    }
+
+    .confirm-btn {
+      background: linear-gradient(135deg, #0f3d2e, #145c3f, #1b7a52);
+      border: none;
+      box-shadow: 0 8px 20px rgba(20, 92, 63, 0.25);
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .confirm-btn:hover {
+      background: #1b7a52;
+      box-shadow: 0 10px 24px rgba(20, 92, 63, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .right-col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .section-card {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      padding: 0;
+      min-width: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      margin-bottom: 18px;
+    }
+
+    .section-title .detail-icon { color: var(--purple); }
+
+    .detail-grid {
+      display: grid;
+      gap: 19px;
+      max-width: 520px;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+    }
+
+    .detail-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .detail-value {
+      color: #000;
+      font-size: 0.68rem;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-value .rating-value,
+    .detail-value .no-feedback {
+      font-style: italic;
+    }
+
+    .feedback-list {
+      min-height: 56px;
+      display: grid;
+      gap: 10px;
+      max-width: 700px;
+    }
+
+    .feedback-card {
+      background: transparent;
+      border: 0;
+      padding: 0;
+    }
+
+    .feedback-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 5px;
+      font-size: 0.68rem;
+    }
+
+    .feedback-name { font-weight: 700; }
+    .feedback-date { color: var(--muted); font-size: 0.58rem; }
+    .feedback-stars { color: var(--gold); font-size: 0.72rem; }
+
+    .feedback-text {
+      color: #000;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .feedback-empty {
+      text-align: center;
+      padding: 24px 0 12px;
+      font-size: 0.72rem;
+      font-style: italic;
+      color: #000;
+    }
+
+    .confirm-section {
+      margin-top: 4px;
+    }
+
+    .loading-wrap {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      padding: 10px 0;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 3px solid #dbe7df;
+      border-top-color: var(--green-dark);
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .modal-overlay,
+    .success-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.5);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal-overlay.open,
+    .success-modal-overlay.open { display: flex; }
+
+    .modal-box,
+    .success-modal-box {
+      background: #fff;
+      width: min(360px, 100%);
+      border-radius: 8px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .modal-header,
+    .success-modal-header {
+      background: var(--green-dark);
+      color: #fff;
+      padding: 22px 24px;
+      text-align: center;
+    }
+
+    .modal-header-icon,
+    .success-check-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+      display: grid;
+      place-items: center;
+      margin: 0 auto 10px;
+      font-size: 1.2rem;
+    }
+
+    .modal-header h3,
+    .success-modal-header h3 { font-size: 1rem; margin-bottom: 4px; }
+
+    .modal-header p,
+    .success-modal-header p { font-size: 0.72rem; color: rgba(255,255,255,0.75); }
+
+    .modal-body,
+    .success-modal-body { padding: 18px; }
+
+    .modal-worker-info,
+    .success-worker-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .modal-worker-avatar,
+    .success-worker-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .modal-worker-name,
+    .success-worker-name { font-size: 0.82rem; font-weight: 800; }
+
+    .modal-worker-phone,
+    .success-worker-role { font-size: 0.72rem; color: var(--green-dark); }
+
+    .modal-note,
+    .success-note {
+      font-size: 0.72rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .modal-btns { display: flex; gap: 10px; }
+
+    .modal-btn-cancel,
+    .modal-btn-call,
+    .success-modal-btn {
+      flex: 1;
+      min-height: 38px;
+      border: 0;
+      font-family: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .modal-btn-cancel { background: #edf2ee; color: #145c3f; }
+    .modal-btn-call,
+    .success-modal-btn {
+      background: var(--green-dark);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    @media (min-width: 861px) {
+      .feedback-section {
+        margin-top: 12px;
+      }
+
+      .confirm-section {
+        width: calc(100vw - 442px);
+        max-width: 922px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      body {
+        display: block;
+        background: var(--cream);
+        padding: 0 10px 68px;
+      }
+
+      .left-panel { display: none; }
+
+      .right-panel {
+        min-height: auto;
+        padding: 0 8px 20px;
+      }
+
+      .topbar {
+        min-height: 58px;
+        margin: 0 -8px 18px;
+        padding: 16px 10px 10px;
+        align-items: flex-start;
+        background: var(--green-dark);
+        color: #fff;
+      }
+
+      .title-wrap h1 {
+        color: #fff;
+        font-size: 0.66rem;
+        font-weight: 800;
+        gap: 6px;
+        margin-bottom: 2px;
+      }
+
+      .title-icon { font-size: 0.72rem; }
+
+      .title-wrap p {
+        color: #dbfff0;
+        font-size: 0.46rem;
+        margin-left: 18px;
+      }
+
+      .title-wrap p span { color: #adf0c7; }
+
+      .top-buttons {
+        margin-top: 0;
+        gap: 6px;
+      }
+
+      .top-btn {
+        display: none;
+      }
+
+      .btn-booking {
+        display: inline-flex;
+        background: #fff;
+        color: #145c3f;
+        border: 1px solid rgba(20, 92, 63, 0.25);
+        border-radius: 999px;
+        padding: 5px 8px;
+        min-height: 22px;
+        font-size: 0.48rem;
+      }
+
+      .btn-booking:hover {
+        background: rgba(20, 92, 63, 0.08);
+      }
+
+      .profile-layout {
+        display: block;
+      }
+
+      .left-card {
+        text-align: left;
+        padding: 0;
+      }
+
+      .identity-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0 0 15px;
+        padding: 0 10px;
+      }
+
+      .avatar-wrap {
+        width: 54px;
+        height: 54px;
+        margin: 0;
+        flex: 0 0 auto;
+      }
+
+      .avatar-photo,
+      .avatar-letter {
+        width: 54px;
+        height: 54px;
+      }
+
+      .avatar-letter {
+        font-size: 0.95rem;
+      }
+
+      .identity-text {
+        min-width: 0;
+      }
+
+      .worker-name {
+        font-size: 0.72rem;
+        margin-bottom: 2px;
+        text-align: left;
+      }
+
+      .worker-role {
+        font-size: 0.48rem;
+        margin-bottom: 5px;
+        text-align: left;
+      }
+
+      .avail-badge,
+      .detail-chip {
+        font-size: 0.42rem;
+        padding: 3px 6px;
+      }
+
+      .rating-box {
+        margin: 6px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .stars {
+        font-size: 0.52rem;
+        margin: 0;
+      }
+
+      .rating-text {
+        font-size: 0.4rem;
+      }
+
+      .bio-box {
+        margin: 8px 10px;
+        font-size: 0.48rem;
+      }
+
+      .mini-info {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 24px;
+        margin: 16px 8px 14px;
+      }
+
+      .info-item {
+        font-size: 0.42rem;
+        gap: 5px;
+      }
+
+      .info-icon,
+      .detail-icon {
+        width: 7px;
+        flex-basis: 7px;
+      }
+
+      .info-icon svg,
+      .detail-icon svg {
+        width: 7px;
+        height: 7px;
+      }
+
+      .call-btn {
+        min-height: 24px;
+        border-radius: 6px;
+        font-size: 0.48rem;
+        margin: 0 0 14px;
+      }
+
+      .call-btn svg { width: 8px; height: 8px; }
+
+      .right-col {
+        gap: 15px;
+      }
+
+      .section-title {
+        font-size: 0.58rem;
+        font-weight: 500;
+        gap: 8px;
+        margin-bottom: 14px;
+        padding: 0 10px;
+      }
+
+      .detail-grid {
+        max-width: none;
+        gap: 15px;
+        padding: 0 10px;
+      }
+
+      .detail-row {
+        grid-template-columns: 82px 1fr;
+        gap: 8px;
+        font-size: 0.42rem;
+      }
+
+      .detail-value {
+        font-size: 0.4rem;
+        text-align: right;
+      }
+
+      .feedback-list {
+        min-height: 46px;
+        padding: 0 10px;
+      }
+
+      .feedback-card {
+        font-size: 0.42rem;
+      }
+
+      .feedback-top {
+        font-size: 0.42rem;
+      }
+
+      .feedback-date,
+      .feedback-text,
+      .feedback-empty {
+        font-size: 0.4rem;
+      }
+
+      .feedback-empty {
+        padding: 12px 0;
+      }
+
+      .confirm-section {
+        margin-top: 8px;
+      }
+
+      .confirm-btn {
+        min-height: 28px;
+        border-radius: 7px;
+        font-size: 0.52rem;
+      }
+
+      .confirm-btn svg { width: 8px; height: 8px; }
+    }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
 </head>
-<body>
-
-<div class="left-panel">
-  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
-  <div class="fi fi1">🔧</div><div class="fi fi2">⚡</div><div class="fi fi3">🪚</div><div class="fi fi4">🏠</div>
-  <div class="l-logo">
-    <div class="l-logo-icon">
-      <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="5" width="30" height="22" rx="7" fill="white" fill-opacity="0.92"/>
-        <circle cx="12" cy="16" r="2.8" fill="#3b82f6"/><circle cx="19" cy="16" r="2.8" fill="#14b8a6"/><circle cx="26" cy="16" r="2.8" fill="#a78bfa"/>
-        <path d="M7 27 L3 36 L15 30" fill="white" fill-opacity="0.92"/>
-        <rect x="26" y="19" width="18" height="14" rx="5" fill="#14b8a6" fill-opacity="0.88"/>
-        <circle cx="32" cy="26" r="1.7" fill="white"/><circle cx="37" cy="26" r="1.7" fill="white"/>
-        <path d="M29 33 L25 40 L36 35" fill="#14b8a6" fill-opacity="0.88"/>
-      </svg>
-    </div>
-    <span>NearServe</span>
+<body class="ns-shell-page">
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+    <span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
   </div>
-  <div class="l-main">
-    <h2>Worker <em>Profile</em></h2>
-    <p>Review full details, ratings, and customer feedback before confirming your booking.</p>
-    <div class="l-steps">
-      <div class="l-step"><div class="l-step-num">1</div><div class="l-step-text"><strong>Check the Details</strong><span>Verify name, role, bio and location.</span></div></div>
-      <div class="l-step"><div class="l-step-num">2</div><div class="l-step-text"><strong>Read the Feedback</strong><span>See what past customers say.</span></div></div>
-      <div class="l-step"><div class="l-step-num">3</div><div class="l-step-text"><strong>Confirm Your Worker</strong><span>Hit confirm and complete your booking.</span></div></div>
-    </div>
-    <div class="pills">
-      <div class="pill">✅ Verified</div><div class="pill">⭐ Rated</div><div class="pill">🔒 Trusted</div><div class="pill">⚡ Fast</div>
-    </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role">Customer</div></div>
   </div>
-</div>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+    <a href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+    <a href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+    <a class="active" href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+    <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+    <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong></div>
+    </div>
+    <button class="ns-mobile-book" type="button" onclick="location.href='booking.html'">+ Book</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role">Customer</div></div>
+  </div>
+  <div class="ns-mobile-trust"><span>Verified Workers</span><span>Secure Booking</span><span>Quick & Easy</span></div>
+</header>
 
-<div class="right-panel">
-  <div class="topbar">
+<aside class="left-panel">
+  <div class="sidebar-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong>
+  </div>
+
+  <a href="profile.html" class="sidebar-user">
+    <div class="side-avatar" id="sideAvatar">U</div>
+    <div>
+      <div class="side-name" id="sidebarUserName">Customer</div>
+      <div class="side-role">Customer</div>
+    </div>
+  </a>
+
+  <nav class="side-nav" aria-label="Sidebar navigation">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="booking.html" class="active">Book a service</a>
+    <a href="mybooking.html">Booking history</a>
+    <a href="profile.html">My profile</a>
+    <a href="worker_list.html" id="myWorkersLink">My workers</a>
+  </nav>
+</aside>
+
+<main class="right-panel">
+  <header class="topbar">
     <div class="title-wrap">
-      <h1>👷 Worker Profile</h1>
+      <h1><span class="title-icon" aria-hidden="true">👷</span> Worker Profile</h1>
       <p>Viewing profile of <span id="roleSpan">professional</span></p>
     </div>
     <div class="top-buttons">
-      <button class="top-btn btn-list" onclick="window.location.href='worker_list.html'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to Worker List
-      </button>
-      <button class="top-btn btn-booking" onclick="window.location.href='booking.html'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-        Back to Booking
-      </button>
+      <button class="top-btn btn-list" type="button" onclick="window.location.href='worker_list.html'">&larr; Back to worker list</button>
+      <button class="top-btn btn-booking" type="button" onclick="window.location.href='booking.html'">&larr; Back to booking</button>
     </div>
-  </div>
+  </header>
 
   <div class="profile-layout">
+    <section class="left-card">
+      <div class="identity-row">
+        <div class="avatar-wrap">
+          <img id="avatarPhoto" class="avatar-photo" src="" alt="Profile">
+          <div id="avatarLetter" class="avatar-letter">W</div>
+        </div>
+        <div class="identity-text">
+          <div class="worker-name" id="workerNameDisplay">Worker</div>
+          <div class="worker-role" id="workerRoleDisplay">Service Professional</div>
+          <span class="avail-badge avail-available" id="availBadge">• Available</span>
+          <div class="rating-box">
+            <div class="stars" id="starDisplay">★★★★★</div>
+            <div class="rating-text" id="ratingDisplay">No rating yet</div>
+          </div>
+        </div>
+      </div>
 
-    <div class="left-card">
-      <div class="avatar-wrap">
-        <img id="avatarPhoto" class="avatar-photo" src="" alt="Profile">
-        <div id="avatarLetter" class="avatar-letter">W</div>
-      </div>
-      <div class="worker-name" id="workerNameDisplay">Worker</div>
-      <div class="worker-role" id="workerRoleDisplay">Service Professional</div>
-      <div style="text-align:center;margin-bottom:10px;">
-        <span class="avail-badge avail-available" id="availBadge">● Available</span>
-      </div>
-      <div class="rating-box">
-        <div class="stars" id="starDisplay">☆☆☆☆☆</div>
-        <div class="rating-text" id="ratingDisplay">No rating yet</div>
-      </div>
-      <div class="bio-box" id="bioBox" style="display:none;"></div>
+      <div class="bio-box" id="bioBox"></div>
+
       <div class="mini-info">
         <div class="info-item">
-          <div class="info-icon ii-phone"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-          <span id="phoneDisplay">—</span>
+          <span class="info-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </span>
+          <span id="phoneDisplay">-</span>
         </div>
         <div class="info-item">
-          <div class="info-icon ii-email"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2,4 12,13 22,4"/></svg></div>
-          <span id="emailDisplay">—</span>
-        </div>
-        <div class="info-item" id="addressItem" style="display:none;">
-          <div class="info-icon ii-loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-          <span id="addressDisplay">—</span>
+          <span class="info-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2,4 12,13 22,4"/></svg>
+          </span>
+          <span id="emailDisplay">-</span>
         </div>
         <div class="info-item" id="timeItem" style="display:none;">
-          <div class="info-icon ii-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <span id="timeDisplay">—</span>
+          <span class="info-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <span id="timeDisplay">-</span>
         </div>
         <div class="info-item" id="commItem" style="display:none;">
-          <div class="info-icon ii-email"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2"/></svg></div>
-          <span id="commDisplay">—</span>
+          <span class="info-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
+          </span>
+          <span id="commDisplay">-</span>
+        </div>
+        <div class="info-item" id="addressItem" style="display:none;">
+          <span class="info-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+          <span id="addressDisplay">-</span>
         </div>
       </div>
-      <button class="call-btn" id="callBtn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        Call Worker
-      </button>
-    </div>
 
-    <div class="right-col">
+      <button class="call-btn" id="callBtn" type="button">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Call worker
+      </button>
+    </section>
+
+    <section class="right-col">
       <div class="section-card">
-        <div class="section-title"><div class="st-icon sti-blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>Worker Details</div>
-        <div class="detail-grid" id="detailGrid"><div class="loading-wrap"><div class="spinner"></div>Loading details...</div></div>
+        <div class="section-title">
+          <span class="detail-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          Worker details
+        </div>
+        <div class="detail-grid" id="detailGrid">
+          <div class="loading-wrap"><div class="spinner"></div>Loading details...</div>
+        </div>
       </div>
-      <div class="section-card">
-        <div class="section-title"><div class="st-icon sti-green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>Customer Feedback</div>
-        <div class="feedback-list" id="feedbackList"><div class="feedback-card"><div class="feedback-text" style="color:var(--soft);text-align:center;padding:10px 0;">Loading feedback...</div></div></div>
+
+      <div class="section-card feedback-section">
+        <div class="section-title">
+          <span class="detail-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
+          </span>
+          Customer feedback
+        </div>
+        <div class="feedback-list" id="feedbackList">
+          <div class="feedback-empty">Loading feedback...</div>
+        </div>
       </div>
-      <div class="section-card">
-        <button id="confirmBtn" class="confirm-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Confirm this Worker
+
+      <div class="section-card confirm-section">
+        <button id="confirmBtn" class="confirm-btn" type="button">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg>
+          Confirm this worker
         </button>
       </div>
-    </div>
+    </section>
   </div>
-</div>
+</main>
+
+<nav class="ns-bottom-nav" aria-label="Mobile primary navigation">
+  <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a class="active" aria-current="page" href="booking.html"><i class="fa-solid fa-clipboard-list"></i><span>Book</span></a>
+  <a href="mybooking.html"><i class="fa-solid fa-table-list"></i><span>History</span></a>
+  <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</nav>
 
 <div class="modal-overlay" id="callModal">
   <div class="modal-box">
-    <div class="modal-header"><div class="modal-header-icon">📞</div><h3>Call this Worker?</h3><p>You're about to call this professional</p></div>
+    <div class="modal-header">
+      <div class="modal-header-icon">☎</div>
+      <h3>Call this worker?</h3>
+      <p>You are about to call this professional</p>
+    </div>
     <div class="modal-body">
       <div class="modal-worker-info">
         <div class="modal-worker-avatar" id="modalAvatar">W</div>
-        <div><div class="modal-worker-name" id="modalWorkerName">Worker</div><div class="modal-worker-phone" id="modalWorkerPhone">—</div></div>
+        <div>
+          <div class="modal-worker-name" id="modalWorkerName">Worker</div>
+          <div class="modal-worker-phone" id="modalWorkerPhone">-</div>
+        </div>
       </div>
-      <div class="modal-note">📱 This will open your phone's dialler. Standard call rates apply.</div>
+      <div class="modal-note">This will open your phone dialer. Standard call rates may apply.</div>
       <div class="modal-btns">
-        <button class="modal-btn-cancel" id="callModalCancel">Cancel</button>
-        <button class="modal-btn-call" id="callModalConfirm">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          Yes, Call Now
-        </button>
+        <button class="modal-btn-cancel" id="callModalCancel" type="button">Cancel</button>
+        <button class="modal-btn-call" id="callModalConfirm" type="button">Call now</button>
       </div>
     </div>
   </div>
@@ -274,23 +1059,31 @@
 
 <div class="success-modal-overlay" id="workerSuccessModal">
   <div class="success-modal-box">
-    <div class="success-modal-header"><div class="success-check-wrap">✅</div><h3>Worker Selected!</h3><p>Your preferred worker has been saved</p></div>
+    <div class="success-modal-header">
+      <div class="success-check-wrap">✓</div>
+      <h3>Worker selected</h3>
+      <p>Your preferred worker has been saved</p>
+    </div>
     <div class="success-modal-body">
       <div class="success-worker-card">
         <div class="success-worker-avatar" id="successAvatar">W</div>
-        <div><div class="success-worker-name" id="successWorkerName">Worker</div><div class="success-worker-role" id="successWorkerRole">Professional</div></div>
+        <div>
+          <div class="success-worker-name" id="successWorkerName">Worker</div>
+          <div class="success-worker-role" id="successWorkerRole">Professional</div>
+        </div>
       </div>
-      <div class="success-note">📋 Now complete your booking form to confirm the appointment.</div>
-      <button class="success-modal-btn" id="successModalGoBtn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Go to Booking Form
-      </button>
+      <div class="success-note">Now complete your booking form to confirm the appointment.</div>
+      <button class="success-modal-btn" id="successModalGoBtn" type="button">Go to booking form</button>
     </div>
   </div>
 </div>
 
 <script>
-const API_BASE = "/api";
+const API_BASE =
+  window.location.protocol === "file:" ||
+  (window.location.port && window.location.port !== "5000")
+    ? "http://localhost:5000/api"
+    : "/api";
 
 const params = new URLSearchParams(window.location.search);
 const workerPhone = (params.get("phone") || "").trim();
@@ -302,23 +1095,88 @@ if (!workerPhone || !workerRole) {
 
 document.getElementById("roleSpan").textContent = workerRole || "professional";
 
+const customerPhone = (localStorage.getItem("userPhone") || localStorage.getItem("phone") || "").trim();
+const displayName =
+  localStorage.getItem("fullName") ||
+  localStorage.getItem("name") ||
+  localStorage.getItem("userName") ||
+  "Customer";
+
+function setSidebarIdentity(name, imageSrc) {
+  const cleanName = name || "Customer";
+  const avatar = document.getElementById("sideAvatar");
+  document.getElementById("sidebarUserName").textContent = cleanName;
+  avatar.innerHTML = imageSrc
+    ? `<img src="${imageSrc}" alt="">`
+    : cleanName.charAt(0).toUpperCase();
+}
+
+setSidebarIdentity(displayName, customerPhone ? localStorage.getItem(`avatarBase64_customer_${customerPhone}`) : "");
+
+(async function syncSidebarAvatar() {
+  if (!customerPhone) return;
+  try {
+    const res = await fetch(`${API_BASE}/profile/${encodeURIComponent(customerPhone)}`);
+    if (!res.ok) return;
+    const profile = await res.json();
+    const name = profile.name || displayName;
+    const image = profile.avatarBase64 || localStorage.getItem(`avatarBase64_customer_${customerPhone}`) || "";
+    if (profile.avatarBase64) localStorage.setItem(`avatarBase64_customer_${customerPhone}`, profile.avatarBase64);
+    setSidebarIdentity(name, image);
+  } catch {}
+})();
+
+document.getElementById("myWorkersLink")?.addEventListener("click", () => {
+  localStorage.setItem("selectedServiceRole", workerRole || "carpenter");
+});
+
 const timeMap = {
-  morning:   "🌅 Morning (6AM–12PM)",
-  afternoon: "☀️ Afternoon (12PM–5PM)",
-  evening:   "🌆 Evening (5PM–10PM)",
-  flexible:  "⏰ Flexible Anytime"
+  morning: "Morning (6AM-12PM)",
+  afternoon: "Afternoon (12PM-5PM)",
+  evening: "Evening (5PM-10PM)",
+  flexible: "Flexible Anytime"
 };
 
 const communicationMap = {
-  chat: "💬 Chat",
-  phone: "📞 Phone Call",
-  email: "📧 Email"
+  chat: "Chat",
+  phone: "Phone call",
+  email: "Email"
 };
 
 function availInfo(val) {
-  if (val === "busy") return { cls:"avail-busy", text:"● Currently Busy" };
-  if (val === "off")  return { cls:"avail-off", text:"● Not Taking Jobs" };
-  return { cls:"avail-available", text:"● Available" };
+  if (val === "busy") return { cls: "avail-busy", text: "• Currently Busy" };
+  if (val === "off") return { cls: "avail-off", text: "• Not Taking Jobs" };
+  return { cls: "avail-available", text: "• Available" };
+}
+
+function makeStars(rating) {
+  const rounded = Math.round(Number(rating) || 0);
+  return "★".repeat(rounded) + "★".repeat(5 - rounded);
+}
+
+function iconSvg(type) {
+  const common = `width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"`;
+  const icons = {
+    user: `<svg ${common}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    tool: `<svg ${common}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l2.1-2.1a5.8 5.8 0 0 1-7.5 7.5L6.8 20.3a2.2 2.2 0 0 1-3.1-3.1l5.6-5.6a5.8 5.8 0 0 1 7.5-7.5l-2.1 2.2z"/></svg>`,
+    phone: `<svg ${common}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+    mail: `<svg ${common}><rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="2,4 12,13 22,4"/></svg>`,
+    star: `<svg ${common}><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21 7 14.2 2 9.3l6.9-1L12 2z"/></svg>`,
+    status: `<svg ${common}><circle cx="12" cy="12" r="9"/></svg>`,
+    clock: `<svg ${common}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    chat: `<svg ${common}><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>`,
+    pin: `<svg ${common}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`
+  };
+  return icons[type] || icons.user;
+}
+
+function detailRow(icon, label, value) {
+  return `
+    <div class="detail-row">
+      <span class="detail-label"><span class="detail-icon">${iconSvg(icon)}</span>${label}</span>
+      <span class="detail-value">${value}</span>
+    </div>
+  `;
 }
 
 async function loadProfile() {
@@ -331,21 +1189,22 @@ async function loadProfile() {
 
     const photo = document.getElementById("avatarPhoto");
     const letter = document.getElementById("avatarLetter");
+    const initial = (w.name || "W").charAt(0).toUpperCase();
 
     if (w.avatarBase64) {
       photo.src = w.avatarBase64;
       photo.style.display = "block";
       letter.style.display = "none";
     } else {
-      letter.textContent = (w.name || "W").charAt(0).toUpperCase();
+      letter.textContent = initial;
       photo.style.display = "none";
       letter.style.display = "flex";
     }
 
     document.getElementById("workerNameDisplay").textContent = w.name || "Worker";
     document.getElementById("workerRoleDisplay").textContent = w.role || workerRole;
-    document.getElementById("phoneDisplay").textContent = w.phone || "—";
-    document.getElementById("emailDisplay").textContent = w.email || "—";
+    document.getElementById("phoneDisplay").textContent = w.phone || "-";
+    document.getElementById("emailDisplay").textContent = w.email || "-";
 
     const av = availInfo(w.availability);
     const badge = document.getElementById("availBadge");
@@ -354,18 +1213,17 @@ async function loadProfile() {
 
     const avg = parseFloat(w.avgRating) || 0;
     const reviewsCount = w.reviewsCount ?? 0;
-
-    document.getElementById("starDisplay").textContent = avg > 0
-      ? [1,2,3,4,5].map(i => i <= Math.round(avg) ? "★" : "☆").join("")
-      : "☆☆☆☆☆";
+    const starDisplay = document.getElementById("starDisplay");
+    starDisplay.textContent = makeStars(avg);
+    starDisplay.classList.toggle("has-rating", avg > 0);
 
     document.getElementById("ratingDisplay").textContent = avg > 0
-      ? `${avg.toFixed(1)} / 5 · ${reviewsCount} review${reviewsCount !== 1 ? "s" : ""}`
+      ? `${avg.toFixed(1)} (${reviewsCount} review${reviewsCount !== 1 ? "s" : ""})`
       : "No rating yet";
 
     if (w.bio && w.bio.trim()) {
       const b = document.getElementById("bioBox");
-      b.textContent = '"' + w.bio.trim() + '"';
+      b.textContent = `"${w.bio.trim()}"`;
       b.style.display = "block";
     }
 
@@ -381,42 +1239,39 @@ async function loadProfile() {
     }
 
     if (w.communicationPref) {
-      document.getElementById("commDisplay").textContent = communicationMap[w.communicationPref] || w.communicationPref;
+      document.getElementById("commDisplay").textContent = `${communicationMap[w.communicationPref] || w.communicationPref} preferred`;
       document.getElementById("commItem").style.display = "flex";
     }
 
     const grid = document.getElementById("detailGrid");
-    const roleLabel = (w.role || workerRole || "—");
+    const roleLabel = w.role || workerRole || "-";
+    const availabilityText = av.text.replace("• ", "");
+
     const rows = [
-      { label:"👤 Name", value: w.name || "—" },
-      { label:"🔧 Role", value: roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1) },
-      { label:"📞 Phone", value: w.phone || "—" },
-      { label:"📧 Email", value: w.email || "—" },
-      { label:"⭐ Rating", value: avg > 0 ? `${avg.toFixed(1)} / 5 (${reviewsCount} reviews)` : "No reviews yet" },
-      { label:"🟢 Availability", value: av.text.replace("● ", "") }
+      detailRow("user", "Name", w.name || "-"),
+      detailRow("tool", "Role", roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)),
+      detailRow("phone", "Phone", w.phone || "-"),
+      detailRow("mail", "Email", w.email || "-"),
+      detailRow("star", "Rating", avg > 0 ? `<span class="rating-value">${avg.toFixed(1)} / 5 (${reviewsCount} reviews)</span>` : `<span class="no-feedback">No reviews yet</span>`),
+      detailRow("status", "Availability", `<span class="detail-chip">${availabilityText}</span>`)
     ];
 
-    if (w.bio) rows.push({ label:"💬 Bio", value: w.bio });
-    if (addrParts.length) rows.push({ label:"📍 Location", value: addrParts.join(", ") });
-    if (w.preferredTime) rows.push({ label:"🕐 Work Hours", value: timeMap[w.preferredTime] || w.preferredTime });
-    if (w.communicationPref) rows.push({ label:"📲 Contact Pref", value: communicationMap[w.communicationPref] || w.communicationPref });
+    if (w.preferredTime) rows.push(detailRow("clock", "Work hours", `<span class="detail-chip">${timeMap[w.preferredTime] || w.preferredTime}</span>`));
+    if (w.communicationPref) rows.push(detailRow("chat", "Contact pref", `<span class="detail-chip">${communicationMap[w.communicationPref] || w.communicationPref}</span>`));
+    if (addrParts.length) rows.push(detailRow("pin", "Location", addrParts.join(", ")));
+    if (w.bio) rows.push(detailRow("chat", "Bio", w.bio));
 
-    grid.innerHTML = rows.map(r => `
-      <div class="detail-row">
-        <span class="detail-label">${r.label}</span>
-        <span class="detail-value">${r.value}</span>
-      </div>
-    `).join("");
+    grid.innerHTML = rows.join("");
 
     const feedbackList = document.getElementById("feedbackList");
     const reviews = w.reviewsList || w.reviews || [];
 
     if (!reviews.length) {
-      feedbackList.innerHTML = `<div class="feedback-card"><div class="feedback-text" style="color:var(--soft);text-align:center;padding:10px 0;">No feedback yet — be the first to review!</div></div>`;
+      feedbackList.innerHTML = `<div class="feedback-empty">No feedback yet - be the first to review!</div>`;
     } else {
       feedbackList.innerHTML = reviews.map(r => {
-        const stars = [1,2,3,4,5].map(i => i <= (r.rating || 0) ? "★" : "☆").join("");
-        const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}) : "";
+        const stars = makeStars(r.rating);
+        const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "";
         return `<div class="feedback-card">
           <div class="feedback-top">
             <div><div class="feedback-name">${r.customerName || "Customer"}</div><div class="feedback-date">${date}</div></div>
@@ -428,7 +1283,8 @@ async function loadProfile() {
     }
 
   } catch (err) {
-    document.getElementById("detailGrid").innerHTML = `<div style="color:#ef4444;padding:10px;">Could not load worker details.</div>`;
+    document.getElementById("detailGrid").innerHTML = `<div style="color:#b91c1c;font-size:0.75rem;">Could not load worker details.</div>`;
+    document.getElementById("feedbackList").innerHTML = `<div class="feedback-empty">Could not load feedback.</div>`;
   }
 }
 
@@ -438,18 +1294,16 @@ document.getElementById("callBtn").addEventListener("click", function() {
   const phone = document.getElementById("phoneDisplay").textContent.trim();
   const name = document.getElementById("workerNameDisplay").textContent.trim();
 
-  if (!phone || phone === "—") {
-    this.textContent = "⚠️ Phone not available";
-    setTimeout(() => this.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.07 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.09a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      Call Worker
-    `, 2000);
+  if (!phone || phone === "-") {
+    const original = this.innerHTML;
+    this.textContent = "Phone not available";
+    setTimeout(() => { this.innerHTML = original; }, 2000);
     return;
   }
 
   document.getElementById("modalAvatar").textContent = name.charAt(0).toUpperCase();
   document.getElementById("modalWorkerName").textContent = name;
-  document.getElementById("modalWorkerPhone").textContent = "📞 " + phone;
+  document.getElementById("modalWorkerPhone").textContent = phone;
   document.getElementById("callModal").classList.add("open");
 });
 
@@ -488,5 +1342,6 @@ document.getElementById("workerSuccessModal").addEventListener("click", function
   if (e.target === this) this.classList.remove("open");
 });
 </script>
+  <script src="js/dashboard-shell.js"></script>
 </body>
 </html>

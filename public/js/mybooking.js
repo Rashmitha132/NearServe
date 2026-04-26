@@ -10,7 +10,7 @@ const name = localStorage.getItem("name") || "";
 // ROLE VALIDATION
 // ════════════════════════════════════════════
 if (!phone || role !== "customer") {
-  alert("Please login as customer");
+  showToast("Please login as customer");
   window.location.href = "login.html";
 }
 
@@ -102,7 +102,7 @@ async function submitRatingLegacy(bookingId) {
 
   const rating = Number(ratingStr);
   if (Number.isNaN(rating) || rating < 1 || rating > 5) {
-    alert("Rating must be between 1 and 5");
+    showToast("Rating must be between 1 and 5");
     return;
   }
 
@@ -122,15 +122,15 @@ async function submitRatingLegacy(bookingId) {
 
     const data = await res.json();
     if (!res.ok) {
-      alert(data.error || "Failed to submit review");
+      showToast(data.error || "Failed to submit review");
       return;
     }
 
-    alert("Thanks! Your rating was saved.");
+    showToast("Thanks! Your rating was saved.", "success");
     populateLegacyTable(); // Refresh table
   } catch (err) {
     console.log(err);
-    alert("Error submitting rating");
+    showToast("Error submitting rating");
   }
 }
 

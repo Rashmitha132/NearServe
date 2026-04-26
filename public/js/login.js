@@ -1,10 +1,15 @@
-const API_BASE = "/api";
+const API_BASE =
+  window.location.protocol === "file:" ||
+  (window.location.port && window.location.port !== "5000")
+    ? "http://localhost:5000/api"
+    : "/api";
+window.NEARSERVE_API_BASE = API_BASE;
 
 const loginForm = document.getElementById("loginForm");
-const emailOrPhoneInput = document.getElementById("emailOrPhone");
-const passwordInput = document.getElementById("password");
-const roleInput = document.getElementById("role");
-const loginBtn = document.getElementById("loginBtn");
+const emailOrPhoneInput = loginForm ? loginForm.querySelector("#emailOrPhone") : null;
+const passwordInput = loginForm ? loginForm.querySelector("#password") : null;
+const roleInput = loginForm ? loginForm.querySelector("#role") : null;
+const loginBtn = loginForm ? loginForm.querySelector("#loginBtn") : null;
 
 console.log("login.js loaded");
 
@@ -17,7 +22,7 @@ if (loginForm) {
     const role = roleInput.value;
 
     if (!emailOrPhone || !password || !role) {
-      alert("Please fill all fields.");
+      showToast("Please fill all fields.");
       return;
     }
 
@@ -42,7 +47,7 @@ if (loginForm) {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        alert(data.message || data.error || "Login failed");
+        showToast(data.message || data.error || "Login failed");
         return;
       }
 
@@ -131,11 +136,11 @@ if (loginForm) {
         }
       }
 
-      alert("Login successful, but no redirect matched.");
+      showToast("Login successful, but no redirect matched.");
 
     } catch (error) {
       console.error("Login error:", error);
-      alert("Server error during login");
+      showToast("Could not connect to the NearServe server. Please start the server and open http://localhost:5000/login.html");
     } finally {
       if (loginBtn) {
         loginBtn.disabled = false;

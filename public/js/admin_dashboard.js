@@ -141,11 +141,11 @@ async function loadWorkers() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "approve" })
           });
-          alert("✅ Proof approved!");
+          showToast("Proof approved!", "success");
         } else {
           const reason = askRejectReason("PDF proof");
           if (!reason) {
-            alert("Reason is required.");
+            showToast("Reason is required.");
             return;
           }
 
@@ -154,12 +154,12 @@ async function loadWorkers() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "reject", reason })
           });
-          alert("❌ Proof rejected.");
+          showToast("Proof rejected.", "success");
         }
 
         loadAll();
       } catch (e) {
-        alert(e.message);
+        showToast(e.message);
       }
     });
   });
@@ -240,11 +240,11 @@ async function loadJobs() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "approve" })
           });
-          alert("✅ Video approved. Job marked completed!");
+          showToast("Video approved. Job marked completed!", "success");
         } else {
           const reason = askRejectReason("job video");
           if (!reason) {
-            alert("Reason is required.");
+            showToast("Reason is required.");
             return;
           }
 
@@ -253,12 +253,12 @@ async function loadJobs() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ decision: "reject", reason })
           });
-          alert("❌ Video rejected.");
+          showToast("Video rejected.", "success");
         }
 
         loadAll();
       } catch (e) {
-        alert(e.message);
+        showToast(e.message);
       }
     });
   });
@@ -272,7 +272,7 @@ async function loadAll() {
     await loadWorkers();
     await loadJobs();
   } catch (e) {
-    alert(e.message);
+    showToast(e.message);
 
     const msg = String(e.message).toLowerCase();
     if (msg.includes("unauthorized") || msg.includes("invalid token")) {

@@ -40,7 +40,7 @@ function forceLogout(msg) {
   clearTimeout(warningTimer);
   clearInterval(countdownInterval);
   localStorage.clear();
-  alert(msg);
+  showToast(msg);
   window.location.replace("login.html");
 }
 
@@ -87,7 +87,7 @@ const role   = (localStorage.getItem("role")  || "").trim().toLowerCase();
 const nameLS = localStorage.getItem("name") || "";
 
 if (!phone || role !== "customer") {
-  alert("Please login as customer");
+  showToast("Please login as customer");
   window.location.replace("login.html");
 }
 
@@ -195,7 +195,7 @@ clearWorkerBtn.addEventListener("click", () => {
 // ─────────────────────────────────────────
 chooseWorkerBtn.addEventListener("click", () => {
   const service = (serviceSelect.value || "").trim().toLowerCase();
-  if (!service) return alert("Please select a service first");
+  if (!service) return showToast("Please select a service first");
 
   // ✅ Save service so worker_list.html knows what to show
   // and booking.html restores it when coming back
@@ -216,9 +216,9 @@ bookingForm.addEventListener("submit", async (e) => {
   const chosenWorkerPhone = (localStorage.getItem("chosenWorkerPhone") || "").trim();
   const chosenWorkerRole  = (localStorage.getItem("chosenWorkerRole")  || "").trim().toLowerCase();
 
-  if (!service) return alert("Select service first");
+  if (!service) return showToast("Select service first");
   if (!chosenWorkerPhone || chosenWorkerRole !== service) {
-    return alert("Please choose a worker for the selected service");
+    return showToast("Please choose a worker for the selected service");
   }
 
   try {
@@ -237,7 +237,7 @@ bookingForm.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
-    if (!res.ok) return alert(data.error || "Booking failed");
+    if (!res.ok) return showToast(data.error || "Booking failed");
 
     resetSessionTimer();
 
@@ -269,6 +269,6 @@ bookingForm.addEventListener("submit", async (e) => {
 
   } catch (err) {
     console.log(err);
-    alert("Server error. Try again later.");
+    showToast("Server error. Try again later.");
   }
 });

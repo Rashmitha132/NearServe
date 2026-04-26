@@ -5,7 +5,7 @@ const phoneLS = (localStorage.getItem("phone") || "").trim();
 const roleLS = (localStorage.getItem("role") || "").trim().toLowerCase();
 
 if (!phoneLS || roleLS !== "customer") {
-  alert("Please login as customer");
+  showToast("Please login as customer");
   window.location.href = "login.html";
 }
 
@@ -14,7 +14,7 @@ const workerPhone = (params.get("phone") || "").trim();
 const workerRole = (params.get("role") || "").trim().toLowerCase();
 
 if (!workerPhone || !workerRole) {
-  alert("Invalid worker profile link.");
+  showToast("Invalid worker profile link.");
   window.location.href = "worker_list.html";
 }
 
@@ -115,7 +115,7 @@ confirmBtn.addEventListener("click", () => {
     );
   }
 
-  alert("Worker selected! Now complete booking form.");
+  showToast("Worker selected! Now complete booking form.", "success");
   window.location.href = "booking.html";
 });
 
