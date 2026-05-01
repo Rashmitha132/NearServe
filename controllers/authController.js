@@ -5,6 +5,108 @@ const asyncHandler = require("../utils/asyncHandler");
 const resetTokens = require("../utils/resetTokens");
 const nodemailerTransporter = require("../services/emailService");
 
+const oauthStates = new Map();
+const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+
+const getAppUrl = () =>
+  (process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`).replace(/\/$/, "");
+
+const oauthProviders = {
+  google: {
+    authUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+    tokenUrl: "https://oauth2.googleapis.com/token",
+    userInfoUrl: "https://openidconnect.googleapis.com/v1/userinfo",
+    scope: "openid email profile",
+    clientIdEnv: "GOOGLE_CLIENT_ID",
+    clientSecretEnv: "GOOGLE_CLIENT_SECRET",
+  },
+  facebook: {
+    authUrl: "https://www.facebook.com/v19.0/dialog/oauth",
+    tokenUrl: "https://graph.facebook.com/v19.0/oauth/access_token",
+    userInfoUrl: "https://graph.facebook.com/me?fields=id,name,email",
+    scope: "email,public_profile",
+    clientIdEnv: "FACEBOOK_CLIENT_ID",
+    clientSecretEnv: "FACEBOOK_CLIENT_SECRET",
+  },
+  linkedin: {
+    authUrl: "https://www.linkedin.com/oauth/v2/authorization",
+    tokenUrl: "https://www.linkedin.com/oauth/v2/accessToken",
+    userInfoUrl: "https://api.linkedin.com/v2/userinfo",
+    scope: "openid profile email",
+    clientIdEnv: "LINKEDIN_CLIENT_ID",
+    clientSecretEnv: "LINKEDIN_CLIENT_SECRET",
+  },
+};
+
+function getOAuthConfig(provider) {
+  const config = oauthProviders[provider];
+  if (!config) return null;
+
+  return {
+    ...config,
+    clientId: process.env[config.clientIdEnv],
+    clientSecret: process.env[config.clientSecretEnv],
+    redirectUri: `${getAppUrl()}/api/auth/${provider}/callback`,
+  };
+}
+
+function getUserRedirect(user) {
+  if (user.role === "customer") return "/booking.html";
+
+  if (["carpenter", "plumber", "electrician"].includes(user.role)) {
+    if (user.status === "pending_verification" || user.status === "proof_submitted") {
+      return "/upload_proof.html";
+    }
+
+    if (user.status === "probation") {
+      return `/${user.role}_dashboard.html`;
+    }
+
+    if (user.status === "full_access") {
+      return `/${user.role}_requests.html`;
+    }
+  }
+
+  return "/login.html";
+}
+
+function redirectOAuthError(res, message) {
+  const error = encodeURIComponent(message);
+  return res.redirect(`/login.html?oauth_error=${error}#login`);
+}
+
+function sendOAuthSuccess(res, user) {
+  const userData = {
+    name: user.name,
+    phone: user.phone,
+    email: user.email,
+    role: user.role,
+    status: user.status,
+  };
+  const redirectTo = getUserRedirect(user);
+
+  res.send(`<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>NearServe Login</title></head>
+<body>
+<script>
+  const user = ${JSON.stringify(userData)};
+  localStorage.setItem("userName", user.name || "");
+  localStorage.setItem("userPhone", user.phone || "");
+  localStorage.setItem("userEmail", user.email || "");
+  localStorage.setItem("userRole", user.role || "");
+  localStorage.setItem("userStatus", user.status || "");
+  localStorage.setItem("name", user.name || "");
+  localStorage.setItem("phone", user.phone || "");
+  localStorage.setItem("email", user.email || "");
+  localStorage.setItem("role", user.role || "");
+  localStorage.setItem("status", user.status || "");
+  window.location.replace(${JSON.stringify(redirectTo)});
+</script>
+</body>
+</html>`);
+}
+
 const signup = asyncHandler(async (req, res) => {
   const { name, email, phone, password, role } = req.body;
 
@@ -104,13 +206,13 @@ const forgotPassword = asyncHandler(async (req, res) => {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #f4f4f4; padding: 30px; border-radius: 12px;">
           <div style="text-align: center; margin-bottom: 24px;">
-            <h2 style="color: #4f8ef7; margin: 0;">QuickServe</h2>
+            <h2 style="color: #4f8ef7; margin: 0;">NearServe</h2>
           </div>
           <div style="background: white; padding: 28px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
             <h3 style="margin-top: 0; color: #1e2140;">Reset Your Password</h3>
             <p style="color: #555; line-height: 1.6;">Hi <strong>${user.name}</strong>,</p>
             <p style="color: #555; line-height: 1.6;">
-              We received a request to reset your QuickServe password.
+              We received a request to reset your NearServe password.
               Click the button below to set a new password:
             </p>
             <div style="text-align: center; margin: 28px 0;">
@@ -128,7 +230,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
             </p>
           </div>
           <p style="text-align: center; color: #aaa; font-size: 12px; margin-top: 20px;">
-            © QuickServe. All rights reserved.
+            © NearServe. All rights reserved.
           </p>
         </div>
       `,
@@ -192,10 +294,111 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json({ message: "Password reset successful" });
 });
 
+const startOAuth = asyncHandler(async (req, res) => {
+  const provider = req.params.provider || req.path.split("/")[1];
+  const config = getOAuthConfig(provider);
+
+  if (!config) {
+    return redirectOAuthError(res, "Unsupported social login provider");
+  }
+
+  if (!config.clientId || !config.clientSecret) {
+    return redirectOAuthError(res, `${provider} login is not configured yet`);
+  }
+
+  const state = crypto.randomBytes(24).toString("hex");
+  oauthStates.set(state, {
+    provider,
+    expiresAt: Date.now() + OAUTH_STATE_TTL_MS,
+  });
+
+  const params = new URLSearchParams({
+    client_id: config.clientId,
+    redirect_uri: config.redirectUri,
+    response_type: "code",
+    scope: config.scope,
+    state,
+  });
+
+  if (provider === "google") {
+    params.set("prompt", "select_account");
+  }
+
+  res.redirect(`${config.authUrl}?${params.toString()}`);
+});
+
+const handleOAuthCallback = asyncHandler(async (req, res) => {
+  const provider = req.params.provider || req.path.split("/")[1];
+  const config = getOAuthConfig(provider);
+  const { code, state, error } = req.query;
+
+  if (error) {
+    return redirectOAuthError(res, "Social login was cancelled");
+  }
+
+  const stateRecord = oauthStates.get(state);
+  oauthStates.delete(state);
+
+  if (!config || !stateRecord || stateRecord.provider !== provider || Date.now() > stateRecord.expiresAt) {
+    return redirectOAuthError(res, "Social login session expired. Please try again");
+  }
+
+  if (!code) {
+    return redirectOAuthError(res, "Social login did not return an authorization code");
+  }
+
+  const tokenBody = new URLSearchParams({
+    grant_type: "authorization_code",
+    code,
+    redirect_uri: config.redirectUri,
+    client_id: config.clientId,
+    client_secret: config.clientSecret,
+  });
+
+  const tokenResponse = await fetch(config.tokenUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: tokenBody,
+  });
+  const tokenData = await tokenResponse.json().catch(() => ({}));
+
+  if (!tokenResponse.ok || !tokenData.access_token) {
+    return redirectOAuthError(res, "Could not verify social login");
+  }
+
+  const profileResponse = await fetch(config.userInfoUrl, {
+    headers: { Authorization: `Bearer ${tokenData.access_token}` },
+  });
+  const profile = await profileResponse.json().catch(() => ({}));
+
+  if (!profileResponse.ok) {
+    return redirectOAuthError(res, "Could not read social profile");
+  }
+
+  const email = (profile.email || "").trim().toLowerCase();
+
+  if (!email) {
+    return redirectOAuthError(res, "Your social account did not share an email address");
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return redirectOAuthError(
+      res,
+      "No NearServe account exists for this email. Please sign up with phone number first"
+    );
+  }
+
+  return sendOAuthSuccess(res, user);
+});
+
 module.exports = {
   signup,
   login,
   forgotPassword,
   verifyResetToken,
   resetPassword,
+  startOAuth,
+  handleOAuthCallback,
 };

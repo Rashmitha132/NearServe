@@ -145,6 +145,222 @@
   <script src="./js/toast.js"></script>
   <link rel="stylesheet" href="./css/global.css">
   <link rel="stylesheet" href="./css/background.css">
+  <style>
+    :root{
+      --landing-motion-fast:.2s ease-out;
+      --landing-motion-med:.36s cubic-bezier(.22,1,.36,1);
+      --landing-motion-slow:.5s cubic-bezier(.22,1,.36,1);
+      --landing-shadow-soft:0 12px 28px rgba(12,70,46,.12);
+      --landing-shadow-lift:0 20px 46px rgba(12,70,46,.16);
+    }
+
+    body{background:#fff!important}
+    .page{animation:landingFadeIn var(--landing-motion-slow) both}
+
+    .nav{
+      animation:landingNavIn var(--landing-motion-med) both;
+      transition:background-color var(--landing-motion-fast),box-shadow var(--landing-motion-fast),border-color var(--landing-motion-fast)
+    }
+
+    .brand,
+    .nav-links a,
+    .nav-cta,
+    .btn,
+    .card-link{
+      transition:transform var(--landing-motion-fast),box-shadow var(--landing-motion-fast),background-color var(--landing-motion-fast),border-color var(--landing-motion-fast),color var(--landing-motion-fast),opacity var(--landing-motion-fast)
+    }
+
+    .nav-links a:hover{transform:translateY(-1px)}
+
+    .nav-cta:hover,
+    .btn:hover{
+      transform:translateY(-2px) scale(1.035);
+      box-shadow:var(--landing-shadow-soft)
+    }
+
+    .nav-cta:active,
+    .btn:active,
+    .card-link:active{
+      transform:translateY(0) scale(.98)
+    }
+
+    .hero::before{
+      animation:landingFloatOne 9s ease-in-out infinite alternate;
+      will-change:transform
+    }
+
+    .hero::after{
+      animation:landingFloatTwo 11s ease-in-out infinite alternate;
+      will-change:transform
+    }
+
+    .hero-copy{
+      animation:landingSlideUp .48s cubic-bezier(.22,1,.36,1) .08s both
+    }
+
+    .hero-visual{
+      animation:landingSlideUp .5s cubic-bezier(.22,1,.36,1) .16s both
+    }
+
+    .badge,
+    .logo-panel,
+    .icon,
+    .step-num{
+      transition:transform var(--landing-motion-fast),box-shadow var(--landing-motion-fast)
+    }
+
+    .badge:hover,
+    .logo-panel:hover,
+    .step:hover .step-num{
+      transform:translateY(-2px);
+      box-shadow:var(--landing-shadow-soft)
+    }
+
+    section,
+    .footer{
+      animation:landingSectionIn var(--landing-motion-slow) both;
+      animation-timeline:auto
+    }
+
+    .card,
+    .step,
+    .cta,
+    .footer-col{
+      transition:transform var(--landing-motion-fast),box-shadow var(--landing-motion-fast),border-color var(--landing-motion-fast),background-color var(--landing-motion-fast)
+    }
+
+    .card:hover,
+    .step:hover,
+    .footer-col:hover{
+      transform:translateY(-5px);
+      box-shadow:var(--landing-shadow-lift)!important
+    }
+
+    .card:active,
+    .step:active,
+    .footer-col:active{
+      transform:translateY(-2px) scale(.99)
+    }
+
+    .services-grid .card:nth-child(1),
+    .trust-grid .card:nth-child(1),
+    .steps .step:nth-child(1){animation-delay:.04s}
+    .services-grid .card:nth-child(2),
+    .trust-grid .card:nth-child(2),
+    .steps .step:nth-child(3){animation-delay:.1s}
+    .services-grid .card:nth-child(3),
+    .trust-grid .card:nth-child(3),
+    .steps .step:nth-child(5){animation-delay:.16s}
+
+    .services-grid .card,
+    .trust-grid .card,
+    .steps .step{
+      animation:landingCardReveal var(--landing-motion-slow) both
+    }
+
+    @supports (animation-timeline:view()){
+      .section-head,
+      .services-grid .card,
+      .trust-grid .card,
+      .steps .step,
+      .cta h2,
+      .cta p,
+      .cta .btn{
+        animation:landingCardReveal var(--landing-motion-slow) both;
+        animation-timeline:view();
+        animation-range:entry 0% cover 26%
+      }
+    }
+
+    @keyframes landingFadeIn{
+      from{opacity:0}
+      to{opacity:1}
+    }
+
+    @keyframes landingNavIn{
+      from{opacity:0;transform:translateY(-14px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    @keyframes landingSlideUp{
+      from{opacity:0;transform:translateY(22px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    @keyframes landingSectionIn{
+      from{opacity:0}
+      to{opacity:1}
+    }
+
+    @keyframes landingCardReveal{
+      from{opacity:0;transform:translateY(18px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    @keyframes landingFloatOne{
+      from{transform:translate3d(0,0,0) scale(1)}
+      to{transform:translate3d(-14px,18px,0) scale(1.04)}
+    }
+
+    @keyframes landingFloatTwo{
+      from{transform:translate3d(0,0,0) scale(1)}
+      to{transform:translate3d(18px,-12px,0) scale(1.05)}
+    }
+
+    @media(max-width:768px){
+      .nav-cta:hover,
+      .btn:hover,
+      .card:hover,
+      .step:hover,
+      .footer-col:hover{
+        transform:none;
+        box-shadow:none!important
+      }
+
+      .nav-cta:active,
+      .btn:active,
+      .card:active,
+      .step:active,
+      .footer-col:active{
+        transform:scale(.98);
+        box-shadow:var(--landing-shadow-soft)!important
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      .page,
+      .nav,
+      .hero::before,
+      .hero::after,
+      .hero-copy,
+      .hero-visual,
+      section,
+      .footer,
+      .services-grid .card,
+      .trust-grid .card,
+      .steps .step,
+      .section-head,
+      .cta h2,
+      .cta p,
+      .cta .btn{
+        animation:none!important
+      }
+
+      .brand,
+      .nav-links a,
+      .nav-cta,
+      .btn,
+      .card,
+      .step,
+      .footer-col,
+      .badge,
+      .logo-panel,
+      .icon,
+      .step-num{
+        transition:none!important
+      }
+    }
+  </style>
 </head>
 <body>
 <div id="bg-circles">

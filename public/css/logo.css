@@ -9,6 +9,7 @@
   display: inline-flex;
   flex: 0 0 auto;
   vertical-align: middle;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .auth-logo .nearserve-logo-img,
@@ -17,4 +18,9 @@
   width: 78px;
   height: 78px;
   padding: 6px;
+}
+
+.nearserve-logo-img:hover {
+  transform: scale(1.035);
+  box-shadow: 0 8px 18px rgba(15, 61, 46, 0.12);
 }

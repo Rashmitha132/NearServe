@@ -9,9 +9,139 @@
   padding: 0;
 }
 
+:root {
+  --ns-motion-fast: 0.2s ease-in-out;
+  --ns-motion-medium: 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  --ns-motion-slow: 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+  --ns-shadow-soft: 0 10px 24px rgba(15, 61, 46, 0.1);
+  --ns-shadow-lift: 0 16px 34px rgba(15, 61, 46, 0.16);
+}
+
 body {
   min-height: 100vh;
   font-family: 'Nunito', sans-serif;
+}
+
+.fade-in {
+  animation: nsPageFadeIn var(--ns-motion-slow) both;
+}
+
+.slide-in-left {
+  animation: nsSidebarSlideIn var(--ns-motion-medium) both;
+}
+
+.hover-lift {
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ns-shadow-lift);
+}
+
+.btn-animate {
+  cursor: pointer;
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), border-color var(--ns-motion-fast), color var(--ns-motion-fast), opacity var(--ns-motion-fast);
+}
+
+.btn-animate:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.035);
+  box-shadow: var(--ns-shadow-soft);
+}
+
+.btn-animate:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.card-reveal {
+  animation: nsCardReveal var(--ns-motion-slow) both;
+}
+
+button,
+[role="button"],
+.btn,
+.modal-btn,
+.loc-retry-btn,
+.loc-back-btn {
+  cursor: pointer;
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), border-color var(--ns-motion-fast), color var(--ns-motion-fast), opacity var(--ns-motion-fast);
+}
+
+button:hover:not(:disabled),
+[role="button"]:hover,
+.btn:hover:not(:disabled),
+.modal-btn:hover,
+.loc-retry-btn:hover,
+.loc-back-btn:hover {
+  transform: translateY(-1px) scale(1.035);
+  box-shadow: var(--ns-shadow-soft);
+}
+
+button:active:not(:disabled),
+[role="button"]:active,
+.btn:active:not(:disabled),
+.modal-btn:active,
+.loc-retry-btn:active,
+.loc-back-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.login-container,
+.signup-container,
+.modal,
+.loc-card {
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), border-color var(--ns-motion-fast), background-color var(--ns-motion-fast), opacity var(--ns-motion-fast);
+  animation: nsCardReveal var(--ns-motion-slow) both;
+}
+
+.login-container:hover,
+.signup-container:hover,
+.modal:hover,
+.loc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ns-shadow-lift);
+}
+
+input,
+select,
+textarea,
+.input-box input,
+.input-box select {
+  transition: border-color var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), color var(--ns-motion-fast), transform var(--ns-motion-fast), opacity var(--ns-motion-fast);
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.input-box input:focus,
+.input-box select:focus {
+  transform: translateY(-1px);
+}
+
+@keyframes nsPageFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nsSidebarSlideIn {
+  from { opacity: 0; transform: translateX(-22px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes nsCardReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* =========================

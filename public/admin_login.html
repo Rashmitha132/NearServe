@@ -24,6 +24,11 @@
       --text:      #f1f1f1;
       --muted:     #6b7280;
       --white:     #ffffff;
+      --motion-fast: 0.2s ease-in-out;
+      --motion-medium: 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+      --motion-slow: 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+      --shadow-soft: 0 10px 24px rgba(249,115,22,0.14);
+      --shadow-lift: 0 18px 42px rgba(0,0,0,0.32);
     }
 
     html, body {
@@ -40,6 +45,15 @@
       overflow: hidden;
       position: relative;
     }
+
+    .fade-in { animation: pageFadeIn var(--motion-slow) both; }
+    .slide-in-left { animation: slideInLeft var(--motion-medium) both; }
+    .hover-lift { transition: transform var(--motion-fast), box-shadow var(--motion-fast); }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+    .btn-animate { cursor: pointer; transition: transform var(--motion-fast), box-shadow var(--motion-fast), background-color var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast), opacity var(--motion-fast); }
+    .btn-animate:hover:not(:disabled) { transform: translateY(-1px) scale(1.035); box-shadow: var(--shadow-soft); }
+    .btn-animate:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+    .card-reveal { animation: cardReveal var(--motion-slow) both; }
 
     /* subtle grid dots */
     body::after {
@@ -83,11 +97,32 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes pageFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-22px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes cardReveal {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       overflow: hidden;
+      transition: all var(--motion-fast);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
     }
 
     /* â”€â”€ header â”€â”€ */
@@ -230,7 +265,7 @@
       cursor: pointer;
       margin-top: 0.4rem;
       letter-spacing: 0.3px;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      transition: all var(--motion-fast);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -240,9 +275,32 @@
     #adminLoginBtn:hover {
       background: var(--orange2);
       box-shadow: 0 6px 20px rgba(249,115,22,0.25);
+      transform: translateY(-1px) scale(1.035);
     }
     #adminLoginBtn:active { transform: scale(0.98); }
     #adminLoginBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    button,
+    [role="button"] {
+      cursor: pointer;
+      transition: all var(--motion-fast);
+    }
+
+    button:hover:not(:disabled),
+    [role="button"]:hover {
+      box-shadow: var(--shadow-soft);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
 
     /* â”€â”€ msg â”€â”€ */
     #msg {

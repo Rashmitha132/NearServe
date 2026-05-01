@@ -1,5 +1,6 @@
 *{box-sizing:border-box}
-:root{--ns-green:#145c3f;--ns-green-dark:#0f3d2e;--ns-green-accent:#1b7a52;--ns-green-soft:#eaf4ee;--ns-paper:#f6f6f1;--ns-ink:#07120d;--ns-muted:#65716b;--ns-line:#dcded4;--ns-pink:#f23d86;--ns-blue:#2f80ed;--ns-gold:#d48806}
+:root{--ns-green:#145c3f;--ns-green-dark:#0f3d2e;--ns-green-accent:#1b7a52;--ns-green-soft:#eaf4ee;--ns-paper:#f6f6f1;--ns-ink:#07120d;--ns-muted:#65716b;--ns-line:#dcded4;--ns-pink:#f23d86;--ns-blue:#2f80ed;--ns-gold:#d48806;--ns-motion-fast:.2s ease-in-out;--ns-motion-medium:.34s cubic-bezier(.22,1,.36,1);--ns-motion-slow:.48s cubic-bezier(.22,1,.36,1);--ns-shadow-soft:0 10px 24px rgba(15,61,46,.1);--ns-shadow-lift:0 16px 34px rgba(15,61,46,.16)}
+.fade-in{animation:nsPageFadeIn var(--ns-motion-slow) both}.slide-in-left{animation:nsSidebarSlideIn var(--ns-motion-medium) both}.hover-lift{transition:transform var(--ns-motion-fast),box-shadow var(--ns-motion-fast)}.hover-lift:hover{transform:translateY(-4px);box-shadow:var(--ns-shadow-lift)}.btn-animate{cursor:pointer;transition:transform var(--ns-motion-fast),box-shadow var(--ns-motion-fast),background-color var(--ns-motion-fast),border-color var(--ns-motion-fast),color var(--ns-motion-fast),opacity var(--ns-motion-fast)}.btn-animate:hover:not(:disabled){transform:translateY(-1px) scale(1.035);box-shadow:var(--ns-shadow-soft)}.btn-animate:active:not(:disabled){transform:translateY(0) scale(.98)}.card-reveal{animation:nsCardReveal var(--ns-motion-slow) both}
 body.ns-shell-page{background:var(--ns-paper)!important;color:var(--ns-ink);font-family:Nunito,Arial,sans-serif;overflow-x:hidden}
 .ns-sidebar{width:250px;background:radial-gradient(circle 150px at 16% 8%,rgba(154,219,176,.30) 0%,rgba(154,219,176,.16) 42%,transparent 68%),radial-gradient(circle 210px at 92% 18%,rgba(112,185,137,.34) 0%,rgba(112,185,137,.15) 48%,transparent 72%),radial-gradient(circle 190px at 22% 48%,rgba(31,122,82,.44) 0%,rgba(31,122,82,.22) 46%,transparent 72%),radial-gradient(circle 250px at 96% 66%,rgba(164,226,121,.22) 0%,rgba(164,226,121,.12) 44%,transparent 70%),radial-gradient(circle 230px at 20% 92%,rgba(10,64,43,.58) 0%,rgba(10,64,43,.28) 48%,transparent 76%),linear-gradient(145deg,#0f3d2e 0%,#145c3f 52%,#1b7a52 100%);color:#fff;position:fixed;inset:0 auto 0 0;padding:24px 18px 22px;z-index:9500;display:flex;flex-direction:column;overflow:hidden;transition:transform .32s ease,box-shadow .32s ease;box-shadow:18px 0 38px rgba(8,41,29,.28),inset -1px 0 0 rgba(255,255,255,.14),inset 1px 0 0 rgba(255,255,255,.08)}
 .ns-sidebar::before{content:"";position:absolute;inset:-20% -45% auto auto;width:330px;height:330px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),rgba(255,255,255,.05) 46%,transparent 70%);pointer-events:none}
@@ -67,4 +68,29 @@ body.ns-confirm-page .card{margin:0 auto}
   .ns-bottom-nav span{line-height:1;color:inherit}
   .ns-bottom-nav a.active{background:rgba(20,92,63,.12);color:#145c3f}
   .ns-bottom-nav a:active{transform:translateY(1px)}
+}
+
+@media(min-width:761px){
+  .ns-sidebar{animation:nsSidebarSlideIn .34s ease both}
+}
+
+.ns-sidebar,.ns-nav a,.ns-side-user,.ns-side-info,.ns-mobile-head,.ns-bottom-nav a{transition:all .2s ease-in-out}
+
+@keyframes nsSidebarSlideIn{
+  from{opacity:0;transform:translateX(-22px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+@keyframes nsPageFadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes nsCardReveal{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .ns-sidebar,.ns-nav a,.ns-side-user,.ns-side-info,.ns-mobile-head,.ns-bottom-nav a{animation:none!important;transition:none!important}
 }

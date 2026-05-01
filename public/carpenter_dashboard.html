@@ -39,7 +39,7 @@
     }
 
     .left-panel::before{
-      content:'';
+      content:';
       position:absolute;
       width:450px;
       height:450px;
@@ -50,7 +50,7 @@
     }
 
     .left-panel::after{
-      content:'';
+      content:';
       position:absolute;
       width:320px;
       height:320px;
@@ -314,7 +314,7 @@
     }
 
     .video-card::before{
-      content:'';
+      content:';
       position:absolute;
       top:0;left:0;right:0;
       height:4px;
@@ -493,7 +493,7 @@
     }
 
     .helper-list div::before{
-      content:'â€¢';
+      content:';
       position:absolute;
       left:0;
       top:0;
@@ -514,6 +514,452 @@
   <script src="./js/toast.js"></script>
   <link rel="stylesheet" href="./css/global.css">
   <link rel="stylesheet" href="./css/background.css">
+  <style>
+    :root {
+      --green: #126b49;
+      --green-dark: #0b4b34;
+      --green-soft: #77e3b1;
+      --ink: #050807;
+      --muted: #5f6b65;
+      --line: #e7ebe7;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      background: #fff !important;
+    }
+
+    body {
+      display: flex !important;
+      color: var(--ink);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after,
+    #bg-circles,
+    body > .bubble,
+    .deco-ring,
+    .fi {
+      display: none !important;
+    }
+
+    .left-panel {
+      width: 300px;
+      min-height: 100vh;
+      padding: 28px 24px;
+      background: linear-gradient(180deg, #176f4d 0%, #0b4b34 100%);
+      border-radius: 6px 0 0 6px;
+      justify-content: flex-start;
+      gap: 34px;
+      position: sticky;
+      top: 0;
+    }
+
+    .left-panel::before,
+    .left-panel::after {
+      display: none;
+    }
+
+    .l-logo {
+      gap: 12px;
+      align-items: center;
+    }
+
+    .l-logo::before,
+    .l-logo::after {
+      display: none;
+    }
+
+    .l-logo img {
+      display: block !important;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #fff;
+      padding: 4px;
+      object-fit: contain;
+    }
+
+    .l-logo span {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.05;
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .brand-tagline {
+      max-width: 185px;
+      color: rgba(255,255,255,.68);
+      font-size: 9.5px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .l-main {
+      flex: 0;
+      justify-content: flex-start;
+      padding: 0;
+    }
+
+    .l-main h2 {
+      font-size: 26px;
+      line-height: 1.22;
+      margin-bottom: 20px;
+      letter-spacing: -.3px;
+    }
+
+    .l-main h2 em {
+      color: var(--green-soft);
+      -webkit-text-fill-color: currentColor;
+      background: none;
+    }
+
+    .l-main p {
+      max-width: 230px;
+      margin-bottom: 38px;
+      color: rgba(255,255,255,.82);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .l-steps {
+      gap: 18px;
+      margin-bottom: 0;
+    }
+
+    .l-step {
+      gap: 10px;
+    }
+
+    .l-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.24);
+      background: transparent;
+      font-size: 10px;
+      margin-top: 0;
+    }
+
+    .l-step:first-child .l-step-num {
+      background: var(--green-soft);
+      border-color: var(--green-soft);
+      color: #06412b;
+    }
+
+    .l-step-text strong {
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .l-step-text span {
+      display: block;
+      max-width: 205px;
+      color: rgba(255,255,255,.68);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .l-stats {
+      margin-top: auto;
+      justify-content: space-between;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 10px;
+      line-height: 1;
+      color: var(--green-soft);
+    }
+
+    .stat-lbl {
+      margin-top: 4px;
+      font-size: 8px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.6);
+    }
+
+    .sdiv {
+      display: none;
+    }
+
+    .right-panel {
+      min-height: 100vh;
+      padding: 28px 40px 42px 28px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .topbar {
+      margin-bottom: 35px;
+      padding: 0;
+      border: 0;
+      align-items: flex-start;
+    }
+
+    .worker-info {
+      gap: 8px;
+    }
+
+    .worker-avatar {
+      width: 32px;
+      height: 32px;
+      background: #126b49;
+      box-shadow: none;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .worker-name {
+      font-size: 11px;
+      font-weight: 800;
+      color: #000;
+    }
+
+    .worker-role {
+      font-size: 9px;
+      color: #000;
+    }
+
+    .btn-logout {
+      border: 1px solid #f1c7c7;
+      background: #fff;
+      color: #dd3b33;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .fhead {
+      margin-bottom: 33px;
+    }
+
+    .fhead h1 {
+      font-size: 22px;
+      line-height: 1.2;
+      margin-bottom: 10px;
+      color: #000;
+    }
+
+    .fhead p {
+      max-width: 620px;
+      color: #000;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .msg-box {
+      max-width: 680px;
+      margin-bottom: 18px;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 11px;
+    }
+
+    .video-grid {
+      gap: 38px;
+      margin-bottom: 38px;
+    }
+
+    .video-card,
+    .video-card.approved,
+    .video-card.rejected,
+    .video-card.review {
+      position: relative;
+      min-height: 72px;
+      padding: 0 128px 0 16px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      overflow: visible;
+    }
+
+    .video-card::before {
+      display: none;
+    }
+
+    .vc-top {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .vc-title {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: #000;
+      margin-bottom: 11px;
+    }
+
+    .vc-badge {
+      position: absolute;
+      top: 0;
+      right: 24px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid #ddd8cf;
+      background: #faf9f7 !important;
+      color: #8b8177 !important;
+      font-size: 9px;
+      font-weight: 500;
+    }
+
+    .badge-review {
+      border-color: #bcd5f7;
+      background: #f4f8ff !important;
+      color: #2563eb !important;
+    }
+
+    .badge-approved {
+      border-color: #bce7cc;
+      background: #f4fff7 !important;
+      color: #168a45 !important;
+    }
+
+    .badge-rejected {
+      border-color: #f2c5c5;
+      background: #fff7f7 !important;
+      color: #d33b35 !important;
+    }
+
+    .vc-desc {
+      margin-bottom: 9px;
+      color: #000;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .btn-row {
+      align-items: center;
+      gap: 19px;
+    }
+
+    .btn-primary {
+      min-height: 0;
+      padding: 8px 16px;
+      border-radius: 6px;
+      background: #126b49;
+      color: #fff;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 800;
+      box-shadow: none;
+    }
+
+    .btn-row .btn-primary:first-child {
+      padding: 0;
+      background: transparent;
+      color: #000;
+      border-radius: 0;
+      font-weight: 600;
+    }
+
+    .file-preview {
+      max-width: 420px;
+      margin: 0 0 10px;
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: 10px;
+    }
+
+    .file-name {
+      font-size: 10px;
+      color: #126b49;
+    }
+
+    .file-size {
+      font-size: 9px;
+    }
+
+    .file-mark {
+      color: #126b49;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .reject-reason {
+      max-width: 520px;
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: 10px;
+    }
+
+    .helper-card {
+      margin-left: 16px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .helper-title {
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #000;
+    }
+
+    .helper-list {
+      gap: 6px;
+      color: #000;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .helper-list div {
+      padding-left: 10px;
+    }
+
+    .helper-list div::before {
+      content: "";
+      width: 4px;
+      height: 4px;
+      top: 6px;
+      border-radius: 50%;
+      background: #126b49;
+    }
+
+    @media (max-width: 780px) {
+      body {
+        flex-direction: column !important;
+      }
+
+      .left-panel {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        border-radius: 0;
+      }
+
+      .right-panel {
+        padding: 24px 18px;
+      }
+
+      .video-card,
+      .video-card.approved,
+      .video-card.rejected,
+      .video-card.review {
+        padding-right: 0;
+      }
+
+      .vc-badge {
+        position: static;
+        display: inline-flex;
+        margin-top: 6px;
+      }
+    }
+  </style>
 </head>
 <body>
 <div id="bg-circles">
@@ -536,14 +982,18 @@
     <div class="deco-ring r2"></div>
     <div class="deco-ring r3"></div>
 
-    <div class="fi fi1">ðŸŽ¥</div>
-    <div class="fi fi2">ðŸªš</div>
-    <div class="fi fi3">âœ…</div>
-    <div class="fi fi4">ðŸ“¤</div>
-    <div class="fi fi5">ðŸ› ï¸</div>
+    <div class="fi fi1"></div>
+    <div class="fi fi2"></div>
+    <div class="fi fi3"></div>
+    <div class="fi fi4"></div>
+    <div class="fi fi5"></div>
 
     <div class="l-logo">
-      <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span>NearServe</span>
+      <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+      <div class="brand-copy">
+        <span>NearServe</span>
+        <div class="brand-tagline">Services Near You, Care You Deserve</div>
+      </div>
     </div>
 
     <div class="l-main">
@@ -554,28 +1004,28 @@
         <div class="l-step">
           <div class="l-step-num">1</div>
           <div class="l-step-text">
-            <strong>Upload 3 Videos</strong>
+            <strong>Upload 3 videos</strong>
             <span>Submit clear videos showing your carpentry work.</span>
           </div>
         </div>
         <div class="l-step">
           <div class="l-step-num">2</div>
           <div class="l-step-text">
-            <strong>Admin Reviews</strong>
+            <strong>Admin reviews</strong>
             <span>Each video is checked separately by admin.</span>
           </div>
         </div>
         <div class="l-step">
           <div class="l-step-num">3</div>
           <div class="l-step-text">
-            <strong>Rejected Video Reupload</strong>
+            <strong>Rejected video reupload</strong>
             <span>Only rejected videos can be uploaded again.</span>
           </div>
         </div>
         <div class="l-step">
           <div class="l-step-num">4</div>
           <div class="l-step-text">
-            <strong>Full Access</strong>
+            <strong>Full access</strong>
             <span>When all 3 are approved, you are redirected automatically.</span>
           </div>
         </div>
@@ -587,7 +1037,7 @@
       <div class="sdiv"></div>
       <div><div class="stat-num">1</div><div class="stat-lbl">Reupload if rejected</div></div>
       <div class="sdiv"></div>
-      <div><div class="stat-num">âœ…</div><div class="stat-lbl">All Approved</div></div>
+      <div><div class="stat-num">Auto</div><div class="stat-lbl">All Approved</div></div>
     </div>
   </div>
 
@@ -597,7 +1047,7 @@
         <div class="worker-avatar" id="workerAvatar">C</div>
         <div>
           <div class="worker-name" id="workerName">Carpenter</div>
-          <div class="worker-role">ðŸªš Carpenter Â· Probation Stage</div>
+          <div class="worker-role">Carpenter - Probation Stage</div>
         </div>
       </div>
 
@@ -612,7 +1062,7 @@
     </div>
 
     <div class="fhead">
-      <h1>ðŸŽ¥ Upload Work Videos</h1>
+      <h1>Upload work videos</h1>
       <p>Each video is reviewed separately. Re-upload is available only for rejected videos. After all 3 are approved, you will be redirected automatically.</p>
     </div>
 
@@ -627,17 +1077,17 @@
         <div class="vc-desc">Upload your first carpentry work video.</div>
         <div class="reject-reason" id="reason1"></div>
         <div class="file-preview" id="preview1">
-          <span style="font-size:1.4rem;">ðŸŽ¬</span>
+          <span class="file-mark">Video</span>
           <div>
-            <div class="file-name" id="name1">â€”</div>
-            <div class="file-size" id="size1">â€”</div>
+            <div class="file-name" id="name1">-</div>
+            <div class="file-size" id="size1">-</div>
           </div>
-          <button class="file-remove" type="button" onclick="removeSelectedFile(1)">âœ•</button>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(1)">x</button>
         </div>
         <input type="file" id="file1" accept="video/*" style="display:none">
         <div class="btn-row">
-          <button class="btn-primary" id="btnChoose1" type="button" onclick="document.getElementById('file1').click()">Choose Video</button>
-          <button class="btn-primary" id="btnUpload1" type="button" onclick="submitVideo(1)" disabled>Submit Video 1</button>
+          <button class="btn-primary" id="btnChoose1" type="button" onclick="document.getElementById('file1').click()">Choose video</button>
+          <button class="btn-primary" id="btnUpload1" type="button" onclick="submitVideo(1)" disabled>Submit video 1</button>
         </div>
       </div>
 
@@ -649,17 +1099,17 @@
         <div class="vc-desc">Upload your second carpentry work video.</div>
         <div class="reject-reason" id="reason2"></div>
         <div class="file-preview" id="preview2">
-          <span style="font-size:1.4rem;">ðŸŽ¬</span>
+          <span class="file-mark">Video</span>
           <div>
-            <div class="file-name" id="name2">â€”</div>
-            <div class="file-size" id="size2">â€”</div>
+            <div class="file-name" id="name2">-</div>
+            <div class="file-size" id="size2">-</div>
           </div>
-          <button class="file-remove" type="button" onclick="removeSelectedFile(2)">âœ•</button>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(2)">x</button>
         </div>
         <input type="file" id="file2" accept="video/*" style="display:none">
         <div class="btn-row">
-          <button class="btn-primary" id="btnChoose2" type="button" onclick="document.getElementById('file2').click()">Choose Video</button>
-          <button class="btn-primary" id="btnUpload2" type="button" onclick="submitVideo(2)" disabled>Submit Video 2</button>
+          <button class="btn-primary" id="btnChoose2" type="button" onclick="document.getElementById('file2').click()">Choose video</button>
+          <button class="btn-primary" id="btnUpload2" type="button" onclick="submitVideo(2)" disabled>Submit video 2</button>
         </div>
       </div>
 
@@ -671,17 +1121,17 @@
         <div class="vc-desc">Upload your third carpentry work video.</div>
         <div class="reject-reason" id="reason3"></div>
         <div class="file-preview" id="preview3">
-          <span style="font-size:1.4rem;">ðŸŽ¬</span>
+          <span class="file-mark">Video</span>
           <div>
-            <div class="file-name" id="name3">â€”</div>
-            <div class="file-size" id="size3">â€”</div>
+            <div class="file-name" id="name3">-</div>
+            <div class="file-size" id="size3">-</div>
           </div>
-          <button class="file-remove" type="button" onclick="removeSelectedFile(3)">âœ•</button>
+          <button class="file-remove" type="button" onclick="removeSelectedFile(3)">x</button>
         </div>
         <input type="file" id="file3" accept="video/*" style="display:none">
         <div class="btn-row">
-          <button class="btn-primary" id="btnChoose3" type="button" onclick="document.getElementById('file3').click()">Choose Video</button>
-          <button class="btn-primary" id="btnUpload3" type="button" onclick="submitVideo(3)" disabled>Submit Video 3</button>
+          <button class="btn-primary" id="btnChoose3" type="button" onclick="document.getElementById('file3').click()">Choose video</button>
+          <button class="btn-primary" id="btnUpload3" type="button" onclick="submitVideo(3)" disabled>Submit video 3</button>
         </div>
       </div>
     </div>
@@ -742,8 +1192,8 @@ function resetPreview(i) {
   selectedFiles[i] = null;
   document.getElementById(`file${i}`).value = "";
   document.getElementById(`preview${i}`).classList.remove("show");
-  document.getElementById(`name${i}`).textContent = "â€”";
-  document.getElementById(`size${i}`).textContent = "â€”";
+  document.getElementById(`name${i}`).textContent = "-";
+  document.getElementById(`size${i}`).textContent = "-";
   document.getElementById(`btnUpload${i}`).disabled = true;
 }
 
@@ -866,7 +1316,7 @@ async function loadDashboard() {
     }
 
     if (approvedCount === 3) {
-      showGlobal("âœ… All 3 videos approved. Redirecting...", "success");
+      showGlobal("All 3 videos approved. Redirecting...", "success");
       setTimeout(() => {
         window.location.replace("carpenter_requests.html");
       }, 1200);
@@ -885,13 +1335,13 @@ for (let i = 1; i <= 3; i++) {
     if (!file) return;
 
     if (!file.type.startsWith("video/")) {
-      showGlobal(`âŒ Only video files are allowed for Video ${i}.`, "error");
+      showGlobal(`Only video files are allowed for Video ${i}.`, "error");
       this.value = "";
       return;
     }
 
     if (file.size > MAX_VIDEO_SIZE) {
-      showGlobal(`âŒ Video ${i} is too large. Maximum 50 MB allowed.`, "error");
+      showGlobal(`Video ${i} is too large. Maximum 50 MB allowed.`, "error");
       this.value = "";
       return;
     }
@@ -910,7 +1360,7 @@ async function submitVideo(index) {
 
     const file = selectedFiles[index];
     if (!file) {
-      showGlobal(`âŒ Choose Video ${index} first.`, "error");
+      showGlobal(`Choose video ${index} first.`, "error");
       return;
     }
 
@@ -947,7 +1397,7 @@ async function submitVideo(index) {
       throw new Error(uploadData.error || uploadData.message || "Upload failed");
     }
 
-    showGlobal(`âœ… Video ${index} submitted successfully.`, "success");
+    showGlobal(`Video ${index} submitted successfully.`, "success");
     resetPreview(index);
     await loadDashboard();
   } catch (err) {

@@ -4,6 +4,14 @@ body {
   min-height: 100%;
 }
 
+:root {
+  --ns-motion-fast: 0.2s ease-in-out;
+  --ns-motion-medium: 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  --ns-motion-slow: 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+  --ns-shadow-soft: 0 10px 24px rgba(15, 61, 46, 0.1);
+  --ns-shadow-lift: 0 16px 34px rgba(15, 61, 46, 0.16);
+}
+
 body,
 .page-bg {
   margin: 0;
@@ -11,6 +19,461 @@ body,
   background: #eef7f1 !important;
   position: relative;
   overflow-x: hidden;
+}
+
+/* GLOBAL MOTION SYSTEM */
+.fade-in {
+  animation: nsPageFadeIn var(--ns-motion-slow) both;
+}
+
+.slide-in-left {
+  animation: nsSidebarSlideIn var(--ns-motion-medium) both;
+}
+
+.hover-lift {
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ns-shadow-lift);
+}
+
+.btn-animate {
+  cursor: pointer;
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), border-color var(--ns-motion-fast), color var(--ns-motion-fast), opacity var(--ns-motion-fast);
+}
+
+.btn-animate:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.035);
+  box-shadow: var(--ns-shadow-soft);
+}
+
+.btn-animate:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.card-reveal {
+  animation: nsCardReveal var(--ns-motion-slow) both;
+}
+
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.btn,
+.nav-btn,
+.top-btn,
+.action-btn,
+.back-btn,
+.logout-btn,
+.btn-out,
+.btn-hist,
+.btn-pick,
+.btn-clr,
+.btn-sub,
+.btn-save,
+.btn-cancel,
+.btn-select,
+.btn-small,
+.sort-btn,
+.call-btn,
+.confirm-btn,
+.modal-btn,
+.modal-btn-cancel,
+.modal-btn-call,
+.success-modal-btn,
+.loc-retry-btn,
+.loc-back-btn,
+.bconf-view,
+.bconf-close,
+.send-btn,
+.ns-mobile-book,
+.ns-mobile-menu-btn,
+.ns-sidebar-close,
+.mobile-menu-btn,
+.mobile-logout-btn,
+.avatar-edit-btn,
+.avatar-remove-btn {
+  cursor: pointer;
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), border-color var(--ns-motion-fast), color var(--ns-motion-fast), opacity var(--ns-motion-fast);
+}
+
+button:hover:not(:disabled),
+[role="button"]:hover,
+input[type="button"]:hover:not(:disabled),
+input[type="submit"]:hover:not(:disabled),
+input[type="reset"]:hover:not(:disabled),
+.btn:hover:not(:disabled),
+.nav-btn:hover,
+.top-btn:hover,
+.action-btn:hover,
+.back-btn:hover,
+.logout-btn:hover,
+.btn-out:hover,
+.btn-hist:hover,
+.btn-pick:hover,
+.btn-clr:hover,
+.btn-sub:hover:not(:disabled),
+.btn-save:hover,
+.btn-cancel:hover,
+.btn-select:hover,
+.btn-small:hover,
+.sort-btn:hover,
+.call-btn:hover,
+.confirm-btn:hover,
+.modal-btn:hover,
+.modal-btn-cancel:hover,
+.modal-btn-call:hover,
+.success-modal-btn:hover,
+.loc-retry-btn:hover,
+.loc-back-btn:hover,
+.bconf-view:hover,
+.bconf-close:hover,
+.send-btn:hover:not(:disabled),
+.ns-mobile-book:hover,
+.ns-mobile-menu-btn:hover,
+.ns-sidebar-close:hover,
+.mobile-menu-btn:hover,
+.mobile-logout-btn:hover,
+.avatar-edit-btn:hover,
+.avatar-remove-btn:hover {
+  transform: translateY(-1px) scale(1.035);
+  box-shadow: var(--ns-shadow-soft);
+}
+
+button:active:not(:disabled),
+[role="button"]:active,
+input[type="button"]:active:not(:disabled),
+input[type="submit"]:active:not(:disabled),
+input[type="reset"]:active:not(:disabled),
+.btn:active:not(:disabled),
+.nav-btn:active,
+.top-btn:active,
+.action-btn:active,
+.back-btn:active,
+.logout-btn:active,
+.btn-out:active,
+.btn-hist:active,
+.btn-pick:active,
+.btn-clr:active,
+.btn-sub:active:not(:disabled),
+.btn-save:active,
+.btn-cancel:active,
+.btn-select:active,
+.btn-small:active,
+.sort-btn:active,
+.call-btn:active,
+.confirm-btn:active,
+.modal-btn:active,
+.modal-btn-cancel:active,
+.modal-btn-call:active,
+.success-modal-btn:active,
+.loc-retry-btn:active,
+.loc-back-btn:active,
+.bconf-view:active,
+.bconf-close:active,
+.send-btn:active:not(:disabled),
+.service-card:active:not(:disabled),
+.ns-mobile-book:active,
+.ns-mobile-menu-btn:active,
+.ns-sidebar-close:active,
+.mobile-menu-btn:active,
+.mobile-logout-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+button:disabled,
+.btn:disabled,
+.nav-btn:disabled,
+.action-btn:disabled,
+.service-card.disabled,
+.service-card:disabled {
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.card,
+.auth-card,
+.login-container,
+.signup-container,
+.form-card,
+.request-card,
+.worker-card,
+.detail-card,
+.service-card,
+.booking-card,
+.booking-item,
+.req-card,
+.profile-card,
+.reviews-card,
+.mini-reviews-card,
+.form-section,
+.section-card,
+.left-card,
+.feedback-card,
+.success-worker-card,
+.stat,
+.stat-card,
+.table-card,
+.empty-state,
+.modal-box,
+.modal,
+.loc-card,
+.bconf-card {
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), border-color var(--ns-motion-fast), background-color var(--ns-motion-fast), opacity var(--ns-motion-fast);
+  animation: nsCardReveal var(--ns-motion-slow) both;
+}
+
+input,
+select,
+textarea,
+.form-input,
+.form-select,
+.form-textarea,
+.chat-input,
+.input-box input,
+.input-box select {
+  transition: border-color var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), color var(--ns-motion-fast), transform var(--ns-motion-fast), opacity var(--ns-motion-fast);
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus,
+.chat-input:focus,
+.input-box input:focus,
+.input-box select:focus {
+  transform: translateY(-1px);
+}
+
+.nav a,
+.ns-nav a,
+.sidebar-user,
+.side-user,
+.ns-side-user,
+.ns-bottom-nav a,
+.nav-link {
+  transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), border-color var(--ns-motion-fast), color var(--ns-motion-fast), opacity var(--ns-motion-fast);
+}
+
+.card:hover,
+.auth-card:hover,
+.login-container:hover,
+.signup-container:hover,
+.form-card:hover,
+.request-card:hover,
+.worker-card:hover,
+.detail-card:hover,
+.service-card:hover:not(:disabled):not(.disabled),
+.booking-card:hover,
+.booking-item:hover,
+.req-card:hover,
+.profile-card:hover,
+.reviews-card:hover,
+.mini-reviews-card:hover,
+.form-section:hover,
+.section-card:hover,
+.left-card:hover,
+.feedback-card:hover,
+.success-worker-card:hover,
+.stat:hover,
+.stat-card:hover,
+.table-card:hover,
+.empty-state:hover,
+.modal-box:hover,
+.modal:hover,
+.loc-card:hover,
+.bconf-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ns-shadow-lift) !important;
+}
+
+.card:active,
+.form-card:active,
+.request-card:active,
+.worker-card:active,
+.detail-card:active,
+.service-card:active:not(:disabled):not(.disabled),
+.booking-card:active,
+.booking-item:active,
+.req-card:active,
+.profile-card:active,
+.reviews-card:active,
+.mini-reviews-card:active,
+.form-section:active,
+.section-card:active,
+.left-card:active,
+.feedback-card:active,
+.stat:active,
+.stat-card:active {
+  transform: translateY(-2px);
+}
+
+.main-content,
+.container,
+.content-wrapper,
+.content,
+.dashboard-main,
+.page-content,
+.right-panel,
+.main,
+.topbar,
+.overview,
+.stats,
+.booking-list,
+.profile-layout,
+.profile-grid,
+.worker-grid,
+.workers-grid,
+.requests-list,
+.admin-shell,
+.auth-page {
+  animation: nsPageFadeIn var(--ns-motion-slow) both;
+}
+
+.card:nth-child(2),
+.service-card:nth-child(2),
+.worker-card:nth-child(2),
+.booking-card:nth-child(2),
+.booking-item:nth-child(2),
+.req-card:nth-child(2),
+.request-card:nth-child(2),
+.stat:nth-child(2),
+.stat-card:nth-child(2),
+.section-card:nth-child(2),
+.form-section:nth-child(2) {
+  animation-delay: 0.04s;
+}
+
+.card:nth-child(3),
+.service-card:nth-child(3),
+.worker-card:nth-child(3),
+.booking-card:nth-child(3),
+.booking-item:nth-child(3),
+.req-card:nth-child(3),
+.request-card:nth-child(3),
+.stat:nth-child(3),
+.stat-card:nth-child(3),
+.section-card:nth-child(3),
+.form-section:nth-child(3) {
+  animation-delay: 0.08s;
+}
+
+.card:nth-child(4),
+.service-card:nth-child(4),
+.worker-card:nth-child(4),
+.booking-card:nth-child(4),
+.booking-item:nth-child(4),
+.req-card:nth-child(4),
+.request-card:nth-child(4),
+.stat:nth-child(4),
+.stat-card:nth-child(4),
+.section-card:nth-child(4),
+.form-section:nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+.card:nth-child(n + 5),
+.service-card:nth-child(n + 5),
+.worker-card:nth-child(n + 5),
+.booking-card:nth-child(n + 5),
+.booking-item:nth-child(n + 5),
+.req-card:nth-child(n + 5),
+.request-card:nth-child(n + 5),
+.stat:nth-child(n + 5),
+.stat-card:nth-child(n + 5),
+.section-card:nth-child(n + 5),
+.form-section:nth-child(n + 5) {
+  animation-delay: 0.16s;
+}
+
+@supports (animation-timeline: view()) {
+  .card-reveal,
+  .card,
+  .form-card,
+  .request-card,
+  .worker-card,
+  .detail-card,
+  .service-card,
+  .booking-card,
+  .booking-item,
+  .req-card,
+  .profile-card,
+  .reviews-card,
+  .mini-reviews-card,
+  .form-section,
+  .section-card,
+  .left-card,
+  .feedback-card,
+  .success-worker-card,
+  .stat,
+  .stat-card,
+  .table-card,
+  .empty-state {
+    animation-timeline: view();
+    animation-range: entry 0% cover 24%;
+  }
+}
+
+@media (min-width: 761px) {
+  .ns-sidebar,
+  .sidebar,
+  .side-bar,
+  .customer-sidebar,
+  .worker-sidebar,
+  .left-panel {
+    animation: nsSidebarSlideIn var(--ns-motion-medium) both;
+  }
+}
+
+@keyframes nsSidebarSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes nsPageFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes nsCardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body::before,

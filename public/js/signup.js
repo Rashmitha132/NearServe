@@ -146,8 +146,9 @@ if (signupForm) {
       return;
     }
 
-    if (phone.length < 10) {
-      showToast("Please enter a valid phone number.");
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+      showToast("Phone number must be exactly 10 digits and start with 6, 7, 8, or 9.");
       return;
     }
 

@@ -26,6 +26,13 @@ if (loginForm) {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!emailRegex.test(emailOrPhone) && !phoneRegex.test(emailOrPhone)) {
+      showToast("Enter a valid email or a 10-digit phone number starting with 6, 7, 8, or 9.");
+      return;
+    }
+
     if (loginBtn) {
       loginBtn.disabled = true;
       loginBtn.textContent = "Logging in...";

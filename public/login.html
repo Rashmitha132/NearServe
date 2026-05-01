@@ -9,6 +9,14 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --ns-motion-fast: 0.2s ease-in-out;
+    --ns-motion-medium: 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    --ns-motion-slow: 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    --ns-shadow-soft: 0 10px 24px rgba(15, 61, 46, 0.1);
+    --ns-shadow-lift: 0 18px 42px rgba(15, 61, 46, 0.18);
+  }
+
   body {
     min-height: 100vh;
     font-family: "Nunito", sans-serif;
@@ -28,7 +36,17 @@
       radial-gradient(circle at 18% 18%, rgba(20, 92, 63, 0.08), transparent 32%),
       linear-gradient(135deg, #edf6ef 0%, #e6f1e8 100%);
     border-radius: 0 0 10px 10px;
+    animation: nsPageFadeIn var(--ns-motion-slow) both;
   }
+
+  .fade-in { animation: nsPageFadeIn var(--ns-motion-slow) both; }
+  .slide-in-left { animation: nsSidebarSlideIn var(--ns-motion-medium) both; }
+  .hover-lift { transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast); }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: var(--ns-shadow-lift); }
+  .btn-animate { cursor: pointer; transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast), background-color var(--ns-motion-fast), border-color var(--ns-motion-fast), color var(--ns-motion-fast), opacity var(--ns-motion-fast); }
+  .btn-animate:hover:not(:disabled) { transform: translateY(-1px) scale(1.035); box-shadow: var(--ns-shadow-soft); }
+  .btn-animate:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+  .card-reveal { animation: nsCardReveal var(--ns-motion-slow) both; }
 
   .auth-card {
     position: relative;
@@ -38,6 +56,33 @@
     background: #ffffff;
     overflow: hidden;
     box-shadow: 0 28px 80px rgba(15, 61, 46, 0.16);
+    animation: authFadeIn 0.36s ease both;
+    transition: all var(--ns-motion-fast);
+  }
+
+  .auth-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ns-shadow-lift);
+  }
+
+  @keyframes authFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes nsPageFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes nsSidebarSlideIn {
+    from { opacity: 0; transform: translateX(-22px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes nsCardReveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .form-side {
@@ -165,7 +210,54 @@
 
   button[type="submit"]:hover {
     background: #1b7a52;
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.035);
+    box-shadow: var(--ns-shadow-soft);
+  }
+
+  button,
+  [role="button"],
+  .toggle-btn,
+  .mobile-auth-tab,
+  .modal-btn,
+  .modal-close,
+  .loc-retry-btn,
+  .loc-back-btn {
+    cursor: pointer;
+    transition: all var(--ns-motion-fast);
+  }
+
+  button:hover:not(:disabled),
+  [role="button"]:hover,
+  .toggle-btn:hover,
+  .mobile-auth-tab:hover,
+  .modal-btn:hover,
+  .modal-close:hover,
+  .loc-retry-btn:hover,
+  .loc-back-btn:hover {
+    transform: translateY(-1px) scale(1.035);
+    box-shadow: var(--ns-shadow-soft);
+  }
+
+  button:active:not(:disabled),
+  [role="button"]:active,
+  .toggle-btn:active,
+  .mobile-auth-tab:active,
+  .modal-btn:active,
+  .modal-close:active,
+  .loc-retry-btn:active,
+  .loc-back-btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   .social-divider {
@@ -753,7 +845,7 @@
         <p class="form-subtitle">Sign in to your account</p>
 
         <div class="input-box">
-          <input type="text" id="emailOrPhone" placeholder="Email or Phone">
+          <input type="text" id="emailOrPhone" placeholder="Email or Phone" inputmode="email">
           <span class="field-icon leading">♙</span>
           <span class="field-icon">✉</span>
         </div>
@@ -783,10 +875,9 @@
         <button type="submit" id="loginBtn">Login</button>
 
         <div class="social-divider"><span>or login with</span></div>
-        <div class="social-row" aria-hidden="true">
-          <button type="button">G</button>
-          <button type="button">f</button>
-          <button type="button">in</button>
+        <div class="social-row">
+          <button type="button" data-oauth-provider="google" aria-label="Login with Google">G</button>
+          <button type="button" data-oauth-provider="linkedin" aria-label="Login with LinkedIn">in</button>
         </div>
         <p class="auth-switch">Don't have an account? <button type="button" data-auth-target="register">Sign up</button></p>
       </form>
@@ -809,7 +900,7 @@
         </div>
 
         <div class="input-box">
-          <input type="text" id="phone" name="phone" placeholder="Phone Number">
+          <input type="tel" id="phone" name="phone" placeholder="Phone Number" inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}">
           <span class="field-icon leading">☎</span>
           <span class="field-icon">☎</span>
         </div>
@@ -953,6 +1044,19 @@
   if (['#register', '#signup'].includes(window.location.hash.toLowerCase())) {
     showRegister();
   }
+
+  const oauthError = new URLSearchParams(window.location.search).get('oauth_error');
+  if (oauthError) {
+    showToast(oauthError);
+    history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
+  }
+
+  document.querySelectorAll('[data-oauth-provider]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const provider = button.dataset.oauthProvider;
+      window.location.href = `/api/auth/${provider}`;
+    });
+  });
 
   const forgotLink = document.getElementById('forgotLink');
   const forgotModal = document.getElementById('forgotModal');
