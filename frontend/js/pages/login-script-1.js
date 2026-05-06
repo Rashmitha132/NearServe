@@ -3,6 +3,15 @@
   const showLoginBtn = document.getElementById('showLoginBtn');
   const mobileLoginTab = document.getElementById('mobileLoginTab');
   const mobileSignupTab = document.getElementById('mobileSignupTab');
+  const SESSION_KEYS = [
+    "userName", "userPhone", "userEmail", "userRole", "userStatus",
+    "name", "phone", "email", "role", "status",
+    "token", "authToken", "nearServeCsrf", "nearServeLastActivity", "nearServeActiveUntil",
+  ];
+
+  if (!sessionStorage.getItem("nearServeBrowserSession")) {
+    SESSION_KEYS.forEach((key) => localStorage.removeItem(key));
+  }
 
   function showRegister() {
     authCard.classList.add('show-register');
@@ -45,7 +54,15 @@
 
   const authRequired = new URLSearchParams(window.location.search).get('auth_required');
   const invalidAccess = new URLSearchParams(window.location.search).get('invalid_access');
-  if (authRequired === '1') {
+  const sessionExpired = new URLSearchParams(window.location.search).get('session_expired');
+  const loginError = new URLSearchParams(window.location.search).get('error');
+  if (sessionExpired === '1') {
+    showToast('Session expired. Please login again.');
+    history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
+  } else if (loginError === 'google_login') {
+    showToast('Google login failed. Please try again.');
+    history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
+  } else if (authRequired === '1') {
     showToast('Please log in first');
     history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
   } else if (invalidAccess === '1') {
@@ -73,6 +90,9 @@
   function storeUserAndRedirect(data) {
     const user = data.user || data;
     if (data.csrfToken) localStorage.setItem("nearServeCsrf", data.csrfToken);
+    sessionStorage.setItem("nearServeBrowserSession", "1");
+    localStorage.setItem("nearServeLastActivity", String(Date.now()));
+    localStorage.setItem("nearServeActiveUntil", String(Date.now() + 45 * 1000));
     const userName = user.name || "";
     const userPhone = user.phone || "";
     const userEmail = user.email || "";

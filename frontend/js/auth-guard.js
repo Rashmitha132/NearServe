@@ -1,6 +1,27 @@
 (function () {
   document.documentElement.style.visibility = "hidden";
 
+  const SESSION_TIMEOUT_MS = 20 * 60 * 1000;
+  const ACTIVE_HEARTBEAT_MS = 10 * 1000;
+  const ACTIVE_GRACE_MS = 45 * 1000;
+  const SESSION_KEYS = [
+    "userName",
+    "userPhone",
+    "userEmail",
+    "userRole",
+    "userStatus",
+    "name",
+    "phone",
+    "email",
+    "role",
+    "status",
+    "token",
+    "authToken",
+    "nearServeCsrf",
+    "nearServeLastActivity",
+    "nearServeActiveUntil",
+  ];
+
   const page = (location.pathname.split("/").pop() || "login.html").toLowerCase();
   const publicPages = new Set([
     "",
@@ -44,6 +65,8 @@
     localStorage.setItem("status", user.status || "");
     localStorage.removeItem("token");
     localStorage.removeItem("authToken");
+    markBrowserSessionActive();
+    touchActivity();
   }
 
   function storeCsrf(token) {
@@ -51,18 +74,46 @@
   }
 
   function clearUser() {
-    ["userName", "userPhone", "userEmail", "userRole", "userStatus", "name", "phone", "email", "role", "status", "token", "authToken", "nearServeCsrf"]
-      .forEach((key) => localStorage.removeItem(key));
+    SESSION_KEYS.forEach((key) => localStorage.removeItem(key));
+    sessionStorage.removeItem("nearServeBrowserSession");
+  }
+
+  function markBrowserSessionActive() {
+    sessionStorage.setItem("nearServeBrowserSession", "1");
+    localStorage.setItem("nearServeActiveUntil", String(Date.now() + ACTIVE_GRACE_MS));
+  }
+
+  function touchActivity() {
+    localStorage.setItem("nearServeLastActivity", String(Date.now()));
+    markBrowserSessionActive();
+  }
+
+  function logoutRequest() {
+    return window.fetch(`${window.NEARSERVE_API_BASE}/auth/logout`, {
+      method: "POST",
+      keepalive: true,
+    }).catch(() => {});
+  }
+
+  function redirectToExpiredLogin() {
+    redirect("login.html?session_expired=1#login");
+  }
+
+  function expireSession() {
+    logoutRequest().finally(() => {
+      clearUser();
+      redirectToExpiredLogin();
+    });
   }
 
   window.nearServeLogout = function nearServeLogout() {
-    return window.fetch(`${window.NEARSERVE_API_BASE}/auth/logout`, { method: "POST" })
-      .catch(() => {})
+    return logoutRequest()
       .finally(() => {
         clearUser();
         redirect("login.html#login");
       });
   };
+  window.logout = window.nearServeLogout;
 
   if (adminPages.has(page)) {
     if (!adminToken) {
@@ -71,6 +122,42 @@
     document.documentElement.style.visibility = "";
     return;
   }
+
+  const hasStoredUser = SESSION_KEYS.some((key) => localStorage.getItem(key));
+  const activeUntil = Number(localStorage.getItem("nearServeActiveUntil") || 0);
+  if (hasStoredUser && !sessionStorage.getItem("nearServeBrowserSession") && activeUntil < Date.now()) {
+    clearUser();
+    redirectToExpiredLogin();
+    return;
+  }
+
+  markBrowserSessionActive();
+  if (!localStorage.getItem("nearServeLastActivity")) touchActivity();
+  setInterval(markBrowserSessionActive, ACTIVE_HEARTBEAT_MS);
+
+  const activityEvents = ["click", "keydown", "mousemove", "scroll", "touchstart", "visibilitychange"];
+  activityEvents.forEach((eventName) => {
+    document.addEventListener(eventName, touchActivity, { passive: true });
+  });
+
+  setInterval(() => {
+    const lastActivity = Number(localStorage.getItem("nearServeLastActivity") || Date.now());
+    if (Date.now() - lastActivity >= SESSION_TIMEOUT_MS) {
+      expireSession();
+    }
+  }, 30 * 1000);
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      const logoutTarget = event.target.closest?.("#logoutBtn, [data-logout]");
+      if (!logoutTarget) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.nearServeLogout();
+    },
+    true
+  );
 
   const originalFetch = window.fetch.bind(window);
   window.fetch = function (input, init) {
@@ -102,7 +189,7 @@
     return originalFetch(input, options).then((res) => {
       if (res.status === 401 || res.status === 403) {
         clearUser();
-        redirect("login.html?auth_required=1#login");
+        redirectToExpiredLogin();
       }
       return res;
     });
@@ -157,6 +244,6 @@
     })
     .catch(() => {
       clearUser();
-      redirect("login.html?auth_required=1#login");
+      redirectToExpiredLogin();
     });
 })();

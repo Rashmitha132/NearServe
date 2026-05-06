@@ -60,6 +60,9 @@ if (loginForm) {
 
       const user = data.user || data;
       if (data.csrfToken) localStorage.setItem("nearServeCsrf", data.csrfToken);
+      sessionStorage.setItem("nearServeBrowserSession", "1");
+      localStorage.setItem("nearServeLastActivity", String(Date.now()));
+      localStorage.setItem("nearServeActiveUntil", String(Date.now() + 45 * 1000));
 
       const userName = user.name || "";
       const userPhone = user.phone || "";

@@ -12,6 +12,7 @@ const pendingOAuthSignups = new Map();
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 const PENDING_OAUTH_SIGNUP_TTL_MS = 10 * 60 * 1000;
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+const SESSION_TTL_SECONDS = 20 * 60;
 const PASSWORD_RULE_MESSAGE =
   "Password must be at least 8 characters and include one uppercase letter and one special character";
 
@@ -110,6 +111,10 @@ function redirectOAuthError(res, message) {
   return res.redirect(`${getFrontendUrl()}/login.html?oauth_error=${error}#login`);
 }
 
+function redirectGoogleLoginError(res) {
+  return res.redirect(`${getFrontendUrl()}/login.html?error=google_login#login`);
+}
+
 function signUserToken(user) {
   return jwt.sign(
     {
@@ -121,7 +126,7 @@ function signUserToken(user) {
       status: user.status,
     },
     getJwtSecret(),
-    { expiresIn: "7d" }
+    { expiresIn: SESSION_TTL_SECONDS }
   );
 }
 
@@ -137,7 +142,7 @@ function serializeCookie(name, value, options = {}) {
 
 function setAuthCookies(res, user) {
   const isProduction = process.env.NODE_ENV === "production";
-  const maxAge = 7 * 24 * 60 * 60;
+  const maxAge = SESSION_TTL_SECONDS;
   const csrfToken = crypto.randomBytes(32).toString("hex");
   const sameSite = isProduction ? "None" : "Lax";
 
@@ -257,33 +262,8 @@ async function sendVerificationEmail(user, token) {
 }
 
 function sendOAuthSuccess(res, user) {
-  const userData = getUserResponse(user);
-  const redirectTo = getUserRedirect(user);
-  const csrfToken = setAuthCookies(res, user);
-
-  res.send(`<!doctype html>
-<html>
-<head><meta charset="utf-8"><title>NearServe Login</title></head>
-<body>
-<script>
-  const user = ${JSON.stringify(userData)};
-  localStorage.setItem("userName", user.name || "");
-  localStorage.setItem("userPhone", user.phone || "");
-  localStorage.setItem("userEmail", user.email || "");
-  localStorage.setItem("userRole", user.role || "");
-  localStorage.setItem("userStatus", user.status || "");
-  localStorage.setItem("name", user.name || "");
-  localStorage.setItem("phone", user.phone || "");
-  localStorage.setItem("email", user.email || "");
-  localStorage.setItem("role", user.role || "");
-  localStorage.setItem("status", user.status || "");
-  localStorage.setItem("nearServeCsrf", ${JSON.stringify(csrfToken)});
-  localStorage.removeItem("token");
-  localStorage.removeItem("authToken");
-  window.location.replace(${JSON.stringify(redirectTo)});
-</script>
-</body>
-</html>`);
+  setAuthCookies(res, user);
+  return res.redirect(`${getFrontendUrl()}/dashboard.html`);
 }
 
 const signup = asyncHandler(async (req, res) => {
@@ -580,11 +560,11 @@ const startOAuth = asyncHandler(async (req, res) => {
   const config = getOAuthConfig(provider);
 
   if (!config) {
-    return redirectOAuthError(res, "Unsupported social login provider");
+    return redirectGoogleLoginError(res);
   }
 
   if (!config.clientId || !config.clientSecret) {
-    return redirectOAuthError(res, `${provider} login is not configured yet`);
+    return redirectGoogleLoginError(res);
   }
 
   const state = crypto.randomBytes(24).toString("hex");
@@ -614,18 +594,18 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
   const { code, state, error } = req.query;
 
   if (error) {
-    return redirectOAuthError(res, "Social login was cancelled");
+    return redirectGoogleLoginError(res);
   }
 
   const stateRecord = oauthStates.get(state);
   oauthStates.delete(state);
 
   if (!config || !stateRecord || stateRecord.provider !== provider || Date.now() > stateRecord.expiresAt) {
-    return redirectOAuthError(res, "Social login session expired. Please try again");
+    return redirectGoogleLoginError(res);
   }
 
   if (!code) {
-    return redirectOAuthError(res, "Social login did not return an authorization code");
+    return redirectGoogleLoginError(res);
   }
 
   const tokenBody = new URLSearchParams({
@@ -644,7 +624,7 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
   const tokenData = await tokenResponse.json().catch(() => ({}));
 
   if (!tokenResponse.ok || !tokenData.access_token) {
-    return redirectOAuthError(res, "Could not verify social login");
+    return redirectGoogleLoginError(res);
   }
 
   const profileResponse = await fetch(config.userInfoUrl, {
@@ -653,13 +633,13 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
   const profile = await profileResponse.json().catch(() => ({}));
 
   if (!profileResponse.ok) {
-    return redirectOAuthError(res, "Could not read social profile");
+    return redirectGoogleLoginError(res);
   }
 
   const email = (profile.email || "").trim().toLowerCase();
 
   if (!email) {
-    return redirectOAuthError(res, "Your social account did not share an email address");
+    return redirectGoogleLoginError(res);
   }
 
   const user = await User.findOne({ email });
