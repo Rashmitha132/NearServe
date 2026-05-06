@@ -138,8 +138,12 @@ logoutBtn.addEventListener("click", () => {
   clearTimeout(sessionTimer);
   clearTimeout(warningTimer);
   clearInterval(countdownInterval);
-  localStorage.clear();
-  window.location.replace("login.html");
+  if (window.nearServeLogout) {
+    window.nearServeLogout();
+  } else {
+    localStorage.clear();
+    window.location.replace("login.html");
+  }
 });
 
 // History button

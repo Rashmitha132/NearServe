@@ -2,6 +2,13 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const asyncHandler = require("../utils/asyncHandler");
 
+const PASSWORD_RULE_MESSAGE =
+  "Password must be at least 8 characters and include one uppercase letter and one special character";
+
+function isStrongPassword(password) {
+  return /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+}
+
 const getProfile = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
 
@@ -187,8 +194,8 @@ const updatePassword = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "All password fields are required" });
   }
 
-  if (newPassword.length < 6) {
-    return res.status(400).json({ error: "New password must be at least 6 characters" });
+  if (!isStrongPassword(newPassword)) {
+    return res.status(400).json({ error: PASSWORD_RULE_MESSAGE });
   }
 
   if (newPassword !== confirmPassword) {

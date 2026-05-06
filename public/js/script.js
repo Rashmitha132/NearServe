@@ -17,8 +17,11 @@ if (userName && welcomeEl) {
 // Logout functionality
 if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-        // Redirect to login page without clearing anything
-        window.location.href = "login.html";
+        if (window.nearServeLogout) {
+            window.nearServeLogout();
+        } else {
+            window.location.href = "login.html";
+        }
     });
 }
 

@@ -13,6 +13,11 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  if (new URLSearchParams(window.location.search).get("auth_required") === "1") {
+    showMsg("Please log in as admin first.");
+    history.replaceState(null, "", window.location.pathname);
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     console.log("Admin submit event triggered");

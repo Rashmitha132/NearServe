@@ -1,12 +1,19 @@
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const asyncHandler = require("../utils/asyncHandler");
 const resetTokens = require("../utils/resetTokens");
 const nodemailerTransporter = require("../services/emailService");
+const { getJwtSecret } = require("../middlewares/authMiddleware");
 
 const oauthStates = new Map();
+const pendingOAuthSignups = new Map();
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+const PENDING_OAUTH_SIGNUP_TTL_MS = 10 * 60 * 1000;
+const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+const PASSWORD_RULE_MESSAGE =
+  "Password must be at least 8 characters and include one uppercase letter and one special character";
 
 const getAppUrl = () =>
   (process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`).replace(/\/$/, "");
@@ -75,15 +82,148 @@ function redirectOAuthError(res, message) {
   return res.redirect(`/login.html?oauth_error=${error}#login`);
 }
 
-function sendOAuthSuccess(res, user) {
-  const userData = {
+function signUserToken(user) {
+  return jwt.sign(
+    {
+      type: "user",
+      id: String(user._id),
+      phone: user.phone,
+      email: user.email,
+      role: user.role,
+      status: user.status,
+    },
+    getJwtSecret(),
+    { expiresIn: "7d" }
+  );
+}
+
+function serializeCookie(name, value, options = {}) {
+  const parts = [`${name}=${encodeURIComponent(value)}`];
+  if (options.maxAge !== undefined) parts.push(`Max-Age=${options.maxAge}`);
+  if (options.httpOnly) parts.push("HttpOnly");
+  if (options.secure) parts.push("Secure");
+  parts.push(`SameSite=${options.sameSite || "Strict"}`);
+  parts.push(`Path=${options.path || "/"}`);
+  return parts.join("; ");
+}
+
+function setAuthCookies(res, user) {
+  const isProduction = process.env.NODE_ENV === "production";
+  const maxAge = 7 * 24 * 60 * 60;
+  const csrfToken = crypto.randomBytes(32).toString("hex");
+
+  res.setHeader("Set-Cookie", [
+    serializeCookie("ns_auth", signUserToken(user), {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "Strict",
+      maxAge,
+    }),
+    serializeCookie("ns_csrf", csrfToken, {
+      secure: isProduction,
+      sameSite: "Strict",
+      maxAge,
+    }),
+  ]);
+}
+
+function clearAuthCookies(res) {
+  const isProduction = process.env.NODE_ENV === "production";
+  res.setHeader("Set-Cookie", [
+    serializeCookie("ns_auth", "", {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "Strict",
+      maxAge: 0,
+    }),
+    serializeCookie("ns_csrf", "", {
+      secure: isProduction,
+      sameSite: "Strict",
+      maxAge: 0,
+    }),
+  ]);
+}
+
+function getUserResponse(user) {
+  return {
     name: user.name,
     phone: user.phone,
     email: user.email,
     role: user.role,
     status: user.status,
   };
+}
+
+function createTemporaryPassword() {
+  return crypto.randomBytes(24).toString("base64url") + "A!";
+}
+
+function cleanupPendingOAuthSignups() {
+  const now = Date.now();
+  for (const [token, record] of pendingOAuthSignups.entries()) {
+    if (!record || record.expiresAt <= now) {
+      pendingOAuthSignups.delete(token);
+    }
+  }
+}
+
+function createEmailVerificationToken() {
+  const token = crypto.randomBytes(32).toString("hex");
+  return {
+    token,
+    tokenHash: crypto.createHash("sha256").update(token).digest("hex"),
+    expiresAt: new Date(Date.now() + EMAIL_VERIFICATION_TTL_MS),
+  };
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function isStrongPassword(password) {
+  return /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+}
+
+async function sendVerificationEmail(user, token) {
+  const verifyLink = `${getAppUrl()}/api/auth/verify-email?token=${encodeURIComponent(token)}`;
+  const safeName = escapeHtml(user.name);
+
+  await nodemailerTransporter.sendMail({
+    from: `"NearServe" <${process.env.EMAIL_USER}>`,
+    to: user.email,
+    subject: "Verify your NearServe email",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #f4f7f2; padding: 30px; border-radius: 12px;">
+        <div style="background: white; padding: 28px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+          <h2 style="color: #145c3f; margin-top: 0;">Verify your email</h2>
+          <p style="color: #45544c; line-height: 1.6;">Hi <strong>${safeName}</strong>,</p>
+          <p style="color: #45544c; line-height: 1.6;">
+            Please confirm this email address to activate your NearServe account.
+          </p>
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${verifyLink}"
+               style="background: #145c3f; color: white; padding: 13px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+              Verify Email
+            </a>
+          </div>
+          <p style="color: #667085; font-size: 13px; line-height: 1.6;">
+            This link expires in 24 hours. If you did not create this account, you can ignore this email.
+          </p>
+        </div>
+      </div>
+    `,
+  });
+}
+
+function sendOAuthSuccess(res, user) {
+  const userData = getUserResponse(user);
   const redirectTo = getUserRedirect(user);
+  setAuthCookies(res, user);
 
   res.send(`<!doctype html>
 <html>
@@ -101,6 +241,8 @@ function sendOAuthSuccess(res, user) {
   localStorage.setItem("email", user.email || "");
   localStorage.setItem("role", user.role || "");
   localStorage.setItem("status", user.status || "");
+  localStorage.removeItem("token");
+  localStorage.removeItem("authToken");
   window.location.replace(${JSON.stringify(redirectTo)});
 </script>
 </body>
@@ -122,6 +264,7 @@ const signup = asyncHandler(async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const status = role === "customer" ? "full_access" : "pending_verification";
+  const verification = createEmailVerificationToken();
 
   const user = new User({
     name,
@@ -130,12 +273,16 @@ const signup = asyncHandler(async (req, res) => {
     password: hashedPassword,
     role,
     status,
+    emailVerified: false,
+    emailVerificationTokenHash: verification.tokenHash,
+    emailVerificationExpiresAt: verification.expiresAt,
   });
 
   await user.save();
+  await sendVerificationEmail(user, verification.token);
 
   res.status(201).json({
-    message: "Signup successful",
+    message: "Signup successful. Please verify your email before logging in.",
   });
 });
 
@@ -161,16 +308,79 @@ const login = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Incorrect password" });
   }
 
+  if (user.emailVerified !== true) {
+    const expired =
+      !user.emailVerificationExpiresAt ||
+      user.emailVerificationExpiresAt.getTime() <= Date.now();
+
+    if (!user.emailVerificationTokenHash || expired) {
+      const verification = createEmailVerificationToken();
+      user.emailVerificationTokenHash = verification.tokenHash;
+      user.emailVerificationExpiresAt = verification.expiresAt;
+      await user.save();
+      await sendVerificationEmail(user, verification.token);
+    }
+
+    return res.status(403).json({
+      code: "EMAIL_NOT_VERIFIED",
+      error: expired
+        ? "Your verification link expired, so we sent a new one. Please check your inbox."
+        : "Please verify your email before logging in. Check your inbox for the NearServe verification link.",
+      email: user.email,
+    });
+  }
+
+  setAuthCookies(res, user);
+
   res.json({
     message: "Login successful",
-    user: {
-      name: user.name,
-      phone: user.phone,
-      email: user.email,
-      role: user.role,
-      status: user.status,
-    },
+    user: getUserResponse(user),
   });
+});
+
+const getSession = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).select("name phone email role status emailVerified");
+  if (!user) {
+    clearAuthCookies(res);
+    return res.status(401).json({ error: "Invalid login session" });
+  }
+
+  res.json({ user: getUserResponse(user) });
+});
+
+const logout = asyncHandler(async (_req, res) => {
+  clearAuthCookies(res);
+  res.json({ message: "Logged out" });
+});
+
+const resendVerification = asyncHandler(async (req, res) => {
+  const emailOrPhone = (req.body.emailOrPhone || req.body.email || "").trim().toLowerCase();
+
+  if (!emailOrPhone) {
+    return res.status(400).json({ error: "Enter your email or phone number first" });
+  }
+
+  const user = await User.findOne({
+    $or: [{ email: emailOrPhone }, { phone: emailOrPhone }],
+  });
+
+  if (!user) {
+    return res.json({
+      message: "If this account exists and is unverified, a verification email has been sent.",
+    });
+  }
+
+  if (user.emailVerified === true) {
+    return res.json({ message: "This email is already verified. Please log in." });
+  }
+
+  const verification = createEmailVerificationToken();
+  user.emailVerificationTokenHash = verification.tokenHash;
+  user.emailVerificationExpiresAt = verification.expiresAt;
+  await user.save();
+  await sendVerificationEmail(user, verification.token);
+
+  res.json({ message: "Verification email sent. Please check your inbox." });
 });
 
 const forgotPassword = asyncHandler(async (req, res) => {
@@ -267,10 +477,10 @@ const resetPassword = asyncHandler(async (req, res) => {
       .json({ error: "Token and new password are required" });
   }
 
-  if (newPassword.length < 6) {
+  if (!isStrongPassword(newPassword)) {
     return res
       .status(400)
-      .json({ error: "Password must be at least 6 characters" });
+      .json({ error: PASSWORD_RULE_MESSAGE });
   }
 
   const record = resetTokens.get(token);
@@ -292,6 +502,31 @@ const resetPassword = asyncHandler(async (req, res) => {
   resetTokens.delete(token);
 
   res.json({ message: "Password reset successful" });
+});
+
+const verifyEmail = asyncHandler(async (req, res) => {
+  const token = (req.query.token || "").trim();
+
+  if (!token) {
+    return redirectOAuthError(res, "Verification link is missing");
+  }
+
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    emailVerificationTokenHash: tokenHash,
+    emailVerificationExpiresAt: { $gt: new Date() },
+  });
+
+  if (!user) {
+    return redirectOAuthError(res, "Verification link is invalid or expired");
+  }
+
+  user.emailVerified = true;
+  user.emailVerificationTokenHash = "";
+  user.emailVerificationExpiresAt = null;
+  await user.save();
+
+  return res.redirect("/login.html?verified=1#login");
 });
 
 const startOAuth = asyncHandler(async (req, res) => {
@@ -384,21 +619,100 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return redirectOAuthError(
-      res,
-      "No NearServe account exists for this email. Please sign up with phone number first"
-    );
+    cleanupPendingOAuthSignups();
+    const setupToken = crypto.randomBytes(32).toString("hex");
+    pendingOAuthSignups.set(setupToken, {
+      provider,
+      email,
+      name: profile.name || profile.given_name || email.split("@")[0],
+      expiresAt: Date.now() + PENDING_OAUTH_SIGNUP_TTL_MS,
+    });
+
+    return res.redirect(`/login.html?oauth_setup=${setupToken}#login`);
+  }
+
+  if (user.emailVerified !== true) {
+    user.emailVerified = true;
+    user.emailVerificationTokenHash = "";
+    user.emailVerificationExpiresAt = null;
+    await user.save();
   }
 
   return sendOAuthSuccess(res, user);
 });
 
+const completeOAuthSignup = asyncHandler(async (req, res) => {
+  cleanupPendingOAuthSignups();
+
+  const setupToken = (req.body.setupToken || "").trim();
+  const phone = (req.body.phone || "").trim();
+  const role = (req.body.role || "").trim().toLowerCase();
+  const pending = pendingOAuthSignups.get(setupToken);
+
+  if (!pending) {
+    return res.status(400).json({
+      error: "Google signup session expired. Please continue with Google again.",
+    });
+  }
+
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    return res.status(400).json({
+      error: "Please enter a valid phone number",
+    });
+  }
+
+  if (!["customer", "electrician", "plumber", "carpenter"].includes(role)) {
+    return res.status(400).json({ error: "Please select a valid role" });
+  }
+
+  const existingUser = await User.findOne({
+    $or: [{ email: pending.email }, { phone }],
+  });
+
+  if (existingUser) {
+    return res.status(400).json({
+      error:
+        existingUser.email === pending.email
+          ? "A NearServe account already exists for this Google email. Please log in again."
+          : "This phone number is already registered",
+    });
+  }
+
+  const status = role === "customer" ? "full_access" : "pending_verification";
+  const password = await bcrypt.hash(createTemporaryPassword(), 10);
+  const user = await User.create({
+    name: pending.name,
+    email: pending.email,
+    phone,
+    password,
+    role,
+    status,
+    emailVerified: true,
+    emailVerificationTokenHash: "",
+    emailVerificationExpiresAt: null,
+  });
+
+  pendingOAuthSignups.delete(setupToken);
+  setAuthCookies(res, user);
+
+  res.status(201).json({
+    message: "Google signup completed",
+    redirectTo: getUserRedirect(user),
+    user: getUserResponse(user),
+  });
+});
+
 module.exports = {
   signup,
   login,
+  getSession,
+  logout,
+  resendVerification,
   forgotPassword,
   verifyResetToken,
   resetPassword,
+  verifyEmail,
   startOAuth,
   handleOAuthCallback,
+  completeOAuthSignup,
 };

@@ -6,6 +6,7 @@ const fs = require("fs");
 
 const connectDB = require("./config/db");
 const errorMiddleware = require("./middlewares/errorMiddleware");
+const { requireUser } = require("./middlewares/authMiddleware");
 const autoExpirePendingBookings = require("./services/autoExpiryService");
 
 const adminRoutes = require("./routes/adminRoutes");
@@ -30,6 +31,12 @@ const app = express();
 app.locals.ADMIN_TOKEN = "QS_ADMIN_" + Math.random().toString(36).slice(2);
 
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "same-origin");
+  next();
+});
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -49,11 +56,11 @@ app.get("/api/check-server", (req, res) => {
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/workers", workerRoutes);
-app.use("/api/reviews", reviewRoutes);
-app.use("/api/profile", profileRoutes);
-app.use("/api/chat", chatRoutes);
+app.use("/api/bookings", requireUser, bookingRoutes);
+app.use("/api/workers", requireUser, workerRoutes);
+app.use("/api/reviews", requireUser, reviewRoutes);
+app.use("/api/profile", requireUser, profileRoutes);
+app.use("/api/chat", requireUser, chatRoutes);
 // app.use("/api/payment", paymentRoutes);
 
 const hours = Number(process.env.PENDING_EXPIRY_HOURS || 24);

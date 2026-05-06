@@ -10,61 +10,79 @@
     const style = document.createElement("style");
     style.id = "nearserve-toast-styles";
     style.textContent = `
-      .toast {
+      .ns-toast {
         position: fixed;
         top: 20px;
         right: 20px;
-        max-width: min(360px, calc(100vw - 32px));
+        bottom: auto;
+        left: auto;
+        width: auto;
+        min-width: min(260px, calc(100vw - 32px));
+        max-width: min(380px, calc(100vw - 32px));
+        min-height: 0;
+        height: auto;
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        background: #1f6f4a;
+        background: #145c3f;
         color: white;
         padding: 14px 18px;
         border-radius: 10px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 16px 34px rgba(15, 61, 46, 0.24);
+        box-sizing: border-box;
         font-size: 14px;
         font-weight: 700;
         line-height: 1.45;
         z-index: 99999;
         opacity: 0;
         transform: translateY(-20px);
-        transition: all 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
         pointer-events: none;
+        text-align: left;
+        overflow: visible;
       }
 
-      .toast.show {
+      .ns-toast.show {
         opacity: 1;
         transform: translateY(0);
       }
 
-      .toast.error {
-        background: #e74c3c;
+      .ns-toast.error {
+        background: #b91c1c;
       }
 
-      .toast.success {
-        background: #27ae60;
+      .ns-toast.success {
+        background: #145c3f;
       }
 
-      .toast.info {
-        background: #3498db;
+      .ns-toast.info {
+        background: #1d4ed8;
       }
 
-      .toast-icon {
+      .ns-toast .toast-icon {
         flex: 0 0 auto;
         font-weight: 900;
+        line-height: 1.45;
       }
 
-      .toast-message {
+      .ns-toast .toast-message {
         min-width: 0;
+        overflow-wrap: anywhere;
       }
 
       @media (max-width: 768px) {
-        .toast {
+        .ns-toast {
           top: 14px;
           right: 14px;
           left: 14px;
+          bottom: auto;
+          width: auto;
+          min-width: 0;
           max-width: none;
+          padding: 12px 14px;
+          border-radius: 9px;
+          font-size: 13px;
         }
       }
     `;
@@ -82,7 +100,7 @@
     };
 
     const toast = document.createElement("div");
-    toast.className = `toast ${normalizedType}`;
+    toast.className = `ns-toast ${normalizedType}`;
     toast.setAttribute("role", "status");
     toast.setAttribute("aria-live", "polite");
 

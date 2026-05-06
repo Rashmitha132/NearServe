@@ -10,6 +10,7 @@ const emailOrPhoneInput = loginForm ? loginForm.querySelector("#emailOrPhone") :
 const passwordInput = loginForm ? loginForm.querySelector("#password") : null;
 const roleInput = loginForm ? loginForm.querySelector("#role") : null;
 const loginBtn = loginForm ? loginForm.querySelector("#loginBtn") : null;
+const resendVerificationBtn = document.getElementById("resendVerificationBtn");
 
 console.log("login.js loaded");
 
@@ -54,6 +55,9 @@ if (loginForm) {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
+        if (data.code === "EMAIL_NOT_VERIFIED" && resendVerificationBtn) {
+          resendVerificationBtn.style.display = "block";
+        }
         showToast(data.message || data.error || "Login failed");
         return;
       }
@@ -79,9 +83,8 @@ if (loginForm) {
       localStorage.setItem("role", userRole);
       localStorage.setItem("status", userStatus);
 
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
+      localStorage.removeItem("token");
+      localStorage.removeItem("authToken");
 
       console.log("Login success:", user);
 
@@ -153,6 +156,41 @@ if (loginForm) {
         loginBtn.disabled = false;
         loginBtn.textContent = "Login";
       }
+    }
+  });
+}
+
+if (resendVerificationBtn && emailOrPhoneInput) {
+  resendVerificationBtn.addEventListener("click", async () => {
+    const emailOrPhone = emailOrPhoneInput.value.trim();
+    if (!emailOrPhone) {
+      showToast("Enter your email or phone number first");
+      emailOrPhoneInput.focus();
+      return;
+    }
+
+    resendVerificationBtn.disabled = true;
+    resendVerificationBtn.textContent = "Sending...";
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/resend-verification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emailOrPhone }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showToast(data.error || "Could not send verification email");
+        return;
+      }
+
+      showToast(data.message || "Verification email sent", "success");
+    } catch {
+      showToast("Server error while sending verification email");
+    } finally {
+      resendVerificationBtn.disabled = false;
+      resendVerificationBtn.textContent = "Resend verification email";
     }
   });
 }

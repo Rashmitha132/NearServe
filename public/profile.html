@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="./js/auth-guard.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile - NearServe</title>
@@ -959,7 +960,7 @@
         <div class="form-row full">
           <div class="form-group">
             <label class="form-label">New Password (Min 6 Characters)</label>
-            <input type="password" class="form-input" id="newPassword" placeholder="Enter new password">
+            <input type="password" class="form-input" id="newPassword" placeholder="Min 8 chars, uppercase & special char">
           </div>
         </div>
         <div class="form-row full">
@@ -1311,8 +1312,9 @@ window.addEventListener("DOMContentLoaded", async function() {
       return showToast("All password fields are required", "error");
     }
 
-    if (newPassword.length < 6) {
-      return showToast("Password must be at least 6 characters", "error");
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return showToast("Password must be at least 8 characters and include one uppercase letter and one special character", "error");
     }
 
     if (newPassword !== confirmPassword) {

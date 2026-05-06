@@ -51,7 +51,7 @@
   .auth-card {
     position: relative;
     width: min(700px, 100%);
-    height: 420px;
+    height: 500px;
     border-radius: 20px;
     background: #ffffff;
     overflow: hidden;
@@ -97,7 +97,7 @@
   }
 
   .login-side { right: 0; opacity: 1; pointer-events: auto; }
-  .signup-side { left: 0; opacity: 0; pointer-events: none; transform: translateX(-14px); }
+  .signup-side { left: 0; opacity: 0; pointer-events: none; transform: translateX(-14px); padding-top: 34px; padding-bottom: 34px; }
 
   .auth-card.show-register .login-side {
     opacity: 0;
@@ -182,6 +182,30 @@
     display: none;
   }
 
+  .input-box.password-box input {
+    padding-right: 82px;
+  }
+
+  .input-box.password-box .field-icon {
+    right: 52px;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #145c3f;
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+    padding: 5px;
+    z-index: 3;
+  }
+
   .forgot {
     text-align: right;
     margin: -6px 0 12px;
@@ -192,6 +216,18 @@
     font-size: 0.78rem;
     text-decoration: none;
     font-weight: 700;
+  }
+
+  .resend-verification {
+    display: none;
+    border: 0;
+    background: transparent;
+    color: #145c3f;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 800;
+    margin: -4px 0 12px auto;
+    padding: 0;
   }
 
   button[type="submit"] {
@@ -249,6 +285,12 @@
     transform: translateY(0) scale(0.98);
   }
 
+  .password-toggle:hover:not(:disabled),
+  .password-toggle:active:not(:disabled) {
+    transform: translateY(-50%);
+    box-shadow: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -266,7 +308,7 @@
     gap: 14px;
     color: #9aa7a0;
     font-size: 0.76rem;
-    margin: 22px 0 14px;
+    margin: 18px 0 12px;
   }
 
   .social-divider::before,
@@ -280,17 +322,35 @@
   .social-row {
     display: flex;
     justify-content: center;
-    gap: 10px;
   }
 
   .social-row button {
-    width: 36px;
-    height: 34px;
+    width: 100%;
+    min-height: 38px;
     border: 1px solid #d6e2d9;
     border-radius: 8px;
     background: #ffffff;
-    color: #145c3f;
+    color: #0f3d2e;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: inherit;
+    font-size: 0.84rem;
     font-weight: 800;
+  }
+
+  .social-row button::before {
+    content: "G";
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(20, 92, 63, 0.16);
+    color: #145c3f;
+    font-size: 0.76rem;
+    font-weight: 900;
   }
 
   .toggle-panel {
@@ -519,6 +579,26 @@
   }
 
   .modal .input-box input { padding-right: 14px; }
+  .modal .input-box select {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #d6e2d9;
+    border-radius: 8px;
+    background: #f9fcfa;
+    color: #09251b;
+    padding: 0 14px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+  }
+
+  .oauth-email-note {
+    margin: -8px 0 14px;
+    color: #64748b;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
   .modal-btn,
   .loc-retry-btn {
     width: 100%;
@@ -788,25 +868,22 @@
       margin: -4px 0 12px;
     }
 
-    .signup-side .social-divider,
-    .signup-side .social-row {
-      display: none;
-    }
-
-    .login-side .social-divider {
+    .login-side .social-divider,
+    .signup-side .social-divider {
       display: flex;
       margin: 20px 0 14px;
       color: #8c9a93;
     }
 
-    .login-side .social-row {
+    .login-side .social-row,
+    .signup-side .social-row {
       display: flex;
       margin-bottom: 14px;
     }
 
     .social-row button {
-      width: 44px;
-      height: 44px;
+      width: 100%;
+      min-height: 46px;
       border-radius: 12px;
       background: #ffffff;
       box-shadow: 0 8px 18px rgba(15,61,46,0.08);
@@ -850,15 +927,16 @@
           <span class="field-icon">✉</span>
         </div>
 
-        <div class="input-box">
+        <div class="input-box password-box">
           <input type="password" id="password" placeholder="Password">
           <span class="field-icon leading">▢</span>
           <span class="field-icon">🔒</span>
+          <button type="button" class="password-toggle" data-password-toggle>Show</button>
         </div>
-
         <div class="forgot">
           <a href="#" id="forgotLink">Forgot password?</a>
         </div>
+        <button type="button" class="resend-verification" id="resendVerificationBtn">Resend verification email</button>
 
         <div class="input-box">
           <select id="role">
@@ -874,10 +952,9 @@
 
         <button type="submit" id="loginBtn">Login</button>
 
-        <div class="social-divider"><span>or login with</span></div>
+        <div class="social-divider"><span>or continue with</span></div>
         <div class="social-row">
-          <button type="button" data-oauth-provider="google" aria-label="Login with Google">G</button>
-          <button type="button" data-oauth-provider="linkedin" aria-label="Login with LinkedIn">in</button>
+          <button type="button" data-oauth-provider="google" aria-label="Continue with Google">Continue with Google</button>
         </div>
         <p class="auth-switch">Don't have an account? <button type="button" data-auth-target="register">Sign up</button></p>
       </form>
@@ -905,16 +982,18 @@
           <span class="field-icon">☎</span>
         </div>
 
-        <div class="input-box">
+        <div class="input-box password-box">
           <input type="password" id="password" name="password" placeholder="Password">
           <span class="field-icon leading">▢</span>
           <span class="field-icon">🔒</span>
+          <button type="button" class="password-toggle" data-password-toggle>Show</button>
         </div>
 
-        <div class="input-box mobile-confirm" style="display:none">
+        <div class="input-box password-box mobile-confirm" style="display:none">
           <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password">
           <span class="field-icon leading">▢</span>
           <span class="field-icon">🔒</span>
+          <button type="button" class="password-toggle" data-password-toggle>Show</button>
         </div>
 
         <div class="input-box">
@@ -930,6 +1009,10 @@
         </div>
 
         <button type="submit" id="signupBtn">Sign Up</button>
+        <div class="social-divider"><span>or continue with</span></div>
+        <div class="social-row">
+          <button type="button" data-oauth-provider="google" aria-label="Continue with Google">Continue with Google</button>
+        </div>
         <p class="auth-switch">Already have an account? <button type="button" data-auth-target="login">Log in</button></p>
       </form>
     </div>
@@ -1007,6 +1090,28 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="oauthSetupModal">
+  <div class="modal">
+    <div class="modal-icon">G</div>
+    <h3>Complete Google Login</h3>
+    <p>Add your phone number and role to finish creating your NearServe account.</p>
+    <p class="oauth-email-note" id="oauthSetupEmail"></p>
+    <div class="input-box">
+      <input type="tel" id="oauthPhone" placeholder="Phone Number" inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}">
+    </div>
+    <div class="input-box">
+      <select id="oauthRole">
+        <option value="">Select role</option>
+        <option value="customer">Customer</option>
+        <option value="plumber">Plumber</option>
+        <option value="electrician">Electrician</option>
+        <option value="carpenter">Carpenter</option>
+      </select>
+    </div>
+    <button class="modal-btn" id="completeOAuthBtn" type="button">Continue</button>
+  </div>
+</div>
+
 <script src="js/login.js"></script>
 <script src="js/signup.js"></script>
 <script>
@@ -1041,13 +1146,113 @@
     });
   });
 
+  document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const input = button.closest('.password-box').querySelector('input');
+      const showing = input.type === 'text';
+      input.type = showing ? 'password' : 'text';
+      button.textContent = showing ? 'Show' : 'Hide';
+      button.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    });
+  });
+
   if (['#register', '#signup'].includes(window.location.hash.toLowerCase())) {
     showRegister();
+  }
+
+  const authRequired = new URLSearchParams(window.location.search).get('auth_required');
+  const invalidAccess = new URLSearchParams(window.location.search).get('invalid_access');
+  if (authRequired === '1') {
+    showToast('Please log in first');
+    history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
+  } else if (invalidAccess === '1') {
+    showToast('Invalid access for this account');
+    history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
   }
 
   const oauthError = new URLSearchParams(window.location.search).get('oauth_error');
   if (oauthError) {
     showToast(oauthError);
+    history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
+  }
+
+  const oauthSetupToken = new URLSearchParams(window.location.search).get('oauth_setup');
+  const oauthSetupModal = document.getElementById('oauthSetupModal');
+  const oauthPhone = document.getElementById('oauthPhone');
+  const oauthRole = document.getElementById('oauthRole');
+  const completeOAuthBtn = document.getElementById('completeOAuthBtn');
+  if (oauthSetupToken) {
+    oauthSetupModal.classList.add('active');
+    oauthPhone.focus();
+    history.replaceState(null, '', `${window.location.pathname}#login`);
+  }
+
+  function storeUserAndRedirect(data) {
+    const user = data.user || data;
+    const userName = user.name || "";
+    const userPhone = user.phone || "";
+    const userEmail = user.email || "";
+    const userRole = (user.role || "").toLowerCase();
+    const userStatus = (user.status || "").toLowerCase();
+
+    localStorage.setItem("userName", userName);
+    localStorage.setItem("userPhone", userPhone);
+    localStorage.setItem("userEmail", userEmail);
+    localStorage.setItem("userRole", userRole);
+    localStorage.setItem("userStatus", userStatus);
+    localStorage.setItem("name", userName);
+    localStorage.setItem("phone", userPhone);
+    localStorage.setItem("email", userEmail);
+    localStorage.setItem("role", userRole);
+    localStorage.setItem("status", userStatus);
+    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
+
+    window.location.href = data.redirectTo || "booking.html";
+  }
+
+  completeOAuthBtn.addEventListener('click', async () => {
+    const phone = oauthPhone.value.trim();
+    const role = oauthRole.value;
+
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      showToast("Please enter a valid phone number");
+      return;
+    }
+
+    if (!role) {
+      showToast("Please select a role");
+      return;
+    }
+
+    completeOAuthBtn.disabled = true;
+    completeOAuthBtn.textContent = "Continuing...";
+
+    try {
+      const res = await fetch(`${window.NEARSERVE_API_BASE || '/api'}/auth/oauth/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ setupToken: oauthSetupToken, phone, role })
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showToast(data.error || "Could not complete Google login");
+        return;
+      }
+
+      storeUserAndRedirect(data);
+    } catch (err) {
+      showToast("Server error while completing Google login");
+    } finally {
+      completeOAuthBtn.disabled = false;
+      completeOAuthBtn.textContent = "Continue";
+    }
+  });
+
+  const emailVerified = new URLSearchParams(window.location.search).get('verified');
+  if (emailVerified === '1') {
+    showToast('Email verified successfully. You can now log in.', 'success');
     history.replaceState(null, '', `${window.location.pathname}${window.location.hash || '#login'}`);
   }
 

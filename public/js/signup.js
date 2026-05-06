@@ -148,12 +148,13 @@ if (signupForm) {
 
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
-      showToast("Phone number must be exactly 10 digits and start with 6, 7, 8, or 9.");
+      showToast("Please enter a valid phone number.");
       return;
     }
 
-    if (password.length < 6) {
-      showToast("Password must be at least 6 characters.");
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      showToast("Password must be at least 8 characters and include one uppercase letter and one special character.");
       return;
     }
 
@@ -182,7 +183,7 @@ if (signupForm) {
         return;
       }
 
-      showToast("Signup successful! Please login.", "success");
+      showToast(data.message || "Signup successful. Please verify your email before logging in.", "success");
 
       nameInput.value = "";
       emailInput.value = "";
@@ -190,7 +191,7 @@ if (signupForm) {
       passwordInput.value = "";
       roleInput.value = "";
 
-      window.location.href = "login.html";
+      window.location.href = "login.html#login";
     } catch (error) {
       console.error("Signup error:", error);
       showToast("Server error during signup");
