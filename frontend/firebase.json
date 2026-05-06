@@ -3,13 +3,8 @@
     "public": ".",
     "ignore": [
       "firebase.json",
-      "package.json",
-      "package-lock.json",
-      ".gitignore",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "cleanUrls": true,
-    "trailingSlash": false
+    ]
   }
 }
