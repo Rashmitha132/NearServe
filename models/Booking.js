@@ -47,6 +47,23 @@ const bookingSchema = new mongoose.Schema(
     notes: { type: String, default: "" },
 
     // ======================
+    // Payment tracking
+    // ======================
+    paymentMode: {
+      type: String,
+      enum: ["free", "razorpay", ""],
+      default: "",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["free", "paid", "pending", "failed", ""],
+      default: "",
+    },
+    amountPaid: { type: Number, default: 0 },
+    paymentId: { type: String, default: "" },
+    orderId: { type: String, default: "" },
+
+    // ======================
     // Rating tracking
     // ======================
     reviewed: { type: Boolean, default: false }

@@ -16,7 +16,7 @@ const workerRoutes = require("./routes/workerRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-// const paymentRoutes = require("./routes/paymentRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 // keep model imports only if needed elsewhere now
 require("./models/Booking");
@@ -61,7 +61,7 @@ app.use("/api/workers", requireUser, workerRoutes);
 app.use("/api/reviews", requireUser, reviewRoutes);
 app.use("/api/profile", requireUser, profileRoutes);
 app.use("/api/chat", requireUser, chatRoutes);
-// app.use("/api/payment", paymentRoutes);
+app.use("/api/payments", requireUser, paymentRoutes);
 
 const hours = Number(process.env.PENDING_EXPIRY_HOURS || 24);
 

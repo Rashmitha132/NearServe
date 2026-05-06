@@ -3,9 +3,22 @@ const User = require("../models/User");
 const asyncHandler = require("../utils/asyncHandler");
 
 const createBooking = asyncHandler(async (req, res) => {
+  const phone = (req.body.phone || "").trim();
+  if (req.user && req.user.phone && phone !== req.user.phone) {
+    return res.status(403).json({ error: "Invalid customer session" });
+  }
+
+  const existingBookingCount = await Booking.countDocuments({ phone });
+
+  if (existingBookingCount > 0) {
+    return res.status(402).json({
+      error: "Payment required. First booking is free, then each booking costs ₹29.",
+    });
+  }
+
   const bookingData = {
     name: req.body.name,
-    phone: (req.body.phone || "").trim(),
+    phone,
     service: (req.body.service || "").trim().toLowerCase(),
     address: req.body.address,
     date: req.body.date,
@@ -17,6 +30,9 @@ const createBooking = asyncHandler(async (req, res) => {
     rejectReason: "",
     completedAt: null,
     reviewed: false,
+    paymentMode: "free",
+    paymentStatus: "free",
+    amountPaid: 0,
   };
 
   const booking = new Booking(bookingData);
@@ -191,7 +207,7 @@ const getDashboard = asyncHandler(async (req, res) => {
   const upcomingBookings = bookings.filter(
     (b) => b.status === "pending" || b.status === "accepted"
   );
-  const totalSpent = totalBookings * 29;
+  const totalSpent = bookings.reduce((sum, booking) => sum + Number(booking.amountPaid || 0), 0);
 
   const memberSince = user.createdAt
     ? new Date(user.createdAt).getFullYear()
