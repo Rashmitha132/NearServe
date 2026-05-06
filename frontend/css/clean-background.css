@@ -4,6 +4,7 @@ body {
   background-image: none !important;
 }
 
+body:not(.auth-page):not(.login-page):not(.signup-page),
 body.page-bg,
 body.ns-shell-page,
 body.dashboard-page,
@@ -51,6 +52,11 @@ body::after,
   background-image: none !important;
 }
 
+body:not(.auth-page):not(.login-page):not(.signup-page) > .app,
+body:not(.auth-page):not(.login-page):not(.signup-page) > .shell,
+body:not(.auth-page):not(.login-page):not(.signup-page) > .mobile-shell,
+body:not(.auth-page):not(.login-page):not(.signup-page) > .main,
+body:not(.auth-page):not(.login-page):not(.signup-page) > .right-panel,
 body.ns-shell-page .right-panel,
 body.ns-shell-page main.right-panel,
 body.ns-shell-page .main,
@@ -61,6 +67,14 @@ body.ns-shell-page .main-content {
   background-image: none !important;
 }
 
+body.ns-shell-page .ns-mobile-head::before,
+body.ns-shell-page .ns-mobile-head::after,
+body.dashboard-page .mobile-head::before,
+body.dashboard-page .mobile-head::after,
+body.history-page .mobile-head::before,
+body.history-page .mobile-head::after,
+body.worker-profile-page .mobile-profile-header::before,
+body.worker-profile-page .mobile-profile-header::after,
 body.ns-shell-page .right-panel::before,
 body.ns-shell-page .right-panel::after,
 body.ns-shell-page main.right-panel::before,
@@ -71,4 +85,15 @@ body.ns-shell-page .main::after {
   display: none !important;
   background: none !important;
   background-image: none !important;
+}
+
+@media (max-width: 900px) {
+  body:not(.auth-page):not(.login-page):not(.signup-page),
+  body:not(.auth-page):not(.login-page):not(.signup-page) .app,
+  body:not(.auth-page):not(.login-page):not(.signup-page) .main,
+  body:not(.auth-page):not(.login-page):not(.signup-page) .right-panel,
+  body:not(.auth-page):not(.login-page):not(.signup-page) .chat-body {
+    background: #ffffff !important;
+    background-image: none !important;
+  }
 }
