@@ -1,5 +1,9 @@
 (function () {
   document.documentElement.style.visibility = "hidden";
+  let resolveAuthReady;
+  window.nearServeAuthReady = new Promise((resolve) => {
+    resolveAuthReady = resolve;
+  });
 
   const SESSION_TIMEOUT_MS = 20 * 60 * 1000;
   const ACTIVE_HEARTBEAT_MS = 10 * 1000;
@@ -34,6 +38,7 @@
 
   if (publicPages.has(page)) {
     document.documentElement.style.visibility = "";
+    resolveAuthReady(null);
     return;
   }
 
@@ -42,6 +47,13 @@
 
   function redirect(url) {
     location.replace(url);
+  }
+
+  function finishAuth(user) {
+    document.documentElement.style.visibility = "";
+    window.nearServeCurrentUser = user || null;
+    resolveAuthReady(user || null);
+    window.dispatchEvent(new CustomEvent("nearserve:auth-ready", { detail: user || null }));
   }
 
   function getCookie(name) {
@@ -63,8 +75,6 @@
     localStorage.setItem("email", user.email || "");
     localStorage.setItem("role", user.role || "");
     localStorage.setItem("status", user.status || "");
-    localStorage.removeItem("token");
-    localStorage.removeItem("authToken");
     markBrowserSessionActive();
     touchActivity();
   }
@@ -119,7 +129,7 @@
     if (!adminToken) {
       redirect("admin_login.html?auth_required=1");
     }
-    document.documentElement.style.visibility = "";
+    finishAuth(null);
     return;
   }
 
@@ -174,16 +184,20 @@
       return originalFetch(input, init);
     }
 
-    const options = { ...(init || {}) };
-    const method = String(options.method || "GET").toUpperCase();
-    options.credentials = "include";
-    options.headers = {
-      ...(options.headers || {}),
-    };
+      const options = { ...(init || {}) };
+      const method = String(options.method || "GET").toUpperCase();
+      options.credentials = "include";
+      options.headers = {
+        ...(options.headers || {}),
+      };
+      const authToken = localStorage.getItem("authToken") || localStorage.getItem("token") || "";
+      if (authToken && !options.headers.Authorization) {
+        options.headers.Authorization = `Bearer ${authToken}`;
+      }
 
-    if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
-      options.headers["X-CSRF-Token"] =
-        localStorage.getItem("nearServeCsrf") || decodeURIComponent(getCookie("ns_csrf"));
+      if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+        options.headers["X-CSRF-Token"] =
+          localStorage.getItem("nearServeCsrf") || decodeURIComponent(getCookie("ns_csrf"));
     }
 
     return originalFetch(input, options).then((res) => {
@@ -219,7 +233,51 @@
     "worker_profile.html",
   ]);
 
-  originalFetch(`${window.NEARSERVE_API_BASE}/auth/session`, { credentials: "include" })
+  function cleanOAuthCodeFromUrl() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("oauth_code");
+    history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function buildSessionHeaders() {
+    const headers = {};
+    const authToken = localStorage.getItem("authToken") || localStorage.getItem("token") || "";
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
+    }
+    return headers;
+  }
+
+  function exchangeOAuthCodeIfPresent() {
+    const oauthCode = new URLSearchParams(window.location.search).get("oauth_code");
+    if (!oauthCode) return Promise.resolve();
+
+    cleanOAuthCodeFromUrl();
+    return originalFetch(`${window.NEARSERVE_API_BASE}/auth/oauth/exchange`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: oauthCode }),
+    })
+      .then((res) => res.json().then((data) => ({ ok: res.ok, data })).catch(() => ({ ok: res.ok, data: {} })))
+      .then(({ ok, data }) => {
+        if (!ok) throw new Error(data.error || "Google login failed");
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+          localStorage.setItem("token", data.token);
+        }
+        storeUser(data.user || {});
+        storeCsrf(data.csrfToken);
+      });
+  }
+
+  exchangeOAuthCodeIfPresent()
+    .then(() =>
+      originalFetch(`${window.NEARSERVE_API_BASE}/auth/session`, {
+        credentials: "include",
+        headers: buildSessionHeaders(),
+      })
+    )
     .then((res) => {
       if (!res.ok) throw new Error("No active session");
       return res.json();
@@ -240,7 +298,7 @@
         return;
       }
 
-      document.documentElement.style.visibility = "";
+      finishAuth(user);
     })
     .catch(() => {
       clearUser();

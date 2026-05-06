@@ -13,11 +13,20 @@ const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 const PENDING_OAUTH_SIGNUP_TTL_MS = 10 * 60 * 1000;
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 const SESSION_TTL_SECONDS = 20 * 60;
+const OAUTH_EXCHANGE_TTL_SECONDS = 2 * 60;
 const PASSWORD_RULE_MESSAGE =
   "Password must be at least 8 characters and include one uppercase letter and one special character";
 
 function cleanUrl(value) {
   return String(value || "").replace(/\/+$/, "");
+}
+
+function getUrlOrigin(value) {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return "";
+  }
 }
 
 const getBackendUrl = () => {
@@ -130,6 +139,17 @@ function signUserToken(user) {
   );
 }
 
+function signOAuthExchangeCode(user) {
+  return jwt.sign(
+    {
+      type: "oauth_exchange",
+      id: String(user._id),
+    },
+    getJwtSecret(),
+    { expiresIn: OAUTH_EXCHANGE_TTL_SECONDS }
+  );
+}
+
 function serializeCookie(name, value, options = {}) {
   const parts = [`${name}=${encodeURIComponent(value)}`];
   if (options.maxAge !== undefined) parts.push(`Max-Age=${options.maxAge}`);
@@ -141,20 +161,26 @@ function serializeCookie(name, value, options = {}) {
 }
 
 function setAuthCookies(res, user) {
-  const isProduction = process.env.NODE_ENV === "production";
   const maxAge = SESSION_TTL_SECONDS;
   const csrfToken = crypto.randomBytes(32).toString("hex");
-  const sameSite = isProduction ? "None" : "Lax";
+  const backendOrigin = getUrlOrigin(getBackendUrl());
+  const frontendOrigin = getUrlOrigin(getFrontendUrl());
+  const isCrossOriginFrontend = backendOrigin && frontendOrigin && backendOrigin !== frontendOrigin;
+  const useSecureCookie =
+    process.env.NODE_ENV === "production" ||
+    getBackendUrl().startsWith("https://") ||
+    getFrontendUrl().startsWith("https://");
+  const sameSite = isCrossOriginFrontend ? "None" : "Lax";
 
   res.setHeader("Set-Cookie", [
     serializeCookie("ns_auth", signUserToken(user), {
       httpOnly: true,
-      secure: isProduction,
+      secure: sameSite === "None" || useSecureCookie,
       sameSite,
       maxAge,
     }),
     serializeCookie("ns_csrf", csrfToken, {
-      secure: isProduction,
+      secure: sameSite === "None" || useSecureCookie,
       sameSite,
       maxAge,
     }),
@@ -164,17 +190,23 @@ function setAuthCookies(res, user) {
 }
 
 function clearAuthCookies(res) {
-  const isProduction = process.env.NODE_ENV === "production";
-  const sameSite = isProduction ? "None" : "Lax";
+  const backendOrigin = getUrlOrigin(getBackendUrl());
+  const frontendOrigin = getUrlOrigin(getFrontendUrl());
+  const isCrossOriginFrontend = backendOrigin && frontendOrigin && backendOrigin !== frontendOrigin;
+  const useSecureCookie =
+    process.env.NODE_ENV === "production" ||
+    getBackendUrl().startsWith("https://") ||
+    getFrontendUrl().startsWith("https://");
+  const sameSite = isCrossOriginFrontend ? "None" : "Lax";
   res.setHeader("Set-Cookie", [
     serializeCookie("ns_auth", "", {
       httpOnly: true,
-      secure: isProduction,
+      secure: sameSite === "None" || useSecureCookie,
       sameSite,
       maxAge: 0,
     }),
     serializeCookie("ns_csrf", "", {
-      secure: isProduction,
+      secure: sameSite === "None" || useSecureCookie,
       sameSite,
       maxAge: 0,
     }),
@@ -263,7 +295,9 @@ async function sendVerificationEmail(user, token) {
 
 function sendOAuthSuccess(res, user) {
   setAuthCookies(res, user);
-  return res.redirect(`${getFrontendUrl()}/dashboard.html`);
+  const redirectUrl = new URL(getUserRedirect(user));
+  redirectUrl.searchParams.set("oauth_code", signOAuthExchangeCode(user));
+  return res.redirect(redirectUrl.toString());
 }
 
 const signup = asyncHandler(async (req, res) => {
@@ -353,6 +387,7 @@ const login = asyncHandler(async (req, res) => {
     message: "Login successful",
     user: getUserResponse(user),
     csrfToken,
+    token: signUserToken(user),
   });
 });
 
@@ -364,6 +399,38 @@ const getSession = asyncHandler(async (req, res) => {
   }
 
   res.json({ user: getUserResponse(user), csrfToken: req.cookies?.ns_csrf || "" });
+});
+
+const exchangeOAuthCode = asyncHandler(async (req, res) => {
+  const code = String(req.body.code || "").trim();
+  if (!code) {
+    return res.status(400).json({ error: "Missing Google login code" });
+  }
+
+  let payload;
+  try {
+    payload = jwt.verify(code, getJwtSecret());
+  } catch {
+    return res.status(401).json({ error: "Google login expired. Please try again." });
+  }
+
+  if (!payload || payload.type !== "oauth_exchange" || !payload.id) {
+    return res.status(401).json({ error: "Invalid Google login code" });
+  }
+
+  const user = await User.findById(payload.id).select("name phone email role status emailVerified");
+  if (!user) {
+    return res.status(401).json({ error: "Invalid Google login session" });
+  }
+
+  const csrfToken = setAuthCookies(res, user);
+  res.json({
+    message: "Google login successful",
+    redirectTo: getUserRedirect(user),
+    user: getUserResponse(user),
+    csrfToken,
+    token: signUserToken(user),
+  });
 });
 
 const logout = asyncHandler(async (_req, res) => {
@@ -726,6 +793,7 @@ const completeOAuthSignup = asyncHandler(async (req, res) => {
     redirectTo: getUserRedirect(user),
     user: getUserResponse(user),
     csrfToken,
+    token: signUserToken(user),
   });
 });
 
@@ -742,4 +810,5 @@ module.exports = {
   startOAuth,
   handleOAuthCallback,
   completeOAuthSignup,
+  exchangeOAuthCode,
 };

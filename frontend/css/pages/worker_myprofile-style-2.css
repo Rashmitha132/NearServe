@@ -15,30 +15,7 @@
         background:linear-gradient(135deg,#0f3d2e,#1f6f4a);
         border-radius:16px;
         overflow:hidden;
-      }
-      .mobile-profile-header::before{
-        content:"";
-        position:absolute;
-        top:-60px;
-        right:-60px;
-        width:180px;
-        height:180px;
-        background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);
-        border-radius:50%;
-        pointer-events:none;
-      }
-      .mobile-profile-header::after{
-        content:"";
-        position:absolute;
-        bottom:-80px;
-        left:-80px;
-        width:220px;
-        height:220px;
-        background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);
-        border-radius:50%;
-        pointer-events:none;
-      }
-      .mobile-profile-header > *{position:relative;z-index:1}
+      }      .mobile-profile-header > *{position:relative;z-index:1}
       .mobile-menu-btn{position:absolute;top:13px;left:13px;width:26px;height:26px;border:0;background:transparent;color:#fff;font-size:1.1rem;display:grid;place-items:center}
       .mobile-logout-btn{position:absolute;top:11px;right:14px;border:1px solid #ffb2a8;background:transparent;color:#fff;border-radius:5px;padding:5px 9px;font-size:.66rem;font-weight:800;line-height:1}
       .mobile-brand{position:absolute;top:12px;left:43px;display:flex;align-items:center;gap:8px;max-width:calc(100% - 130px)}

@@ -30,13 +30,8 @@
 
     .hero{
       position:relative;min-height:560px;padding:90px clamp(24px,3.5vw,48px) 76px;overflow:hidden;
-      background:
-        radial-gradient(circle at 82% 10%,rgba(100,207,103,.18),transparent 34%),
-        radial-gradient(circle at 72% 68%,rgba(31,122,80,.09),transparent 38%),
-        linear-gradient(180deg,#f7fcf8 0%,#eef8f1 100%)
+      background:#ffffff
     }
-    .hero::before{content:"";position:absolute;right:-140px;top:120px;width:380px;height:380px;border-radius:50%;background:rgba(31,122,80,.08)}
-    .hero::after{content:"";position:absolute;left:-170px;bottom:-170px;width:360px;height:360px;border-radius:50%;background:rgba(31,122,80,.07)}
     .hero-inner{position:relative;z-index:1;max-width:1255px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,480px);gap:76px;align-items:center}
     .hero-copy{max-width:590px}
     .badge{

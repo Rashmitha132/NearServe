@@ -44,6 +44,10 @@ function updateSelectedWorkerText() {
 }
 
 window.addEventListener("DOMContentLoaded", async function () {
+  if (window.nearServeAuthReady) {
+    await window.nearServeAuthReady;
+  }
+
   const pPhone =
     (localStorage.getItem("userPhone") ||
      localStorage.getItem("phone") ||

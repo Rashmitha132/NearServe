@@ -22,13 +22,6 @@
 
     body::before,
     body::after,
-    #bg-circles,
-    body > .bubble,
-    .deco-ring,
-    .fi {
-      display: none !important;
-    }
-
     .left-panel {
       width: 300px;
       min-height: 100vh;
@@ -42,9 +35,6 @@
     }
 
     .left-panel::before,
-    .left-panel::after {
-      display: none;
-    }
 
     .l-logo {
       gap: 12px;

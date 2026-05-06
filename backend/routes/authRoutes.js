@@ -27,6 +27,7 @@ router.get("/verify-email", authController.verifyEmail);
 router.get("/session", requireUser, authController.getSession);
 router.post("/logout", authController.logout);
 router.post("/oauth/complete", authLimiter, authController.completeOAuthSignup);
+router.post("/oauth/exchange", authLimiter, authController.exchangeOAuthCode);
 router.post("/signup", authLimiter, validate(signupSchema), authController.signup);
 router.post("/login", authLimiter, validate(loginSchema), authController.login);
 router.post("/resend-verification", authLimiter, authController.resendVerification);

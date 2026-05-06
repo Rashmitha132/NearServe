@@ -38,8 +38,16 @@ const defaultAllowedOrigins = [
   "http://localhost:5500",
   "https://nearserve.web.app",
   "https://nearserve.firebaseapp.com",
+  "https://nearserve-connect.web.app",
+  "https://nearserve-connect.firebaseapp.com",
 ];
-const allowedOrigins = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || "")
+const allowedOrigins = [
+  process.env.CORS_ORIGIN,
+  process.env.FRONTEND_URL,
+  process.env.APP_URL,
+]
+  .filter(Boolean)
+  .join(",")
   .split(",")
   .map((origin) => origin.trim().replace(/\/+$/, ""))
   .filter(Boolean);

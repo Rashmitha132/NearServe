@@ -62,6 +62,10 @@ function emptyBookings() {
 }
 
 async function loadDashboard() {
+  if (window.nearServeAuthReady) {
+    await window.nearServeAuthReady;
+  }
+
   const phone = (localStorage.getItem("userPhone") || "").trim();
   const storedName = (localStorage.getItem("userName") || "Customer").trim();
   const role = (localStorage.getItem("userRole") || "").trim();

@@ -18,7 +18,10 @@ function parseCookies(req) {
 
 function requireUser(req, res, next) {
   const cookies = parseCookies(req);
-  const token = cookies.ns_auth || "";
+  const authHeader = req.headers.authorization || "";
+  const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+  const token = bearerToken || cookies.ns_auth || "";
+  const tokenSource = bearerToken ? "bearer" : "cookie";
 
   if (!token) {
     return res.status(401).json({ error: "Please login first" });
@@ -33,7 +36,7 @@ function requireUser(req, res, next) {
     req.user = payload;
     req.cookies = cookies;
 
-    if (!["GET", "HEAD", "OPTIONS"].includes(req.method)) {
+    if (tokenSource === "cookie" && !["GET", "HEAD", "OPTIONS"].includes(req.method)) {
       const csrfHeader = req.headers["x-csrf-token"] || "";
       if (!cookies.ns_csrf || csrfHeader !== cookies.ns_csrf) {
         return res.status(403).json({ error: "Invalid CSRF token" });

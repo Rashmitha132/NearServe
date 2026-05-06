@@ -28,23 +28,12 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
+      background: #ffffff;
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
       min-height: 100vh;
-    }
-
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background:
-        radial-gradient(ellipse 900px 600px at 10% 0%, rgba(249,115,22,.06) 0%, transparent 65%),
-        radial-gradient(ellipse 600px 400px at 90% 100%, rgba(20,184,166,.05) 0%, transparent 60%);
-      pointer-events: none; z-index: 0;
-    }
-
-    .shell { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    }    .shell { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
     /* â”€â”€ TOP NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .topnav {

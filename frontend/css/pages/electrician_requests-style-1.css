@@ -1,15 +1,9 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{--blue:#2563eb;--teal:#0d9488;--dark:#0f172a;--mid:#475569;--soft:#94a3b8;--bg:#f0f7ff;--border:#e2eaf4;}
     html,body{height:100%;}
-    body{min-height:100vh;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:stretch;overflow-x:hidden;background:var(--bg);}
+    body{min-height:100vh;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:stretch;overflow-x:hidden;background: #ffffff;}
     .left-panel{width:42%;min-height:100vh;background:linear-gradient(160deg,#0f4c81 0%,#1565c0 30%,#0d7a70 70%,#0d9488 100%);position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:48px 44px;overflow:hidden;flex-shrink:0;}
-    .left-panel::before{content:'';position:absolute;width:450px;height:450px;border-radius:50%;background:rgba(255,255,255,0.05);top:-130px;right:-110px;}
-    .left-panel::after{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.04);bottom:-90px;left:-90px;}
-    .deco-ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,0.09);}
     .r1{width:200px;height:200px;top:32%;right:-50px;}.r2{width:110px;height:110px;top:55%;right:44px;border-color:rgba(255,255,255,0.06);}.r3{width:75px;height:75px;top:18%;left:28px;border-color:rgba(255,255,255,0.07);}
-    .fi{position:absolute;width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,0.13);border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 24px rgba(0,0,0,0.18);animation:bob ease-in-out infinite alternate;}
-    .fi1{top:16%;left:10%;animation-duration:3.2s;}.fi2{top:36%;right:12%;animation-duration:2.8s;animation-delay:0.5s;}.fi3{top:56%;left:16%;animation-duration:3.6s;animation-delay:1s;}.fi4{top:72%;right:18%;animation-duration:2.5s;animation-delay:0.3s;}.fi5{top:25%;right:26%;animation-duration:3.9s;animation-delay:0.7s;}
-    @keyframes bob{from{transform:translateY(0) rotate(-3deg);}to{transform:translateY(-13px) rotate(3deg);}}
     .l-logo{position:relative;z-index:2;display:flex;align-items:center;gap:12px;}
     .l-logo-icon{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,0.16);border:1.5px solid rgba(255,255,255,0.28);display:flex;align-items:center;justify-content:center;}
     .l-logo span{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;}

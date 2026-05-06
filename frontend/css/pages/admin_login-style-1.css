@@ -29,7 +29,7 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: var(--bg);
+      background: #ffffff;
       overflow: hidden;
       position: relative;
     }
@@ -41,36 +41,7 @@
     .btn-animate { cursor: pointer; transition: transform var(--motion-fast), box-shadow var(--motion-fast), background-color var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast), opacity var(--motion-fast); }
     .btn-animate:hover:not(:disabled) { transform: translateY(-1px) scale(1.035); box-shadow: var(--shadow-soft); }
     .btn-animate:active:not(:disabled) { transform: translateY(0) scale(0.98); }
-    .card-reveal { animation: cardReveal var(--motion-slow) both; }
-
-    /* subtle grid dots */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 36px 36px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* â”€â”€ static bubbles â”€â”€ */
-    .bubble {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .bubble-1  { width: 320px; height: 320px; top: -80px;  left: -80px;  background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.10), transparent 70%); border: 1px solid rgba(249,115,22,0.08); }
-    .bubble-2  { width: 200px; height: 200px; top: 10%;    right: 5%;    background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.07), transparent 70%); border: 1px solid rgba(249,115,22,0.06); }
-    .bubble-3  { width: 120px; height: 120px; top: 30%;    left: 4%;     background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.03), transparent 70%); border: 1px solid rgba(255,255,255,0.04); }
-    .bubble-4  { width: 260px; height: 260px; bottom: -60px; right: -60px; background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.09), transparent 70%); border: 1px solid rgba(249,115,22,0.07); }
-    .bubble-5  { width: 80px;  height: 80px;  bottom: 20%; left: 12%;    background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.02), transparent 70%); border: 1px solid rgba(255,255,255,0.04); }
-    .bubble-6  { width: 50px;  height: 50px;  top: 55%;    right: 12%;   background: transparent; border: 1px solid rgba(249,115,22,0.10); }
-    .bubble-7  { width: 30px;  height: 30px;  top: 20%;    left: 30%;    background: transparent; border: 1px solid rgba(255,255,255,0.05); }
-    .bubble-8  { width: 160px; height: 160px; bottom: 30%; right: 3%;    background: radial-gradient(circle at 40% 40%, rgba(249,115,22,0.05), transparent 70%); border: 1px solid rgba(249,115,22,0.06); }
-
-    /* â”€â”€ card wrapper â”€â”€ */
+    .card-reveal { animation: cardReveal var(--motion-slow) both; }    /* â”€â”€ card wrapper â”€â”€ */
     .card-wrap {
       position: relative;
       z-index: 1;

@@ -11,7 +11,7 @@
 
   body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--bg);
+    background: #ffffff;
     min-height: 100vh;
     display: flex;
     align-items: stretch;
@@ -42,8 +42,6 @@
   .side-nav a { display:flex; align-items:center; gap:7px; padding:10px 12px; border-radius:7px; color:#fff; text-decoration:none; font-size:0.78rem; font-weight:800; transition:background 0.2s; }
   .side-nav a:hover, .side-nav a.active { background:#2d7652; }
   .side-info { background:rgba(255,255,255,0.1); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:7px; color:#d9eadf; font-size:0.68rem; line-height:1.35; }
-  .left-panel > .deco-ring,
-  .left-panel > .fi,
   .left-panel > .l-logo,
   .left-panel > .l-main,
   .left-panel > .l-stats { display:none; }

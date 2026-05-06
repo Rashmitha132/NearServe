@@ -60,6 +60,10 @@ if (loginForm) {
 
       const user = data.user || data;
       if (data.csrfToken) localStorage.setItem("nearServeCsrf", data.csrfToken);
+      if (data.token) {
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("token", data.token);
+      }
       sessionStorage.setItem("nearServeBrowserSession", "1");
       localStorage.setItem("nearServeLastActivity", String(Date.now()));
       localStorage.setItem("nearServeActiveUntil", String(Date.now() + 45 * 1000));
@@ -82,9 +86,6 @@ if (loginForm) {
       localStorage.setItem("email", userEmail);
       localStorage.setItem("role", userRole);
       localStorage.setItem("status", userStatus);
-
-      localStorage.removeItem("token");
-      localStorage.removeItem("authToken");
 
       console.log("Login success:", user);
 

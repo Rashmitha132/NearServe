@@ -77,6 +77,7 @@
   }
 
   const oauthSetupToken = new URLSearchParams(window.location.search).get('oauth_setup');
+  const oauthLoginCode = new URLSearchParams(window.location.search).get('oauth_code');
   const oauthSetupModal = document.getElementById('oauthSetupModal');
   const oauthPhone = document.getElementById('oauthPhone');
   const oauthRole = document.getElementById('oauthRole');
@@ -90,6 +91,10 @@
   function storeUserAndRedirect(data) {
     const user = data.user || data;
     if (data.csrfToken) localStorage.setItem("nearServeCsrf", data.csrfToken);
+    if (data.token) {
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("token", data.token);
+    }
     sessionStorage.setItem("nearServeBrowserSession", "1");
     localStorage.setItem("nearServeLastActivity", String(Date.now()));
     localStorage.setItem("nearServeActiveUntil", String(Date.now() + 45 * 1000));
@@ -109,10 +114,27 @@
     localStorage.setItem("email", userEmail);
     localStorage.setItem("role", userRole);
     localStorage.setItem("status", userStatus);
-    localStorage.removeItem("token");
-    localStorage.removeItem("authToken");
-
     window.location.href = data.redirectTo || "booking.html";
+  }
+
+  if (oauthLoginCode) {
+    history.replaceState(null, '', `${window.location.pathname}#login`);
+    fetch(`${window.NEARSERVE_API_BASE}/auth/oauth/exchange`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: oauthLoginCode })
+    })
+      .then((res) => res.json().then((data) => ({ ok: res.ok, data })).catch(() => ({ ok: res.ok, data: {} })))
+      .then(({ ok, data }) => {
+        if (!ok) {
+          showToast(data.error || "Google login failed. Please try again.");
+          return;
+        }
+        storeUserAndRedirect(data);
+      })
+      .catch(() => {
+        showToast("Could not complete Google login. Please try again.");
+      });
   }
 
   completeOAuthBtn.addEventListener('click', async () => {

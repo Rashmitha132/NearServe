@@ -44,6 +44,10 @@
     const options = { ...(init || {}), credentials: "include" };
     const method = String(options.method || "GET").toUpperCase();
     options.headers = { ...(options.headers || {}) };
+    const authToken = localStorage.getItem("authToken") || localStorage.getItem("token") || "";
+    if (authToken && !options.headers.Authorization) {
+      options.headers.Authorization = `Bearer ${authToken}`;
+    }
 
     if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
       const csrfToken = localStorage.getItem("nearServeCsrf") || "";

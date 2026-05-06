@@ -1,0 +1,74 @@
+html,
+body {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+body.page-bg,
+body.ns-shell-page,
+body.dashboard-page,
+body.history-page,
+body.worker-profile-page,
+body.ns-chat-page {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+body::before,
+body::after,
+.auth-page::before,
+.auth-page::after,
+.main::before,
+.main::after,
+.right-panel::before,
+.right-panel::after,
+.chat-body::before,
+.chat-body::after,
+.page-content::before,
+.page-content::after,
+.content::before,
+.content::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+.auth-page,
+.page-bg,
+.main-content,
+.content,
+.page-content,
+.container,
+.app,
+.shell,
+.mobile-shell,
+.right-panel,
+.main,
+.dashboard-main,
+.chat-body {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+body.ns-shell-page .right-panel,
+body.ns-shell-page main.right-panel,
+body.ns-shell-page .main,
+body.ns-shell-page .page-content,
+body.ns-shell-page .content,
+body.ns-shell-page .main-content {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+body.ns-shell-page .right-panel::before,
+body.ns-shell-page .right-panel::after,
+body.ns-shell-page main.right-panel::before,
+body.ns-shell-page main.right-panel::after,
+body.ns-shell-page .main::before,
+body.ns-shell-page .main::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+}
