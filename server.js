@@ -63,7 +63,7 @@ app.use("/api/profile", requireUser, profileRoutes);
 app.use("/api/chat", requireUser, chatRoutes);
 app.use("/api/payments", requireUser, paymentRoutes);
 
-const hours = Number(process.env.PENDING_EXPIRY_HOURS || 24);
+const hours = Number(process.env.PENDING_EXPIRY_HOURS || 72);
 
 app.use(errorMiddleware);
 
