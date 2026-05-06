@@ -2,8 +2,8 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const PasswordResetToken = require("../models/PasswordResetToken");
 const asyncHandler = require("../utils/asyncHandler");
-const resetTokens = require("../utils/resetTokens");
 const nodemailerTransporter = require("../services/emailService");
 const { getJwtSecret } = require("../middlewares/authMiddleware");
 
@@ -15,8 +15,10 @@ const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_RULE_MESSAGE =
   "Password must be at least 8 characters and include one uppercase letter and one special character";
 
-const getAppUrl = () =>
-  (process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`).replace(/\/$/, "");
+const getAppUrl = () => {
+  const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 8080}`;
+  return appUrl.replace(/\/+$/, "");
+};
 
 const oauthProviders = {
   google: {
@@ -171,9 +173,13 @@ function createEmailVerificationToken() {
   const token = crypto.randomBytes(32).toString("hex");
   return {
     token,
-    tokenHash: crypto.createHash("sha256").update(token).digest("hex"),
+    tokenHash: hashToken(token),
     expiresAt: new Date(Date.now() + EMAIL_VERIFICATION_TTL_MS),
   };
+}
+
+function hashToken(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 function escapeHtml(value) {
@@ -399,14 +405,20 @@ const forgotPassword = asyncHandler(async (req, res) => {
   if (!user) return;
 
   const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hour
+  const tokenHash = hashToken(token);
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-  resetTokens.set(token, {
+  await PasswordResetToken.deleteMany({ userId: user._id });
+  await PasswordResetToken.create({
+    tokenHash,
+    userId: user._id,
     email: user.email,
     expiresAt,
   });
 
-  const resetLink = `http://localhost:${process.env.PORT || 5000}/reset-password.html?token=${token}`;
+  const appUrl = getAppUrl();
+  const resetLink = `${appUrl}/reset-password.html?token=${encodeURIComponent(token)}`;
+  const safeName = escapeHtml(user.name);
 
   try {
     await nodemailerTransporter.sendMail({
@@ -420,7 +432,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
           </div>
           <div style="background: white; padding: 28px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
             <h3 style="margin-top: 0; color: #1e2140;">Reset Your Password</h3>
-            <p style="color: #555; line-height: 1.6;">Hi <strong>${user.name}</strong>,</p>
+            <p style="color: #555; line-height: 1.6;">Hi <strong>${safeName}</strong>,</p>
             <p style="color: #555; line-height: 1.6;">
               We received a request to reset your NearServe password.
               Click the button below to set a new password:
@@ -457,10 +469,11 @@ const verifyResetToken = asyncHandler(async (req, res) => {
     return res.json({ valid: false });
   }
 
-  const record = resetTokens.get(token);
+  const tokenHash = hashToken(token);
+  const record = await PasswordResetToken.findOne({ tokenHash });
 
-  if (!record || Date.now() > record.expiresAt) {
-    resetTokens.delete(token);
+  if (!record || record.expiresAt.getTime() <= Date.now()) {
+    if (record) await PasswordResetToken.deleteOne({ _id: record._id });
     return res.json({ valid: false });
   }
 
@@ -483,15 +496,17 @@ const resetPassword = asyncHandler(async (req, res) => {
       .json({ error: PASSWORD_RULE_MESSAGE });
   }
 
-  const record = resetTokens.get(token);
+  const tokenHash = hashToken(token);
+  const record = await PasswordResetToken.findOne({ tokenHash });
 
-  if (!record || Date.now() > record.expiresAt) {
-    resetTokens.delete(token);
+  if (!record || record.expiresAt.getTime() <= Date.now()) {
+    if (record) await PasswordResetToken.deleteOne({ _id: record._id });
     return res.status(400).json({ error: "Invalid or expired token" });
   }
 
-  const user = await User.findOne({ email: record.email });
+  const user = await User.findById(record.userId);
   if (!user) {
+    await PasswordResetToken.deleteOne({ _id: record._id });
     return res.status(404).json({ error: "User not found" });
   }
 
@@ -499,7 +514,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.password = hashedPassword;
   await user.save();
 
-  resetTokens.delete(token);
+  await PasswordResetToken.deleteOne({ _id: record._id });
 
   res.json({ message: "Password reset successful" });
 });
@@ -511,7 +526,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     return redirectOAuthError(res, "Verification link is missing");
   }
 
-  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const tokenHash = hashToken(token);
   const user = await User.findOne({
     emailVerificationTokenHash: tokenHash,
     emailVerificationExpiresAt: { $gt: new Date() },

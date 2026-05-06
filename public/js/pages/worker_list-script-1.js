@@ -18,11 +18,7 @@
 
   (async function syncSidebarAvatar() {
     if (!customerPhone) return;
-    const apiBase =
-      window.location.protocol === "file:" ||
-      (window.location.port && window.location.port !== "5000")
-        ? "http://localhost:5000/api"
-        : "/api";
+    const apiBase = "/api";
     try {
       const res = await fetch(`${apiBase}/profile/${encodeURIComponent(customerPhone)}`);
       if (!res.ok) return;

@@ -1,8 +1,4 @@
-const API_BASE =
-  window.location.protocol === "file:" ||
-  (window.location.port && window.location.port !== "5000")
-    ? "http://localhost:5000/api"
-    : "/api";
+const API_BASE = "/api";
 
 const params = new URLSearchParams(window.location.search);
 const workerPhone = (params.get("phone") || "").trim();

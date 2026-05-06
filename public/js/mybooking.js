@@ -40,7 +40,7 @@ async function populateLegacyTable() {
   if (!tableBody) return; // Only run if table exists
 
   try {
-    const res = await fetch(`/mybookings/${encodeURIComponent(phone)}`);
+    const res = await fetch(`/api/bookings/my/${encodeURIComponent(phone)}`);
     const bookings = await res.json();
 
     tableBody.innerHTML = "";
@@ -109,7 +109,7 @@ async function submitRatingLegacy(bookingId) {
   const comment = prompt("Write feedback (optional):") || "";
 
   try {
-    const res = await fetch("/reviews", {
+    const res = await fetch("/api/reviews", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

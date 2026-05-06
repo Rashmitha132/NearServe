@@ -226,7 +226,7 @@ bookingForm.addEventListener("submit", async (e) => {
   }
 
   try {
-    const res = await fetch("/book", {
+    const res = await fetch("/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

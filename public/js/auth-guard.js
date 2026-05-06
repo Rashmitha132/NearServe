@@ -71,7 +71,11 @@
   const originalFetch = window.fetch.bind(window);
   window.fetch = function (input, init) {
     const url = typeof input === "string" ? input : input && input.url;
-    const isApi = typeof url === "string" && (url.startsWith("/api") || url.includes("localhost:5000/api"));
+    let isApi = false;
+    if (typeof url === "string") {
+      const parsedUrl = new URL(url, window.location.origin);
+      isApi = parsedUrl.origin === window.location.origin && parsedUrl.pathname.startsWith("/api");
+    }
 
     if (!isApi) {
       return originalFetch(input, init);

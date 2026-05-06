@@ -1,8 +1,4 @@
-const API_BASE =
-  window.location.protocol === "file:" ||
-  (window.location.port && window.location.port !== "5000")
-    ? "http://localhost:5000/api"
-    : "/api";
+const API_BASE = "/api";
 window.NEARSERVE_API_BASE = API_BASE;
 
 const loginForm = document.getElementById("loginForm");
@@ -150,7 +146,7 @@ if (loginForm) {
 
     } catch (error) {
       console.error("Login error:", error);
-      showToast("Could not connect to the NearServe server. Please start the server and open http://localhost:5000/login.html");
+      showToast("Could not connect to the NearServe server. Please try again.");
     } finally {
       if (loginBtn) {
         loginBtn.disabled = false;

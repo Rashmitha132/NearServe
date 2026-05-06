@@ -21,12 +21,17 @@ const paymentRoutes = require("./routes/paymentRoutes");
 // keep model imports only if needed elsewhere now
 require("./models/Booking");
 require("./models/User");
+require("./models/PasswordResetToken");
 require("./models/Job");
 require("./models/VerificationLog");
 require("./models/Review");
 require("./models/chat");
 
 const app = express();
+const PORT = process.env.PORT || 8080;
+const publicDir = path.join(__dirname, "public");
+const uploadsDir = path.join(__dirname, "uploads");
+const indexFile = path.join(publicDir, "index.html");
 
 app.locals.ADMIN_TOKEN = "QS_ADMIN_" + Math.random().toString(36).slice(2);
 
@@ -40,14 +45,14 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
-if (!fs.existsSync("uploads/videos")) fs.mkdirSync("uploads/videos", { recursive: true });
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+if (!fs.existsSync(path.join(uploadsDir, "videos"))) fs.mkdirSync(path.join(uploadsDir, "videos"), { recursive: true });
 
-app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
+app.use(express.static(publicDir));
+app.use("/uploads", express.static(uploadsDir));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/login.html"));
+  res.sendFile(indexFile);
 });
 
 app.get("/api/check-server", (req, res) => {
@@ -65,9 +70,14 @@ app.use("/api/payments", requireUser, paymentRoutes);
 
 const hours = Number(process.env.PENDING_EXPIRY_HOURS || 72);
 
-app.use(errorMiddleware);
+app.use((req, res, next) => {
+  if (req.method === "GET" && !req.path.startsWith("/api/") && !req.path.startsWith("/uploads/")) {
+    return res.sendFile(indexFile);
+  }
+  next();
+});
 
-const PORT = process.env.PORT || 5000;
+app.use(errorMiddleware);
 
 async function startServer() {
   try {

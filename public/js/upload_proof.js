@@ -96,7 +96,7 @@ async function loadProofReviewMessage() {
   if (!phone) return;
 
   try {
-    const res = await fetch(`/worker/review/${encodeURIComponent(phone)}`);
+    const res = await fetch(`/api/workers/review/${encodeURIComponent(phone)}`);
     const text = await res.text();
 
     let data = {};
@@ -157,7 +157,7 @@ function startStatusPolling() {
     if (!phone) return;
 
     try {
-      const res = await fetch(`/worker/review/${encodeURIComponent(phone)}`);
+      const res = await fetch(`/api/workers/review/${encodeURIComponent(phone)}`);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) return;
 
@@ -245,7 +245,7 @@ if (form) {
       submitBtn.disabled = true;
       submitBtn.textContent = "Uploading...";
 
-      const res = await fetch(`/upload-proof/${encodeURIComponent(phone)}`, {
+      const res = await fetch(`/api/workers/upload-proof/${encodeURIComponent(phone)}`, {
         method: "POST",
         body: formData
       });
@@ -274,7 +274,7 @@ if (form) {
       startStatusPolling();
 
     } catch (err) {
-      showError("Server not responding. Check server and route /upload-proof/:phone");
+      showError("Server not responding. Please try again.");
       submitBtn.textContent = "Submit Proof";
       submitBtn.disabled = false;
     }

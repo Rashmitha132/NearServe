@@ -1,7 +1,4 @@
-const API_BASE =
-  window.location.protocol === "file:" || (window.location.port && window.location.port !== "5000")
-    ? "http://localhost:5000/api"
-    : "/api";
+const API_BASE = "/api";
 
 const phone = localStorage.getItem("userPhone") || localStorage.getItem("phone") || "";
 const uname = localStorage.getItem("userName") || localStorage.getItem("name") || "Customer";

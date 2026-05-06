@@ -33,7 +33,7 @@ async function loadProfile() {
   profile.innerHTML = "Loading profile...";
 
   try {
-    const res = await fetch(`/workers/${encodeURIComponent(workerPhone)}`);
+    const res = await fetch(`/api/workers/${encodeURIComponent(workerPhone)}`);
     const data = await res.json();
 
     console.log("Worker profile response:", data);
