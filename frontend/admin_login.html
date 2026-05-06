@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="./js/config.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login - NearServe</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="./css/pages/admin_login-style-1.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/background.css">
+</head>
+<body>
+<div id="bg-circles">
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+  <div class="circle c4"></div>
+  <div class="circle c5"></div>
+  <div class="circle c6"></div>
+  <div class="circle c7"></div>
+  <div class="circle c8"></div>
+</div>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+
+  <div class="bubble bubble-1"></div>
+  <div class="bubble bubble-2"></div>
+  <div class="bubble bubble-3"></div>
+  <div class="bubble bubble-4"></div>
+  <div class="bubble bubble-5"></div>
+  <div class="bubble bubble-6"></div>
+  <div class="bubble bubble-7"></div>
+  <div class="bubble bubble-8"></div>
+
+  <div class="card-wrap">
+    <div class="card">
+
+      <div class="card-head">
+        <div class="logo-row">
+          <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span class="logo-name">Near<span>Serve</span></span>
+          <span class="admin-badge">Admin</span>
+        </div>
+        <p>Manage worker proofs and verification</p>
+      </div>
+
+      <div class="card-body">
+        <form id="adminLoginForm" autocomplete="off">
+
+          <label class="field-label" for="adminUser">Username</label>
+          <div class="input-wrap">
+            <i class="fa fa-user icon"></i>
+            <input id="adminUser" type="text" placeholder="Enter admin username" required autocomplete="username" />
+          </div>
+
+          <label class="field-label" for="adminPass">Password</label>
+          <div class="input-wrap">
+            <i class="fa fa-lock icon"></i>
+            <input id="adminPass" type="password" placeholder="Enter password" required autocomplete="current-password" />
+            <button type="button" class="toggle-pass" onclick="togglePass(this)" tabindex="-1">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+
+          <button type="submit" id="adminLoginBtn">
+            <i class="fa fa-right-to-bracket"></i>
+            Login
+          </button>
+
+          <p id="msg"></p>
+        </form>
+
+        <hr class="divider">
+        <div class="secure-line">
+          <i class="fa fa-shield-halved"></i>
+          Secured Admin Access &nbsp;-&nbsp; NearServe v2.0
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="./js/pages/admin_login-script-1.js"></script>
+
+  <script src="js/admin_login.js"></script>
+</body>
+</html>

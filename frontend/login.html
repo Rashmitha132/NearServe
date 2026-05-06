@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="./js/config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - NearServe</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/logo.css">
+<link rel="stylesheet" href="./css/pages/login-style-1.css">
+  <script src="./js/toast.js"></script>
+<link rel="stylesheet" href="./css/pages/login-inline-attrs.css">
+</head>
+<body>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<main class="auth-page">
+  <section class="auth-card" id="authCard">
+    <div class="form-side login-side">
+      <form id="loginForm">
+        <h2>Login</h2>
+        <p class="form-subtitle">Sign in to your account</p>
+
+        <div class="input-box">
+          <input type="text" id="emailOrPhone" placeholder="Email or Phone" inputmode="email">
+          <span class="field-icon leading">♙</span>
+          <span class="field-icon">✉</span>
+        </div>
+
+        <div class="input-box password-box">
+          <input type="password" id="password" placeholder="Password">
+          <span class="field-icon leading">▢</span>
+          <span class="field-icon">🔒</span>
+          <button type="button" class="password-toggle" data-password-toggle>Show</button>
+        </div>
+        <div class="forgot">
+          <a href="#" id="forgotLink">Forgot password?</a>
+        </div>
+        <button type="button" class="resend-verification" id="resendVerificationBtn">Resend verification email</button>
+
+        <div class="input-box">
+          <select id="role">
+            <option value="">Select role</option>
+            <option value="customer">Customer</option>
+            <option value="plumber">Plumber</option>
+            <option value="electrician">Electrician</option>
+            <option value="carpenter">Carpenter</option>
+          </select>
+          <span class="field-icon leading">♙</span>
+          <span class="field-icon">👤</span>
+        </div>
+
+        <button type="submit" id="loginBtn">Login</button>
+
+        <div class="social-divider"><span>or continue with</span></div>
+        <div class="social-row">
+          <button type="button" data-oauth-provider="google" aria-label="Continue with Google">Continue with Google</button>
+        </div>
+        <p class="auth-switch">Don't have an account? <button type="button" data-auth-target="register">Sign up</button></p>
+      </form>
+    </div>
+
+    <div class="form-side signup-side">
+      <form id="signupForm">
+        <h2>Create Account</h2>
+        <p class="form-subtitle">Join NearServe today</p>
+
+        <div class="input-box">
+          <input type="text" id="name" name="name" placeholder="Full name">
+          <span class="field-icon leading">♙</span>
+        </div>
+
+        <div class="input-box">
+          <input type="email" id="email" name="email" placeholder="Email Address">
+          <span class="field-icon leading">♙</span>
+          <span class="field-icon">✉</span>
+        </div>
+
+        <div class="input-box">
+          <input type="tel" id="phone" name="phone" placeholder="Phone Number" inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}">
+          <span class="field-icon leading">☎</span>
+          <span class="field-icon">☎</span>
+        </div>
+
+        <div class="input-box password-box">
+          <input type="password" id="password" name="password" placeholder="Password">
+          <span class="field-icon leading">▢</span>
+          <span class="field-icon">🔒</span>
+          <button type="button" class="password-toggle" data-password-toggle>Show</button>
+        </div>
+
+        <div class="input-box password-box mobile-confirm login-inline-style-1">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password">
+          <span class="field-icon leading">▢</span>
+          <span class="field-icon">🔒</span>
+          <button type="button" class="password-toggle" data-password-toggle>Show</button>
+        </div>
+
+        <div class="input-box">
+          <select id="role" name="role">
+            <option value="">Select role</option>
+            <option value="customer">Customer</option>
+            <option value="plumber">Plumber</option>
+            <option value="electrician">Electrician</option>
+            <option value="carpenter">Carpenter</option>
+          </select>
+          <span class="field-icon leading">♙</span>
+          <span class="field-icon">👤</span>
+        </div>
+
+        <button type="submit" id="signupBtn">Sign Up</button>
+        <div class="social-divider"><span>or continue with</span></div>
+        <div class="social-row">
+          <button type="button" data-oauth-provider="google" aria-label="Continue with Google">Continue with Google</button>
+        </div>
+        <p class="auth-switch">Already have an account? <button type="button" data-auth-target="login">Log in</button></p>
+      </form>
+    </div>
+
+    <aside class="toggle-panel">
+      <div class="panel-content">
+        <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+        <div class="brand-name">Near<span>Serve</span></div>
+        <div class="brand-kicker">Services Near You, Care You Deserve</div>
+        <div class="mobile-brand-tagline login-inline-style-2">Services Near You, Care You Deserve</div>
+        <div class="brand-divider"></div>
+        <div class="brand-features" aria-hidden="true">
+          <div class="brand-feature"><div class="brand-feature-icon">♢</div>Verified<br>Professionals</div>
+          <div class="brand-feature"><div class="brand-feature-icon">▣</div>Secure<br>Booking</div>
+          <div class="brand-feature"><div class="brand-feature-icon">ϟ</div>Quick &<br>Reliable</div>
+        </div>
+
+        <div class="panel-copy login-copy">
+          <h3>Hello, Welcome!</h3>
+          <p>Don't have an account? Sign up and get started!</p>
+          <button type="button" class="toggle-btn" id="showRegisterBtn">Register</button>
+        </div>
+
+        <div class="panel-copy register-copy">
+          <h3>Welcome Back!</h3>
+          <p>Already have an account? Sign in!</p>
+          <button type="button" class="toggle-btn" id="showLoginBtn">Login</button>
+        </div>
+
+        <div class="panel-dots"><span></span><span></span><span></span></div>
+      </div>
+    </aside>
+
+    <div class="mobile-auth-tabs login-inline-style-3">
+      <button type="button" class="mobile-auth-tab active" id="mobileLoginTab">Log In</button>
+      <button type="button" class="mobile-auth-tab" id="mobileSignupTab">Sign Up</button>
+    </div>
+  </section>
+</main>
+
+<div id="locationOverlay">
+  <div class="loc-card">
+    <div class="loc-icon-wrap checking" id="locIconWrap"><span id="locIcon">📍</span></div>
+    <div class="loc-title">Checking Location</div>
+    <div id="locStatus">Detecting your location...</div>
+    <div class="loc-dots" id="locDots"><span></span><span></span><span></span></div>
+    <div id="locDeniedMsg">
+      <div id="locDeniedTitle">Service Not Available</div>
+      <div id="locDeniedRegion"></div>
+      <div class="karnataka-badge">Currently serving Karnataka only</div>
+      <div id="locDeniedSub">Sorry! NearServe is currently available only in Karnataka. We're working hard to expand soon.</div>
+      <button class="loc-retry-btn" id="locRetryBtn">Try Again / Allow Location</button>
+      <button class="loc-back-btn" id="locBackBtn">Back to Login</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose" type="button">✕</button>
+    <div id="modalForm">
+      <div class="modal-icon">🔒</div>
+      <h3>Reset Password</h3>
+      <p>Enter your registered email address and we'll send you a reset link.</p>
+      <div class="input-box">
+        <input type="email" id="resetEmail" placeholder="Enter your email">
+      </div>
+      <button class="modal-btn" id="sendResetBtn" type="button">Send Reset Link</button>
+    </div>
+    <div class="modal-success" id="modalSuccess">
+      <div class="success-icon">✓</div>
+      <h4>Check Your Email</h4>
+      <p>A password reset link has been sent to your email address.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="oauthSetupModal">
+  <div class="modal">
+    <div class="modal-icon">G</div>
+    <h3>Complete Google Login</h3>
+    <p>Add your phone number and role to finish creating your NearServe account.</p>
+    <p class="oauth-email-note" id="oauthSetupEmail"></p>
+    <div class="input-box">
+      <input type="tel" id="oauthPhone" placeholder="Phone Number" inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}">
+    </div>
+    <div class="input-box">
+      <select id="oauthRole">
+        <option value="">Select role</option>
+        <option value="customer">Customer</option>
+        <option value="plumber">Plumber</option>
+        <option value="electrician">Electrician</option>
+        <option value="carpenter">Carpenter</option>
+      </select>
+    </div>
+    <button class="modal-btn" id="completeOAuthBtn" type="button">Continue</button>
+  </div>
+</div>
+
+<script src="js/login.js"></script>
+<script src="js/signup.js"></script>
+<script src="./js/pages/login-script-1.js"></script>
+</body>
+</html>

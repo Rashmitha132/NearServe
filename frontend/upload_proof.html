@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="./js/config.js"></script>
+<script src="./js/auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Worker Verification - NearServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/pages/upload_proof-style-1.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/background.css">
+  <link rel="stylesheet" href="./css/pages/upload_proof-style-2.css">
+<link rel="stylesheet" href="./css/pages/upload_proof-inline-attrs.css">
+</head>
+<body class="upload-proof-page">
+<div id="bg-circles">
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+  <div class="circle c4"></div>
+  <div class="circle c5"></div>
+  <div class="circle c6"></div>
+  <div class="circle c7"></div>
+  <div class="circle c8"></div>
+</div>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+
+<div class="left-panel">
+  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
+  <div class="fi fi1">ID</div><div class="fi fi2">LOCK</div><div class="fi fi3">OK</div><div class="fi fi4">24H</div><div class="fi fi5">SAFE</div>
+
+  <div class="l-logo">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span>NearServe</span>
+  </div>
+
+  <div class="l-main">
+    <h2>Identity <em>Verification</em></h2>
+    <p>We verify every worker on NearServe to keep our platform safe and trusted for customers.</p>
+    <div class="l-steps">
+      <div class="l-step">
+        <div class="l-step-num">1</div>
+        <div class="l-step-text"><strong>Upload Aadhaar PDF</strong><span>Combine both front and back sides into a single PDF.</span></div>
+      </div>
+      <div class="l-step">
+        <div class="l-step-num">2</div>
+        <div class="l-step-text"><strong>Admin Review</strong><span>Our team verifies your Aadhaar within 24-48 hours.</span></div>
+      </div>
+      <div class="l-step">
+        <div class="l-step-num">3</div>
+        <div class="l-step-text"><strong>Probation Period</strong><span>Complete trial jobs and upload proof videos.</span></div>
+      </div>
+      <div class="l-step">
+        <div class="l-step-num">4</div>
+        <div class="l-step-text"><strong>Full Access</strong><span>Admin approves you, then you appear in the worker list.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="l-stats">
+    <div><div class="stat-num">SSL</div><div class="stat-lbl">Secure</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">ID</div><div class="stat-lbl">Verified</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">24H</div><div class="stat-lbl">Fast Review</div></div>
+  </div>
+</div>
+
+<div class="right-panel">
+
+  <div class="fhead upload_proof-inline-style-1">
+    <div>
+      <h1>Aadhaar Verification</h1>
+      <p>Upload both sides of your Aadhaar card as a single PDF to get verified.</p>
+    </div>
+    <button id="logoutBtn" class="upload_proof-inline-style-2">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout
+    </button>
+  </div>
+
+  <div class="msg-box" id="globalMsg"></div>
+
+  <div class="info-box">
+    <div class="info-box-title">How to create a single PDF with both sides</div>
+    <div class="info-steps">
+      <div class="info-step"><span>1.</span> Scan or photograph the front of your Aadhaar</div>
+      <div class="info-step"><span>2.</span> Scan or photograph the back of your Aadhaar</div>
+      <div class="info-step"><span>3.</span> Use CamScanner / Adobe / iLovePDF to combine into 1 PDF</div>
+      <div class="info-step"><span>4.</span> Upload the combined PDF below (max 2 MB)</div>
+    </div>
+  </div>
+
+  <div class="slbl">Aadhaar Card (Both Sides - Single PDF)</div>
+
+  <div class="upload-box" id="aadhaarBox" onclick="document.getElementById('proofFile').click()">
+    <div class="upload-box-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/>
+        <path d="M14 2v5h5"/>
+        <path d="M12 17v-6"/>
+        <path d="M9.5 13.5 12 11l2.5 2.5"/>
+      </svg>
+    </div>
+    <div class="upload-box-title">Click to upload Aadhaar PDF</div>
+    <div class="upload-box-sub">Front + Back combined as one PDF - Max size 2 MB</div>
+  </div>
+  <input type="file" id="proofFile" name="proof" accept="application/pdf" class="upload_proof-inline-style-3">
+
+  <div class="file-preview" id="preview">
+    <span class="fp-icon">PDF</span>
+    <div>
+      <div class="fp-name" id="fileName">-</div>
+      <div class="fp-size" id="fileSize">-</div>
+    </div>
+    <button class="fp-remove" type="button" onclick="removeFile()" aria-label="Remove selected file">x</button>
+  </div>
+
+  <div class="msg-box msg-error" id="errorMsg"></div>
+  <div class="msg-box msg-success" id="successMsg"></div>
+
+  <button class="btn-sub" id="submitBtn" disabled>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    Submit Aadhaar for Verification
+  </button>
+
+  <div class="mobile-trust-stats" aria-hidden="true">
+    <div><strong>SSL</strong><span>Secure</span></div>
+    <div><strong>ID</strong><span>Verified</span></div>
+    <div><strong>24H</strong><span>Fast Review</span></div>
+  </div>
+
+  <div class="hint-text">
+    Your Aadhaar details are encrypted and only used for identity verification.<br>
+    After admin approval you'll be moved to probation to complete trial jobs.
+  </div>
+
+</div>
+
+<script src="./js/pages/upload_proof-script-1.js"></script>
+</body>
+</html>

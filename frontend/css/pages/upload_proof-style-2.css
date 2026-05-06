@@ -1,0 +1,17 @@
+    body.upload-proof-page {
+      background: #ffffff !important;
+    }
+
+    body.upload-proof-page .right-panel {
+      background: #f4f7f5 !important;
+    }
+
+    body.upload-proof-page .upload-box,
+    body.upload-proof-page .info-box {
+      background-color: #ffffff !important;
+    }
+
+    body.upload-proof-page #bg-circles {
+      display: none !important;
+    }
+  

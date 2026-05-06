@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="./js/config.js"></script>
+<script src="./js/auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verification History - NearServe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="./css/pages/admin_history-style-1.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/background.css">
+  <link rel="stylesheet" href="./css/pages/admin_history-style-2.css">
+<link rel="stylesheet" href="./css/pages/admin_history-inline-attrs.css">
+</head>
+<body>
+<div id="bg-circles">
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+  <div class="circle c4"></div>
+  <div class="circle c5"></div>
+  <div class="circle c6"></div>
+  <div class="circle c7"></div>
+  <div class="circle c8"></div>
+</div>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+
+<div class="shell">
+
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <a class="brand" href="admin_dashboard.html">
+      <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+      <span class="brand-name">Near<span>Serve</span></span>
+      <span class="badge-admin">Admin</span>
+    </a>
+
+    <div class="nav-actions">
+      <a href="admin_dashboard.html" class="nav-btn nav-btn-ghost">
+        <i class="fa-solid fa-arrow-left"></i> Dashboard
+      </a>
+      <button class="nav-btn nav-btn-danger" id="adminLogout">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- Page Title -->
+    <div class="page-header">
+      <h1><i class="fa-solid fa-clock-rotate-left admin_history-inline-style-1"></i>Verification History</h1>
+      <p>Complete log of approved and rejected worker proof &amp; job video submissions</p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar admin_history-inline-style-2" id="filterBar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search phone, role, reasonâ€¦">
+      </div>
+
+      <div class="filter-group">
+        <select class="filter-select" id="typeFilter">
+          <option value="">All Types</option>
+          <option value="proof">PDF Proof</option>
+          <option value="job">Job Video</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select class="filter-select" id="decisionFilter">
+          <option value="">All Decisions</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="record-count" id="recordCount">
+        Showing <span id="countNum">0</span> records
+      </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th><i class="fa-solid fa-calendar-days"></i>Date</th>
+              <th><i class="fa-solid fa-layer-group"></i>Type</th>
+              <th><i class="fa-solid fa-phone"></i>Worker Phone</th>
+              <th><i class="fa-solid fa-screwdriver-wrench"></i>Role</th>
+              <th><i class="fa-solid fa-gavel"></i>Decision</th>
+              <th><i class="fa-solid fa-comment-dots"></i>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr class="state-row">
+              <td colspan="6">
+                <div class="state-inner">
+                  <div class="spinner"></div>
+                  <p>Loading historyâ€¦</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer admin_history-inline-style-3" id="tableFooter">
+        <span id="footerText">â€“</span>
+        <span class="admin_history-inline-style-4">NearServe Admin</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="./js/pages/admin_history-script-1.js"></script>
+</body>
+</html>

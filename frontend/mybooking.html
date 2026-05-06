@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="./js/config.js"></script>
+<script src="./js/auth-guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Booking History - NearServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="./css/pages/mybooking-style-1.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/background.css">
+<link rel="stylesheet" href="./css/pages/mybooking-inline-attrs.css">
+</head>
+<body class="ns-shell-page page-bg history-page">
+<div id="bg-circles">
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+  <div class="circle c4"></div>
+  <div class="circle c5"></div>
+  <div class="circle c6"></div>
+  <div class="circle c7"></div>
+  <div class="circle c8"></div>
+</div>
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+<div class="bubble b4"></div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="ns-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+    <span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role">Customer</div></div>
+  </div>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+    <a class="active" href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+    <a href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+    <a href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+    <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+    <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong></div>
+    </div>
+    <button class="ns-mobile-book" type="button" onclick="location.href='booking.html'">+ Book</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role">Customer</div></div>
+  </div>
+  <div class="ns-mobile-trust"><span>Verified Workers</span><span>Secure Booking</span><span>Quick & Easy</span></div>
+</header>
+  <div class="app mobile-shell">
+    <aside class="sidebar">
+      <div class="brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span></div>
+      <div class="side-user">
+        <div class="side-avatar" id="sideAvatar">X</div>
+        <div><div class="side-name" id="sideName">xyz</div><div class="side-role">Customer</div></div>
+      </div>
+      <nav class="nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="booking.html">Book a service</a>
+        <a class="active" href="mybooking.html">Booking history</a>
+        <a href="profile.html">My profile</a>
+        <a href="worker_list.html">My workers</a>
+      </nav>
+    </aside>
+
+    <header class="mobile-head">
+      <div><h1><i class="fa-solid fa-clock-rotate-left"></i> Booking History</h1><p id="mobileWelcome">Welcome, xyz! Here are your bookings.</p></div>
+      <div class="mobile-head-actions">
+        <button class="updates" id="mobileNotifBtn"><i class="fa-solid fa-bell"></i><span class="badge" id="mobileNotifBadge">0</span></button>
+        <button class="top-btn" onclick="location.href='booking.html'">+ Book</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="top desktop-top">
+        <div class="title">
+          <h1><i class="fa-solid fa-clock-rotate-left"></i> My Booking History</h1>
+          <p id="welcomeMsg">Welcome! Here are your bookings.</p>
+        </div>
+        <div class="actions">
+          <button class="updates" id="notifBtn"><i class="fa-solid fa-bell"></i> Updates <span class="badge" id="notifBadge">0</span></button>
+          <button class="top-btn" onclick="location.href='booking.html'">+ Book a service</button>
+          <button class="top-btn logout" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="filters">
+          <button class="ftab active" data-filter="all">All</button>
+          <button class="ftab" data-filter="pending"><i class="fa-solid fa-hourglass-half"></i> Pending</button>
+          <button class="ftab" data-filter="accepted"><i class="fa-solid fa-check"></i> Accepted</button>
+          <button class="ftab" data-filter="completed"><i class="fa-solid fa-check"></i> Completed</button>
+          <button class="ftab" data-filter="rejected"><i class="fa-solid fa-xmark"></i> Rejected</button>
+          <button class="ftab" data-filter="cancelled"><i class="fa-solid fa-ban"></i> Cancelled</button>
+        </div>
+        <div id="cardsContainer"><div class="empty-state"><strong>Loading your bookings...</strong></div></div>
+      </div>
+    </main>
+
+    <nav class="ns-bottom-nav" aria-label="Mobile primary navigation">
+  <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="booking.html"><i class="fa-solid fa-clipboard-list"></i><span>Book</span></a>
+  <a class="active" aria-current="page" href="mybooking.html"><i class="fa-solid fa-table-list"></i><span>History</span></a>
+  <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</nav>
+  </div>
+
+  <div class="modal-overlay" id="ratingModal">
+    <div class="modal-box">
+      <button class="modal-close" id="ratingModalClose">x</button>
+      <div class="modal-title">Rate your worker</div>
+      <div class="modal-sub" id="ratingModalSub">How was the service?</div>
+      <div class="star-row" id="starRow">
+        <button class="star-btn" data-val="1">★</button><button class="star-btn" data-val="2">★</button><button class="star-btn" data-val="3">★</button><button class="star-btn" data-val="4">★</button><button class="star-btn" data-val="5">★</button>
+      </div>
+      <textarea id="ratingComment" placeholder="Share your feedback"></textarea>
+      <button class="modal-save" id="ratingSubmitBtn">Submit rating</button>
+    </div>
+  </div>
+
+  <div class="receipt-overlay" id="receiptModal">
+    <div class="receipt-box">
+      <h3>NearServe Receipt</h3>
+      <p id="receiptId">Booking ID: -</p>
+      <div class="receipt-row"><span>Service</span><strong id="rService">-</strong></div>
+      <div class="receipt-row"><span>Worker</span><strong id="rWorker">-</strong></div>
+      <div class="receipt-row"><span>Address</span><strong id="rAddress">-</strong></div>
+      <div class="receipt-row"><span>Date</span><strong id="rDate">-</strong></div>
+      <div class="receipt-row"><span>Status</span><strong id="rStatus">-</strong></div>
+      <div class="receipt-total"><span>Booking Fee Paid</span><span>Rs. 29</span></div>
+      <div id="rStatusBadge" class="mybooking-inline-style-1"></div>
+      <div class="receipt-btns"><button class="receipt-print" id="receiptPrintBtn">Print / Save PDF</button><button class="receipt-close-btn" id="receiptCloseBtn">Close</button></div>
+    </div>
+  </div>
+
+  <div class="cancel-overlay" id="cancelModal">
+    <div class="cancel-box">
+      <div class="cancel-title">Cancel Booking?</div>
+      <div class="cancel-sub">Are you sure you want to cancel this booking? This action cannot be undone.</div>
+      <div class="cancel-btns"><button class="cancel-btn-no" id="cancelModalNo">Keep Booking</button><button class="cancel-btn-yes" id="cancelModalYes">Yes, Cancel</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="./js/pages/mybooking-script-1.js"></script>
+  <script src="js/dashboard-shell.js"></script>
+</body>
+</html>

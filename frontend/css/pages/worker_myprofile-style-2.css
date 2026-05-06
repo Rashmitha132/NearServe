@@ -1,0 +1,197 @@
+    .mobile-profile-header{display:none}
+    .ns-sidebar-backdrop{display:none}
+    @media (max-width:768px){
+      html,body{width:100%;min-height:100%;overflow-x:hidden}
+      body{display:block;background:#fff;padding:0}
+      .ns-sidebar{width:min(82vw,280px);transform:translateX(-110%);z-index:9500}
+      .ns-sidebar.open{transform:translateX(0);box-shadow:22px 0 44px rgba(15,23,42,.25)}
+      .ns-sidebar-close{display:grid;place-items:center}
+      .ns-sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(5,20,10,.42);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:9400}
+      .ns-sidebar-backdrop.show{opacity:1;pointer-events:auto}
+      .right-panel{margin-left:0;padding:0 0 18px;min-height:100vh;background:#eef1f2}
+      .topbar{display:none}
+      .mobile-profile-header{display:flex;flex-direction:column;align-items:center;position:relative;background:#123f29;color:#fff;padding:58px 16px 18px;margin:14px 16px 0;border-radius:14px 14px 0 0;min-height:255px}
+      .mobile-profile-header{
+        background:linear-gradient(135deg,#0f3d2e,#1f6f4a);
+        border-radius:16px;
+        overflow:hidden;
+      }
+      .mobile-profile-header::before{
+        content:"";
+        position:absolute;
+        top:-60px;
+        right:-60px;
+        width:180px;
+        height:180px;
+        background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);
+        border-radius:50%;
+        pointer-events:none;
+      }
+      .mobile-profile-header::after{
+        content:"";
+        position:absolute;
+        bottom:-80px;
+        left:-80px;
+        width:220px;
+        height:220px;
+        background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);
+        border-radius:50%;
+        pointer-events:none;
+      }
+      .mobile-profile-header > *{position:relative;z-index:1}
+      .mobile-menu-btn{position:absolute;top:13px;left:13px;width:26px;height:26px;border:0;background:transparent;color:#fff;font-size:1.1rem;display:grid;place-items:center}
+      .mobile-logout-btn{position:absolute;top:11px;right:14px;border:1px solid #ffb2a8;background:transparent;color:#fff;border-radius:5px;padding:5px 9px;font-size:.66rem;font-weight:800;line-height:1}
+      .mobile-brand{position:absolute;top:12px;left:43px;display:flex;align-items:center;gap:8px;max-width:calc(100% - 130px)}
+      .mobile-logo{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:0 0 32px}
+      .mobile-brand-name{font-family:'Nunito',sans-serif;font-weight:700;color:#fff;font-size:.82rem;line-height:1}
+      .mobile-tagline{font-size:10px;color:rgba(255,255,255,.8);line-height:1.1;margin-top:3px;white-space:normal}
+      .mobile-avatar-area{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:10px}
+      .mobile-avatar{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#1f6f4a,#14532d);border:3px solid rgba(255,255,255,.30);font-family:'Nunito',sans-serif;font-size:1.45rem;font-weight:900;overflow:hidden;margin-bottom:0;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+      .mobile-avatar img{width:100%;height:100%;object-fit:cover}
+      .mobile-name{font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:900;line-height:1.1;margin-top:6px}
+      .mobile-role{font-size:.72rem;color:#cce7d5;margin-top:6px}
+      .mobile-role::before{content:"";display:inline-block;width:6px;height:10px;background:#f97316;clip-path:polygon(45% 0,100% 0,62% 42%,100% 42%,30% 100%,48% 53%,0 53%);margin-right:6px;vertical-align:-1px}
+      .mobile-avatar-actions{position:static;transform:none;display:flex;justify-content:center;gap:8px;z-index:2}
+      .mobile-avatar-actions button{width:32px;height:32px;border:0;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);display:grid;place-items:center;font-size:.78rem;color:#111827}
+      .mobile-avatar-actions .edit{background:#fff;color:#2563eb}
+      .mobile-avatar-actions .remove{background:#fff;color:#ef4444}
+      .mobile-stats{display:flex;justify-content:center;gap:34px;margin-top:14px;text-align:center}
+      .mobile-stat-value{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:#5fe29c;line-height:1}
+      .mobile-stat-label{font-size:.58rem;color:#dcefe4;margin-top:2px}
+      .profile-grid{display:flex;flex-direction:column;gap:12px;margin:0 16px 16px}
+      .left-col{display:flex;flex-direction:column;gap:12px}
+      .profile-card{display:none}
+      .mini-reviews-card,.form-section{width:100%;margin:0;padding:16px;border-radius:9px;background:#fff;border:1px solid #e0e4e1;box-shadow:0 7px 18px rgba(15,23,42,.07)}
+      .mini-reviews-card{min-height:auto;margin-top:12px}
+      .mini-section-title{font-size:.82rem;margin-bottom:18px}
+      .mini-review-count,.mini-no-text{font-size:.72rem}
+      .form-sections{display:flex;flex-direction:column;gap:12px}
+      .form-row,.form-row.full{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+      .form-input,.form-select,.form-textarea{width:100%;font-size:.78rem;padding:8px 10px;border-radius:6px}
+      .form-textarea{min-height:72px}
+      .btn-group{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+      .btn-save,.btn-cancel{width:100%;padding:10px;border-radius:7px;font-size:.78rem}
+      .section-title{font-size:.86rem;margin-bottom:12px}
+    }
+    @media (max-width:768px){
+      html,body{
+        width:100%!important;
+        max-width:100%!important;
+        overflow-x:hidden!important;
+      }
+      body{
+        display:block!important;
+        margin:0!important;
+        padding:0!important;
+        background:#eef1f2!important;
+      }
+      .ns-sidebar{
+        position:fixed!important;
+        inset:0 auto 0 0!important;
+        width:min(82vw,280px)!important;
+        transform:translateX(-110%)!important;
+        display:flex!important;
+        margin:0!important;
+        z-index:9500!important;
+      }
+      .ns-sidebar.open{
+        transform:translateX(0)!important;
+      }
+      .ns-sidebar-backdrop{
+        display:block!important;
+      }
+      .mobile-profile-header{
+        display:flex!important;
+        width:auto!important;
+      }
+      .right-panel{
+        width:100%!important;
+        max-width:100%!important;
+        margin-left:0!important;
+        padding:12px!important;
+        background:#eef1f2!important;
+        overflow-x:hidden!important;
+      }
+      .topbar{
+        display:none!important;
+      }
+      .profile-grid{
+        width:100%!important;
+        max-width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        grid-template-columns:1fr!important;
+        gap:12px!important;
+        margin:0!important;
+      }
+      .left-col{
+        width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:12px!important;
+      }
+      .profile-card{
+        display:none!important;
+      }
+      .form-sections{
+        width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        grid-template-columns:1fr!important;
+        gap:12px!important;
+      }
+      .mini-reviews-card,
+      .form-section{
+        width:100%!important;
+        max-width:100%!important;
+        margin:0!important;
+        padding:16px!important;
+        border-radius:10px!important;
+        box-shadow:0 7px 18px rgba(15,23,42,.07)!important;
+      }
+      .form-row,
+      .form-row.full{
+        width:100%!important;
+        display:grid!important;
+        grid-template-columns:1fr!important;
+      }
+      .form-input,
+      .form-select,
+      .form-textarea{
+        width:100%!important;
+        max-width:100%!important;
+      }
+      .btn-group{
+        width:100%!important;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:9px!important;
+      }
+      .btn-save,
+      .btn-cancel{
+        width:100%!important;
+      }
+      .mobile-avatar-area{
+        display:flex!important;
+        flex-direction:column!important;
+        align-items:center!important;
+        gap:8px!important;
+        margin-bottom:10px!important;
+      }
+      .mobile-avatar-actions{
+        position:static!important;
+        transform:none!important;
+        display:flex!important;
+        justify-content:center!important;
+        gap:8px!important;
+      }
+      .mobile-avatar-actions button{
+        width:32px!important;
+        height:32px!important;
+        border-radius:50%!important;
+        background:#fff!important;
+        border:none!important;
+        box-shadow:0 2px 6px rgba(0,0,0,.2)!important;
+      }
+    }
+  

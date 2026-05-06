@@ -1,0 +1,61 @@
+    body {
+      background: #0d0d0d !important;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      display: block !important;
+      background:
+        radial-gradient(circle at -4% 9%, rgba(249,115,22,.10), transparent 22%),
+        radial-gradient(circle at 87% 24%, rgba(249,115,22,.07), transparent 16%),
+        radial-gradient(circle at 95% 58%, rgba(249,115,22,.05), transparent 13%),
+        radial-gradient(circle at 94% 89%, rgba(249,115,22,.08), transparent 18%),
+        radial-gradient(circle at 8% 44%, rgba(255,255,255,.035), transparent 9%),
+        radial-gradient(circle at 15% 76%, rgba(255,255,255,.025), transparent 6%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      display: block !important;
+      background-image: radial-gradient(circle, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #bg-circles {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #bg-circles .circle,
+    body > .bubble {
+      position: fixed !important;
+      border-radius: 50% !important;
+      pointer-events: none;
+      z-index: 0 !important;
+    }
+
+    #bg-circles .c1 { width: 320px; height: 320px; top: -80px; left: -80px; background: radial-gradient(circle at 40% 40%, rgba(249,115,22,.10), transparent 70%); border: 1px solid rgba(249,115,22,.08); }
+    #bg-circles .c2 { width: 200px; height: 200px; top: 10%; right: 5%; background: radial-gradient(circle at 40% 40%, rgba(249,115,22,.07), transparent 70%); border: 1px solid rgba(249,115,22,.06); }
+    #bg-circles .c3 { width: 120px; height: 120px; top: 30%; left: 4%; background: radial-gradient(circle at 40% 40%, rgba(255,255,255,.03), transparent 70%); border: 1px solid rgba(255,255,255,.04); }
+    #bg-circles .c4 { width: 260px; height: 260px; bottom: -60px; right: -60px; background: radial-gradient(circle at 40% 40%, rgba(249,115,22,.09), transparent 70%); border: 1px solid rgba(249,115,22,.07); }
+    #bg-circles .c5 { width: 80px; height: 80px; bottom: 20%; left: 12%; background: radial-gradient(circle at 40% 40%, rgba(255,255,255,.02), transparent 70%); border: 1px solid rgba(255,255,255,.04); }
+    #bg-circles .c6 { width: 50px; height: 50px; top: 55%; right: 12%; background: transparent; border: 1px solid rgba(249,115,22,.10); }
+    #bg-circles .c7 { width: 30px; height: 30px; top: 20%; left: 30%; background: transparent; border: 1px solid rgba(255,255,255,.05); }
+    #bg-circles .c8 { width: 160px; height: 160px; bottom: 30%; right: 3%; background: radial-gradient(circle at 40% 40%, rgba(249,115,22,.05), transparent 70%); border: 1px solid rgba(249,115,22,.06); }
+
+    body > .bubble {
+      display: none !important;
+    }
+  

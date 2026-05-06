@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="./js/config.js"></script>
+<script src="./js/auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Service - NearServe</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="./css/pages/booking-style-1.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard-system.css">
+  <link rel="stylesheet" href="./css/logo.css">
+  <script src="./js/toast.js"></script>
+  <link rel="stylesheet" href="./css/global.css">
+  <link rel="stylesheet" href="./css/background.css">
+<link rel="stylesheet" href="./css/pages/booking-inline-attrs.css">
+</head>
+<body class="ns-shell-page page-bg">
+<div id="bg-circles">
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+  <div class="circle c4"></div>
+  <div class="circle c5"></div>
+  <div class="circle c6"></div>
+  <div class="circle c7"></div>
+  <div class="circle c8"></div>
+</div>
+<aside class="ns-sidebar" id="nsSidebar">
+  <div class="bubble b1"></div>
+  <div class="bubble b2"></div>
+  <div class="bubble b3"></div>
+  <div class="bubble b4"></div>
+  <div class="ns-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img">
+    <span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+    <button class="ns-sidebar-close" id="nsSidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ns-side-user" role="link" tabindex="0" aria-label="Open my profile">
+    <div class="ns-side-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-side-name" data-ns-name>xyz</div><div class="ns-side-role">Customer</div></div>
+  </div>
+  <nav class="ns-nav" aria-label="Primary navigation">
+    <a href="dashboard.html"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a>
+    <a class="active" href="booking.html"><i class="fa-solid fa-screwdriver-wrench"></i>Book a service</a>
+    <a href="mybooking.html"><i class="fa-regular fa-file-lines"></i>Booking history</a>
+    <a href="profile.html"><i class="fa-regular fa-user"></i>My profile</a>
+    <a href="worker_list.html"><i class="fa-solid fa-users"></i>My workers</a>
+  </nav>
+  <div class="ns-side-info">
+    <div><i class="fa-solid fa-circle-check"></i>Verified professionals</div>
+    <div><i class="fa-solid fa-shield-halved"></i>Secure payments</div>
+    <div><i class="fa-solid fa-rotate-left"></i>Easy cancellation</div>
+  </div>
+</aside>
+<div class="ns-sidebar-backdrop" id="nsSidebarBackdrop"></div>
+<header class="ns-mobile-head">
+  <div class="ns-mobile-head-top">
+    <div class="ns-mobile-brand-wrap">
+      <button class="ns-mobile-menu-btn" id="nsSidebarOpen" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="ns-mobile-brand"><img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong></div>
+    </div>
+    <button class="ns-mobile-book" type="button" onclick="location.href='booking.html'">+ Book</button>
+  </div>
+  <div class="ns-mobile-user">
+    <div class="ns-mobile-avatar" data-ns-avatar>XY</div>
+    <div><div class="ns-mobile-kicker">Good morning</div><div class="ns-mobile-name" data-ns-welcome>Welcome, xyz!</div><div class="ns-mobile-role">Customer</div></div>
+  </div>
+  <div class="ns-mobile-trust"><span>Verified Workers</span><span>Secure Booking</span><span>Quick & Easy</span></div>
+</header>
+
+<div class="left-panel">
+  <div class="sidebar-brand">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><strong class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></strong>
+    <button class="mobile-close" type="button" aria-label="Close">x</button>
+  </div>
+
+  <a href="profile.html" class="sidebar-user">
+    <div class="side-avatar">X</div>
+    <div>
+      <div class="side-greeting">Good morning</div>
+      <div class="side-name" id="sidebarUserName">Loading...</div>
+      <div class="side-role">Customer</div>
+    </div>
+  </a>
+
+  <div class="mobile-trust">
+    <span>Verified Workers</span>
+    <span>Secure Booking</span>
+    <span>Quick & Easy</span>
+  </div>
+
+  <nav class="side-nav" aria-label="Sidebar navigation">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="booking.html" class="active">Book a service</a>
+    <a href="mybooking.html">Booking history</a>
+    <a href="profile.html">My profile</a>
+    <a href="worker_list.html" id="myWorkersLink">My workers</a>
+  </nav>
+
+  <div class="side-foot">
+    <div>Verified professionals</div>
+    <div>Secure payments</div>
+    <div>Easy cancellation</div>
+  </div>
+  <div class="deco-ring r1"></div><div class="deco-ring r2"></div><div class="deco-ring r3"></div>
+  <div class="fi fi1">🔧</div><div class="fi fi2">⚡</div><div class="fi fi3">🪚</div><div class="fi fi4">⭐</div><div class="fi fi5">🛠️</div>
+  <div class="l-logo">
+    <img src="./assets/nearserve-logo.png" alt="NearServe Logo" class="nearserve-logo-img"><span class="app-logo">NearServe<span class="app-tagline">Services Near You, Care You Deserve</span></span>
+  </div>
+  <div class="l-main">
+    <h2>Book a <em>Trusted</em><br>Professional</h2>
+    <p>Get expert home services at your doorstep. Verified workers, transparent pricing, and completely hassle-free bookings.</p>
+    <div class="pills">
+      <div class="pill">🔧 Plumbing</div><div class="pill">⚡ Electrical</div><div class="pill">🪚 Carpentry</div>
+    </div>
+  </div>
+  <div class="l-stats">
+    <div><div class="stat-num">✅</div><div class="stat-lbl">Verified Workers</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">🔒</div><div class="stat-lbl">Secure Booking</div></div>
+    <div class="sdiv"></div>
+    <div><div class="stat-num">⚡</div><div class="stat-lbl">Quick & Easy</div></div>
+  </div>
+</div>
+
+<div class="right-panel">
+
+  <div class="ubar">
+    <a href="profile.html" class="uinfo-section">
+      <div class="avatar-container">
+        <div class="uavatar" id="userAvatar">?</div>
+      </div>
+      <div>
+        <div class="uname" id="welcomeUser">Loading...</div>
+        <div class="urole">Customer</div>
+      </div>
+    </a>
+
+    <div class="ubar-right">
+      <a href="dashboard.html" class="nav-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        Dashboard
+      </a>
+      <button class="btn-hist" id="historyBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        View My Booking History
+      </button>
+      <a href="profile.html" class="nav-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        My Profile
+      </a>
+      <button class="btn-out" id="logoutBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="fhead">
+    <h1>📋 Book a Service</h1>
+    <p>Fill in the details below and we'll connect you with the right professional.</p>
+  </div>
+
+  <div class="slbl">Select Service</div>
+  <div class="ig">
+    <div class="ico ic-b">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </div>
+    <select id="serviceSelect">
+      <option value="carpenter">🪚 Carpenter</option>
+      <option value="plumber">🔧 Plumber</option>
+      <option value="electrician">⚡ Electrician</option>
+    </select>
+  </div>
+
+  <div class="service-grid" aria-label="Service options">
+    <button class="service-card active" type="button" data-service="carpenter"><span>Carpenter</span></button>
+    <button class="service-card" type="button" data-service="plumber"><span>Plumber</span></button>
+    <button class="service-card" type="button" data-service="electrician"><span>Electrical</span></button>
+    <button class="service-card disabled" type="button" disabled><span>Painter</span></button>
+    <button class="service-card disabled" type="button" disabled><span>Cleaning</span></button>
+    <button class="service-card disabled" type="button" disabled><span>AC service</span></button>
+  </div>
+
+  <div class="slbl">Preferred Worker</div>
+  <div class="wrow" id="workerRow">
+    <button class="btn-pick" id="chooseWorkerBtn" type="button">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      Choose Worker
+    </button>
+    <div class="wdisp">
+      <span class="wname" id="selectedWorkerText">No worker selected</span>
+      <button class="btn-clr" id="clearWorkerBtn" type="button">✕ Clear</button>
+    </div>
+  </div>
+
+  <div class="fdiv"></div>
+
+  <div class="slbl">Your Details</div>
+  <form id="bookingForm">
+    <div class="ig">
+      <div class="ico ic-p"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <input id="custName" type="text" placeholder="Your Full Name" required>
+    </div>
+
+    <div class="ig">
+      <div class="ico ic-t"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <input id="address" type="text" placeholder="Your Full Address" required>
+    </div>
+
+    <div class="ig">
+      <div class="ico ic-a"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <input id="date" type="date" required>
+    </div>
+
+    <div class="ig optional-field">
+      <div class="ico ic-b"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+      <select id="timeSlot">
+        <option value="">Select a time</option>
+        <option>Morning</option>
+        <option>Afternoon</option>
+        <option>Evening</option>
+      </select>
+    </div>
+
+    <div class="ig notes-field">
+      <div class="ico ic-p"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></div>
+      <input id="notes" type="text" placeholder="Any special requests?">
+    </div>
+
+    <button type="submit" class="btn-sub" id="confirmBtn">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg>
+      Confirm Booking
+    </button>
+  </form>
+</div>
+
+<div id="bookingSuccessOverlay">
+  <div class="bconf-card">
+    <div class="bconf-check-wrap">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="bconf-title">Booking Confirmed! 🎉</div>
+    <p class="bconf-sub">Your request has been sent to the worker. You'll be notified once they accept.</p>
+    <div class="bconf-summary">
+      <div class="bconf-row"><div class="bconf-icon booking-inline-style-1">🔧</div><span class="bconf-lbl">Service</span><span class="bconf-val" id="bconf-service">—</span></div>
+      <div class="bconf-row"><div class="bconf-icon booking-inline-style-2">👷</div><span class="bconf-lbl">Worker</span><span class="bconf-val" id="bconf-worker">—</span></div>
+      <div class="bconf-row"><div class="bconf-icon booking-inline-style-3">📍</div><span class="bconf-lbl">Address</span><span class="bconf-val" id="bconf-address">—</span></div>
+      <div class="bconf-row"><div class="bconf-icon booking-inline-style-4">📅</div><span class="bconf-lbl">Date</span><span class="bconf-val" id="bconf-date">—</span></div>
+    </div>
+    <div class="bconf-btns">
+      <button class="bconf-view" id="bconfViewBtn">📋 View My Bookings</button>
+      <button class="bconf-close" id="bconfCloseBtn">Book Another</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<nav class="ns-bottom-nav" aria-label="Mobile primary navigation">
+  <a href="dashboard.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a class="active" aria-current="page" href="booking.html"><i class="fa-solid fa-clipboard-list"></i><span>Book</span></a>
+  <a href="mybooking.html"><i class="fa-solid fa-table-list"></i><span>History</span></a>
+  <a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+</nav>
+
+<script src="./js/pages/booking-script-2.js"></script>
+  <script src="js/dashboard-shell.js"></script>
+</body>
+</html>
