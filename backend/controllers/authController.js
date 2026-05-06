@@ -475,13 +475,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Email is required" });
   }
 
-  // Always send generic response for security
-  res.json({
-    message: "If this email is registered, a reset link has been sent.",
-  });
-
   const user = await User.findOne({ email });
-  if (!user) return;
+  if (!user) {
+    return res.json({
+      message: "If this email is registered, a reset link has been sent.",
+    });
+  }
 
   const token = crypto.randomBytes(32).toString("hex");
   const tokenHash = hashToken(token);
@@ -500,7 +499,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   try {
     await nodemailerTransporter.sendMail({
-      from: `"NearServe" <${process.env.EMAIL_USER}>`,
+      from: `"NearServe" <${String(process.env.EMAIL_USER || "").trim()}>`,
       to: user.email,
       subject: "NearServe — Reset Your Password",
       html: `
@@ -536,8 +535,16 @@ const forgotPassword = asyncHandler(async (req, res) => {
       `,
     });
   } catch (err) {
-    console.log("Forgot password email error:", err.message);
+    console.error("Forgot password email error:", err.message);
+    await PasswordResetToken.deleteOne({ tokenHash }).catch(() => {});
+    return res.status(500).json({
+      error: "Could not send reset email. Please check the server email configuration.",
+    });
   }
+
+  return res.json({
+    message: "If this email is registered, a reset link has been sent.",
+  });
 });
 
 const verifyResetToken = asyncHandler(async (req, res) => {

@@ -235,7 +235,7 @@
         modalSuccess.style.display = 'block';
         setTimeout(() => forgotModal.classList.remove('active'), 4000);
       } else {
-        showToast(data.message || 'Failed to send reset link');
+        showToast(data.error || data.message || 'Failed to send reset link');
       }
     } catch (err) {
       showToast('Server error while sending reset link');
