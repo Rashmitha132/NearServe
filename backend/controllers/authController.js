@@ -20,19 +20,26 @@ function cleanUrl(value) {
 }
 
 const getBackendUrl = () => {
-  const backendUrl =
-    process.env.BACKEND_URL ||
-    process.env.API_URL ||
-    process.env.RENDER_EXTERNAL_URL ||
-    `http://localhost:${process.env.PORT || 5000}`;
+  const isProduction = process.env.NODE_ENV === "production";
+  const backendUrl = isProduction
+    ? process.env.BACKEND_URL ||
+      process.env.RENDER_EXTERNAL_URL ||
+      "https://nearserve-api.onrender.com"
+    : process.env.BACKEND_URL ||
+      process.env.API_URL ||
+      `http://localhost:${process.env.PORT || 5000}`;
   return cleanUrl(backendUrl);
 };
 
 const getFrontendUrl = () => {
-  const frontendUrl =
-    process.env.FRONTEND_URL ||
-    process.env.APP_URL ||
-    "http://localhost:5500";
+  const isProduction = process.env.NODE_ENV === "production";
+  const frontendUrl = isProduction
+    ? process.env.APP_URL ||
+      process.env.FRONTEND_URL ||
+      "https://nearserve-connect.web.app"
+    : process.env.APP_URL ||
+      process.env.FRONTEND_URL ||
+      "http://localhost:5500";
   return cleanUrl(frontendUrl);
 };
 
@@ -67,11 +74,14 @@ function getOAuthConfig(provider) {
   const config = oauthProviders[provider];
   if (!config) return null;
 
+  const callbackURL = `${getBackendUrl()}/api/auth/${provider}/callback`;
+
   return {
     ...config,
     clientId: process.env[config.clientIdEnv],
     clientSecret: process.env[config.clientSecretEnv],
-    redirectUri: `${getBackendUrl()}/api/auth/${provider}/callback`,
+    callbackURL,
+    redirectUri: callbackURL,
   };
 }
 
