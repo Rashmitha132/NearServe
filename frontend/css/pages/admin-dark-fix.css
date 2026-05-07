@@ -1,57 +1,57 @@
 html,
-body {
+body.admin-dark-page {
   background: #0d0d0d !important;
   background-color: #0d0d0d !important;
   background-image: none !important;
   color: #e8eaf0;
 }
 
-body > .shell,
-body > main,
-.shell,
-main {
+body.admin-dark-page > .shell,
+body.admin-dark-page > main,
+body.admin-dark-page .shell,
+body.admin-dark-page main,
+body.admin-dark-page .card-wrap {
   background: #0d0d0d !important;
   background-color: #0d0d0d !important;
   background-image: none !important;
 }
 
-.topnav {
+body.admin-dark-page .topnav {
   background: rgba(13, 15, 20, 0.94) !important;
 }
 
-.page-header h1,
-.panel-header h2,
-.brand-name,
-.table-card,
-th {
+body.admin-dark-page .page-header h1,
+body.admin-dark-page .panel-header h2,
+body.admin-dark-page .brand-name,
+body.admin-dark-page .table-card,
+body.admin-dark-page th {
   color: #e8eaf0;
 }
 
-.page-header p,
-.panel-header p,
-.stat-label,
-.state-inner p,
-td {
+body.admin-dark-page .page-header p,
+body.admin-dark-page .panel-header p,
+body.admin-dark-page .stat-label,
+body.admin-dark-page .state-inner p,
+body.admin-dark-page td {
   color: #9ca3af;
 }
 
-.stat-card,
-.verify-panel,
-.table-card,
-.filter-bar,
-.modal-box,
-.card {
+body.admin-dark-page .stat-card,
+body.admin-dark-page .verify-panel,
+body.admin-dark-page .table-card,
+body.admin-dark-page .filter-bar,
+body.admin-dark-page .modal-box,
+body.admin-dark-page .card {
   background: #13161d !important;
   border-color: #252a38 !important;
 }
 
-.panel-body,
-.empty-state,
-.search-wrap,
-.filter-select,
-.record-count,
-.input-wrap input {
+body.admin-dark-page .panel-body,
+body.admin-dark-page .empty-state,
+body.admin-dark-page .search-wrap,
+body.admin-dark-page .filter-select,
+body.admin-dark-page .record-count,
+body.admin-dark-page .input-wrap input {
   background: #1a1e29 !important;
   border-color: #252a38 !important;
 }
-

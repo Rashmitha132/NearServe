@@ -8,17 +8,43 @@
     --ns-shadow-lift: 0 18px 42px rgba(15, 61, 46, 0.18);
   }
 
-  body {
+  body.auth-page-body {
     min-height: 100vh;
     font-family: "Nunito", sans-serif;
     background:
-      radial-gradient(circle at 13% 15%, rgba(20, 92, 63, 0.10) 0 58px, transparent 60px),
-      radial-gradient(circle at 90% 23%, rgba(49, 147, 90, 0.10) 0 48px, transparent 50px),
-      radial-gradient(circle at 8% 66%, rgba(15, 61, 46, 0.08) 0 70px, transparent 72px),
-      radial-gradient(circle at 90% 68%, rgba(20, 92, 63, 0.09) 0 62px, transparent 64px),
+      radial-gradient(circle at 13% 15%, rgba(20, 92, 63, 0.18) 0 76px, transparent 78px),
+      radial-gradient(circle at 90% 23%, rgba(49, 147, 90, 0.18) 0 64px, transparent 66px),
+      radial-gradient(circle at 8% 66%, rgba(15, 61, 46, 0.15) 0 88px, transparent 90px),
+      radial-gradient(circle at 90% 68%, rgba(20, 92, 63, 0.16) 0 78px, transparent 80px),
       #ffffff;
     color: #09251b;
     position: relative;
+  }
+
+  body.auth-page-body::before,
+  body.auth-page-body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    border: 2px solid rgba(20, 92, 63, 0.12);
+    background: rgba(234, 247, 241, 0.55);
+    box-shadow: 0 18px 50px rgba(15, 61, 46, 0.1);
+  }
+
+  body.auth-page-body::before {
+    width: 150px;
+    height: 150px;
+    left: 6%;
+    top: 10%;
+  }
+
+  body.auth-page-body::after {
+    width: 132px;
+    height: 132px;
+    right: 7%;
+    top: 18%;
   }
 
   .auth-page {
