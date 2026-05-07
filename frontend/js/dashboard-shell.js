@@ -2,9 +2,13 @@
   function text(key, fallback) {
     return (localStorage.getItem(key) || fallback || "").trim();
   }
+  function usableName(value) {
+    const name = String(value || "").trim();
+    return name && name.toLowerCase() !== "xyz" ? name : "";
+  }
   function getName() {
     const authUser = window.nearServeCurrentUser || {};
-    return (authUser.name || "").trim() || text("userName") || text("name") || text("customerName") || "Guest";
+    return usableName(authUser.name) || usableName(text("userName")) || usableName(text("name")) || usableName(text("customerName")) || "Guest";
   }
   function getPhone() {
     return text("userPhone") || text("phone") || "";
@@ -40,6 +44,7 @@
     document.querySelectorAll("[data-ns-welcome]").forEach(el => el.textContent = `Welcome, ${name}!`);
     document.querySelectorAll("[data-ns-avatar]").forEach(el => setAvatar(el, name, image));
   }
+  window.nearServeSyncShellIdentity = syncIdentity;
   function closeMenu() {
     document.getElementById("nsSidebar")?.classList.remove("open");
     document.getElementById("nsSidebarBackdrop")?.classList.remove("show");

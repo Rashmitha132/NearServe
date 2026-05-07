@@ -43,6 +43,32 @@ function updateSelectedWorkerText() {
   }
 }
 
+function isRealName(value) {
+  const name = String(value || "").trim();
+  return name && name.toLowerCase() !== "xyz";
+}
+
+function syncBookingShellIdentity(name, avatarBase64) {
+  if (!isRealName(name)) return;
+
+  localStorage.setItem("userName", name);
+  localStorage.setItem("name", name);
+  document.querySelectorAll("[data-ns-name]").forEach(el => {
+    el.textContent = name;
+  });
+  document.querySelectorAll("[data-ns-welcome]").forEach(el => {
+    el.textContent = `Welcome, ${name}!`;
+  });
+  document.querySelectorAll("[data-ns-avatar]").forEach(el => {
+    if (avatarBase64) {
+      el.innerHTML = `<img src="${avatarBase64}" alt="${name.replace(/"/g, "&quot;")}">`;
+    } else {
+      el.textContent = name.split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toUpperCase();
+    }
+  });
+  window.nearServeSyncShellIdentity?.();
+}
+
 window.addEventListener("DOMContentLoaded", async function () {
   if (window.nearServeAuthReady) {
     await window.nearServeAuthReady;
@@ -53,10 +79,11 @@ window.addEventListener("DOMContentLoaded", async function () {
      localStorage.getItem("phone") ||
      "").trim();
 
-  const pName =
+  const storedName =
     localStorage.getItem("userName") ||
     localStorage.getItem("name") ||
     "";
+  const pName = isRealName(storedName) ? storedName : "";
 
   if (!pPhone) {
     window.location.href = "login.html";
@@ -114,6 +141,7 @@ window.addEventListener("DOMContentLoaded", async function () {
 
     custNameInput.value = fullName || "";
     addressInput.value = fullAddress || "";
+    syncBookingShellIdentity(fullName, avatarBase64);
   } catch (err) {
     console.error("Profile load error:", err);
     userAvatar.textContent = (pName || "U").charAt(0).toUpperCase();
@@ -130,6 +158,7 @@ window.addEventListener("DOMContentLoaded", async function () {
     }
     custNameInput.value = pName || "";
     addressInput.value = "";
+    syncBookingShellIdentity(pName, cachedAvatar);
   }
 
   dateInput.min = new Date().toISOString().split("T")[0];
