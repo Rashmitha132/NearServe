@@ -98,7 +98,7 @@
     sessionStorage.setItem("nearServeBrowserSession", "1");
     localStorage.setItem("nearServeLastActivity", String(Date.now()));
     localStorage.setItem("nearServeActiveUntil", String(Date.now() + 45 * 1000));
-    const userName = user.name || "";
+    const userName = String(user.name || "").trim().toLowerCase() === "xyz" ? "" : user.name || "";
     const userPhone = user.phone || "";
     const userEmail = user.email || "";
     const userRole = (user.role || "").toLowerCase();

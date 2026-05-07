@@ -1,7 +1,11 @@
 const API_BASE = window.NEARSERVE_API_BASE;
 
 const phone = localStorage.getItem("userPhone") || localStorage.getItem("phone") || "";
-const uname = localStorage.getItem("userName") || localStorage.getItem("name") || "Customer";
+function realName(value, fallback = "Customer") {
+  const name = String(value || "").trim();
+  return name && name.toLowerCase() !== "xyz" ? name : fallback;
+}
+const uname = realName(localStorage.getItem("userName") || localStorage.getItem("name"));
 if (!phone) window.location.href = "login.html";
 
 let allBookings = [];
@@ -29,9 +33,13 @@ fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`)
   .then(r => r.ok ? r.json() : null)
   .then(profile => {
     if (!profile) return;
-    const name = profile.name || uname;
+    const name = realName(profile.name, uname);
+    localStorage.setItem("userName", name);
+    localStorage.setItem("name", name);
     const avatar = profile.avatarBase64 || "";
     sideName.textContent = name;
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${name}! Here are your bookings.`;
+    document.getElementById("mobileWelcome").textContent = `Welcome, ${name}! Here are your bookings.`;
     if (avatar) localStorage.setItem(`avatarBase64_customer_${phone}`, avatar);
     setSidebarAvatar(name, avatar || localStorage.getItem(`avatarBase64_customer_${phone}`));
   })

@@ -30,6 +30,10 @@ function statusIcon(status) {
   const s = (status || "pending").toLowerCase();
   return ({ pending:"fa-hourglass-half", accepted:"fa-check", completed:"fa-check", rejected:"fa-xmark", cancelled:"fa-ban" }[s] || "fa-circle-info");
 }
+function realName(value, fallback = "Customer") {
+  const name = String(value || "").trim();
+  return name && name.toLowerCase() !== "xyz" ? name : fallback;
+}
 
 function setAvatar(name, imageSrc) {
   const initial = (name || "C").trim().slice(0, 2).toUpperCase() || "C";
@@ -67,7 +71,7 @@ async function loadDashboard() {
   }
 
   const phone = (localStorage.getItem("userPhone") || "").trim();
-  const storedName = (localStorage.getItem("userName") || "Customer").trim();
+  const storedName = realName(localStorage.getItem("userName") || localStorage.getItem("name"));
   const role = (localStorage.getItem("userRole") || "").trim();
   if (!phone || role !== "customer") {
     window.location.href = "login.html";
@@ -85,7 +89,7 @@ async function loadDashboard() {
     const profileRes = await fetch(`${API_BASE}/profile/${encodeURIComponent(phone)}`);
     if (profileRes.ok) {
       const profile = await profileRes.json().catch(() => ({}));
-      displayName = profile.name || displayName;
+      displayName = realName(profile.name, displayName);
       if (profile.avatarBase64) localStorage.setItem(avatarKey, profile.avatarBase64);
       if (profile.createdAt) memberYear = new Date(profile.createdAt).getFullYear();
       document.getElementById("sideName").textContent = displayName;

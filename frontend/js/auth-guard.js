@@ -65,12 +65,13 @@
   }
 
   function storeUser(user) {
-    localStorage.setItem("userName", user.name || "");
+    const cleanName = String(user.name || "").trim().toLowerCase() === "xyz" ? "" : user.name || "";
+    localStorage.setItem("userName", cleanName);
     localStorage.setItem("userPhone", user.phone || "");
     localStorage.setItem("userEmail", user.email || "");
     localStorage.setItem("userRole", user.role || "");
     localStorage.setItem("userStatus", user.status || "");
-    localStorage.setItem("name", user.name || "");
+    localStorage.setItem("name", cleanName);
     localStorage.setItem("phone", user.phone || "");
     localStorage.setItem("email", user.email || "");
     localStorage.setItem("role", user.role || "");
