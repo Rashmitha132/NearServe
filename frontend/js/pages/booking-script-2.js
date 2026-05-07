@@ -2,7 +2,11 @@ const API_BASE = window.NEARSERVE_API_BASE;
 const BOOKING_FEE = 29;
 
 function showToast(msg, type) {
-  window.nearServeToast(msg, type || "error");
+  const cleanMessage = String(msg || "")
+    .replace(/^â\S*\s*/g, "")
+    .replace(/^⚠️\s*/g, "")
+    .replace(/^❌\s*/g, "");
+  window.nearServeToast(cleanMessage, type || "error");
 }
 
 function loadRazorpayScript() {
@@ -290,6 +294,11 @@ window.addEventListener("DOMContentLoaded", async function () {
       if (data.free) {
         showToast("First booking is free. Booking confirmed!", "success");
       } else {
+        if (!data.key_id || !data.id || Number(data.amount) !== BOOKING_FEE * 100) {
+          showToast("Payment order could not be created. Please try again.", "error");
+          return;
+        }
+
         await loadRazorpayScript();
 
         const paymentResult = await new Promise((resolve, reject) => {
@@ -298,7 +307,7 @@ window.addEventListener("DOMContentLoaded", async function () {
             amount: data.amount,
             currency: data.currency || "INR",
             name: "NearServe",
-            description: `Booking fee - Rs ${BOOKING_FEE}`,
+            description: `Booking fee - Rs ${data.displayAmount || BOOKING_FEE}`,
             order_id: data.id,
             prefill: {
               name: custName,
