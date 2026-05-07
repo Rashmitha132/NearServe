@@ -114,6 +114,9 @@
     localStorage.setItem("email", userEmail);
     localStorage.setItem("role", userRole);
     localStorage.setItem("status", userStatus);
+    if (userRole === "customer") {
+      sessionStorage.setItem("nearServeShowBookingFeePopup", "1");
+    }
     window.location.href = data.redirectTo || "booking.html";
   }
 

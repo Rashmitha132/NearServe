@@ -621,6 +621,15 @@ body.ns-shell-page .right-panel {
   display: flex;
 }
 
+body.booking-fee-locked .right-panel,
+body.booking-fee-locked .ns-sidebar,
+body.booking-fee-locked .ns-mobile-head,
+body.booking-fee-locked .ns-bottom-nav {
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+}
+
 .booking-fee-card {
   position: relative;
   width: min(420px, 100%);
@@ -635,27 +644,6 @@ body.ns-shell-page .right-panel {
   animation: bookingModalIn 320ms cubic-bezier(.2, .9, .2, 1) both;
 }
 
-.booking-fee-close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--booking-line);
-  border-radius: 50%;
-  color: var(--booking-muted);
-  background: #fff;
-  transition: transform var(--booking-motion), color var(--booking-motion), border-color var(--booking-motion);
-}
-
-.booking-fee-close:hover {
-  color: var(--booking-green-dark);
-  border-color: rgba(15, 123, 83, 0.28);
-}
-
-.booking-fee-close:active,
 .booking-fee-action:active {
   transform: scale(0.96);
 }

@@ -75,32 +75,25 @@ function syncBookingShellIdentity(name, avatarBase64) {
 
 function setupBookingFeePopup(phone) {
   const popup = document.getElementById("bookingFeePopup");
-  const closeBtn = document.getElementById("bookingFeeClose");
   const actionBtn = document.getElementById("bookingFeeAction");
-  if (!popup || !closeBtn || !actionBtn) return;
+  if (!popup || !actionBtn) return;
 
-  const sessionKey = `nearServeFeePopupShown_${phone || "customer"}`;
+  const shouldShow = sessionStorage.getItem("nearServeShowBookingFeePopup") === "1";
 
   function closePopup() {
     popup.classList.remove("show");
     popup.setAttribute("aria-hidden", "true");
-    sessionStorage.setItem(sessionKey, "1");
+    document.body.classList.remove("booking-fee-locked");
+    sessionStorage.removeItem("nearServeShowBookingFeePopup");
   }
 
-  closeBtn.addEventListener("click", closePopup);
   actionBtn.addEventListener("click", closePopup);
-  popup.addEventListener("click", (event) => {
-    if (event.target === popup) closePopup();
-  });
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && popup.classList.contains("show")) closePopup();
-  });
 
-  if (!sessionStorage.getItem(sessionKey)) {
-    window.setTimeout(() => {
-      popup.classList.add("show");
-      popup.setAttribute("aria-hidden", "false");
-    }, 450);
+  if (shouldShow) {
+    document.body.classList.add("booking-fee-locked");
+    popup.classList.add("show");
+    popup.setAttribute("aria-hidden", "false");
+    actionBtn.focus();
   }
 }
 

@@ -91,6 +91,7 @@ if (loginForm) {
 
       // ✅ CUSTOMER
       if (userRole === "customer") {
+        sessionStorage.setItem("nearServeShowBookingFeePopup", "1");
         window.location.href = "booking.html";
         return;
       }
