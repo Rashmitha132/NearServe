@@ -1,0 +1,57 @@
+html,
+body {
+  background: #0d0d0d !important;
+  background-color: #0d0d0d !important;
+  background-image: none !important;
+  color: #e8eaf0;
+}
+
+body > .shell,
+body > main,
+.shell,
+main {
+  background: #0d0d0d !important;
+  background-color: #0d0d0d !important;
+  background-image: none !important;
+}
+
+.topnav {
+  background: rgba(13, 15, 20, 0.94) !important;
+}
+
+.page-header h1,
+.panel-header h2,
+.brand-name,
+.table-card,
+th {
+  color: #e8eaf0;
+}
+
+.page-header p,
+.panel-header p,
+.stat-label,
+.state-inner p,
+td {
+  color: #9ca3af;
+}
+
+.stat-card,
+.verify-panel,
+.table-card,
+.filter-bar,
+.modal-box,
+.card {
+  background: #13161d !important;
+  border-color: #252a38 !important;
+}
+
+.panel-body,
+.empty-state,
+.search-wrap,
+.filter-select,
+.record-count,
+.input-wrap input {
+  background: #1a1e29 !important;
+  border-color: #252a38 !important;
+}
+

@@ -29,7 +29,7 @@
     align-items: center;
     justify-content: center;
     padding: 48px 20px;
-    background: #ffffff;
+    background: transparent;
     border-radius: 0 0 10px 10px;
     animation: nsPageFadeIn var(--ns-motion-slow) both;
   }

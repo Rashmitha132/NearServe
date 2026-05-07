@@ -5,6 +5,16 @@
     resolveAuthReady = resolve;
   });
 
+  function isPlaceholderName(value) {
+    return String(value || "").trim().toLowerCase() === "xyz";
+  }
+
+  ["userName", "name", "customerName"].forEach((key) => {
+    if (isPlaceholderName(localStorage.getItem(key))) {
+      localStorage.removeItem(key);
+    }
+  });
+
   const SESSION_TIMEOUT_MS = 20 * 60 * 1000;
   const ACTIVE_HEARTBEAT_MS = 10 * 1000;
   const ACTIVE_GRACE_MS = 45 * 1000;
@@ -65,7 +75,7 @@
   }
 
   function storeUser(user) {
-    const cleanName = String(user.name || "").trim().toLowerCase() === "xyz" ? "" : user.name || "";
+    const cleanName = isPlaceholderName(user.name) ? "" : user.name || "";
     localStorage.setItem("userName", cleanName);
     localStorage.setItem("userPhone", user.phone || "");
     localStorage.setItem("userEmail", user.email || "");

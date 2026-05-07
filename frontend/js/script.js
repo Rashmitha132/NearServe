@@ -6,7 +6,8 @@ const welcomeEl = document.getElementById("welcomeUser");
 
 // Get logged-in user's phone and name from localStorage
 const loggedInPhone = localStorage.getItem("phone");
-const userName = localStorage.getItem("name");
+const storedUserName = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+const userName = storedUserName.trim().toLowerCase() === "xyz" ? "" : storedUserName.trim();
 
 
 // Optional: Show welcome message

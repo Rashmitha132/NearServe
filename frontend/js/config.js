@@ -1,4 +1,14 @@
 (function () {
+  function isPlaceholderName(value) {
+    return String(value || "").trim().toLowerCase() === "xyz";
+  }
+
+  ["userName", "name", "customerName"].forEach((key) => {
+    if (isPlaceholderName(localStorage.getItem(key))) {
+      localStorage.removeItem(key);
+    }
+  });
+
   const apiOrigin = "https://nearserve-api.onrender.com";
   const cleanOrigin = apiOrigin.replace(/\/+$/, "");
 

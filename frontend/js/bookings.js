@@ -84,7 +84,8 @@ const welcomeEl          = document.getElementById("welcomeUser");
 
 const phone  = (localStorage.getItem("phone") || "").trim();
 const role   = (localStorage.getItem("role")  || "").trim().toLowerCase();
-const nameLS = localStorage.getItem("name") || "";
+const storedName = localStorage.getItem("name") || localStorage.getItem("userName") || "";
+const nameLS = storedName.trim().toLowerCase() === "xyz" ? "" : storedName.trim();
 
 if (!phone || role !== "customer") {
   showToast("Please login as customer");
