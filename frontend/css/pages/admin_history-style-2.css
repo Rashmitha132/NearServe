@@ -1,4 +1,4 @@
     body {
-      background: #ffffff !important;
+      background: var(--bg) !important;
       position: relative;
     }  

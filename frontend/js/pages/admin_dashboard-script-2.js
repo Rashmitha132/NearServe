@@ -29,17 +29,33 @@ async function api(url, options = {}) {
   return data;
 }
 
-function toUploadsUrl(storedPath) {
-  if (!storedPath) return null;
-  return window.nearServeUploadsUrl(storedPath.replace(/\\/g, "/"));
-}
-
 function guessVideoType(url) {
   const u = (url || "").toLowerCase();
   if (u.endsWith(".mp4"))  return "video/mp4";
   if (u.endsWith(".webm")) return "video/webm";
   if (u.endsWith(".ogg"))  return "video/ogg";
   return "";
+}
+
+async function openAdminProof(phone) {
+  const res = await fetch(`${API_BASE}/admin/workers/${encodeURIComponent(phone)}/proof`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Could not open proof file");
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank", "noopener");
+  window.setTimeout(() => URL.revokeObjectURL(url), 60 * 1000);
+}
+
+function toUploadsUrl(storedPath) {
+  if (!storedPath) return null;
+  return window.nearServeUploadsUrl(storedPath.replace(/\\/g, "/"));
 }
 
 function statusClass(s) {
@@ -69,7 +85,9 @@ async function loadWorkers() {
   workers.forEach(w => {
     const li = document.createElement("li");
     li.className = "item";
-    const proofUrl = toUploadsUrl(w.proofFile);
+    const hasProof = Boolean(w.proofFile);
+    const proofApproved = (w.proofReview?.status || "").toLowerCase() === "approved";
+    const canReview = (w.status || "").toLowerCase() === "proof_submitted" && !proofApproved;
     const sc = statusClass(w.status);
 
     li.innerHTML = `
@@ -81,20 +99,33 @@ async function loadWorkers() {
           <span class="meta-chip"><i class="fa-solid fa-phone"></i> ${w.phone}</span>
           <span class="status-chip ${sc}">${w.status}</span>
         </div>
-        ${proofUrl
-          ? `<a class="item-proof-link" href="${proofUrl}" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`
+        ${hasProof
+          ? `<button class="item-proof-link proof-view-btn" type="button" data-phone="${w.phone}"><i class="fa-solid fa-file-pdf"></i> View Aadhaar PDF</button>`
           : `<div class="no-proof"><i class="fa-solid fa-triangle-exclamation"></i> No proof uploaded</div>`}
+        ${proofApproved ? `<div class="status-chip approved"><i class="fa-solid fa-lock"></i> Approved proof stored privately</div>` : ""}
       </div>
       <div class="item-actions">
-        <button class="btn btn-primary" ${proofUrl ? "" : "disabled"} data-phone="${w.phone}" data-action="approveProof">
-          <i class="fa-solid fa-check"></i> Approve
-        </button>
-        <button class="btn btn-danger" data-phone="${w.phone}" data-action="rejectProof">
-          <i class="fa-solid fa-xmark"></i> Reject
-        </button>
+        ${canReview ? `
+          <button class="btn btn-primary" ${hasProof ? "" : "disabled"} data-phone="${w.phone}" data-action="approveProof">
+            <i class="fa-solid fa-check"></i> Approve
+          </button>
+          <button class="btn btn-danger" data-phone="${w.phone}" data-action="rejectProof">
+            <i class="fa-solid fa-xmark"></i> Reject
+          </button>
+        ` : `<span class="status-chip approved"><i class="fa-solid fa-check"></i> Approved</span>`}
       </div>`;
 
     workerList.appendChild(li);
+  });
+
+  workerList.querySelectorAll(".proof-view-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      try {
+        await openAdminProof(btn.dataset.phone);
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    });
   });
 
   workerList.querySelectorAll("button[data-action]").forEach(btn => {

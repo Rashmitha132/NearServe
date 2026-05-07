@@ -1,7 +1,35 @@
+const fs = require("fs");
+const path = require("path");
 const User = require("../models/User");
 const Job = require("../models/Job");
 const VerificationLog = require("../models/VerificationLog");
 const asyncHandler = require("../utils/asyncHandler");
+
+const backendRoot = path.join(__dirname, "..");
+const privateProofRoot = path.join(backendRoot, "admin_uploads", "aadhaar");
+const legacyUploadsRoot = path.join(backendRoot, "uploads");
+
+function resolveProofPath(storedPath) {
+  if (!storedPath) return "";
+
+  const normalized = String(storedPath).replace(/\\/g, "/");
+  const candidates = [];
+
+  if (path.isAbsolute(storedPath)) {
+    candidates.push(path.resolve(storedPath));
+  }
+
+  candidates.push(path.resolve(backendRoot, normalized));
+  candidates.push(path.resolve(privateProofRoot, path.basename(normalized)));
+  candidates.push(path.resolve(legacyUploadsRoot, path.basename(normalized)));
+
+  return candidates.find((candidate) => {
+    const allowed =
+      candidate.startsWith(privateProofRoot + path.sep) ||
+      candidate.startsWith(legacyUploadsRoot + path.sep);
+    return allowed && fs.existsSync(candidate);
+  }) || "";
+}
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
@@ -26,10 +54,39 @@ const adminLogin = asyncHandler(async (req, res) => {
 const getPendingWorkers = asyncHandler(async (req, res) => {
   const workers = await User.find({
     role: { $ne: "customer" },
-    status: "proof_submitted",
+    proofFile: { $nin: ["", null] },
+    $or: [
+      { status: "proof_submitted" },
+      { "proofReview.status": "approved" },
+    ],
   }).sort({ createdAt: -1 });
 
   res.json({ workers });
+});
+
+const viewWorkerProof = asyncHandler(async (req, res) => {
+  const phone = (req.params.phone || "").trim();
+  const user = await User.findOne({
+    phone,
+    role: { $ne: "customer" },
+    proofFile: { $nin: ["", null] },
+  }).select("name phone role proofFile");
+
+  if (!user) {
+    return res.status(404).json({ error: "Proof not found" });
+  }
+
+  const proofPath = resolveProofPath(user.proofFile);
+  if (!proofPath) {
+    return res.status(404).json({ error: "Proof file is missing on server" });
+  }
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `inline; filename="aadhaar_${user.phone}.pdf"`
+  );
+  return res.sendFile(proofPath);
 });
 
 const verifyProof = asyncHandler(async (req, res) => {
@@ -234,6 +291,7 @@ const getHistory = asyncHandler(async (req, res) => {
 module.exports = {
   adminLogin,
   getPendingWorkers,
+  viewWorkerProof,
   verifyProof,
   getSubmittedJobs,
   verifyJob,

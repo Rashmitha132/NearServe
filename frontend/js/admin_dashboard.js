@@ -54,6 +54,22 @@ async function api(url, options = {}) {
   return data;
 }
 
+async function openAdminProof(phone) {
+  const res = await fetch(`${API_BASE}/admin/workers/${encodeURIComponent(phone)}/proof`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Could not open proof file");
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank", "noopener");
+  window.setTimeout(() => URL.revokeObjectURL(url), 60 * 1000);
+}
+
 function toUploadsUrl(storedPath) {
   if (!storedPath) return null;
   return window.nearServeUploadsUrl(storedPath.replace(/\\/g, "/"));
@@ -95,7 +111,9 @@ async function loadWorkers() {
     const li = document.createElement("li");
     li.className = "item";
 
-    const proofUrl = toUploadsUrl(w.proofFile);
+    const hasProof = Boolean(w.proofFile);
+    const proofApproved = (w.proofReview?.status || "").toLowerCase() === "approved";
+    const canReview = (w.status || "").toLowerCase() === "proof_submitted" && !proofApproved;
 
     li.innerHTML = `
       <div style="flex:1;">
@@ -103,23 +121,36 @@ async function loadWorkers() {
         <small>Phone: ${w.phone}</small><br>
         <small>Status: ${w.status}</small><br>
         ${
-          proofUrl
-            ? `<small>Proof: <a href="${proofUrl}" target="_blank">View PDF</a></small>`
+          hasProof
+            ? `<small>Proof: <button class="item-proof-link proof-view-btn" type="button" data-phone="${w.phone}">View Aadhaar PDF</button></small>`
             : `<small style="color:crimson;">No proof uploaded</small>`
         }
+        ${proofApproved ? `<br><small>Approved proof stored privately</small>` : ""}
       </div>
 
       <div class="item-actions">
-        <button class="btn btn-primary" ${proofUrl ? "" : "disabled"} data-phone="${w.phone}" data-action="approveProof">
-          <i class="fa fa-check"></i> Approve
-        </button>
-        <button class="btn btn-danger" data-phone="${w.phone}" data-action="rejectProof">
-          <i class="fa fa-xmark"></i> Reject
-        </button>
+        ${canReview ? `
+          <button class="btn btn-primary" ${hasProof ? "" : "disabled"} data-phone="${w.phone}" data-action="approveProof">
+            <i class="fa fa-check"></i> Approve
+          </button>
+          <button class="btn btn-danger" data-phone="${w.phone}" data-action="rejectProof">
+            <i class="fa fa-xmark"></i> Reject
+          </button>
+        ` : `<span>Approved</span>`}
       </div>
     `;
 
     workerList.appendChild(li);
+  });
+
+  workerList.querySelectorAll(".proof-view-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      try {
+        await openAdminProof(btn.dataset.phone);
+      } catch (e) {
+        showToast(e.message);
+      }
+    });
   });
 
   workerList.querySelectorAll("button[data-action]").forEach((btn) => {

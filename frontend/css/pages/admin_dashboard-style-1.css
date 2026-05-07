@@ -28,7 +28,7 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background: #ffffff;
+      background: var(--bg);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
@@ -316,6 +316,8 @@
       display: inline-flex; align-items: center; gap: 5px;
       margin-top: 8px; font-size: 12.5px;
       color: var(--accent); text-decoration: none; font-weight: 500;
+      border: 0; background: transparent; padding: 0; cursor: pointer;
+      font-family: inherit;
     }
     .item-proof-link:hover { text-decoration: underline; }
     .no-proof { color: var(--red); font-size: 12px; margin-top: 6px; }

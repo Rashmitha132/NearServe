@@ -4,13 +4,16 @@ const path = require("path");
 const MAX_PROOF_SIZE = 2 * 1024 * 1024;
 const MAX_VIDEO_SIZE = 20 * 1024 * 1024;
 const uploadsDir = path.join(__dirname, "..", "uploads");
+const adminUploadsDir = path.join(__dirname, "..", "admin_uploads");
+const proofDir = path.join(adminUploadsDir, "aadhaar");
 const videosDir = path.join(uploadsDir, "videos");
 
 const proofStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
+  destination: (req, file, cb) => cb(null, proofDir),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, req.params.phone + "_" + Date.now() + ext);
+    const safePhone = String(req.params.phone || "worker").replace(/[^\dA-Za-z_-]/g, "");
+    cb(null, `aadhaar_${safePhone}_${Date.now()}${ext}`);
   },
 });
 

@@ -5,6 +5,7 @@ const requireAdmin = require("../middlewares/adminMiddleware");
 
 router.post("/login", adminController.adminLogin);
 router.get("/workers", requireAdmin, adminController.getPendingWorkers);
+router.get("/workers/:phone/proof", requireAdmin, adminController.viewWorkerProof);
 router.post("/verify-proof/:phone", requireAdmin, adminController.verifyProof);
 router.get("/submitted-jobs", requireAdmin, adminController.getSubmittedJobs);
 router.post("/verify-job/:jobId", requireAdmin, adminController.verifyJob);

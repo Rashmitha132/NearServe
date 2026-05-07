@@ -11,8 +11,14 @@
   body {
     min-height: 100vh;
     font-family: "Nunito", sans-serif;
-    background: #ffffff;
+    background:
+      radial-gradient(circle at 13% 15%, rgba(20, 92, 63, 0.10) 0 58px, transparent 60px),
+      radial-gradient(circle at 90% 23%, rgba(49, 147, 90, 0.10) 0 48px, transparent 50px),
+      radial-gradient(circle at 8% 66%, rgba(15, 61, 46, 0.08) 0 70px, transparent 72px),
+      radial-gradient(circle at 90% 68%, rgba(20, 92, 63, 0.09) 0 62px, transparent 64px),
+      #ffffff;
     color: #09251b;
+    position: relative;
   }
 
   .auth-page {
@@ -28,6 +34,35 @@
     animation: nsPageFadeIn var(--ns-motion-slow) both;
   }
 
+  .auth-page::before,
+  .auth-page::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .auth-page::before {
+    width: 128px;
+    height: 128px;
+    left: 7%;
+    top: 11%;
+    border: 2px solid rgba(20, 92, 63, 0.16);
+    background: rgba(234, 247, 241, 0.36);
+    box-shadow: 0 18px 46px rgba(15, 61, 46, 0.08);
+  }
+
+  .auth-page::after {
+    width: 112px;
+    height: 112px;
+    right: 8%;
+    bottom: 20%;
+    border: 2px solid rgba(49, 147, 90, 0.14);
+    background: rgba(234, 247, 241, 0.42);
+    box-shadow: 0 18px 46px rgba(15, 61, 46, 0.08);
+  }
+
   .fade-in { animation: nsPageFadeIn var(--ns-motion-slow) both; }
   .slide-in-left { animation: nsSidebarSlideIn var(--ns-motion-medium) both; }
   .hover-lift { transition: transform var(--ns-motion-fast), box-shadow var(--ns-motion-fast); }
@@ -39,6 +74,7 @@
 
   .auth-card {
     position: relative;
+    z-index: 1;
     width: min(700px, 100%);
     height: 500px;
     border-radius: 20px;
@@ -631,14 +667,24 @@
     body {
       width: 100%;
       overflow-x: hidden;
-      background: #f3f7f1;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(20, 92, 63, 0.11) 0 44px, transparent 46px),
+        radial-gradient(circle at 90% 16%, rgba(49, 147, 90, 0.10) 0 38px, transparent 40px),
+        radial-gradient(circle at 8% 82%, rgba(15, 61, 46, 0.08) 0 56px, transparent 58px),
+        #f3f7f1;
     }
 
     .auth-page {
       min-height: 100vh;
       padding: 0;
       display: block;
-      background: #ffffff;
+      background: transparent;
+    }
+
+    .auth-page::before,
+    .auth-page::after {
+      opacity: 0.65;
+      transform: scale(0.72);
     }
 
     .auth-card {

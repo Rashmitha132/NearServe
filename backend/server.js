@@ -30,6 +30,7 @@ require("./models/chat");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const uploadsDir = path.join(__dirname, "uploads");
+const adminUploadsDir = path.join(__dirname, "admin_uploads");
 const defaultAllowedOrigins = [
   "http://localhost:5000",
   "http://localhost:8080",
@@ -78,8 +79,9 @@ app.use(express.urlencoded({ extended: true }));
 
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
 if (!fs.existsSync(path.join(uploadsDir, "videos"))) fs.mkdirSync(path.join(uploadsDir, "videos"), { recursive: true });
+if (!fs.existsSync(path.join(adminUploadsDir, "aadhaar"))) fs.mkdirSync(path.join(adminUploadsDir, "aadhaar"), { recursive: true });
 
-app.use("/uploads", express.static(uploadsDir));
+app.use("/uploads/videos", express.static(path.join(uploadsDir, "videos")));
 
 app.get("/", (req, res) => {
   res.json({
