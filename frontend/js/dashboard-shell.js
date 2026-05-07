@@ -3,7 +3,8 @@
     return (localStorage.getItem(key) || fallback || "").trim();
   }
   function getName() {
-    return text("userName") || text("name") || text("customerName") || "xyz";
+    const authUser = window.nearServeCurrentUser || {};
+    return (authUser.name || "").trim() || text("userName") || text("name") || text("customerName") || "Guest";
   }
   function getPhone() {
     return text("userPhone") || text("phone") || "";
@@ -56,6 +57,8 @@
   document.addEventListener("DOMContentLoaded", function () {
     syncIdentity();
     syncProfileLinks();
+    window.nearServeAuthReady?.then(syncIdentity);
+    window.addEventListener("nearserve:auth-ready", syncIdentity);
     document.getElementById("nsSidebarOpen")?.addEventListener("click", openMenu);
     document.getElementById("nsSidebarClose")?.addEventListener("click", closeMenu);
     document.getElementById("nsSidebarBackdrop")?.addEventListener("click", closeMenu);
