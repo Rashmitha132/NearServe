@@ -743,12 +743,13 @@ body.ns-shell-page .right-panel {
   body.ns-shell-page {
     padding: 0 0 calc(96px + env(safe-area-inset-bottom)) !important;
     background: var(--booking-bg) !important;
+    font-size: 17px;
   }
 
   body.ns-shell-page .right-panel {
     min-height: 0 !important;
     margin-left: 0 !important;
-    padding: 16px 14px 0 !important;
+    padding: 18px 16px 0 !important;
     background: var(--booking-bg) !important;
   }
 
@@ -758,7 +759,7 @@ body.ns-shell-page .right-panel {
 
   .ns-mobile-head {
     margin: 0 !important;
-    padding: 14px 16px 16px !important;
+    padding: 16px 18px 18px !important;
     border-radius: 0 0 24px 24px;
     background:
       linear-gradient(135deg, #07573A 0%, var(--booking-green) 58%, #119464 100%) !important;
@@ -770,8 +771,8 @@ body.ns-shell-page .right-panel {
   }
 
   .ns-mobile-menu-btn {
-    width: 44px !important;
-    height: 44px !important;
+    width: 48px !important;
+    height: 48px !important;
     border-radius: 14px !important;
     background: rgba(255, 255, 255, 0.16) !important;
     transition: transform var(--booking-motion), background var(--booking-motion);
@@ -783,31 +784,31 @@ body.ns-shell-page .right-panel {
   }
 
   .ns-mobile-brand .nearserve-logo-img {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
   }
 
   .ns-mobile-brand .app-logo {
-    font-size: 1rem !important;
+    font-size: 1.08rem !important;
     line-height: 1.1;
   }
 
   .ns-mobile-brand .app-tagline {
-    max-width: 190px;
+    max-width: 206px;
     color: rgba(255, 255, 255, 0.78);
-    font-size: 0.72rem !important;
+    font-size: 0.76rem !important;
     font-weight: 500;
   }
 
   .ns-mobile-book {
     min-width: 72px;
-    height: 40px !important;
+    height: 44px !important;
     border-radius: 999px !important;
     background: rgba(7, 87, 58, 0.94) !important;
-    font-size: 0.82rem !important;
+    font-size: 0.9rem !important;
     box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
     transition: transform var(--booking-motion), background var(--booking-motion);
   }
@@ -821,29 +822,29 @@ body.ns-shell-page .right-panel {
   }
 
   .ns-mobile-avatar {
-    width: 46px !important;
-    height: 46px !important;
+    width: 50px !important;
+    height: 50px !important;
     background: rgba(255, 255, 255, 0.16) !important;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    font-size: 0.88rem !important;
+    font-size: 0.96rem !important;
   }
 
   .ns-mobile-kicker {
-    font-size: 0.76rem !important;
+    font-size: 0.82rem !important;
     color: rgba(255, 255, 255, 0.82) !important;
   }
 
   .ns-mobile-name {
     max-width: calc(100vw - 118px);
     color: #fff;
-    font-size: 1.14rem !important;
+    font-size: 1.24rem !important;
     line-height: 1.16 !important;
     overflow-wrap: anywhere;
   }
 
   .ns-mobile-role {
     color: rgba(255, 255, 255, 0.72) !important;
-    font-size: 0.82rem !important;
+    font-size: 0.9rem !important;
   }
 
   .ns-mobile-trust {
@@ -855,14 +856,14 @@ body.ns-shell-page .right-panel {
   }
 
   .ns-mobile-trust span {
-    min-height: 34px;
+    min-height: 38px;
     display: inline-flex;
     align-items: center;
-    padding: 0 12px !important;
+    padding: 0 14px !important;
     border-radius: 999px !important;
     color: #fff !important;
     background: rgba(255, 255, 255, 0.14) !important;
-    font-size: 0.76rem !important;
+    font-size: 0.84rem !important;
     font-weight: 750 !important;
     white-space: nowrap;
   }
@@ -890,11 +891,11 @@ body.ns-shell-page .right-panel {
   .btn-hist,
   .btn-out {
     width: 100%;
-    min-height: 48px;
-    padding: 0 10px;
+    min-height: 52px;
+    padding: 0 12px;
     border-radius: var(--booking-radius);
     background: #fff !important;
-    font-size: 0.82rem;
+    font-size: 0.9rem;
     box-shadow: var(--booking-shadow-sm);
   }
 
@@ -904,28 +905,28 @@ body.ns-shell-page .right-panel {
 
   .fhead {
     margin-bottom: 18px;
-    padding: 18px;
+    padding: 20px;
     border-radius: var(--booking-radius-lg);
   }
 
   .fhead::before {
     margin-bottom: 10px;
-    font-size: 0.68rem;
+    font-size: 0.74rem;
     line-height: 1.35;
   }
 
   .fhead h1 {
-    font-size: 1.45rem;
+    font-size: 1.58rem;
   }
 
   .fhead p {
-    font-size: 0.88rem;
+    font-size: 0.96rem;
   }
 
   .slbl {
-    margin-top: 22px;
-    margin-bottom: 10px;
-    font-size: 0.76rem;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-size: 0.84rem;
   }
 
   .service-grid {
@@ -935,20 +936,20 @@ body.ns-shell-page .right-panel {
   }
 
   .service-card {
-    min-height: 58px;
+    min-height: 66px;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    padding: 12px;
+    padding: 14px;
     border-radius: var(--booking-radius);
-    font-size: 0.95rem;
+    font-size: 1.05rem;
   }
 
   .service-card::before {
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 13px;
-    flex: 0 0 36px;
+    flex: 0 0 42px;
   }
 
   .service-card.active {
@@ -958,7 +959,7 @@ body.ns-shell-page .right-panel {
   .wrow {
     grid-template-columns: 1fr;
     gap: 12px;
-    padding: 14px;
+    padding: 16px;
   }
 
   .wdisp {
@@ -966,24 +967,26 @@ body.ns-shell-page .right-panel {
   }
 
   .wdisp::before {
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
     border-radius: 15px;
-    flex-basis: 44px;
+    flex-basis: 50px;
   }
 
   .wname {
-    font-size: 0.92rem;
+    font-size: 1rem;
   }
 
   .btn-pick {
     width: 100%;
-    min-height: 48px;
+    min-height: 54px;
+    font-size: 0.96rem;
   }
 
   .btn-clr {
-    min-height: 36px;
-    padding: 0 12px;
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 0.88rem;
   }
 
   #bookingForm {
@@ -1001,24 +1004,34 @@ body.ns-shell-page .right-panel {
 
   .ig input,
   .ig select {
-    min-height: 62px;
+    min-height: 68px;
     border-radius: var(--booking-radius);
-    font-size: 0.94rem;
+    font-size: 1.02rem;
+  }
+
+  .ig::after {
+    font-size: 0.74rem;
+  }
+
+  .ig .ico {
+    width: 42px;
+    height: 42px;
   }
 
   .btn-sub {
     position: sticky;
     bottom: calc(78px + env(safe-area-inset-bottom));
     z-index: 20;
-    min-height: 56px;
+    min-height: 62px;
     margin-top: 8px;
+    font-size: 1.06rem;
   }
 
   .ns-bottom-nav {
     left: 12px !important;
     right: 12px !important;
     bottom: 10px !important;
-    height: 68px !important;
+    height: 74px !important;
     padding: 8px !important;
     border: 1px solid rgba(15, 123, 83, 0.10) !important;
     border-radius: 24px !important;
@@ -1030,13 +1043,13 @@ body.ns-shell-page .right-panel {
   .ns-bottom-nav a {
     border-radius: 18px !important;
     color: #8B95A1 !important;
-    font-size: 0.68rem !important;
+    font-size: 0.76rem !important;
     font-weight: 800 !important;
     transition: transform var(--booking-motion), background var(--booking-motion), color var(--booking-motion) !important;
   }
 
   .ns-bottom-nav i {
-    font-size: 1.12rem !important;
+    font-size: 1.24rem !important;
     transition: transform var(--booking-motion) !important;
   }
 
@@ -1076,7 +1089,7 @@ body.ns-shell-page .right-panel {
 
 @media (max-width: 380px) {
   .ns-mobile-brand .app-tagline {
-    max-width: 156px;
+    max-width: 168px;
   }
 
   .fhead::before {
@@ -1086,7 +1099,7 @@ body.ns-shell-page .right-panel {
   .nav-link,
   .btn-hist,
   .btn-out {
-    font-size: 0.76rem;
+    font-size: 0.82rem;
   }
 }
 
