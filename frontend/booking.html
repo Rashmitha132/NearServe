@@ -69,7 +69,145 @@
     box-shadow: none !important;
   }
 </style>
-<link rel="stylesheet" href="./css/pages/booking-style-1.css">
+<link rel="stylesheet" href="./css/pages/booking-style-1.css?v=20260507d">
+<style id="nearserve-booking-popup-theme">
+  #bookingFeePopup.booking-fee-popup {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483000 !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+    background: rgba(10, 18, 14, 0.62) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+  }
+
+  #bookingFeePopup.booking-fee-popup.show {
+    display: flex !important;
+  }
+
+  #bookingFeePopup .booking-fee-card {
+    position: relative !important;
+    width: min(430px, calc(100vw - 32px)) !important;
+    overflow: hidden !important;
+    padding: 34px 26px 24px !important;
+    border: 1px solid rgba(15, 123, 83, 0.16) !important;
+    border-radius: 30px !important;
+    background:
+      radial-gradient(circle at 18% 0%, rgba(15, 123, 83, 0.18), transparent 34%),
+      linear-gradient(145deg, #ffffff 0%, #f5fbf8 100%) !important;
+    box-shadow: 0 34px 80px rgba(3, 20, 13, 0.34) !important;
+    text-align: center !important;
+    font-family: "Inter", "Nunito", system-ui, sans-serif !important;
+    animation: nsBookingPopupIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  }
+
+  #bookingFeePopup .booking-fee-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 12px !important;
+    border: 1px solid rgba(15, 123, 83, 0.08) !important;
+    border-radius: 24px !important;
+    pointer-events: none !important;
+  }
+
+  #bookingFeePopup .booking-fee-icon {
+    width: 76px !important;
+    height: 76px !important;
+    display: grid !important;
+    place-items: center !important;
+    margin: 0 auto 16px !important;
+    border-radius: 24px !important;
+    color: #0f7b53 !important;
+    background: #eaf7f1 !important;
+    box-shadow: 0 16px 34px rgba(15, 123, 83, 0.18) !important;
+    font-size: 1.7rem !important;
+  }
+
+  #bookingFeePopup .booking-fee-kicker {
+    color: #0f7b53 !important;
+    font-size: 0.78rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  #bookingFeePopup h2 {
+    margin: 8px 0 10px !important;
+    color: #1a1a1a !important;
+    font-size: 1.62rem !important;
+    line-height: 1.15 !important;
+    font-weight: 900 !important;
+    letter-spacing: 0 !important;
+  }
+
+  #bookingFeePopup p {
+    max-width: 350px !important;
+    margin: 0 auto !important;
+    color: #6b7280 !important;
+    font-size: 0.98rem !important;
+    line-height: 1.62 !important;
+    font-weight: 500 !important;
+  }
+
+  #bookingFeePopup strong {
+    color: #0f7b53 !important;
+    font-weight: 900 !important;
+  }
+
+  #bookingFeePopup .booking-fee-action {
+    width: 100% !important;
+    min-height: 54px !important;
+    margin-top: 24px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0f7b53, #0b6544) !important;
+    box-shadow: 0 16px 34px rgba(15, 123, 83, 0.28) !important;
+    font-size: 1rem !important;
+    font-weight: 900 !important;
+    cursor: pointer !important;
+    transition: transform 180ms ease, box-shadow 180ms ease !important;
+  }
+
+  #bookingFeePopup .booking-fee-action:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 20px 42px rgba(15, 123, 83, 0.34) !important;
+  }
+
+  #bookingFeePopup .booking-fee-action:active {
+    transform: scale(0.97) !important;
+  }
+
+  body.booking-fee-locked .right-panel,
+  body.booking-fee-locked .ns-sidebar,
+  body.booking-fee-locked .ns-mobile-head,
+  body.booking-fee-locked .ns-bottom-nav {
+    filter: blur(4px) !important;
+    pointer-events: none !important;
+    user-select: none !important;
+  }
+
+  @keyframes nsBookingPopupIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @media (max-width: 640px) {
+    #bookingFeePopup.booking-fee-popup {
+      align-items: flex-end !important;
+      padding: 16px 14px calc(90px + env(safe-area-inset-bottom)) !important;
+    }
+
+    #bookingFeePopup .booking-fee-card {
+      width: 100% !important;
+      padding: 30px 20px 20px !important;
+      border-radius: 28px !important;
+    }
+  }
+</style>
 </head>
 <body class="ns-shell-page page-bg">
 <aside class="ns-sidebar" id="nsSidebar">

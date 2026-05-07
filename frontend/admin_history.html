@@ -72,6 +72,32 @@
   }
 </style>
 <link rel="stylesheet" href="./css/pages/admin-dark-fix.css?v=20260507c">
+<style id="nearserve-admin-force-black">
+  html,
+  body.admin-dark-page {
+    min-height: 100vh !important;
+    background: #000000 !important;
+    background-color: #000000 !important;
+    background-image: none !important;
+  }
+
+  body.admin-dark-page::before {
+    content: "" !important;
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #000000 !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.admin-dark-page .shell {
+    position: relative !important;
+    z-index: 2 !important;
+  }
+</style>
 </head>
 <body class="admin-dark-page">
 
