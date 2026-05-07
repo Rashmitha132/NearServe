@@ -73,6 +73,37 @@ function syncBookingShellIdentity(name, avatarBase64) {
   window.nearServeSyncShellIdentity?.();
 }
 
+function setupBookingFeePopup(phone) {
+  const popup = document.getElementById("bookingFeePopup");
+  const closeBtn = document.getElementById("bookingFeeClose");
+  const actionBtn = document.getElementById("bookingFeeAction");
+  if (!popup || !closeBtn || !actionBtn) return;
+
+  const sessionKey = `nearServeFeePopupShown_${phone || "customer"}`;
+
+  function closePopup() {
+    popup.classList.remove("show");
+    popup.setAttribute("aria-hidden", "true");
+    sessionStorage.setItem(sessionKey, "1");
+  }
+
+  closeBtn.addEventListener("click", closePopup);
+  actionBtn.addEventListener("click", closePopup);
+  popup.addEventListener("click", (event) => {
+    if (event.target === popup) closePopup();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && popup.classList.contains("show")) closePopup();
+  });
+
+  if (!sessionStorage.getItem(sessionKey)) {
+    window.setTimeout(() => {
+      popup.classList.add("show");
+      popup.setAttribute("aria-hidden", "false");
+    }, 450);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", async function () {
   if (window.nearServeAuthReady) {
     await window.nearServeAuthReady;
@@ -93,6 +124,8 @@ window.addEventListener("DOMContentLoaded", async function () {
     window.location.href = "login.html";
     return;
   }
+
+  setupBookingFeePopup(pPhone);
 
   const userAvatar = document.getElementById("userAvatar");
   const avatarContainer = document.querySelector(".avatar-container");

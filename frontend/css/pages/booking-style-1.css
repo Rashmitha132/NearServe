@@ -605,6 +605,119 @@ body.ns-shell-page .right-panel {
   background: #B42318;
 }
 
+.booking-fee-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(17, 24, 39, 0.50);
+  backdrop-filter: blur(10px);
+}
+
+.booking-fee-popup.show {
+  display: flex;
+}
+
+.booking-fee-card {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 30px 24px 24px;
+  border: 1px solid rgba(15, 123, 83, 0.12);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(234, 247, 241, 0.82), #fff 52%),
+    #fff;
+  box-shadow: 0 30px 70px rgba(17, 24, 39, 0.24);
+  text-align: center;
+  animation: bookingModalIn 320ms cubic-bezier(.2, .9, .2, 1) both;
+}
+
+.booking-fee-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--booking-line);
+  border-radius: 50%;
+  color: var(--booking-muted);
+  background: #fff;
+  transition: transform var(--booking-motion), color var(--booking-motion), border-color var(--booking-motion);
+}
+
+.booking-fee-close:hover {
+  color: var(--booking-green-dark);
+  border-color: rgba(15, 123, 83, 0.28);
+}
+
+.booking-fee-close:active,
+.booking-fee-action:active {
+  transform: scale(0.96);
+}
+
+.booking-fee-icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  border-radius: 24px;
+  color: var(--booking-green);
+  background: var(--booking-green-soft);
+  box-shadow: 0 14px 28px rgba(15, 123, 83, 0.15);
+  font-size: 1.6rem;
+}
+
+.booking-fee-kicker {
+  color: var(--booking-green-dark);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.booking-fee-card h2 {
+  margin: 8px 0 8px;
+  color: var(--booking-ink);
+  font-size: 1.55rem;
+  font-weight: 900;
+  line-height: 1.16;
+}
+
+.booking-fee-card p {
+  margin: 0;
+  color: var(--booking-muted);
+  font-size: 0.96rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.booking-fee-card strong {
+  color: var(--booking-green-dark);
+  font-weight: 900;
+}
+
+.booking-fee-action {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--booking-green);
+  box-shadow: var(--booking-shadow-cta);
+  font-weight: 850;
+  transition: transform var(--booking-motion), background var(--booking-motion), box-shadow var(--booking-motion);
+}
+
+.booking-fee-action:hover {
+  background: var(--booking-green-dark);
+}
+
 #bookingSuccessOverlay {
   position: fixed;
   inset: 0;
@@ -1071,6 +1184,29 @@ body.ns-shell-page .right-panel {
     bottom: calc(92px + env(safe-area-inset-bottom));
     left: 14px;
     text-align: center;
+  }
+
+  .booking-fee-popup {
+    align-items: flex-end;
+    padding: 16px 14px calc(96px + env(safe-area-inset-bottom));
+  }
+
+  .booking-fee-card {
+    padding: 30px 20px 20px;
+    border-radius: 26px;
+  }
+
+  .booking-fee-card h2 {
+    font-size: 1.45rem;
+  }
+
+  .booking-fee-card p {
+    font-size: 0.98rem;
+  }
+
+  .booking-fee-action {
+    min-height: 54px;
+    font-size: 1rem;
   }
 
   .bconf-card {
