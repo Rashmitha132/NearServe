@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./css/pages/plumber_dashboard-style-1.css">
   <link rel="stylesheet" href="./css/logo.css">
   <script src="./js/toast.js"></script>
-<link rel="stylesheet" href="./css/pages/plumber_dashboard-style-2.css?v=20260508-desktop7">
+<link rel="stylesheet" href="./css/pages/plumber_dashboard-style-2.css?v=20260508-submit-all">
 <link rel="stylesheet" href="./css/pages/plumber_dashboard-inline-attrs.css">
   <link rel="stylesheet" href="./css/clean-background.css?v=20260507">
 <style id="nearserve-white-background-override">
@@ -179,7 +179,6 @@
         <input type="file" id="file1" accept="video/*" class="plumber_dashboard-inline-style-1">
         <div class="btn-row">
           <button class="btn-primary" id="btnChoose1" type="button" onclick="document.getElementById('file1').click()">Choose video</button>
-          <button class="btn-primary" id="btnUpload1" type="button" onclick="submitVideo(1)" disabled>Submit video 1</button>
         </div>
       </div>
 
@@ -201,7 +200,6 @@
         <input type="file" id="file2" accept="video/*" class="plumber_dashboard-inline-style-2">
         <div class="btn-row">
           <button class="btn-primary" id="btnChoose2" type="button" onclick="document.getElementById('file2').click()">Choose video</button>
-          <button class="btn-primary" id="btnUpload2" type="button" onclick="submitVideo(2)" disabled>Submit video 2</button>
         </div>
       </div>
 
@@ -223,9 +221,12 @@
         <input type="file" id="file3" accept="video/*" class="plumber_dashboard-inline-style-3">
         <div class="btn-row">
           <button class="btn-primary" id="btnChoose3" type="button" onclick="document.getElementById('file3').click()">Choose video</button>
-          <button class="btn-primary" id="btnUpload3" type="button" onclick="submitVideo(3)" disabled>Submit video 3</button>
         </div>
       </div>
+    </div>
+
+    <div class="submit-actions">
+      <button class="btn-primary btn-submit-all" id="submitAllBtn" type="button" disabled>Submit videos for review</button>
     </div>
 
     <div class="helper-card">
@@ -238,6 +239,6 @@
     </div>
   </div>
 
-<script src="./js/pages/plumber_dashboard-script-1.js?v=20260508-upload-lock"></script>
+<script src="./js/pages/plumber_dashboard-script-1.js?v=20260508-submit-all"></script>
 </body>
 </html>
