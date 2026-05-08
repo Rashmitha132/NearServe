@@ -7,8 +7,6 @@ const asyncHandler = require("../utils/asyncHandler");
 const nodemailerTransporter = require("../services/emailService");
 const { getJwtSecret } = require("../middlewares/authMiddleware");
 
-const oauthStates = new Map();
-const pendingOAuthSignups = new Map();
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 const PENDING_OAUTH_SIGNUP_TTL_MS = 10 * 60 * 1000;
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
@@ -150,6 +148,49 @@ function signOAuthExchangeCode(user) {
   );
 }
 
+function signOAuthState(provider) {
+  return jwt.sign(
+    {
+      type: "oauth_state",
+      provider,
+      nonce: crypto.randomBytes(12).toString("hex"),
+    },
+    getJwtSecret(),
+    { expiresIn: Math.floor(OAUTH_STATE_TTL_MS / 1000) }
+  );
+}
+
+function verifyOAuthState(state) {
+  try {
+    const payload = jwt.verify(String(state || ""), getJwtSecret());
+    return payload && payload.type === "oauth_state" ? payload : null;
+  } catch {
+    return null;
+  }
+}
+
+function signOAuthSetupToken(record) {
+  return jwt.sign(
+    {
+      type: "oauth_setup",
+      provider: record.provider,
+      email: record.email,
+      name: record.name,
+    },
+    getJwtSecret(),
+    { expiresIn: Math.floor(PENDING_OAUTH_SIGNUP_TTL_MS / 1000) }
+  );
+}
+
+function verifyOAuthSetupToken(token) {
+  try {
+    const payload = jwt.verify(String(token || ""), getJwtSecret());
+    return payload && payload.type === "oauth_setup" ? payload : null;
+  } catch {
+    return null;
+  }
+}
+
 function serializeCookie(name, value, options = {}) {
   const parts = [`${name}=${encodeURIComponent(value)}`];
   if (options.maxAge !== undefined) parts.push(`Max-Age=${options.maxAge}`);
@@ -227,15 +268,6 @@ function createTemporaryPassword() {
   return crypto.randomBytes(24).toString("base64url") + "A!";
 }
 
-function cleanupPendingOAuthSignups() {
-  const now = Date.now();
-  for (const [token, record] of pendingOAuthSignups.entries()) {
-    if (!record || record.expiresAt <= now) {
-      pendingOAuthSignups.delete(token);
-    }
-  }
-}
-
 function createEmailVerificationToken() {
   const token = crypto.randomBytes(32).toString("hex");
   return {
@@ -295,8 +327,9 @@ async function sendVerificationEmail(user, token) {
 
 function sendOAuthSuccess(res, user) {
   setAuthCookies(res, user);
-  const redirectUrl = new URL(getUserRedirect(user));
+  const redirectUrl = new URL(`${getFrontendUrl()}/login.html`);
   redirectUrl.searchParams.set("oauth_code", signOAuthExchangeCode(user));
+  redirectUrl.hash = "login";
   return res.redirect(redirectUrl.toString());
 }
 
@@ -641,11 +674,7 @@ const startOAuth = asyncHandler(async (req, res) => {
     return redirectGoogleLoginError(res);
   }
 
-  const state = crypto.randomBytes(24).toString("hex");
-  oauthStates.set(state, {
-    provider,
-    expiresAt: Date.now() + OAUTH_STATE_TTL_MS,
-  });
+  const state = signOAuthState(provider);
 
   const params = new URLSearchParams({
     client_id: config.clientId,
@@ -671,10 +700,9 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
     return redirectGoogleLoginError(res);
   }
 
-  const stateRecord = oauthStates.get(state);
-  oauthStates.delete(state);
+  const stateRecord = verifyOAuthState(state);
 
-  if (!config || !stateRecord || stateRecord.provider !== provider || Date.now() > stateRecord.expiresAt) {
+  if (!config || !stateRecord || stateRecord.provider !== provider) {
     return redirectGoogleLoginError(res);
   }
 
@@ -719,13 +747,10 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    cleanupPendingOAuthSignups();
-    const setupToken = crypto.randomBytes(32).toString("hex");
-    pendingOAuthSignups.set(setupToken, {
+    const setupToken = signOAuthSetupToken({
       provider,
       email,
       name: profile.name || profile.given_name || email.split("@")[0],
-      expiresAt: Date.now() + PENDING_OAUTH_SIGNUP_TTL_MS,
     });
 
     return res.redirect(`${getFrontendUrl()}/login.html?oauth_setup=${setupToken}#login`);
@@ -742,12 +767,10 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
 });
 
 const completeOAuthSignup = asyncHandler(async (req, res) => {
-  cleanupPendingOAuthSignups();
-
   const setupToken = (req.body.setupToken || "").trim();
   const phone = (req.body.phone || "").trim();
   const role = (req.body.role || "").trim().toLowerCase();
-  const pending = pendingOAuthSignups.get(setupToken);
+  const pending = verifyOAuthSetupToken(setupToken);
 
   if (!pending) {
     return res.status(400).json({
@@ -792,7 +815,6 @@ const completeOAuthSignup = asyncHandler(async (req, res) => {
     emailVerificationExpiresAt: null,
   });
 
-  pendingOAuthSignups.delete(setupToken);
   const csrfToken = setAuthCookies(res, user);
 
   res.status(201).json({
