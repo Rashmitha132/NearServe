@@ -12,6 +12,11 @@ const normalizeProofReview = (proofReview = {}) => {
   };
 };
 
+const publicVideoPath = (file) => {
+  if (!file?.filename) return "";
+  return `videos/${file.filename}`;
+};
+
 const getUserByPhone = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
 
@@ -147,7 +152,7 @@ const updateJob = asyncHandler(async (req, res) => {
     }
 
     job.status = "submitted";
-    job.videoProofPath = req.file.path;
+    job.videoProofPath = publicVideoPath(req.file);
     job.videoReview = {
       status: "none",
       reason: "",

@@ -55,7 +55,12 @@ async function openAdminProof(phone) {
 
 function toUploadsUrl(storedPath) {
   if (!storedPath) return null;
-  return window.nearServeUploadsUrl(storedPath.replace(/\\/g, "/"));
+  let cleanPath = String(storedPath).trim().replace(/\\/g, "/");
+  const uploadedVideo = cleanPath.match(/(?:^|\/)uploads\/videos\/(.+)$/i);
+  if (uploadedVideo) {
+    cleanPath = `videos/${uploadedVideo[1]}`;
+  }
+  return window.nearServeUploadsUrl(cleanPath);
 }
 
 function statusClass(s) {

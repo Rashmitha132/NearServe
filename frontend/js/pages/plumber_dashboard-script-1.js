@@ -2,6 +2,7 @@ const API_BASE = window.NEARSERVE_API_BASE;
 const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
 let submittedJobs = {};
+let activeUploadIndex = null;
 
 function getStoredPhone() {
   return (localStorage.getItem("userPhone") || localStorage.getItem("phone") || "").trim();
@@ -49,7 +50,23 @@ function resetPreview(i) {
 }
 
 function removeSelectedFile(i) {
+  if (activeUploadIndex === i) return;
   resetPreview(i);
+}
+
+function setUploadControlsLocked(locked, activeIndex = null) {
+  for (let i = 1; i <= 3; i++) {
+    const chooseBtn = document.getElementById(`btnChoose${i}`);
+    const uploadBtn = document.getElementById(`btnUpload${i}`);
+    const hasFile = Boolean(selectedFiles[i]);
+
+    chooseBtn.disabled = locked;
+    if (locked) {
+      uploadBtn.disabled = i !== activeIndex || !hasFile;
+    } else {
+      uploadBtn.disabled = !hasFile;
+    }
+  }
 }
 
 function setCardState(i, type, badgeText, reason = "") {
@@ -119,7 +136,7 @@ async function checkWorkerStatus() {
 
 async function loadDashboard() {
   try {
-    hideGlobal();
+    if (!activeUploadIndex) hideGlobal();
 
     if (!phone || role !== "plumber") {
       window.location.replace("login.html");
@@ -212,14 +229,22 @@ async function submitVideo(index) {
   try {
     hideGlobal();
 
+    if (activeUploadIndex && activeUploadIndex !== index) {
+      showGlobal(`Video ${activeUploadIndex} is still uploading. Please wait before submitting another video.`, "info");
+      return;
+    }
+
     const file = selectedFiles[index];
     if (!file) {
       showGlobal(`Choose video ${index} first.`, "error");
       return;
     }
 
+    activeUploadIndex = index;
     uploadBtn.disabled = true;
     uploadBtn.textContent = "Submitting...";
+    setUploadControlsLocked(true, index);
+    showGlobal(`Uploading Video ${index}. Please keep this page open.`, "info");
 
     const createRes = await fetch(`${API_BASE}/workers/probation-job/create`, {
       method: "POST",
@@ -264,6 +289,9 @@ async function submitVideo(index) {
       uploadBtn.disabled = false;
       uploadBtn.textContent = originalText;
     }
+  } finally {
+    activeUploadIndex = null;
+    setUploadControlsLocked(false);
   }
 }
 
