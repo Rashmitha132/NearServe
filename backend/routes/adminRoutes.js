@@ -8,6 +8,7 @@ router.get("/workers", requireAdmin, adminController.getPendingWorkers);
 router.get("/workers/:phone/proof", requireAdmin, adminController.viewWorkerProof);
 router.post("/verify-proof/:phone", requireAdmin, adminController.verifyProof);
 router.get("/submitted-jobs", requireAdmin, adminController.getSubmittedJobs);
+router.get("/jobs/:jobId/video", requireAdmin, adminController.streamJobVideo);
 router.post("/verify-job/:jobId", requireAdmin, adminController.verifyJob);
 router.get("/history", requireAdmin, adminController.getHistory);
 

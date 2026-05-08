@@ -1,6 +1,6 @@
 function requireAdmin(req, res, next) {
   const auth = req.headers.authorization || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : (req.query.token || "");
 
   const adminToken = req.app.locals.ADMIN_TOKEN;
 

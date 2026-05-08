@@ -4,6 +4,7 @@ const User = require("../models/User");
 const Job = require("../models/Job");
 const VerificationLog = require("../models/VerificationLog");
 const asyncHandler = require("../utils/asyncHandler");
+const mongoose = require("mongoose");
 
 const backendRoot = path.join(__dirname, "..");
 const privateProofRoot = path.join(backendRoot, "admin_uploads", "aadhaar");
@@ -27,6 +28,30 @@ function resolveProofPath(storedPath) {
     const allowed =
       candidate.startsWith(privateProofRoot + path.sep) ||
       candidate.startsWith(legacyUploadsRoot + path.sep);
+    return allowed && fs.existsSync(candidate);
+  }) || "";
+}
+
+function parseGridFsPath(storedPath) {
+  const match = String(storedPath || "").match(/^gridfs:([a-f\d]{24})(?::.*)?$/i);
+  return match ? new mongoose.Types.ObjectId(match[1]) : null;
+}
+
+function resolveLegacyVideoPath(storedPath) {
+  if (!storedPath) return "";
+
+  const normalized = String(storedPath).replace(/\\/g, "/");
+  const candidates = [];
+
+  if (path.isAbsolute(storedPath)) {
+    candidates.push(path.resolve(storedPath));
+  }
+
+  candidates.push(path.resolve(legacyUploadsRoot, normalized.replace(/^uploads\/?/i, "")));
+  candidates.push(path.resolve(legacyUploadsRoot, "videos", path.basename(normalized)));
+
+  return candidates.find((candidate) => {
+    const allowed = candidate.startsWith(legacyUploadsRoot + path.sep);
     return allowed && fs.existsSync(candidate);
   }) || "";
 }
@@ -190,6 +215,60 @@ const getSubmittedJobs = asyncHandler(async (req, res) => {
   res.json({ jobs });
 });
 
+const streamJobVideo = asyncHandler(async (req, res) => {
+  const job = await Job.findById(req.params.jobId).select("videoProofPath");
+
+  if (!job || !job.videoProofPath) {
+    return res.status(404).json({ error: "Video not found" });
+  }
+
+  const gridFileId = parseGridFsPath(job.videoProofPath);
+  if (gridFileId) {
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: "jobVideos",
+    });
+    const files = await bucket.find({ _id: gridFileId }).toArray();
+    const file = files[0];
+
+    if (!file) {
+      return res.status(404).json({ error: "Video file is missing" });
+    }
+
+    const contentType = file.contentType || "video/mp4";
+    const range = req.headers.range;
+
+    res.setHeader("Accept-Ranges", "bytes");
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Disposition", `inline; filename="${file.filename || "video.mp4"}"`);
+
+    if (range) {
+      const [startText, endText] = range.replace(/bytes=/, "").split("-");
+      const start = Number.parseInt(startText, 10);
+      const end = endText ? Number.parseInt(endText, 10) : file.length - 1;
+
+      if (Number.isNaN(start) || Number.isNaN(end) || start > end || start >= file.length) {
+        res.setHeader("Content-Range", `bytes */${file.length}`);
+        return res.status(416).end();
+      }
+
+      res.status(206);
+      res.setHeader("Content-Length", end - start + 1);
+      res.setHeader("Content-Range", `bytes ${start}-${end}/${file.length}`);
+      return bucket.openDownloadStream(gridFileId, { start, end: end + 1 }).pipe(res);
+    }
+
+    res.setHeader("Content-Length", file.length);
+    return bucket.openDownloadStream(gridFileId).pipe(res);
+  }
+
+  const legacyPath = resolveLegacyVideoPath(job.videoProofPath);
+  if (!legacyPath) {
+    return res.status(404).json({ error: "Video file is missing on server" });
+  }
+
+  return res.sendFile(legacyPath);
+});
+
 const verifyJob = asyncHandler(async (req, res) => {
   const jobId = req.params.jobId;
   const decision = (req.body.decision || "").trim().toLowerCase();
@@ -294,6 +373,7 @@ module.exports = {
   viewWorkerProof,
   verifyProof,
   getSubmittedJobs,
+  streamJobVideo,
   verifyJob,
   getHistory,
 };

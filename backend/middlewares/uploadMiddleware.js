@@ -17,13 +17,7 @@ const proofStorage = multer.diskStorage({
   },
 });
 
-const videoStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, videosDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, "job_" + req.params.jobId + "_" + Date.now() + ext);
-  },
-});
+const videoStorage = multer.memoryStorage();
 
 const uploadProof = multer({
   storage: proofStorage,

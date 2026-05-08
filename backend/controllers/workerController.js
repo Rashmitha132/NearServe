@@ -2,6 +2,8 @@ const User = require("../models/User");
 const Job = require("../models/Job");
 const Review = require("../models/Review");
 const asyncHandler = require("../utils/asyncHandler");
+const mongoose = require("mongoose");
+const path = require("path");
 
 const normalizeProofReview = (proofReview = {}) => {
   return {
@@ -12,9 +14,28 @@ const normalizeProofReview = (proofReview = {}) => {
   };
 };
 
-const publicVideoPath = (file) => {
-  if (!file?.filename) return "";
-  return `videos/${file.filename}`;
+const saveVideoToGridFS = (file, jobId) => {
+  return new Promise((resolve, reject) => {
+    const ext = path.extname(file.originalname || "").toLowerCase() || ".mp4";
+    const safeJobId = String(jobId || "job").replace(/[^\dA-Za-z_-]/g, "");
+    const filename = `job_${safeJobId}_${Date.now()}${ext}`;
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: "jobVideos",
+    });
+    const uploadStream = bucket.openUploadStream(filename, {
+      contentType: file.mimetype || "video/mp4",
+      metadata: {
+        originalname: file.originalname || filename,
+        size: file.size || 0,
+      },
+    });
+
+    uploadStream.on("error", reject);
+    uploadStream.on("finish", (savedFile) => {
+      resolve(`gridfs:${savedFile._id}:${savedFile.filename}`);
+    });
+    uploadStream.end(file.buffer);
+  });
 };
 
 const getUserByPhone = asyncHandler(async (req, res) => {
@@ -151,8 +172,10 @@ const updateJob = asyncHandler(async (req, res) => {
       return res.status(400).json({ error: "Video proof is required" });
     }
 
+    const videoProofPath = await saveVideoToGridFS(req.file, job._id);
+
     job.status = "submitted";
-    job.videoProofPath = publicVideoPath(req.file);
+    job.videoProofPath = videoProofPath;
     job.videoReview = {
       status: "none",
       reason: "",

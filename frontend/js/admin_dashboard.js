@@ -70,14 +70,10 @@ async function openAdminProof(phone) {
   window.setTimeout(() => URL.revokeObjectURL(url), 60 * 1000);
 }
 
-function toUploadsUrl(storedPath) {
-  if (!storedPath) return null;
-  let cleanPath = String(storedPath).trim().replace(/\\/g, "/");
-  const uploadedVideo = cleanPath.match(/(?:^|\/)uploads\/videos\/(.+)$/i);
-  if (uploadedVideo) {
-    cleanPath = `videos/${uploadedVideo[1]}`;
-  }
-  return window.nearServeUploadsUrl(cleanPath);
+function toJobVideoUrl(job) {
+  if (!job?._id || !job.videoProofPath) return null;
+  const encodedToken = encodeURIComponent(token);
+  return `${API_BASE}/admin/jobs/${encodeURIComponent(job._id)}/video?token=${encodedToken}`;
 }
 
 function askRejectReason(label) {
@@ -216,7 +212,7 @@ async function loadJobs() {
     const li = document.createElement("li");
     li.className = "item";
 
-    const videoUrl = toUploadsUrl(j.videoProofPath);
+    const videoUrl = toJobVideoUrl(j);
     const videoType = guessVideoType(videoUrl);
 
     const jobTitle = j.description
