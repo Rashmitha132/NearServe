@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 
 const MAX_PROOF_SIZE = 2 * 1024 * 1024;
-const MAX_VIDEO_SIZE = 20 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
 const uploadsDir = path.join(__dirname, "..", "uploads");
 const adminUploadsDir = path.join(__dirname, "..", "admin_uploads");
 const proofDir = path.join(adminUploadsDir, "aadhaar");

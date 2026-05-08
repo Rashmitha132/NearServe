@@ -1,4 +1,4 @@
-/* â”€â”€ AUTH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* AUTH */
 const API_BASE = window.NEARSERVE_API_BASE;
 const token    = localStorage.getItem("adminToken");
 if (!token) window.location.href = "admin_login.html";
@@ -8,13 +8,13 @@ document.getElementById("adminLogout").addEventListener("click", () => {
   window.location.href = "admin_login.html";
 });
 
-/* â”€â”€ HELPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* HELPERS */
 function fmtDate(iso) {
   try {
     const d = new Date(iso);
     return d.toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" })
-      + " Â· " + d.toLocaleTimeString("en-IN", { hour:"2-digit", minute:"2-digit" });
-  } catch { return iso || "â€“"; }
+      + " - " + d.toLocaleTimeString("en-IN", { hour:"2-digit", minute:"2-digit" });
+  } catch { return iso || "-"; }
 }
 
 async function api(url, options = {}) {
@@ -29,7 +29,7 @@ async function api(url, options = {}) {
   return data;
 }
 
-/* â”€â”€ STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* STATE */
 let allLogs = [];
 
 function renderRows(logs) {
@@ -64,11 +64,11 @@ function renderRows(logs) {
             <i class="fa-solid ${typeIcon}"></i> ${typeLabel}
           </span>
         </td>
-        <td class="td-phone">${l.workerPhone || "â€“"}</td>
+        <td class="td-phone">${l.workerPhone || "-"}</td>
         <td>
           <span class="role-chip">
             <i class="fa-solid fa-screwdriver-wrench" style="font-size:9px;"></i>
-            ${l.workerRole || "â€“"}
+            ${l.workerRole || "-"}
           </span>
         </td>
         <td>
@@ -77,12 +77,12 @@ function renderRows(logs) {
             ${isApproved ? "Approved" : "Rejected"}
           </span>
         </td>
-        <td class="td-reason ${!l.reason ? "na" : ""}">${l.reason || "â€“"}</td>
+        <td class="td-reason ${!l.reason ? "na" : ""}">${l.reason || "-"}</td>
       </tr>`;
   }).join("");
 
   document.getElementById("countNum").textContent = logs.length;
-  document.getElementById("footerText").textContent = `${logs.length} record${logs.length !== 1 ? "s" : ""} Â· Last updated ${new Date().toLocaleTimeString()}`;
+  document.getElementById("footerText").textContent = `${logs.length} record${logs.length !== 1 ? "s" : ""} - Last updated ${new Date().toLocaleTimeString()}`;
 }
 
 function applyFilters() {
@@ -100,7 +100,7 @@ function applyFilters() {
   renderRows(filtered);
 }
 
-/* â”€â”€ LOAD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* LOAD */
 async function loadHistory() {
   try {
     const data = await api("/admin/history");

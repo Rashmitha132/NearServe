@@ -1,4 +1,4 @@
-  // â”€â”€ Get token from URL â”€â”€
+  // Get token from URL
   const params = new URLSearchParams(window.location.search);
   const token  = params.get('token');
 
@@ -21,7 +21,7 @@
       });
   }
 
-  // â”€â”€ Toggle eye icon â”€â”€
+  // Toggle eye icon
   function toggleEye(inputId, btn) {
     const input = document.getElementById(inputId);
     const isHidden = input.type === 'password';
@@ -29,7 +29,7 @@
     btn.style.color = isHidden ? 'rgba(56,232,198,0.8)' : 'rgba(255,255,255,0.4)';
   }
 
-  // â”€â”€ Password strength meter â”€â”€
+  // Password strength meter
   document.getElementById('newPassword').addEventListener('input', function () {
     const val = this.value;
     const bars   = [document.getElementById('s1'), document.getElementById('s2'),
@@ -52,7 +52,7 @@
     label.style.color = val ? colors[score] : 'rgba(255,255,255,0.4)';
   });
 
-  // â”€â”€ Submit reset â”€â”€
+  // Submit reset
   async function submitReset() {
     const newPassword     = document.getElementById('newPassword').value.trim();
     const confirmPassword = document.getElementById('confirmPassword').value.trim();
@@ -90,7 +90,7 @@
 
     if (newPassword !== confirmPassword) {
       confirmInput.classList.add('error');
-      matchError.textContent = 'âš  Passwords do not match!';
+      matchError.textContent = 'Passwords do not match!';
       matchError.style.display = 'block';
       return;
     }
@@ -115,14 +115,14 @@
           document.getElementById('formView').style.display    = 'none';
           document.getElementById('invalidView').style.display = 'block';
         } else {
-          matchError.textContent = 'âš  ' + data.error;
+          matchError.textContent = data.error;
           matchError.style.display = 'block';
           btn.textContent = 'Reset Password';
           btn.disabled = false;
         }
       }
     } catch (err) {
-      matchError.textContent = 'âš  Server error. Please try again.';
+      matchError.textContent = 'Server error. Please try again.';
       matchError.style.display = 'block';
       btn.textContent = 'Reset Password';
       btn.disabled = false;

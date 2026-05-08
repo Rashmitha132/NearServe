@@ -2,10 +2,7 @@ const API_BASE = window.NEARSERVE_API_BASE;
 const BOOKING_FEE = 29;
 
 function showToast(msg, type) {
-  const cleanMessage = String(msg || "")
-    .replace(/^â\S*\s*/g, "")
-    .replace(/^⚠️\s*/g, "")
-    .replace(/^❌\s*/g, "");
+  const cleanMessage = String(msg || "").replace(/^[^\w]+/g, "");
   window.nearServeToast(cleanMessage, type || "error");
 }
 
@@ -421,3 +418,4 @@ window.addEventListener("DOMContentLoaded", async function () {
     window.location.href = "login.html";
   });
 });
+

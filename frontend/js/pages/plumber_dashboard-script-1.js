@@ -206,6 +206,9 @@ for (let i = 1; i <= 3; i++) {
 }
 
 async function submitVideo(index) {
+  const uploadBtn = document.getElementById(`btnUpload${index}`);
+  const originalText = uploadBtn.textContent;
+
   try {
     hideGlobal();
 
@@ -214,6 +217,9 @@ async function submitVideo(index) {
       showGlobal(`Choose video ${index} first.`, "error");
       return;
     }
+
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = "Submitting...";
 
     const createRes = await fetch(`${API_BASE}/workers/probation-job/create`, {
       method: "POST",
@@ -254,6 +260,10 @@ async function submitVideo(index) {
   } catch (err) {
     console.error(err);
     showGlobal(err.message || "Failed to submit video", "error");
+    if (selectedFiles[index]) {
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = originalText;
+    }
   }
 }
 

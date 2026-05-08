@@ -1,9 +1,9 @@
-/* â”€â”€ TOAST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* TOAST */
 function showToast(msg, type = "error") {
   window.nearServeToast(msg, type);
 }
 
-/* â”€â”€ MODAL (replaces native prompt) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* MODAL */
 let _rejectResolve = null;
 
 function askRejectReason(label) {
@@ -32,7 +32,7 @@ document.getElementById("rejectConfirm").addEventListener("click", () => {
   if (_rejectResolve) _rejectResolve(reason);
 });
 
-/* â”€â”€ COUNTERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* COUNTERS */
 let sessionApproved = 0;
 let sessionRejected = 0;
 

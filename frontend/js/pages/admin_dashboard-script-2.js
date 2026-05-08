@@ -67,7 +67,7 @@ function statusClass(s) {
   return "pending";
 }
 
-/* â”€â”€ A) Workers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Workers */
 async function loadWorkers() {
   workerList.innerHTML = "";
   const data    = await api("/admin/workers");
@@ -160,7 +160,7 @@ async function loadWorkers() {
   return workers.length;
 }
 
-/* â”€â”€ B) Jobs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Jobs */
 async function loadJobs() {
   jobList.innerHTML = "";
   const data = await api("/admin/submitted-jobs");
@@ -180,7 +180,7 @@ async function loadJobs() {
     li.className = "item";
     const videoUrl  = toUploadsUrl(j.videoProofPath);
     const videoType = guessVideoType(videoUrl);
-    const jobTitle  = j.description || `Video proof â€” ${j.jobType} job`;
+    const jobTitle  = j.description || `Video proof - ${j.jobType} job`;
     const sc = statusClass(j.status);
 
     li.innerHTML = `
@@ -248,7 +248,7 @@ async function loadJobs() {
   return jobs.length;
 }
 
-/* â”€â”€ Load All â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Load all */
 async function loadAll() {
   try {
     const [wCount, jCount] = await Promise.all([loadWorkers(), loadJobs()]);
