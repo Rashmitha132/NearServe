@@ -1,5 +1,5 @@
 const API_BASE = window.NEARSERVE_API_BASE;
-const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 15 * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
 let submittedJobs = {};
 
@@ -192,7 +192,7 @@ for (let i = 1; i <= 3; i++) {
     }
 
     if (file.size > MAX_VIDEO_SIZE) {
-      showGlobal(`Video ${i} is too large. Maximum 50 MB allowed.`, "error");
+      showGlobal(`Video ${i} is too large. Maximum 15 MB allowed.`, "error");
       this.value = "";
       return;
     }

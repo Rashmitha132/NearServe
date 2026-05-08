@@ -1,5 +1,5 @@
 const API_BASE = window.NEARSERVE_API_BASE;
-const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 15 * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
 let submittedJobs = {};
 let uploadInProgress = false;
@@ -34,6 +34,14 @@ function hideGlobal() {
   const box = document.getElementById("globalMsg");
   box.textContent = "";
   box.className = "msg-box";
+}
+
+function getFriendlyErrorMessage(err, fallback = "Something went wrong") {
+  const message = err?.message || "";
+  if (message === "Failed to fetch" || err instanceof TypeError) {
+    return "Network error while contacting the server. Please keep this page open and check your connection; large videos can take a minute to finish uploading.";
+  }
+  return message || fallback;
 }
 
 function formatSize(bytes) {
@@ -147,7 +155,10 @@ async function checkWorkerStatus() {
   return true;
 }
 
-async function loadDashboard() {
+async function loadDashboard(options = {}) {
+  const force = Boolean(options.force);
+  if (uploadInProgress && !force) return;
+
   try {
     if (!uploadInProgress) hideGlobal();
 
@@ -215,7 +226,9 @@ async function loadDashboard() {
     }
   } catch (err) {
     console.error(err);
-    showGlobal(err.message || "Failed to submit video", "error");
+    if (!uploadInProgress || force) {
+      showGlobal(getFriendlyErrorMessage(err, "Failed to load dashboard"), "error");
+    }
   }
 }
 
@@ -232,7 +245,7 @@ for (let i = 1; i <= 3; i++) {
     }
 
     if (file.size > MAX_VIDEO_SIZE) {
-      showGlobal(`Video ${i} is too large. Maximum 50 MB allowed.`, "error");
+      showGlobal(`Video ${i} is too large. Maximum 15 MB allowed.`, "error");
       this.value = "";
       return;
     }
@@ -312,10 +325,10 @@ async function submitSelectedVideos() {
 
     showGlobal("Videos submitted successfully. Waiting for admin review.", "success");
     requiredVideoIndexes.forEach(resetPreview);
-    await loadDashboard();
+    await loadDashboard({ force: true });
   } catch (err) {
     console.error(err);
-    showGlobal(err.message || "Failed to submit videos", "error");
+    showGlobal(getFriendlyErrorMessage(err, "Failed to submit videos"), "error");
   } finally {
     uploadInProgress = false;
     submitBtn.textContent = originalText;
@@ -339,7 +352,7 @@ document.getElementById("logoutBtn").addEventListener("click", function () {
 window.addEventListener("DOMContentLoaded", loadDashboard);
 
 setInterval(async () => {
-  if (document.visibilityState === "visible") {
+  if (document.visibilityState === "visible" && !uploadInProgress) {
     await loadDashboard();
   }
 }, 8000);

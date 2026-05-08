@@ -5,7 +5,7 @@ function errorMiddleware(err, req, res, next) {
     const isVideoUpload = req.originalUrl && req.originalUrl.includes("/update-job/");
     return res.status(400).json({
       error: isVideoUpload
-        ? "Video is too large. Maximum 50 MB allowed."
+        ? "Video is too large. Maximum 15 MB allowed."
         : "File too large",
     });
   }
