@@ -1,5 +1,5 @@
 const API_BASE = window.NEARSERVE_API_BASE;
-const MAX_VIDEO_SIZE_MB = 100;
+const MAX_VIDEO_SIZE_MB = 50;
 const MAX_VIDEO_SIZE = MAX_VIDEO_SIZE_MB * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
 let submittedJobs = {};
