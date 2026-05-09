@@ -1,5 +1,6 @@
 const API_BASE = window.NEARSERVE_API_BASE;
-const MAX_VIDEO_SIZE = 8 * 1024 * 1024;
+const MAX_VIDEO_SIZE_MB = 100;
+const MAX_VIDEO_SIZE = MAX_VIDEO_SIZE_MB * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
 let submittedJobs = {};
 
@@ -192,7 +193,7 @@ for (let i = 1; i <= 3; i++) {
     }
 
     if (file.size > MAX_VIDEO_SIZE) {
-      showGlobal(`Video ${i} is too large. Maximum 8 MB allowed.`, "error");
+      showGlobal(`Video ${i} is too large. Maximum ${MAX_VIDEO_SIZE_MB} MB allowed.`, "error");
       this.value = "";
       return;
     }
@@ -206,6 +207,9 @@ for (let i = 1; i <= 3; i++) {
 }
 
 async function submitVideo(index) {
+  const uploadBtn = document.getElementById(`btnUpload${index}`);
+  const chooseBtn = document.getElementById(`btnChoose${index}`);
+  const originalText = uploadBtn.textContent;
   try {
     hideGlobal();
 
@@ -214,6 +218,11 @@ async function submitVideo(index) {
       showGlobal(`Choose video ${index} first.`, "error");
       return;
     }
+
+    uploadBtn.disabled = true;
+    chooseBtn.disabled = true;
+    uploadBtn.textContent = "Uploading...";
+    showGlobal(`Uploading Video ${index}. Please keep this page open.`, "info");
 
     const createRes = await fetch(`${API_BASE}/workers/probation-job/create`, {
       method: "POST",
@@ -254,6 +263,10 @@ async function submitVideo(index) {
   } catch (err) {
     console.error(err);
     showGlobal(err.message || "Failed to submit video", "error");
+  } finally {
+    uploadBtn.textContent = originalText;
+    uploadBtn.disabled = !selectedFiles[index];
+    chooseBtn.disabled = false;
   }
 }
 

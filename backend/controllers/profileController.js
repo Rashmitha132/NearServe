@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const asyncHandler = require("../utils/asyncHandler");
+const { uploadDataUriToCloudinary } = require("../services/cloudinaryService");
 
 const PASSWORD_RULE_MESSAGE =
   "Password must be at least 8 characters and include one uppercase letter and one special character";
@@ -67,8 +68,30 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (email !== undefined) updateData.email = String(email).trim().toLowerCase();
   if (bio !== undefined) updateData.bio = String(bio).trim();
 
-  // keep support here too, even though avatar route is preferred
-  if (avatarBase64 !== undefined) updateData.avatarBase64 = avatarBase64 || "";
+  if (avatarBase64 !== undefined) {
+    const avatarValue = String(avatarBase64 || "");
+    if (avatarValue.startsWith("data:image/")) {
+      const media = await uploadDataUriToCloudinary(avatarValue, {
+        folder: "nearserve/avatars",
+        publicId: `avatar_${phone}_${Date.now()}`,
+        uploadedBy: phone,
+        filename: "avatar",
+      });
+      updateData.avatarBase64 = media.mediaUrl;
+      updateData.avatarMedia = media;
+    } else {
+      updateData.avatarBase64 = avatarValue;
+      if (!avatarValue) {
+        updateData.avatarMedia = {
+          mediaUrl: "",
+          public_id: "",
+          filename: "",
+          uploadedBy: "",
+          createdAt: null,
+        };
+      }
+    }
+  }
 
   const user = await User.findOneAndUpdate(
     { phone },
@@ -93,11 +116,34 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 const updateAvatar = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
-  const avatarBase64 = req.body.avatarBase64 || "";
+  const avatarBase64 = String(req.body.avatarBase64 || "");
+  const updateData = {};
+
+  if (avatarBase64.startsWith("data:image/")) {
+    const media = await uploadDataUriToCloudinary(avatarBase64, {
+      folder: "nearserve/avatars",
+      publicId: `avatar_${phone}_${Date.now()}`,
+      uploadedBy: phone,
+      filename: "avatar",
+    });
+    updateData.avatarBase64 = media.mediaUrl;
+    updateData.avatarMedia = media;
+  } else {
+    updateData.avatarBase64 = avatarBase64;
+    if (!avatarBase64) {
+      updateData.avatarMedia = {
+        mediaUrl: "",
+        public_id: "",
+        filename: "",
+        uploadedBy: "",
+        createdAt: null,
+      };
+    }
+  }
 
   const user = await User.findOneAndUpdate(
     { phone },
-    { $set: { avatarBase64 } },
+    { $set: updateData },
     { new: true, runValidators: true }
   );
 

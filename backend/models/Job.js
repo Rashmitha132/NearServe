@@ -17,6 +17,13 @@ const jobSchema = new mongoose.Schema(
 
     description:    { type: String, default: "" },
     videoProofPath: { type: String, default: "" },
+    videoProof: {
+      mediaUrl:   { type: String, default: "" },
+      public_id:  { type: String, default: "" },
+      filename:   { type: String, default: "" },
+      uploadedBy: { type: String, default: "" },
+      createdAt:  { type: Date,   default: null }
+    },
 
     videoReview: {
       status:     { type: String, enum: ["none", "approved", "rejected"], default: "none" },

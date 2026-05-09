@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 const MAX_PROOF_SIZE = 2 * 1024 * 1024;
-const MAX_VIDEO_SIZE = 8 * 1024 * 1024;
+const MAX_VIDEO_SIZE = Number(process.env.MAX_VIDEO_UPLOAD_MB || 100) * 1024 * 1024;
 const uploadsDir = path.join(__dirname, "..", "uploads");
 const adminUploadsDir = path.join(__dirname, "..", "admin_uploads");
 const proofDir = path.join(adminUploadsDir, "aadhaar");

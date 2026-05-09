@@ -211,6 +211,10 @@ window.addEventListener("DOMContentLoaded", async function() {
         });
 
         if (res.ok) {
+          const data = await res.json().catch(() => ({}));
+          const savedAvatar = data.user?.avatarBase64 || base64;
+          localStorage.setItem("avatarBase64", savedAvatar);
+          setAvatar(document.getElementById("fullName").value.trim() || storedName || "Worker", savedAvatar);
           showToast("Profile picture updated!", "success");
         } else {
           const err = await res.json().catch(() => ({}));

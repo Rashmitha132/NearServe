@@ -3,9 +3,10 @@ function errorMiddleware(err, req, res, next) {
 
   if (err.code === "LIMIT_FILE_SIZE") {
     const isVideoUpload = req.originalUrl && req.originalUrl.includes("/update-job/");
+    const maxVideoMb = Number(process.env.MAX_VIDEO_UPLOAD_MB || 100);
     return res.status(400).json({
       error: isVideoUpload
-        ? "Video is too large. Maximum 8 MB allowed."
+        ? `Video is too large. Maximum ${maxVideoMb} MB allowed.`
         : "File too large",
     });
   }

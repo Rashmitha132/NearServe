@@ -2,9 +2,7 @@ const User = require("../models/User");
 const Job = require("../models/Job");
 const Review = require("../models/Review");
 const asyncHandler = require("../utils/asyncHandler");
-const mongoose = require("mongoose");
-const path = require("path");
-const fs = require("fs");
+const { uploadMediaToCloudinary } = require("../services/cloudinaryService");
 
 const normalizeProofReview = (proofReview = {}) => {
   return {
@@ -15,48 +13,7 @@ const normalizeProofReview = (proofReview = {}) => {
   };
 };
 
-const saveVideoToGridFS = (file, jobId) => {
-  return new Promise((resolve, reject) => {
-    const ext = path.extname(file.originalname || "").toLowerCase() || ".mp4";
-    const safeJobId = String(jobId || "job").replace(/[^\dA-Za-z_-]/g, "");
-    const filename = `job_${safeJobId}_${Date.now()}${ext}`;
-    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-      bucketName: "jobVideos",
-    });
-    const uploadStream = bucket.openUploadStream(filename, {
-      contentType: file.mimetype || "video/mp4",
-      metadata: {
-        originalname: file.originalname || filename,
-        size: file.size || 0,
-      },
-    });
-    const readStream = fs.createReadStream(file.path);
-    let settled = false;
-
-    const cleanupTempFile = () => {
-      fs.promises.unlink(file.path).catch(() => {});
-    };
-
-    const fail = (err) => {
-      if (settled) return;
-      settled = true;
-      readStream.destroy();
-      uploadStream.destroy();
-      cleanupTempFile();
-      reject(err);
-    };
-
-    readStream.on("error", fail);
-    uploadStream.on("error", fail);
-    uploadStream.on("finish", () => {
-      if (settled) return;
-      settled = true;
-      cleanupTempFile();
-      resolve(`gridfs:${uploadStream.id}:${filename}`);
-    });
-    readStream.pipe(uploadStream);
-  });
-};
+const getVideoUrl = (job) => job.videoProof?.mediaUrl || job.videoProofPath || "";
 
 const getUserByPhone = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
@@ -130,7 +87,8 @@ const getMyJobs = asyncHandler(async (req, res) => {
       name: job.name || "",
       description: job.description || "",
       status: job.status || "pending",
-      videoProofPath: job.videoProofPath || "",
+      videoProofPath: getVideoUrl(job),
+      videoProof: job.videoProof || {},
       videoReview: {
         status: job.videoReview?.status || "none",
         reason: job.videoReview?.reason || "",
@@ -192,10 +150,16 @@ const updateJob = asyncHandler(async (req, res) => {
       return res.status(400).json({ error: "Video proof is required" });
     }
 
-    const videoProofPath = await saveVideoToGridFS(req.file, job._id);
+    const media = await uploadMediaToCloudinary(req.file, {
+      resourceType: "video",
+      folder: `nearserve/job-videos/${job.workerRole || job.jobType || "workers"}`,
+      publicId: `job_${job._id}_${Date.now()}`,
+      uploadedBy: job.assignedTo || "",
+    });
 
     job.status = "submitted";
-    job.videoProofPath = videoProofPath;
+    job.videoProofPath = "";
+    job.videoProof = media;
     job.videoReview = {
       status: "none",
       reason: "",
@@ -213,7 +177,8 @@ const updateJob = asyncHandler(async (req, res) => {
         workerRole: job.workerRole || "",
         videoIndex: job.videoIndex || null,
         status: job.status || "",
-        videoProofPath: job.videoProofPath || "",
+        videoProofPath: getVideoUrl(job),
+        videoProof: job.videoProof || {},
         videoReview: {
           status: job.videoReview?.status || "none",
           reason: job.videoReview?.reason || "",
@@ -393,6 +358,13 @@ const createProbationJob = asyncHandler(async (req, res) => {
     if (job.status === "rejected") {
       job.status = "pending";
       job.videoProofPath = "";
+      job.videoProof = {
+        mediaUrl: "",
+        public_id: "",
+        filename: "",
+        uploadedBy: "",
+        createdAt: null,
+      };
       job.videoReview = {
         status: "none",
         reason: "",
