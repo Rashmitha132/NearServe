@@ -61,6 +61,14 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
+    proofMedia: {
+      mediaUrl:   { type: String, default: "" },
+      public_id:  { type: String, default: "" },
+      filename:   { type: String, default: "" },
+      uploadedBy: { type: String, default: "" },
+      createdAt:  { type: Date,   default: null },
+    },
+
     proofReview: {
       type: Object,
       default: {},

@@ -24,6 +24,16 @@ function uploadLarge(filePath, options) {
   });
 }
 
+function buildStoredMedia(result, originalName, uploadedBy) {
+  return {
+    mediaUrl: result.secure_url,
+    public_id: result.public_id,
+    filename: originalName,
+    uploadedBy,
+    createdAt: new Date(),
+  };
+}
+
 async function uploadMediaToCloudinary(file, options = {}) {
   if (!file?.path) {
     throw new Error("No upload file found");
@@ -60,16 +70,49 @@ async function uploadMediaToCloudinary(file, options = {}) {
       ? await uploadLarge(file.path, uploadOptions)
       : await cloudinary.uploader.upload(file.path, uploadOptions);
 
-    return {
-      mediaUrl: result.secure_url,
-      public_id: result.public_id,
-      filename: originalName,
-      uploadedBy,
-      createdAt: new Date(),
-    };
+    return buildStoredMedia(result, originalName, uploadedBy);
   } finally {
     await removeTempFile(file.path);
   }
+}
+
+async function uploadPrivateRawToCloudinary(file, options = {}) {
+  if (!file?.path) {
+    throw new Error("No upload file found");
+  }
+
+  const uploadedBy = options.uploadedBy || "";
+  const originalName = file.originalname || file.filename || "document.pdf";
+
+  try {
+    const result = await cloudinary.uploader.upload(file.path, {
+      resource_type: "raw",
+      type: "authenticated",
+      folder: options.folder || "nearserve/private",
+      public_id: (options.publicId || `${withoutExtension(originalName)}_${Date.now()}`).replace(/[^\w/-]/g, "_"),
+      use_filename: false,
+      unique_filename: true,
+      overwrite: false,
+      context: uploadedBy ? { uploadedBy } : undefined,
+    });
+
+    return buildStoredMedia(result, originalName, uploadedBy);
+  } finally {
+    await removeTempFile(file.path);
+  }
+}
+
+function signedAuthenticatedRawUrl(publicId, options = {}) {
+  if (!publicId) return "";
+
+  return cloudinary.url(publicId, {
+    resource_type: "raw",
+    type: "authenticated",
+    secure: true,
+    sign_url: true,
+    expires_at: Math.floor(Date.now() / 1000) + Number(options.expiresInSeconds || 5 * 60),
+    flags: "attachment:false",
+  });
 }
 
 async function uploadDataUriToCloudinary(dataUri, options = {}) {
@@ -103,5 +146,7 @@ async function uploadDataUriToCloudinary(dataUri, options = {}) {
 
 module.exports = {
   uploadMediaToCloudinary,
+  uploadPrivateRawToCloudinary,
   uploadDataUriToCloudinary,
+  signedAuthenticatedRawUrl,
 };

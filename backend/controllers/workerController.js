@@ -2,7 +2,10 @@ const User = require("../models/User");
 const Job = require("../models/Job");
 const Review = require("../models/Review");
 const asyncHandler = require("../utils/asyncHandler");
-const { uploadMediaToCloudinary } = require("../services/cloudinaryService");
+const {
+  uploadMediaToCloudinary,
+  uploadPrivateRawToCloudinary,
+} = require("../services/cloudinaryService");
 
 const normalizeProofReview = (proofReview = {}) => {
   return {
@@ -19,7 +22,7 @@ const getUserByPhone = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
 
   const user = await User.findOne({ phone }).select(
-    "role status name email phone proofFile proofReview avatarBase64 bio address city state pincode country availability communicationPref preferredTime createdAt"
+    "role status name email phone proofFile proofMedia proofReview avatarBase64 bio address city state pincode country availability communicationPref preferredTime createdAt"
   );
 
   if (!user) {
@@ -32,7 +35,8 @@ const getUserByPhone = asyncHandler(async (req, res) => {
     name: user.name || "",
     email: user.email || "",
     phone: user.phone || "",
-    proofFile: user.proofFile || "",
+    proofFile: user.proofMedia?.public_id || user.proofFile || "",
+    proofMedia: user.proofMedia || {},
     proofReview: normalizeProofReview(user.proofReview),
     avatarBase64: user.avatarBase64 || "",
     bio: user.bio || "",
@@ -52,7 +56,7 @@ const getProofReview = asyncHandler(async (req, res) => {
   const phone = (req.params.phone || "").trim();
 
   const user = await User.findOne({ phone }).select(
-    "role status name email phone proofFile proofReview"
+    "role status name email phone proofFile proofMedia proofReview"
   );
 
   if (!user) {
@@ -65,7 +69,8 @@ const getProofReview = asyncHandler(async (req, res) => {
     name: user.name || "",
     email: user.email || "",
     phone: user.phone || "",
-    proofFile: user.proofFile || "",
+    proofFile: user.proofMedia?.public_id || user.proofFile || "",
+    proofMedia: user.proofMedia || {},
     proofReview: normalizeProofReview(user.proofReview),
   });
 });
@@ -117,7 +122,14 @@ const uploadProof = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  user.proofFile = req.file.path;
+  const media = await uploadPrivateRawToCloudinary(req.file, {
+    folder: "nearserve/aadhaar",
+    publicId: `aadhaar_${phone}_${Date.now()}`,
+    uploadedBy: phone,
+  });
+
+  user.proofFile = media.public_id;
+  user.proofMedia = media;
   user.status = "proof_submitted";
   user.proofReview = {
     status: "none",
@@ -131,6 +143,7 @@ const uploadProof = asyncHandler(async (req, res) => {
   res.json({
     message: "Proof uploaded. Waiting for admin verification.",
     fileSavedAs: req.file.filename,
+    proofMedia: user.proofMedia,
     status: user.status,
     proofReview: normalizeProofReview(user.proofReview),
   });
@@ -316,6 +329,7 @@ const getWorkerProfile = asyncHandler(async (req, res) => {
     email: worker.email || "",
     status: worker.status || "",
     proofFile: worker.proofFile || "",
+    proofMedia: worker.proofMedia || {},
     proofReview: normalizeProofReview(worker.proofReview),
 
     avatarBase64: worker.avatarBase64 || "",

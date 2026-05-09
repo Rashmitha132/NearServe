@@ -4,6 +4,7 @@ const User = require("../models/User");
 const Job = require("../models/Job");
 const VerificationLog = require("../models/VerificationLog");
 const asyncHandler = require("../utils/asyncHandler");
+const { signedAuthenticatedRawUrl } = require("../services/cloudinaryService");
 
 const backendRoot = path.join(__dirname, "..");
 const privateProofRoot = path.join(backendRoot, "admin_uploads", "aadhaar");
@@ -89,10 +90,14 @@ const viewWorkerProof = asyncHandler(async (req, res) => {
     phone,
     role: { $ne: "customer" },
     proofFile: { $nin: ["", null] },
-  }).select("name phone role proofFile");
+  }).select("name phone role proofFile proofMedia");
 
   if (!user) {
     return res.status(404).json({ error: "Proof not found" });
+  }
+
+  if (user.proofMedia?.public_id) {
+    return res.redirect(signedAuthenticatedRawUrl(user.proofMedia.public_id));
   }
 
   const proofPath = resolveProofPath(user.proofFile);

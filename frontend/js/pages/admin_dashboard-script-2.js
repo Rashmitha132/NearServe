@@ -38,19 +38,9 @@ function guessVideoType(url) {
 }
 
 async function openAdminProof(phone) {
-  const res = await fetch(`${API_BASE}/admin/workers/${encodeURIComponent(phone)}/proof`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || "Could not open proof file");
-  }
-
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
+  const encodedToken = encodeURIComponent(token);
+  const url = `${API_BASE}/admin/workers/${encodeURIComponent(phone)}/proof?token=${encodedToken}`;
   window.open(url, "_blank", "noopener");
-  window.setTimeout(() => URL.revokeObjectURL(url), 60 * 1000);
 }
 
 function toJobVideoUrl(job) {
