@@ -363,10 +363,19 @@ const signup = asyncHandler(async (req, res) => {
   });
 
   await user.save();
-  await sendVerificationEmail(user, verification.token);
+
+  try {
+    await sendVerificationEmail(user, verification.token);
+  } catch (error) {
+    await User.deleteOne({ _id: user._id });
+    error.message = "Could not send verification email. Please check your email address and try again.";
+    throw error;
+  }
 
   res.status(201).json({
-    message: "Signup successful. Please verify your email before logging in.",
+    message: "Signup successful. Please check your email and open the verification link to activate your account.",
+    email: user.email,
+    requiresEmailVerification: true,
   });
 });
 
@@ -757,10 +766,24 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
   }
 
   if (user.emailVerified !== true) {
-    user.emailVerified = true;
-    user.emailVerificationTokenHash = "";
-    user.emailVerificationExpiresAt = null;
-    await user.save();
+    const expired =
+      !user.emailVerificationExpiresAt ||
+      user.emailVerificationExpiresAt.getTime() <= Date.now();
+
+    if (!user.emailVerificationTokenHash || expired) {
+      const verification = createEmailVerificationToken();
+      user.emailVerificationTokenHash = verification.tokenHash;
+      user.emailVerificationExpiresAt = verification.expiresAt;
+      await user.save();
+      await sendVerificationEmail(user, verification.token);
+    }
+
+    return redirectOAuthError(
+      res,
+      expired
+        ? "Your verification link expired, so we sent a new one. Please check your inbox before continuing with Google."
+        : "Please verify your email from your inbox before continuing with Google."
+    );
   }
 
   return sendOAuthSuccess(res, user);

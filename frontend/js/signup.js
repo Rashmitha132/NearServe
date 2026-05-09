@@ -14,12 +14,14 @@ if (signupForm) {
     const emailInput = signupForm.querySelector("#email");
     const phoneInput = signupForm.querySelector("#phone");
     const passwordInput = signupForm.querySelector("#password");
+    const confirmPasswordInput = signupForm.querySelector("#confirmPassword");
     const roleInput = signupForm.querySelector("#role");
 
     const name = nameInput.value.trim();
     const email = emailInput.value.trim().toLowerCase();
     const phone = phoneInput.value.trim();
     const password = passwordInput.value.trim();
+    const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value.trim() : password;
     const role = roleInput.value;
 
     if (!name || !email || !phone || !password || !role) {
@@ -45,6 +47,12 @@ if (signupForm) {
       return;
     }
 
+    if (password !== confirmPassword) {
+      showToast("Passwords do not match.");
+      return;
+    }
+
+    const originalText = signupBtn.textContent;
     signupBtn.disabled = true;
     signupBtn.textContent = "Creating Account...";
 
@@ -70,21 +78,24 @@ if (signupForm) {
         return;
       }
 
-      showToast(data.message || "Signup successful. Please verify your email before logging in.", "success");
+      showToast(data.message || "Signup successful. Please check your email to verify your account.", "success");
 
       nameInput.value = "";
       emailInput.value = "";
       phoneInput.value = "";
       passwordInput.value = "";
+      if (confirmPasswordInput) confirmPasswordInput.value = "";
       roleInput.value = "";
 
-      window.location.href = "login.html#login";
+      window.setTimeout(() => {
+        window.location.href = "login.html#login";
+      }, 1800);
     } catch (error) {
       console.error("Signup error:", error);
-      showToast("Server error during signup");
+      showToast("Could not create account. Please check your connection and try again.");
     } finally {
       signupBtn.disabled = false;
-      signupBtn.textContent = "Sign Up";
+      signupBtn.textContent = originalText;
     }
   });
 }
