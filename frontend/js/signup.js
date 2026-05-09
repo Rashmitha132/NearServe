@@ -57,28 +57,15 @@ if (signupForm) {
     signupBtn.textContent = "Creating Account...";
 
     try {
-      const res = await fetch(`${SIGNUP_API_BASE}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          password,
-          role
-        })
+      await window.NearServeFirebaseAuth.createAndSendVerification({
+        name,
+        email,
+        phone,
+        password,
+        role,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        showToast(data.error || "Signup failed");
-        return;
-      }
-
-      showToast(data.message || "Signup successful. Please check your email to verify your account.", "success");
+      showToast("Signup successful. Please check your email and open the verification link to activate your account.", "success");
 
       nameInput.value = "";
       emailInput.value = "";
@@ -92,7 +79,11 @@ if (signupForm) {
       }, 1800);
     } catch (error) {
       console.error("Signup error:", error);
-      showToast("Could not create account. Please check your connection and try again.");
+      const message =
+        error.code === "auth/email-already-in-use"
+          ? "This email already exists. Please log in or use Continue with Google after verifying it."
+          : error.message || "Could not create account. Please check your connection and try again.";
+      showToast(message);
     } finally {
       signupBtn.disabled = false;
       signupBtn.textContent = originalText;

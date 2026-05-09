@@ -227,21 +227,12 @@
     sendResetBtn.disabled = true;
 
     try {
-      const res = await fetch(`${window.NEARSERVE_API_BASE}/auth/forgot-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok) {
-        modalForm.style.display = 'none';
-        modalSuccess.style.display = 'block';
-        setTimeout(() => forgotModal.classList.remove('active'), 4000);
-      } else {
-        showToast(data.error || data.message || 'Failed to send reset link');
-      }
+      await window.NearServeFirebaseAuth.sendPasswordReset(email);
+      modalForm.style.display = 'none';
+      modalSuccess.style.display = 'block';
+      setTimeout(() => forgotModal.classList.remove('active'), 4000);
     } catch (err) {
-      showToast('Server error while sending reset link');
+      showToast(err.message || 'Failed to send reset link');
     } finally {
       sendResetBtn.textContent = 'Send Reset Link';
       sendResetBtn.disabled = false;

@@ -31,6 +31,7 @@ router.post("/oauth/complete", authLimiter, authController.completeOAuthSignup);
 router.post("/oauth/exchange", authLimiter, authController.exchangeOAuthCode);
 router.post("/signup", authLimiter, validate(signupSchema), authController.signup);
 router.post("/login", authLimiter, validate(loginSchema), authController.login);
+router.post("/firebase-session", authLimiter, authController.firebaseSession);
 router.post("/resend-verification", authLimiter, authController.resendVerification);
 router.post("/email-test", authLimiter, authController.sendEmailTest);
 router.post(

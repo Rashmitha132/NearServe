@@ -6,6 +6,7 @@ const PasswordResetToken = require("../models/PasswordResetToken");
 const asyncHandler = require("../utils/asyncHandler");
 const nodemailerTransporter = require("../services/emailService");
 const { getJwtSecret } = require("../middlewares/authMiddleware");
+const firebaseAdmin = require("../config/firebaseAdmin");
 
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 const PENDING_OAUTH_SIGNUP_TTL_MS = 10 * 60 * 1000;
@@ -462,6 +463,78 @@ const getSession = asyncHandler(async (req, res) => {
   }
 
   res.json({ user: getUserResponse(user), csrfToken: req.cookies?.ns_csrf || "" });
+});
+
+const firebaseSession = asyncHandler(async (req, res) => {
+  const idToken = String(req.body.idToken || "").trim();
+  const profile = req.body.profile || {};
+
+  if (!idToken) {
+    return res.status(400).json({ error: "Firebase ID token is required" });
+  }
+
+  const decoded = await firebaseAdmin.auth().verifyIdToken(idToken);
+  const email = String(decoded.email || "").trim().toLowerCase();
+
+  if (!email) {
+    return res.status(400).json({ error: "Firebase account email is required" });
+  }
+
+  if (decoded.email_verified !== true) {
+    return res.status(403).json({
+      code: "EMAIL_NOT_VERIFIED",
+      error: "Please verify your email before logging in.",
+      email,
+    });
+  }
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    const name = String(profile.name || decoded.name || email.split("@")[0]).trim();
+    const phone = String(profile.phone || "").trim();
+    const role = String(profile.role || "").trim().toLowerCase();
+
+    if (!name || !/^[6-9]\d{9}$/.test(phone) || !["customer", "electrician", "plumber", "carpenter"].includes(role)) {
+      return res.status(409).json({
+        code: "PROFILE_REQUIRED",
+        error: "Complete your phone number and role to activate this verified account.",
+        email,
+      });
+    }
+
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) {
+      return res.status(400).json({ error: "This phone number is already registered" });
+    }
+
+    user = await User.create({
+      name,
+      email,
+      phone,
+      password: await bcrypt.hash(createTemporaryPassword(), 10),
+      role,
+      status: role === "customer" ? "full_access" : "pending_verification",
+      emailVerified: true,
+      emailVerificationTokenHash: "",
+      emailVerificationExpiresAt: null,
+    });
+  } else if (user.emailVerified !== true) {
+    user.emailVerified = true;
+    user.emailVerificationTokenHash = "";
+    user.emailVerificationExpiresAt = null;
+    await user.save();
+  }
+
+  const csrfToken = setAuthCookies(res, user);
+
+  res.json({
+    message: "Login successful",
+    redirectTo: getUserRedirect(user),
+    user: getUserResponse(user),
+    csrfToken,
+    token: signUserToken(user),
+  });
 });
 
 const exchangeOAuthCode = asyncHandler(async (req, res) => {
@@ -961,6 +1034,7 @@ module.exports = {
   signup,
   login,
   getSession,
+  firebaseSession,
   logout,
   resendVerification,
   checkEmailConfig,

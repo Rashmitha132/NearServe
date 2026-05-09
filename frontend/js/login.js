@@ -36,6 +36,14 @@ if (loginForm) {
     }
 
     try {
+      if (emailRegex.test(emailOrPhone)) {
+        await window.NearServeFirebaseAuth.loginWithFirebase({
+          email: emailOrPhone.toLowerCase(),
+          password,
+        });
+        return;
+      }
+
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: {
@@ -152,7 +160,7 @@ if (loginForm) {
 
     } catch (error) {
       console.error("Login error:", error);
-      showToast("Could not connect to the NearServe server. Please try again.");
+      showToast(error.message || "Could not connect to the NearServe server. Please try again.");
     } finally {
       if (loginBtn) {
         loginBtn.disabled = false;
