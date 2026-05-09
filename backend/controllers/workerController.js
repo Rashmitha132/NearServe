@@ -48,11 +48,11 @@ const saveVideoToGridFS = (file, jobId) => {
 
     readStream.on("error", fail);
     uploadStream.on("error", fail);
-    uploadStream.on("finish", (savedFile) => {
+    uploadStream.on("finish", () => {
       if (settled) return;
       settled = true;
       cleanupTempFile();
-      resolve(`gridfs:${savedFile._id}:${savedFile.filename}`);
+      resolve(`gridfs:${uploadStream.id}:${filename}`);
     });
     readStream.pipe(uploadStream);
   });

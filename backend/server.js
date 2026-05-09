@@ -94,7 +94,7 @@ app.get("/api/check-server", (req, res) => {
   res.json({
     message: "server route working",
     videoUploadMode: "gridfs-streamed-tempfile",
-    build: "20260509-video-upload-render-fix",
+    build: "20260509-gridfs-finish-handler-fix",
   });
 });
 
