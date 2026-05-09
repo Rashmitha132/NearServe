@@ -24,6 +24,7 @@ router.get("/facebook/callback", authController.handleOAuthCallback);
 router.get("/linkedin", authController.startOAuth);
 router.get("/linkedin/callback", authController.handleOAuthCallback);
 router.get("/verify-email", authController.verifyEmail);
+router.get("/email-config", authController.checkEmailConfig);
 router.get("/session", requireUser, authController.getSession);
 router.post("/logout", authController.logout);
 router.post("/oauth/complete", authLimiter, authController.completeOAuthSignup);
@@ -31,6 +32,7 @@ router.post("/oauth/exchange", authLimiter, authController.exchangeOAuthCode);
 router.post("/signup", authLimiter, validate(signupSchema), authController.signup);
 router.post("/login", authLimiter, validate(loginSchema), authController.login);
 router.post("/resend-verification", authLimiter, authController.resendVerification);
+router.post("/email-test", authLimiter, authController.sendEmailTest);
 router.post(
   "/forgot-password",
   authLimiter,

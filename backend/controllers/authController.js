@@ -325,6 +325,20 @@ async function sendVerificationEmail(user, token) {
   });
 }
 
+function getEmailErrorDetails(error) {
+  return {
+    code: error?.code || "",
+    command: error?.command || "",
+    responseCode: error?.responseCode || "",
+    response: error?.response || "",
+    message: error?.message || "Unknown email error",
+  };
+}
+
+function logEmailError(label, error) {
+  console.error(label, getEmailErrorDetails(error));
+}
+
 function sendOAuthSuccess(res, user) {
   setAuthCookies(res, user);
   const redirectUrl = new URL(`${getFrontendUrl()}/login.html`);
@@ -367,6 +381,7 @@ const signup = asyncHandler(async (req, res) => {
   try {
     await sendVerificationEmail(user, verification.token);
   } catch (error) {
+    logEmailError("Verification email failed during signup", error);
     await User.deleteOne({ _id: user._id });
     error.message = "Could not send verification email. Please check your email address and try again.";
     throw error;
@@ -411,7 +426,14 @@ const login = asyncHandler(async (req, res) => {
       user.emailVerificationTokenHash = verification.tokenHash;
       user.emailVerificationExpiresAt = verification.expiresAt;
       await user.save();
-      await sendVerificationEmail(user, verification.token);
+      try {
+        await sendVerificationEmail(user, verification.token);
+      } catch (error) {
+        logEmailError("Verification email failed during login", error);
+        return res.status(500).json({
+          error: "Could not send verification email. Please try again later.",
+        });
+      }
     }
 
     return res.status(403).json({
@@ -505,9 +527,74 @@ const resendVerification = asyncHandler(async (req, res) => {
   user.emailVerificationTokenHash = verification.tokenHash;
   user.emailVerificationExpiresAt = verification.expiresAt;
   await user.save();
-  await sendVerificationEmail(user, verification.token);
+  try {
+    await sendVerificationEmail(user, verification.token);
+  } catch (error) {
+    logEmailError("Verification email resend failed", error);
+    return res.status(500).json({
+      error: "Could not send verification email. Please try again later.",
+    });
+  }
 
   res.json({ message: "Verification email sent. Please check your inbox." });
+});
+
+const checkEmailConfig = asyncHandler(async (_req, res) => {
+  const emailUser = String(process.env.EMAIL_USER || "").trim();
+  const emailPass = String(process.env.EMAIL_PASS || "").trim();
+
+  if (!emailUser || !emailPass) {
+    return res.status(500).json({
+      ok: false,
+      error: "EMAIL_USER or EMAIL_PASS is missing in server environment variables",
+      hasEmailUser: Boolean(emailUser),
+      hasEmailPass: Boolean(emailPass),
+    });
+  }
+
+  try {
+    await nodemailerTransporter.verify();
+    return res.json({
+      ok: true,
+      message: "Email SMTP configuration is working",
+      emailUser,
+    });
+  } catch (error) {
+    const details = getEmailErrorDetails(error);
+    console.error("Email SMTP verification failed", details);
+    return res.status(500).json({
+      ok: false,
+      error: "Email SMTP configuration failed",
+      emailUser,
+      details,
+    });
+  }
+});
+
+const sendEmailTest = asyncHandler(async (req, res) => {
+  const to = String(req.body.email || "").trim().toLowerCase();
+  if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+    return res.status(400).json({ error: "Valid email is required" });
+  }
+
+  try {
+    await nodemailerTransporter.sendMail({
+      from: `"NearServe" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: "NearServe email test",
+      text: "NearServe email sending is working.",
+    });
+
+    return res.json({ ok: true, message: "Test email sent" });
+  } catch (error) {
+    const details = getEmailErrorDetails(error);
+    console.error("Email test send failed", details);
+    return res.status(500).json({
+      ok: false,
+      error: "Could not send test email",
+      details,
+    });
+  }
 });
 
 const forgotPassword = asyncHandler(async (req, res) => {
@@ -775,7 +862,15 @@ const handleOAuthCallback = asyncHandler(async (req, res) => {
       user.emailVerificationTokenHash = verification.tokenHash;
       user.emailVerificationExpiresAt = verification.expiresAt;
       await user.save();
-      await sendVerificationEmail(user, verification.token);
+      try {
+        await sendVerificationEmail(user, verification.token);
+      } catch (error) {
+        logEmailError("Verification email failed during Google login", error);
+        return redirectOAuthError(
+          res,
+          "Could not send verification email. Please try again later."
+        );
+      }
     }
 
     return redirectOAuthError(
@@ -855,6 +950,8 @@ module.exports = {
   getSession,
   logout,
   resendVerification,
+  checkEmailConfig,
+  sendEmailTest,
   forgotPassword,
   verifyResetToken,
   resetPassword,
