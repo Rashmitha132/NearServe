@@ -1,5 +1,5 @@
 const API_BASE = window.NEARSERVE_API_BASE;
-const MAX_VIDEO_SIZE = 15 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 8 * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
 let submittedJobs = {};
 let uploadInProgress = false;
@@ -39,7 +39,7 @@ function hideGlobal() {
 function getFriendlyErrorMessage(err, fallback = "Something went wrong") {
   const message = err?.message || "";
   if (message === "Failed to fetch" || err instanceof TypeError) {
-    return "Network error while contacting the server. Please keep this page open and check your connection; large videos can take a minute to finish uploading.";
+    return "Upload request failed before the server responded. Please compress the video below 8 MB and try again.";
   }
   return message || fallback;
 }
@@ -245,7 +245,7 @@ for (let i = 1; i <= 3; i++) {
     }
 
     if (file.size > MAX_VIDEO_SIZE) {
-      showGlobal(`Video ${i} is too large. Maximum 15 MB allowed.`, "error");
+      showGlobal(`Video ${i} is too large. Maximum 8 MB allowed.`, "error");
       this.value = "";
       return;
     }

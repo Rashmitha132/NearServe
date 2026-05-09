@@ -1,15 +1,23 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 const MAX_PROOF_SIZE = 2 * 1024 * 1024;
-const MAX_VIDEO_SIZE = 15 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 8 * 1024 * 1024;
 const uploadsDir = path.join(__dirname, "..", "uploads");
 const adminUploadsDir = path.join(__dirname, "..", "admin_uploads");
 const proofDir = path.join(adminUploadsDir, "aadhaar");
 const videosDir = path.join(uploadsDir, "videos");
 
+const ensureDir = (dir) => {
+  fs.mkdirSync(dir, { recursive: true });
+};
+
 const proofStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, proofDir),
+  destination: (req, file, cb) => {
+    ensureDir(proofDir);
+    cb(null, proofDir);
+  },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const safePhone = String(req.params.phone || "worker").replace(/[^\dA-Za-z_-]/g, "");
@@ -17,7 +25,17 @@ const proofStorage = multer.diskStorage({
   },
 });
 
-const videoStorage = multer.memoryStorage();
+const videoStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    ensureDir(videosDir);
+    cb(null, videosDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname || "").toLowerCase() || ".mp4";
+    const safeJobId = String(req.params.jobId || "job").replace(/[^\dA-Za-z_-]/g, "");
+    cb(null, `upload_${safeJobId}_${Date.now()}${ext}`);
+  },
+});
 
 const uploadProof = multer({
   storage: proofStorage,

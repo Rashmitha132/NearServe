@@ -4,6 +4,7 @@ const Review = require("../models/Review");
 const asyncHandler = require("../utils/asyncHandler");
 const mongoose = require("mongoose");
 const path = require("path");
+const fs = require("fs");
 
 const normalizeProofReview = (proofReview = {}) => {
   return {
@@ -29,12 +30,31 @@ const saveVideoToGridFS = (file, jobId) => {
         size: file.size || 0,
       },
     });
+    const readStream = fs.createReadStream(file.path);
+    let settled = false;
 
-    uploadStream.on("error", reject);
+    const cleanupTempFile = () => {
+      fs.promises.unlink(file.path).catch(() => {});
+    };
+
+    const fail = (err) => {
+      if (settled) return;
+      settled = true;
+      readStream.destroy();
+      uploadStream.destroy();
+      cleanupTempFile();
+      reject(err);
+    };
+
+    readStream.on("error", fail);
+    uploadStream.on("error", fail);
     uploadStream.on("finish", (savedFile) => {
+      if (settled) return;
+      settled = true;
+      cleanupTempFile();
       resolve(`gridfs:${savedFile._id}:${savedFile.filename}`);
     });
-    uploadStream.end(file.buffer);
+    readStream.pipe(uploadStream);
   });
 };
 
