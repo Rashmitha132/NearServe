@@ -91,7 +91,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/check-server", (req, res) => {
-  res.json({ message: "server route working" });
+  res.json({
+    message: "server route working",
+    videoUploadMode: "gridfs-streamed-tempfile",
+    build: "20260509-video-upload-render-fix",
+  });
 });
 
 app.use("/api/admin", adminRoutes);
