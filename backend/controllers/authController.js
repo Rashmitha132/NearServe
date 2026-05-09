@@ -299,7 +299,6 @@ async function sendVerificationEmail(user, token) {
   const safeName = escapeHtml(user.name);
 
   await nodemailerTransporter.sendMail({
-    from: `"NearServe" <${process.env.EMAIL_USER}>`,
     to: user.email,
     subject: "Verify your NearServe email",
     html: `
@@ -542,11 +541,25 @@ const resendVerification = asyncHandler(async (req, res) => {
 const checkEmailConfig = asyncHandler(async (_req, res) => {
   const emailUser = String(process.env.EMAIL_USER || "").trim();
   const emailPass = String(process.env.EMAIL_PASS || "").trim();
+  const emailProvider = String(process.env.EMAIL_PROVIDER || "smtp").trim().toLowerCase();
+  const resendApiKey = String(process.env.RESEND_API_KEY || "").trim();
+  const emailFrom = String(process.env.EMAIL_FROM || "").trim();
 
-  if (!emailUser || !emailPass) {
+  if (emailProvider === "resend" && (!resendApiKey || !emailFrom)) {
+    return res.status(500).json({
+      ok: false,
+      error: "RESEND_API_KEY or EMAIL_FROM is missing in server environment variables",
+      provider: emailProvider,
+      hasResendApiKey: Boolean(resendApiKey),
+      hasEmailFrom: Boolean(emailFrom),
+    });
+  }
+
+  if (emailProvider !== "resend" && (!emailUser || !emailPass)) {
     return res.status(500).json({
       ok: false,
       error: "EMAIL_USER or EMAIL_PASS is missing in server environment variables",
+      provider: emailProvider,
       hasEmailUser: Boolean(emailUser),
       hasEmailPass: Boolean(emailPass),
     });
@@ -556,7 +569,9 @@ const checkEmailConfig = asyncHandler(async (_req, res) => {
     await nodemailerTransporter.verify();
     return res.json({
       ok: true,
-      message: "Email SMTP configuration is working",
+      message: "Email configuration is working",
+      provider: emailProvider,
+      emailFrom: emailFrom || `"NearServe" <${emailUser}>`,
       emailUser,
     });
   } catch (error) {
@@ -579,7 +594,6 @@ const sendEmailTest = asyncHandler(async (req, res) => {
 
   try {
     await nodemailerTransporter.sendMail({
-      from: `"NearServe" <${process.env.EMAIL_USER}>`,
       to,
       subject: "NearServe email test",
       text: "NearServe email sending is working.",
@@ -628,7 +642,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   try {
     await nodemailerTransporter.sendMail({
-      from: `"NearServe" <${String(process.env.EMAIL_USER || "").trim()}>`,
       to: user.email,
       subject: "NearServe — Reset Your Password",
       html: `
