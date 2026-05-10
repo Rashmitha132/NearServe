@@ -3,6 +3,8 @@ const MAX_VIDEO_SIZE_MB = 50;
 const MAX_VIDEO_SIZE = MAX_VIDEO_SIZE_MB * 1024 * 1024;
 const selectedFiles = { 1: null, 2: null, 3: null };
 let submittedJobs = {};
+let uploadInProgress = false;
+let requiredVideoIndexes = [1, 2, 3];
 
 function getStoredPhone() {
   return (localStorage.getItem("userPhone") || localStorage.getItem("phone") || "").trim();
@@ -35,6 +37,14 @@ function hideGlobal() {
   box.className = "msg-box";
 }
 
+function getFriendlyErrorMessage(err, fallback = "Something went wrong") {
+  const message = err?.message || "";
+  if (message === "Failed to fetch" || err instanceof TypeError) {
+    return `Upload request failed before the server responded. Please keep this page open and try a video below ${MAX_VIDEO_SIZE_MB} MB.`;
+  }
+  return message || fallback;
+}
+
 function formatSize(bytes) {
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
   return (bytes / (1024 * 1024)).toFixed(2) + " MB";
@@ -46,11 +56,44 @@ function resetPreview(i) {
   document.getElementById(`preview${i}`).classList.remove("show");
   document.getElementById(`name${i}`).textContent = "-";
   document.getElementById(`size${i}`).textContent = "-";
-  document.getElementById(`btnUpload${i}`).disabled = true;
+  updateSubmitButton();
 }
 
 function removeSelectedFile(i) {
+  if (uploadInProgress) return;
   resetPreview(i);
+}
+
+function setUploadControlsLocked(locked) {
+  for (let i = 1; i <= 3; i++) {
+    const chooseBtn = document.getElementById(`btnChoose${i}`);
+    chooseBtn.disabled = locked;
+  }
+  document.getElementById("submitAllBtn").disabled = locked || !canSubmitSelectedVideos();
+}
+
+function canSubmitSelectedVideos() {
+  return requiredVideoIndexes.length > 0 && requiredVideoIndexes.every((index) => Boolean(selectedFiles[index]));
+}
+
+function updateSubmitButton() {
+  const submitBtn = document.getElementById("submitAllBtn");
+  if (!submitBtn) return;
+
+  if (uploadInProgress) {
+    submitBtn.disabled = true;
+    return;
+  }
+
+  if (requiredVideoIndexes.length === 0) {
+    submitBtn.textContent = "No videos to submit";
+    submitBtn.disabled = true;
+    return;
+  }
+
+  const label = requiredVideoIndexes.length === 1 ? "Submit video for review" : "Submit videos for review";
+  submitBtn.textContent = label;
+  submitBtn.disabled = !canSubmitSelectedVideos();
 }
 
 function setCardState(i, type, badgeText, reason = "") {
@@ -58,7 +101,6 @@ function setCardState(i, type, badgeText, reason = "") {
   const badge = document.getElementById(`badge${i}`);
   const reasonEl = document.getElementById(`reason${i}`);
   const chooseBtn = document.getElementById(`btnChoose${i}`);
-  const uploadBtn = document.getElementById(`btnUpload${i}`);
 
   card.className = "video-card";
   badge.className = "vc-badge";
@@ -69,19 +111,16 @@ function setCardState(i, type, badgeText, reason = "") {
     card.classList.add("approved");
     badge.classList.add("badge-approved");
     chooseBtn.style.display = "none";
-    uploadBtn.style.display = "none";
     resetPreview(i);
   } else if (type === "review") {
     card.classList.add("review");
     badge.classList.add("badge-review");
     chooseBtn.style.display = "none";
-    uploadBtn.style.display = "none";
     resetPreview(i);
   } else if (type === "rejected") {
     card.classList.add("rejected");
     badge.classList.add("badge-rejected");
     chooseBtn.style.display = "inline-flex";
-    uploadBtn.style.display = "inline-flex";
     if (reason) {
       reasonEl.textContent = "Reason: " + reason;
       reasonEl.classList.add("show");
@@ -89,7 +128,6 @@ function setCardState(i, type, badgeText, reason = "") {
   } else {
     badge.classList.add("badge-pending");
     chooseBtn.style.display = "inline-flex";
-    uploadBtn.style.display = "inline-flex";
   }
 
   badge.textContent = badgeText;
@@ -118,9 +156,12 @@ async function checkWorkerStatus() {
   return true;
 }
 
-async function loadDashboard() {
+async function loadDashboard(options = {}) {
+  const force = Boolean(options.force);
+  if (uploadInProgress && !force) return;
+
   try {
-    hideGlobal();
+    if (!uploadInProgress) hideGlobal();
 
     if (!phone || role !== "electrician") {
       window.location.replace("login.html");
@@ -135,6 +176,7 @@ async function loadDashboard() {
     const jobs = Array.isArray(data.jobs) ? data.jobs : (Array.isArray(data) ? data : []);
 
     submittedJobs = {};
+    requiredVideoIndexes = [1, 2, 3];
     for (let i = 1; i <= 3; i++) {
       setCardState(i, "pending", "Not uploaded");
     }
@@ -146,10 +188,14 @@ async function loadDashboard() {
     });
 
     let approvedCount = 0;
+    const nextRequired = [];
 
     for (let i = 1; i <= 3; i++) {
       const job = submittedJobs[i];
-      if (!job) continue;
+      if (!job) {
+        nextRequired.push(i);
+        continue;
+      }
 
       const status = (job.status || "").toLowerCase();
       const reviewStatus = (job.videoReview?.status || "").toLowerCase();
@@ -162,10 +208,15 @@ async function loadDashboard() {
         setCardState(i, "review", "Under Review");
       } else if (status === "rejected" || reviewStatus === "rejected") {
         setCardState(i, "rejected", "Rejected", rejectReason);
+        nextRequired.push(i);
       } else {
         setCardState(i, "pending", "Not uploaded");
+        nextRequired.push(i);
       }
     }
+
+    requiredVideoIndexes = nextRequired;
+    updateSubmitButton();
 
     if (approvedCount === 3) {
       showGlobal("All 3 videos approved. Redirecting...", "success");
@@ -176,7 +227,9 @@ async function loadDashboard() {
     }
   } catch (err) {
     console.error(err);
-    showGlobal(err.message || "Failed to load dashboard", "error");
+    if (!uploadInProgress || force) {
+      showGlobal(getFriendlyErrorMessage(err, "Failed to load dashboard"), "error");
+    }
   }
 }
 
@@ -202,73 +255,90 @@ for (let i = 1; i <= 3; i++) {
     document.getElementById(`name${i}`).textContent = file.name;
     document.getElementById(`size${i}`).textContent = formatSize(file.size);
     document.getElementById(`preview${i}`).classList.add("show");
-    document.getElementById(`btnUpload${i}`).disabled = false;
+    updateSubmitButton();
   });
 }
 
-async function submitVideo(index) {
-  const uploadBtn = document.getElementById(`btnUpload${index}`);
-  const chooseBtn = document.getElementById(`btnChoose${index}`);
-  const originalText = uploadBtn.textContent;
+async function uploadVideo(index) {
+  const file = selectedFiles[index];
+  if (!file) {
+    throw new Error(`Choose video ${index} first.`);
+  }
+
+  const createRes = await fetch(`${API_BASE}/workers/probation-job/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      phone,
+      role: "electrician",
+      videoIndex: index
+    })
+  });
+
+  const createData = await createRes.json().catch(() => ({}));
+
+  if (!createRes.ok) {
+    throw new Error(createData.error || createData.message || `Failed to prepare video ${index}`);
+  }
+
+  const formData = new FormData();
+  formData.append("status", "submitted");
+  formData.append("videoProof", file);
+
+  const uploadRes = await fetch(`${API_BASE}/workers/update-job/${createData.jobId}`, {
+    method: "POST",
+    body: formData
+  });
+
+  const uploadData = await uploadRes.json().catch(() => ({}));
+
+  if (!uploadRes.ok) {
+    throw new Error(uploadData.error || uploadData.message || `Video ${index} upload failed`);
+  }
+}
+
+async function submitSelectedVideos() {
+  const submitBtn = document.getElementById("submitAllBtn");
+  const originalText = submitBtn.textContent;
+
   try {
     hideGlobal();
 
-    const file = selectedFiles[index];
-    if (!file) {
-      showGlobal(`Choose Video ${index} first.`, "error");
+    if (uploadInProgress) {
+      showGlobal("Videos are already uploading. Please wait.", "info");
       return;
     }
 
-    uploadBtn.disabled = true;
-    chooseBtn.disabled = true;
-    uploadBtn.textContent = "Uploading...";
-    showGlobal(`Uploading Video ${index}. Please keep this page open.`, "info");
-
-    const createRes = await fetch(`${API_BASE}/workers/probation-job/create`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        phone,
-        role: "electrician",
-        videoIndex: index
-      })
-    });
-
-    const createData = await createRes.json().catch(() => ({}));
-
-    if (!createRes.ok) {
-      throw new Error(createData.error || createData.message || "Failed to prepare job");
+    if (!canSubmitSelectedVideos()) {
+      showGlobal("Choose all required videos first, then submit once.", "error");
+      return;
     }
 
-    const jobId = createData.jobId;
+    uploadInProgress = true;
+    setUploadControlsLocked(true);
 
-    const formData = new FormData();
-    formData.append("status", "submitted");
-    formData.append("videoProof", file);
-
-    const uploadRes = await fetch(`${API_BASE}/workers/update-job/${jobId}`, {
-      method: "POST",
-      body: formData
-    });
-
-    const uploadData = await uploadRes.json().catch(() => ({}));
-
-    if (!uploadRes.ok) {
-      throw new Error(uploadData.error || uploadData.message || "Upload failed");
+    for (let i = 0; i < requiredVideoIndexes.length; i++) {
+      const index = requiredVideoIndexes[i];
+      submitBtn.textContent = `Uploading ${i + 1}/${requiredVideoIndexes.length}...`;
+      showGlobal(`Uploading Video ${index}. Please keep this page open.`, "info");
+      await uploadVideo(index);
     }
 
-    showGlobal(`Video ${index} submitted successfully.`, "success");
-    resetPreview(index);
-    await loadDashboard();
+    showGlobal("Videos submitted successfully. Waiting for admin review.", "success");
+    requiredVideoIndexes.forEach(resetPreview);
+    await loadDashboard({ force: true });
   } catch (err) {
     console.error(err);
-    showGlobal(err.message || "Failed to submit video", "error");
+    showGlobal(getFriendlyErrorMessage(err, "Failed to submit videos"), "error");
   } finally {
-    uploadBtn.textContent = originalText;
-    uploadBtn.disabled = !selectedFiles[index];
-    chooseBtn.disabled = false;
+    uploadInProgress = false;
+    submitBtn.textContent = originalText;
+    setUploadControlsLocked(false);
+    updateSubmitButton();
   }
 }
+
+document.getElementById("submitAllBtn").addEventListener("click", submitSelectedVideos);
 
 document.getElementById("logoutBtn").addEventListener("click", function () {
   localStorage.removeItem("userPhone");
@@ -283,7 +353,8 @@ document.getElementById("logoutBtn").addEventListener("click", function () {
 window.addEventListener("DOMContentLoaded", loadDashboard);
 
 setInterval(async () => {
-  if (document.visibilityState === "visible") {
+  if (document.visibilityState === "visible" && !uploadInProgress) {
     await loadDashboard();
   }
 }, 8000);
+
