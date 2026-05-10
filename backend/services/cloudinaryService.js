@@ -111,7 +111,6 @@ function signedAuthenticatedRawUrl(publicId, options = {}) {
     secure: true,
     sign_url: true,
     expires_at: Math.floor(Date.now() / 1000) + Number(options.expiresInSeconds || 5 * 60),
-    flags: "attachment:false",
   });
 }
 
