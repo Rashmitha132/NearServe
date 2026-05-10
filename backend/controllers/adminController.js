@@ -4,19 +4,22 @@ const User = require("../models/User");
 const Job = require("../models/Job");
 const VerificationLog = require("../models/VerificationLog");
 const asyncHandler = require("../utils/asyncHandler");
-const { signedAuthenticatedRawUrl } = require("../services/cloudinaryService");
+const { privateDownloadRawUrl } = require("../services/cloudinaryService");
 
 const backendRoot = path.join(__dirname, "..");
 const privateProofRoot = path.join(backendRoot, "admin_uploads", "aadhaar");
 const legacyUploadsRoot = path.join(backendRoot, "uploads");
 
 async function streamCloudinaryProof(res, publicId, filename) {
-  const cloudinaryUrl = signedAuthenticatedRawUrl(publicId);
+  const cloudinaryUrl = privateDownloadRawUrl(publicId);
   const response = await fetch(cloudinaryUrl);
 
   if (!response.ok) {
+    const details = await response.text().catch(() => "");
     return res.status(response.status).json({
       error: "Proof file could not be loaded from Cloudinary",
+      status: response.status,
+      details: details.slice(0, 200),
     });
   }
 
