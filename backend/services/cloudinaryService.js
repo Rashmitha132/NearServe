@@ -117,11 +117,7 @@ function signedAuthenticatedRawUrl(publicId, options = {}) {
 function privateDownloadRawUrl(publicId, options = {}) {
   if (!publicId) return "";
 
-  const match = String(publicId).match(/^(.*)\.([A-Za-z0-9]+)$/);
-  const publicIdWithoutFormat = match ? match[1] : publicId;
-  const format = (options.format || (match ? match[2] : "pdf")).toLowerCase();
-
-  return cloudinary.utils.private_download_url(publicIdWithoutFormat, format, {
+  return cloudinary.utils.private_download_url(publicId, options.format || "", {
     resource_type: "raw",
     type: "authenticated",
     expires_at: Math.floor(Date.now() / 1000) + Number(options.expiresInSeconds || 5 * 60),
