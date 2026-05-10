@@ -10,6 +10,28 @@ const backendRoot = path.join(__dirname, "..");
 const privateProofRoot = path.join(backendRoot, "admin_uploads", "aadhaar");
 const legacyUploadsRoot = path.join(backendRoot, "uploads");
 
+async function streamCloudinaryProof(res, publicId, filename) {
+  const cloudinaryUrl = signedAuthenticatedRawUrl(publicId);
+  const response = await fetch(cloudinaryUrl);
+
+  if (!response.ok) {
+    return res.status(response.status).json({
+      error: "Proof file could not be loaded from Cloudinary",
+    });
+  }
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  if (buffer.length < 4 || buffer.subarray(0, 4).toString() !== "%PDF") {
+    return res.status(502).json({
+      error: "Cloudinary returned a response that is not a PDF",
+    });
+  }
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
+  return res.send(buffer);
+}
+
 function resolveProofPath(storedPath) {
   if (!storedPath) return "";
 
@@ -97,7 +119,11 @@ const viewWorkerProof = asyncHandler(async (req, res) => {
   }
 
   if (user.proofMedia?.public_id) {
-    return res.redirect(signedAuthenticatedRawUrl(user.proofMedia.public_id));
+    return streamCloudinaryProof(
+      res,
+      user.proofMedia.public_id,
+      `aadhaar_${user.phone}.pdf`
+    );
   }
 
   const proofPath = resolveProofPath(user.proofFile);
