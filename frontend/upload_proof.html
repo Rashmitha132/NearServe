@@ -84,11 +84,11 @@
     <div class="l-steps">
       <div class="l-step">
         <div class="l-step-num">1</div>
-        <div class="l-step-text"><strong>Upload Aadhaar PDF</strong><span>Combine both front and back sides into a single PDF.</span></div>
+        <div class="l-step-text"><strong>Upload ID Proof PDF</strong><span>Upload your government ID proof as a single PDF.</span></div>
       </div>
       <div class="l-step">
         <div class="l-step-num">2</div>
-        <div class="l-step-text"><strong>Admin Review</strong><span>Our team verifies your Aadhaar within 24-48 hours.</span></div>
+        <div class="l-step-text"><strong>Admin Review</strong><span>Our team reviews your document within 24-48 hours.</span></div>
       </div>
       <div class="l-step">
         <div class="l-step-num">3</div>
@@ -114,8 +114,8 @@
 
   <div class="fhead upload_proof-inline-style-1">
     <div>
-      <h1>Aadhaar Verification</h1>
-      <p>Upload both sides of your Aadhaar card as a single PDF to get verified.</p>
+      <h1>Worker Verification</h1>
+      <p>Upload your government ID proof document as a single PDF to get verified.</p>
     </div>
     <button id="logoutBtn" class="upload_proof-inline-style-2">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -128,16 +128,16 @@
   <div class="msg-box" id="globalMsg"></div>
 
   <div class="info-box">
-    <div class="info-box-title">How to create a single PDF with both sides</div>
+    <div class="info-box-title">How to prepare your verification document</div>
     <div class="info-steps">
-      <div class="info-step"><span>1.</span> Scan or photograph the front of your Aadhaar</div>
-      <div class="info-step"><span>2.</span> Scan or photograph the back of your Aadhaar</div>
+      <div class="info-step"><span>1.</span> Scan or photograph your government ID proof clearly</div>
+      <div class="info-step"><span>2.</span> Include all required sides or pages in the same file</div>
       <div class="info-step"><span>3.</span> Use CamScanner / Adobe / iLovePDF to combine into 1 PDF</div>
       <div class="info-step"><span>4.</span> Upload the combined PDF below (max 2 MB)</div>
     </div>
   </div>
 
-  <div class="slbl">Aadhaar Card (Both Sides - Single PDF)</div>
+  <div class="slbl">Government ID Proof Document</div>
 
   <div class="upload-box" id="aadhaarBox" onclick="document.getElementById('proofFile').click()">
     <div class="upload-box-icon" aria-hidden="true">
@@ -148,8 +148,8 @@
         <path d="M9.5 13.5 12 11l2.5 2.5"/>
       </svg>
     </div>
-    <div class="upload-box-title">Click to upload Aadhaar PDF</div>
-    <div class="upload-box-sub">Front + Back combined as one PDF - Max size 2 MB</div>
+    <div class="upload-box-title">Click to upload document PDF</div>
+    <div class="upload-box-sub">Government ID proof as one PDF - Max size 2 MB</div>
   </div>
   <input type="file" id="proofFile" name="proof" accept="application/pdf" class="upload_proof-inline-style-3">
 
@@ -169,17 +169,28 @@
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
-    Submit Aadhaar for Verification
+    Submit Document for Worker Verification
   </button>
 
   <div class="mobile-trust-stats" aria-hidden="true">
     <div><strong>SSL</strong><span>Secure</span></div>
-    <div><strong>ID</strong><span>Verified</span></div>
-    <div><strong>24H</strong><span>Fast Review</span></div>
+    <div><strong>Admin</strong><span>Reviewed</span></div>
+    <div><strong>Private</strong><span>Not Public</span></div>
+  </div>
+
+  <div class="trust-note">
+    Your document will not be shown publicly. It is used only for worker verification. You can request deletion of your verification document by contacting support.
+  </div>
+
+  <div class="verification-trust" aria-label="Verification trust details">
+    <div><strong>SSL Secure</strong></div>
+    <div><strong>Admin Reviewed</strong></div>
+    <div><strong>Verification Only</strong></div>
+    <div><strong>Not Publicly Shared</strong></div>
   </div>
 
   <div class="hint-text">
-    Your Aadhaar details are encrypted and only used for identity verification.<br>
+    Your document is used only for worker identity verification and is reviewed securely by the admin.<br>
     After admin approval you'll be moved to probation to complete trial jobs.
   </div>
 

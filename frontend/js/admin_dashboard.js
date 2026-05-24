@@ -123,7 +123,7 @@ async function loadWorkers() {
         <small>Status: ${w.status}</small><br>
         ${
           hasProof
-            ? `<small>Proof: <button class="item-proof-link proof-view-btn" type="button" data-phone="${w.phone}">View Aadhaar PDF</button></small>`
+            ? `<small>Proof: <button class="item-proof-link proof-view-btn" type="button" data-phone="${w.phone}">View ID Proof PDF</button></small>`
             : `<small style="color:crimson;">No proof uploaded</small>`
         }
         ${proofApproved ? `<br><small>Approved proof stored privately</small>` : ""}

@@ -91,7 +91,7 @@ async function loadWorkers() {
           <span class="status-chip ${sc}">${w.status}</span>
         </div>
         ${hasProof
-          ? `<button class="item-proof-link proof-view-btn" type="button" data-phone="${w.phone}"><i class="fa-solid fa-file-pdf"></i> View Aadhaar PDF</button>`
+          ? `<button class="item-proof-link proof-view-btn" type="button" data-phone="${w.phone}"><i class="fa-solid fa-file-pdf"></i> View ID Proof PDF</button>`
           : `<div class="no-proof"><i class="fa-solid fa-triangle-exclamation"></i> No proof uploaded</div>`}
         ${proofApproved ? `<div class="status-chip approved"><i class="fa-solid fa-lock"></i> Approved proof stored privately</div>` : ""}
       </div>

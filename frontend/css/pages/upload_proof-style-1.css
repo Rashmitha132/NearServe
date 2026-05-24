@@ -90,6 +90,10 @@
     .btn-sub:not(:disabled):hover::after { opacity:1; }
 
     .mobile-trust-stats { display:none; }
+    .trust-note { background:#fff; border:1px solid #d8e5e1; border-radius:10px; color:#294850; font-size:0.78rem; line-height:1.55; padding:13px 15px; margin:15px 0 12px; text-align:center; }
+    .verification-trust { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:0 0 14px; }
+    .verification-trust div { min-height:42px; display:flex; align-items:center; justify-content:center; text-align:center; border:1px solid #cde6de; border-radius:9px; background:#eefbf7; color:#0b755f; padding:8px; }
+    .verification-trust strong { font-size:0.68rem; line-height:1.25; }
 
     .hint-text { font-size:0.74rem; color:#71878d; text-align:center; margin-top:17px; line-height:1.55; }
 
@@ -135,7 +139,7 @@
       .upload-box-icon{width:41px;height:41px;border-radius:11px;margin-bottom:11px;}
       .upload-box-icon svg{width:19px;height:19px;}
       .upload-box-title{font-size:0.76rem;margin-bottom:6px;}
-      .upload-box-title::before{content:"Tap to upload Aadhaar PDF";font-size:0.76rem;}
+      .upload-box-title::before{content:"Tap to upload document PDF";font-size:0.76rem;}
       .upload-box-title{font-size:0;color:transparent;}
       .upload-box-sub{font-size:0.64rem;}
       .file-preview{padding:9px 10px;margin-bottom:12px;border-radius:8px;}
@@ -148,6 +152,10 @@
       .mobile-trust-stats > div + div{border-left:1px solid #dce8e5;}
       .mobile-trust-stats strong{display:block;font-size:0.62rem;font-weight:900;color:#0b755f;line-height:1;}
       .mobile-trust-stats span{display:block;margin-top:4px;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;color:#8aa0a5;}
+      .trust-note{font-size:0.66rem;line-height:1.45;padding:11px 12px;margin:0 0 12px;border-radius:9px;}
+      .verification-trust{grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px;}
+      .verification-trust div{min-height:36px;padding:7px;}
+      .verification-trust strong{font-size:0.58rem;}
       .hint-text{font-size:0.62rem;line-height:1.45;max-width:260px;margin:0 auto;text-align:center;}
     }
   

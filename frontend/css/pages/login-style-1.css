@@ -60,6 +60,24 @@
     animation: nsPageFadeIn var(--ns-motion-slow) both;
   }
 
+  .auth-footer {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 0 20px 24px;
+    color: #145c3f;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .auth-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+
   .auth-page::before,
   .auth-page::after {
     content: "";
@@ -701,7 +719,7 @@
     }
 
     .auth-page {
-      min-height: 100vh;
+      min-height: calc(100vh - 52px);
       padding: 0;
       display: block;
       background: transparent;
@@ -910,16 +928,7 @@
       display: none;
     }
 
-    .login-side form::after,
-    .signup-side form::after {
-      content: "Privacy policy  ·  Terms of service";
-      display: block;
-      text-align: center;
-      margin-top: 8px;
-      color: #178052;
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
+    .auth-footer { padding: 0 16px 18px; gap: 12px; font-size: 0.7rem; }
 
     .name-row { grid-template-columns: 1fr; gap: 0; }
   }

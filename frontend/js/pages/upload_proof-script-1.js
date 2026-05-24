@@ -42,7 +42,7 @@
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
-      Submit Aadhaar for Verification
+      Submit Document for Worker Verification
     `;
   }
 
@@ -83,7 +83,7 @@
     btn.innerHTML = "Waiting for Admin Approval";
     btn.disabled = true;
 
-    if (lbl) lbl.textContent = "Aadhaar Submitted - Awaiting Admin Review";
+    if (lbl) lbl.textContent = "Document Submitted - Awaiting Admin Review";
   }
 
   function setApprovedUI() {
@@ -93,14 +93,14 @@
     const preview = document.getElementById("preview");
     const lbl = document.querySelector(".slbl");
 
-    el.textContent = "Aadhaar approved. Redirecting to your dashboard...";
+    el.textContent = "Document approved. Redirecting to your dashboard...";
     el.className = "msg-box msg-success show";
 
     box.style.display = "none";
     preview.classList.remove("show");
     btn.style.display = "none";
 
-    if (lbl) lbl.textContent = "Aadhaar Approved";
+    if (lbl) lbl.textContent = "Document Approved";
   }
 
   function setRejectedUI(reason) {
@@ -111,7 +111,7 @@
     const preview = document.getElementById("preview");
     const lbl = document.querySelector(".slbl");
 
-    el.textContent = "Your Aadhaar was rejected: " + (reason || "No reason given. Please re-upload.");
+    el.textContent = "Your verification document was rejected: " + (reason || "No reason given. Please re-upload.");
     el.className = "msg-box msg-error show";
 
     box.style.display = "";
@@ -121,9 +121,9 @@
     fileInput.value = "";
     btn.style.display = "";
     btn.disabled = true;
-    btn.innerHTML = "Re-upload Aadhaar for Verification";
+    btn.innerHTML = "Re-upload Document for Verification";
 
-    if (lbl) lbl.textContent = "Aadhaar Rejected - Upload Again";
+    if (lbl) lbl.textContent = "Document Rejected - Upload Again";
   }
 
   function enableUploadAgain() {
@@ -173,7 +173,7 @@
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
-      Submit Aadhaar for Verification
+      Submit Document for Worker Verification
     `;
   });
 
@@ -187,7 +187,7 @@
     }
 
     if (!file) {
-      showError("Please select your Aadhaar PDF first.");
+      showError("Please select your verification document PDF first.");
       return;
     }
 
@@ -222,12 +222,12 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
-          Submit Aadhaar for Verification
+          Submit Document for Worker Verification
         `;
         return;
       }
 
-      showSuccess("Aadhaar submitted successfully. Please wait for admin verification (24-48 hours). You'll get access once approved.");
+      showSuccess("Document submitted successfully. Please wait for admin verification (24-48 hours). You'll get access once approved.");
       setWaitingUI();
     } catch (err) {
       showError("Server not responding. Please try again.");
@@ -236,7 +236,7 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
-        Submit Aadhaar for Verification
+        Submit Document for Worker Verification
       `;
     }
   });
@@ -276,7 +276,7 @@
 
       if (status === "proof_submitted") {
         const el = document.getElementById("globalMsg");
-        el.textContent = "Aadhaar already submitted. Waiting for admin verification - please check back in 24-48 hours. You cannot re-upload until admin reviews.";
+        el.textContent = "Document already submitted. Waiting for admin verification - please check back in 24-48 hours. You cannot re-upload until admin reviews.";
         el.className = "msg-box msg-info show";
         setWaitingUI();
         return;
